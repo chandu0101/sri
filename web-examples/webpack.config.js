@@ -1,6 +1,7 @@
 'use strict';
 
 var webpack = require('webpack');
+var path = require('path');
 var CommonsChunkPlugin = webpack.optimize.CommonsChunkPlugin;
 
 module.exports = {
@@ -14,11 +15,16 @@ module.exports = {
         filename: '[name]-bundle.js'
     },
     plugins: [
-        new webpack.NoErrorsPlugin(),
-        new CommonsChunkPlugin({
-            name: "mainpage"
-        })
+        new webpack.NoErrorsPlugin()
+        //new CommonsChunkPlugin({
+        //    name: "mainpage"
+        //})
     ],
+    //resolve: {
+    //    alias: {
+    //        react: path.resolve(__dirname + '/node_modules/react')
+    //    }
+    //},
     module: {
         loaders: [
             {

@@ -104,7 +104,6 @@ object Sri extends Build {
     .dependsOn(core)
     .settings(useReactJs("test"): _*)
     .settings(webModuleDeps: _*)
-    .settings(webExamplesLauncher: _*)
 
   lazy val webExamples = DefProject("web-examples")
     .dependsOn(web)
