@@ -1,3 +1,4 @@
+import org.scalajs.jsenv.nodejs.NodeJSEnv
 import org.scalajs.sbtplugin.ScalaJSPlugin
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 import sbt.Keys._
@@ -33,7 +34,8 @@ object Sri extends Build {
   val scalatestJSSettings = Seq(scalatestJS,
     scalaJSStage in Global := FastOptStage,
     jsDependencies += RuntimeDOM,
-    jsEnv in Test := new PhantomJS2Env(scalaJSPhantomJSClassLoader.value, addArgs = Seq("--web-security=no"))
+    //    jsEnv in Test := new PhantomJS2Env(scalaJSPhantomJSClassLoader.value, addArgs = Seq("--web-security=no"))
+    jsEnv in Test := new NodeJSEnv()
   )
 
 
@@ -54,7 +56,18 @@ object Sri extends Build {
       fullOptIOS in Compile := {
         val outFile = (artifactPath in Compile in fullOptIOS).value
 
-        IO.copyFile((fullOptJS in Compile).value.data, outFile)
+        val loaderFile = (resourceDirectory in Compile).value / "loader.js"
+
+        IO.copyFile(loaderFile, outFile)
+        //        val loaders = IO.read((resourceDirectory in Compile).value / "loader.js")
+        //
+        //        IO.append(outFile, loaders)
+
+        val fullOutputCode = IO.read((fullOptJS in Compile).value.data)
+
+        IO.append(outFile, fullOutputCode)
+
+        //        IO.copyFile((fullOptJS in Compile).value.data, outFile)
 
         val launcher = (scalaJSLauncher in Compile).value.data.content
         IO.append(outFile, launcher)
@@ -67,16 +80,16 @@ object Sri extends Build {
 
   lazy val webExamplesLauncher = Seq(crossTarget in(Compile, fullOptJS) := file(webExamplesAssets),
     crossTarget in(Compile, fastOptJS) := file(webExamplesAssets),
-    crossTarget in (Compile, packageScalaJSLauncher) := file(webExamplesAssets),
+    crossTarget in(Compile, packageScalaJSLauncher) := file(webExamplesAssets),
     artifactPath in(Compile, fastOptJS) := ((crossTarget in(Compile, fastOptJS)).value /
       ((moduleName in fastOptJS).value + "-opt.js"))
   )
 
 
   def useReactJs(scope: String = "compile") = {
-    val reactJSVersion = "0.14.0-beta1"
+    val reactJSVersion = "0.13.1"
     Seq(
-      jsDependencies += "org.webjars.npm" % "react" % reactJSVersion % scope / "react-with-addons.js" commonJSName "React")
+      jsDependencies += "org.webjars" % "react" % reactJSVersion % scope / "react-with-addons.js" commonJSName "React")
   }
 
 
@@ -88,7 +101,7 @@ object Sri extends Build {
 
   // ================================ Module definitions  ================================ //
   lazy val Sri = DefProject(".", "root")
-    .aggregate(core,web,webExamples)
+    .aggregate(core, web, mobile, mobileExamples, webExamples)
     .configure(addCommandAliases(
     "ct" -> "; test:compile ; core/test",
     "wt" -> "; test:compile ; web/test",
@@ -104,15 +117,18 @@ object Sri extends Build {
     .dependsOn(core)
     .settings(useReactJs("test"): _*)
     .settings(webModuleDeps: _*)
+    .settings(scalatestJSSettings)
 
   lazy val webExamples = DefProject("web-examples")
     .dependsOn(web)
     .settings(webExamplesLauncher: _*)
 
-//  lazy val ios = DefProject("ios")
-//    .dependsOn(shared)
-//    .settings(iosLauncher: _*)
-//    .settings(iosModuleDeps: _*)
+  lazy val mobile = DefProject("mobile")
+    .dependsOn(core)
+
+  lazy val mobileExamples = DefProject("mobile-examples")
+    .dependsOn(mobile)
+    .settings(iosLauncher: _*)
 
 
 }

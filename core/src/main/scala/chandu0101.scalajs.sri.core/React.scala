@@ -14,6 +14,8 @@ trait React extends js.Object {
 
   def createFactory(tpe: String | ReactClass): js.Dynamic = js.native
 
+  def createFactory(tpe: js.Any): js.Dynamic = js.native
+
   def render(elm: ReactElement, dom: js.Any, callback: js.Function = ???): js.Any = js.native
 
   def Children: ReactChildren = js.native
@@ -138,7 +140,7 @@ abstract class ReactComponent[P,S] extends ReactJSComponent[P,S] {
   }
 
 
-  def render() :ReactElement
+//  def render() :ReactElement
 
 
   @JSName("sComponentWillUpdate")

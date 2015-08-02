@@ -12,7 +12,7 @@ import scala.scalajs.js.JSApp
 import scala.scalajs.js.annotation.{JSName, JSExport, ScalaJSDefined}
 
 
-object ReactApp extends JSApp{
+object WebApp extends JSApp{
 
   case class SmallHelloProps(name : String)
 
@@ -94,4 +94,27 @@ object ReactApp extends JSApp{
     js.Dynamic.global.Hello = ctor
     ReactDOM.render(Hello(props = HelloProps("dude2"))(), dom.document.getElementById("container"))
   }
+}
+
+
+trait Test[T] {
+  var x : T = _
+}
+
+class TestIn extends Test[String]
+
+class TestInUnit extends Test[Unit]
+
+class TestOut[T](x : T)
+
+case class TestFactory[T](i : Test[T]) {
+
+  var xValue : T = _
+
+  def x(v : T) = {
+    xValue = v
+    this
+  }
+
+  def build = new TestOut(xValue)
 }

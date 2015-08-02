@@ -9,13 +9,15 @@ package object core {
 
   type PropsChildrenType = ReactElement | js.Array[ReactChildren]
 
+  type ReactNode = String | ReactElement | Double
+
   /** Core Factory methods */
-  def createComponent[P, S, N](key: js.UndefOr[String] = js.undefined,
+  def createComponent[P, S](key: js.UndefOr[String] = js.undefined,
                                ref: RefType = null,
                                props: P,
                                instance: => ReactComponent[P, S]) = createComponentC(key, ref, props, instance)(Nil)
 
-  def createComponentC[P, S, N](key: js.UndefOr[String] = js.undefined,
+  def createComponentC[P, S](key: js.UndefOr[String] = js.undefined,
                                 ref: RefType = null,
                                 props: P,
                                 instance: => ReactComponent[P, S]): Traversable[ReactElement] => ReactComponentU[P, S] =

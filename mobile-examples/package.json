@@ -1,0 +1,12 @@
+{
+  "name": "sri-mobile",
+  "version": "0.0.2",
+  "private": true,
+  "scripts": {
+    "start": "node_modules/react-native/packager/packager.sh"
+  },
+  "dependencies": {
+    "react-native": "0.8.0",
+    "to-factory": "^1.0.0"
+  }
+}
