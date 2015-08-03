@@ -23,12 +23,12 @@ class SriMobile extends ReactComponent[Any, State] {
 object MobileApp extends JSApp {
 
   val huh = ReactNative.createClass(json(render = () => {
-    core.createComponent(instance = new SriMobile, props = ())
+    core.createElement(instance = new SriMobile, props = ())
   }))
 
   def main() = {
     println(s"dude 2")
-    val rootComponent = core.createComponent(instance = new SriMobile, props = ())
+    val rootComponent = core.createElement(instance = new SriMobile, props = ())
     ReactNative.AppRegistry.registerComponent("SriMobile", () => createMobileRoot(rootComponent))
   }
 }

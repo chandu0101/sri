@@ -2,7 +2,7 @@
 package chandu0101.scalajs.sri
 
 
-import chandu0101.scalajs.sri.core.ReactComponentU
+import chandu0101.scalajs.sri.core.ReactElementU
 import chandu0101.scalajs.sri.mobile.components.ListViewDataSource
 
 import scala.scalajs.js
@@ -43,7 +43,7 @@ package object mobile {
    * @param rootComponent
    * @return
    */
-  def createMobileRoot[P, S](rootComponent: => ReactComponentU[P, S]) = {
+  def createMobileRoot[P, S](rootComponent: => ReactElementU[P, S]) = {
     ReactNative.createClass(json(render = () => rootComponent))
   }
 

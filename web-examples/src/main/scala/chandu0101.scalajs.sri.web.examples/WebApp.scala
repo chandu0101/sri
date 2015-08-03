@@ -2,6 +2,7 @@ package chandu0101.scalajs.sri.web.examples
 
 import chandu0101.scalajs.sri.core._
 import chandu0101.scalajs.sri.web.ReactDOM
+import chandu0101.scalajs.sri.web.styles.WebStyleSheet
 import org.scalajs.dom
 import org.scalajs.dom.raw.HTMLDivElement
 import scala.scalajs.js
@@ -39,7 +40,7 @@ object WebApp extends JSApp{
   }
 
   object SmallHello {
-    def apply(props : SmallHelloProps) = createComponent(props = props,instance = new SmallHello(),ref = "smallman")
+    def apply(props : SmallHelloProps) = createElement(props = props,instance = new SmallHello(),ref = "smallman")
   }
 
   case class HelloProps(name : String)
@@ -54,11 +55,12 @@ object WebApp extends JSApp{
     initialState(State())
 
     def render() = {
-      React.createElement("div",json(key = "heh" ,onClick = onClick _),SmallHello(SmallHelloProps("small")))
+      React.createElement("div",json(key = "heh" ,onClick = onClick _ ,style = styles.div),SmallHello(SmallHelloProps("small")))
     }
 
     def onClick(e : js.Dynamic) = {
       setState(state.copy(count = state.count + 1))
+      println(s"new count :  ${state.count}")
     }
 
     override def componentDidMount() = {
@@ -81,40 +83,27 @@ object WebApp extends JSApp{
 
   }
 
+  object  styles extends WebStyleSheet {
+
+    val div = style(border := "1px solid grey",
+    padding := "10px")
+  }
+
   object Hello {
 
-    def apply(props : HelloProps)(children: ReactElement*) = CoreFactory(new Hello).key("dude").children(children: _*).build
+    def apply(props : HelloProps)(children: ReactElement*) =
+      ElementFactory(new Hello).key("dude").props(props).children(children: _*).key("man").build
   }
 
   @JSExport
   override def main(): Unit = {
     println(s"dude 4 ${this.getClass.getName}")
     val dummyHello = new Hello
+    val x = List(1,2,3)
+    println(s" list x $x")
     val ctor = dummyHello.asInstanceOf[js.Dynamic].constructor
     js.Dynamic.global.Hello = ctor
     ReactDOM.render(Hello(props = HelloProps("dude2"))(), dom.document.getElementById("container"))
   }
 }
 
-
-trait Test[T] {
-  var x : T = _
-}
-
-class TestIn extends Test[String]
-
-class TestInUnit extends Test[Unit]
-
-class TestOut[T](x : T)
-
-case class TestFactory[T](i : Test[T]) {
-
-  var xValue : T = _
-
-  def x(v : T) = {
-    xValue = v
-    this
-  }
-
-  def build = new TestOut(xValue)
-}

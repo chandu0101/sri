@@ -1,4 +1,3 @@
-import org.scalajs.jsenv.nodejs.NodeJSEnv
 import org.scalajs.sbtplugin.ScalaJSPlugin
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 import sbt.Keys._
@@ -7,6 +6,7 @@ import sbt.{Build, _}
 object Sri extends Build {
 
   import Dependencies._
+  import LauncherConfigs._
 
   val Scala211 = "2.11.7"
 
@@ -34,8 +34,8 @@ object Sri extends Build {
   val scalatestJSSettings = Seq(scalatestJS,
     scalaJSStage in Global := FastOptStage,
     jsDependencies += RuntimeDOM,
-    //    jsEnv in Test := new PhantomJS2Env(scalaJSPhantomJSClassLoader.value, addArgs = Seq("--web-security=no"))
-    jsEnv in Test := new NodeJSEnv()
+    jsEnv in Test := new PhantomJS2Env(scalaJSPhantomJSClassLoader.value, addArgs = Seq("--web-security=no"))
+    //    jsEnv in Test := new NodeJSEnv()
   )
 
 
@@ -45,58 +45,6 @@ object Sri extends Build {
     testFrameworks += new TestFramework("utest.runner.Framework"),
     jsEnv in Test := new PhantomJS2Env(scalaJSPhantomJSClassLoader.value, addArgs = Seq("--web-security=no"))
   )
-
-  /** ================ React_native task   ================ */
-  val fullOptIOS = Def.taskKey[File]("Generate the file given to react native")
-
-  lazy val iosLauncher =
-    Seq(
-      artifactPath in Compile in fullOptIOS :=
-        baseDirectory.value / "index.ios.js",
-      fullOptIOS in Compile := {
-        val outFile = (artifactPath in Compile in fullOptIOS).value
-
-        val loaderFile = (resourceDirectory in Compile).value / "loader.js"
-
-        IO.copyFile(loaderFile, outFile)
-        //        val loaders = IO.read((resourceDirectory in Compile).value / "loader.js")
-        //
-        //        IO.append(outFile, loaders)
-
-        val fullOutputCode = IO.read((fullOptJS in Compile).value.data)
-
-        IO.append(outFile, fullOutputCode)
-
-        //        IO.copyFile((fullOptJS in Compile).value.data, outFile)
-
-        val launcher = (scalaJSLauncher in Compile).value.data.content
-        IO.append(outFile, launcher)
-
-        outFile
-      }
-    )
-
-  val webExamplesAssets = "web-examples/assets"
-
-  lazy val webExamplesLauncher = Seq(crossTarget in(Compile, fullOptJS) := file(webExamplesAssets),
-    crossTarget in(Compile, fastOptJS) := file(webExamplesAssets),
-    crossTarget in(Compile, packageScalaJSLauncher) := file(webExamplesAssets),
-    artifactPath in(Compile, fastOptJS) := ((crossTarget in(Compile, fastOptJS)).value /
-      ((moduleName in fastOptJS).value + "-opt.js"))
-  )
-
-
-  def useReactJs(scope: String = "compile") = {
-    val reactJSVersion = "0.13.1"
-    Seq(
-      jsDependencies += "org.webjars" % "react" % reactJSVersion % scope / "react-with-addons.js" commonJSName "React")
-  }
-
-
-  def addCommandAliases(m: (String, String)*) = {
-    val s = m.map(p => addCommandAlias(p._1, p._2)).reduce(_ ++ _)
-    (_: Project).settings(s: _*)
-  }
 
 
   // ================================ Module definitions  ================================ //
@@ -110,25 +58,24 @@ object Sri extends Build {
     "TT" -> ";+clean ;tt"))
 
   lazy val core = DefProject("core")
-    .settings(coreModuleDeps: _*)
-    .settings(scalatestJSSettings: _*)
+    .settings(coreModuleDeps)
+    .settings(scalatestJSSettings)
 
   lazy val web = DefProject("web")
     .dependsOn(core)
-    .settings(useReactJs("test"): _*)
-    .settings(webModuleDeps: _*)
+    .settings(webModuleDeps)
     .settings(scalatestJSSettings)
 
   lazy val webExamples = DefProject("web-examples")
     .dependsOn(web)
-    .settings(webExamplesLauncher: _*)
+    .settings(webExamplesLauncher)
 
   lazy val mobile = DefProject("mobile")
     .dependsOn(core)
 
   lazy val mobileExamples = DefProject("mobile-examples")
     .dependsOn(mobile)
-    .settings(iosLauncher: _*)
+    .settings(iosLauncher)
 
 
 }

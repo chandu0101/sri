@@ -29,7 +29,9 @@ object Dependencies {
 
   )
 
-  val webModuleDeps = Seq(scalaJSDOM)
+  val webModuleDeps = Seq(scalaJSDOM,
+  jsDependencies += ProvidedJS / "webtest-bundle.js" % Test
+  )
 
 
 }

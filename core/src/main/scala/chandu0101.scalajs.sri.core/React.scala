@@ -23,7 +23,10 @@ trait React extends js.Object {
 
 object React extends React
 
-trait ReactElement extends js.Object
+trait ReactElement extends js.Object {
+  def key : UndefOr[String] = js.native
+  def ref : UndefOr[RefType] = js.native
+}
 
 trait ReactClass extends js.Object
 
@@ -72,9 +75,11 @@ trait ReactChildren extends js.Object {
 
 trait PropsChildren extends ReactElement
 
-trait ReactComponentU[P, S] extends ReactComponent[P, S] with ReactElement
+// unmounted react element
+trait ReactElementU[P, S] extends ReactComponent[P, S] with ReactElement
 
-trait ReactComponentM[P, S] extends ReactComponent[P, S] with ReactElement
+// mounted react element
+trait ReactElementM[P, S] extends ReactComponent[P, S] with ReactElement
 
 
 @JSName("React.Component")
@@ -135,13 +140,12 @@ abstract class ReactComponent[P,S] extends ReactJSComponent[P,S] {
     jsSetState(JSState(newState))
   }
 
-  @inline def getRef[T](name: String, cls: Class[T]) = {
+  @inline
+  def getRef[T](name: String, cls: Class[T]) = {
     refs.selectDynamic(name).asInstanceOf[T]
   }
 
-
-//  def render() :ReactElement
-
+  def render() :ReactElement
 
   @JSName("sComponentWillUpdate")
   def componentWillUpdate(nextProps : P,nextState : S) : Unit = ()

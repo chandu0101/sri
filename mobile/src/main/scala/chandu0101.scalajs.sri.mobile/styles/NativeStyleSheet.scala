@@ -20,8 +20,8 @@ trait NativeStyleSheet extends NativeAttrs{
 }
 
 
-case class NativeStyle[T](name : String) {
+class NativeStyle[T](name : String) {
   def := (v :T) = new NativeStylePair[T](name,v)
 }
 
-case class NativeStylePair[T](key : String ,value : T)
+class NativeStylePair[T](val key : String ,val value : T)

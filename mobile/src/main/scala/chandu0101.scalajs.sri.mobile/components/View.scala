@@ -1,6 +1,6 @@
 package chandu0101.scalajs.sri.mobile.components
 
-import chandu0101.scalajs.sri.core.ReactElement
+import chandu0101.scalajs.sri.core.{ReactNode, ReactElement}
 import chandu0101.scalajs.sri.mobile.ReactNative
 
 import scala.scalajs.js
@@ -88,7 +88,7 @@ case class View(onResponderReject : js.UndefOr[js.Function] = js.undefined ,
     p
   }
 
-  def apply(children : ReactElement*) = {
+  def apply(children : ReactNode*) = {
     val f = ReactNative.createFactory(ReactNative.View)
     f(toJS,children.toJSArray).asInstanceOf[ReactElement]
   }
