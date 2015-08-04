@@ -1,7 +1,7 @@
 package chandu0101.scalajs.sri.core
 
 import scala.scalajs.js
-import scala.scalajs.js.annotation.{ScalaJSDefined, JSName}
+import scala.scalajs.js.annotation.{JSName, ScalaJSDefined}
 import scala.scalajs.js.{UndefOr, undefined}
 
 trait React extends js.Object {
@@ -24,8 +24,9 @@ trait React extends js.Object {
 object React extends React
 
 trait ReactElement extends js.Object {
-  def key : UndefOr[String] = js.native
-  def ref : UndefOr[RefType] = js.native
+  def key: UndefOr[String] = js.native
+
+  def ref: UndefOr[RefType] = js.native
 }
 
 trait ReactClass extends js.Object
@@ -38,7 +39,7 @@ trait JSProps[P] extends js.Object {
 
   def sprops: P = js.native
 
-  def children:PropsChildren  = js.native
+  def children: PropsChildren = js.native
 }
 
 object JSProps {
@@ -93,7 +94,7 @@ class ReactJSComponent[P, S] extends js.Object {
 
   @JSName("setState") def jsSetState(newState: JSState[S]): Unit = js.native
 
-  @JSName ("setState") def jsSetState(callback: js.Function2[S, P, S]): Unit = js.native
+  @JSName("setState") def jsSetState(callback: js.Function2[JSState[S], JSProps[P], JSState[S]]): Unit = js.native
 
   def forceUpdate(callback: js.Function = ???): Unit = js.native
 
@@ -114,30 +115,40 @@ class ReactJSComponent[P, S] extends js.Object {
 }
 
 
-
 @ScalaJSDefined
-abstract class ReactComponent[P,S] extends ReactJSComponent[P,S] {
+abstract class ReactComponent[P, S] extends ReactJSComponent[P, S] {
 
-  @JSName("sProps") @inline
-  def props : P = jsProps.sprops
+  if(jsState == null) jsState = js.Dictionary[Any]("sstate" -> null).asInstanceOf[JSState[S]]
 
-  @JSName("sState") @inline
-  def state : S = jsState.sstate
+  @JSName("sProps")
+  @inline
+  def props: P = jsProps.sprops
+
+  @JSName("sState")
+  @inline
+  def state: S = jsState.sstate
 
   @inline
   def propsDynamic = jsProps.asInstanceOf[js.Dynamic]
 
   @inline
-  def children : PropsChildren = jsProps.children
+  def children: PropsChildren = jsProps.children
 
   @inline
   def initialState(s: S): Unit = {
     jsState = JSState(s)
   }
 
-  @JSName("sSetState") @inline
+  @JSName("sSetState")
+  @inline
   def setState(newState: S): Unit = {
     jsSetState(JSState(newState))
+  }
+
+  @JSName("sSetStateFunc")
+  @inline
+  def setState(callback: js.Function2[S, P, S]): Unit = {
+    jsSetState((s: JSState[S], p: JSProps[P]) => JSState[S](callback(s.sstate, p.sprops)))
   }
 
   @inline
@@ -145,14 +156,14 @@ abstract class ReactComponent[P,S] extends ReactJSComponent[P,S] {
     refs.selectDynamic(name).asInstanceOf[T]
   }
 
-  def render() :ReactElement
+  def render(): ReactElement
 
   @JSName("sComponentWillUpdate")
-  def componentWillUpdate(nextProps : P,nextState : S) : Unit = ()
+  def componentWillUpdate(nextProps: => P, nextState: => S): Unit = ()
 
   @JSName("componentWillUpdate")
   override def jsComponentWillUpdate(nextProps: JSProps[P], nextState: JSState[S]): Unit = {
-    componentWillUpdate(nextProps.sprops,nextState.sstate)
+     componentWillUpdate(nextProps.sprops, nextState.sstate)
   }
 
 

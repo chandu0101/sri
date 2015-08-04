@@ -59,7 +59,7 @@ object WebApp extends JSApp{
     }
 
     def onClick(e : js.Dynamic) = {
-      setState(state.copy(count = state.count + 1))
+//      setState((s : State,p : HelloProps) => s.copy(count = s.count+1))
       println(s"new count :  ${state.count}")
     }
 

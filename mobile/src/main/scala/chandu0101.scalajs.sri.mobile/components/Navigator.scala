@@ -32,11 +32,11 @@ object Navigator {
             ref: js.UndefOr[String] = js.undefined,
             navigationBar: js.UndefOr[ReactElement] = js.undefined,
             key: js.UndefOr[String] = js.undefined,
-            renderScene: (NavigatorRoute, NavigatorM) => ReactElement,
+            renderScene: (js.Dynamic, NavigatorM) => ReactElement,
             initialRouteStack: js.UndefOr[js.Array[js.Dynamic]] = js.undefined,
             sceneStyle: js.UndefOr[js.Any] = js.undefined,
             style: js.UndefOr[js.Any] = js.undefined,
-            configureScene: js.UndefOr[NavigatorRoute => js.Dynamic] = js.undefined,
+            configureScene: js.UndefOr[js.Dynamic => js.Dynamic] = js.undefined,
             initialRoute: js.UndefOr[js.Dynamic] = js.undefined) = {
 
     val p = js.Dynamic.literal()
@@ -45,17 +45,27 @@ object Navigator {
     ref.foreach(v => p.updateDynamic("ref")(v))
     navigationBar.foreach(v => p.updateDynamic("navigationBar")(v))
     key.foreach(v => p.updateDynamic("key")(v))
-    p.updateDynamic("renderScene")((r: js.Dynamic, n: NavigatorM) => renderScene(NavigatorRoute.fromJson(r), n))
+    p.updateDynamic("renderScene")(renderScene)
     initialRouteStack.foreach(v => p.updateDynamic("initialRouteStack")(v))
     sceneStyle.foreach(v => p.updateDynamic("sceneStyle")(v))
     style.foreach(v => p.updateDynamic("style")(v))
-    configureScene.foreach(v => p.updateDynamic("configureScene")((r: js.Dynamic) => v(NavigatorRoute.fromJson(r))))
+    configureScene.foreach(v => p.updateDynamic("configureScene")(v))
     initialRoute.foreach(v => p.updateDynamic("initialRoute")(v))
 
     val f = ReactNative.createFactory(ReactNative.Navigator)
     f(p).asInstanceOf[ReactElement]
 
   }
+
+
+  /**
+   *  react statistics
+   */
+  val SceneConfigs: NavigatorSceneConfigs = ReactNative.Navigator.asInstanceOf[js.Dynamic].SceneConfigs.asInstanceOf[NavigatorSceneConfigs]
+
+  val NavigationBar: ReactClass = ReactNative.Navigator.asInstanceOf[js.Dynamic].NavigationBar.asInstanceOf[ReactClass]
+
+  val BreadcrumbNavigationBar: ReactClass = ReactNative.Navigator.asInstanceOf[js.Dynamic].BreadcrumbNavigationBar.asInstanceOf[ReactClass]
 
 }
 
@@ -85,18 +95,6 @@ trait NavigatorM extends js.Object {
   def popToRoute(route: js.Dynamic): Unit = js.native
 
   def popToTop(): Unit = js.native
-
-}
-
-/**
- * Navigator Statics
- */
-object NavigatorS {
-
-  val SceneConfigs: NavigatorSceneConfigs = ReactNative.Navigator.asInstanceOf[js.Dynamic].SceneConfigs.asInstanceOf[NavigatorSceneConfigs]
-
-  val NavigationBar: ReactClass = ReactNative.Navigator.asInstanceOf[js.Dynamic].NavigationBar.asInstanceOf[ReactClass]
-  val BreadcrumbNavigationBar: ReactClass = ReactNative.Navigator.asInstanceOf[js.Dynamic].BreadcrumbNavigationBar.asInstanceOf[ReactClass]
 
 }
 
@@ -203,7 +201,7 @@ object NavigatorNavigationBar {
     routeMapper.foreach(v => p.updateDynamic("routeMapper")(v.toJson))
     navState.foreach(v => p.updateDynamic("navState")(v.toJson))
 
-    val f = ReactNative.createFactory(NavigatorS.NavigationBar)
+    val f = ReactNative.createFactory(Navigator.NavigationBar)
     f(p).asInstanceOf[ReactElement]
   }
 
@@ -236,7 +234,7 @@ object NavigatorBreadcrumbNavigationBar {
     routeMapper.foreach(v => p.updateDynamic("routeMapper")(v.toJson))
     navState.foreach(v => p.updateDynamic("navState")(v.toJson))
 
-    val f = ReactNative.createFactory(NavigatorS.BreadcrumbNavigationBar)
+    val f = ReactNative.createFactory(Navigator.BreadcrumbNavigationBar)
     f(p).asInstanceOf[ReactElement]
   }
 

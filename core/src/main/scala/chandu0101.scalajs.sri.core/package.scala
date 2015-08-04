@@ -15,12 +15,12 @@ package object core {
   // ============== create Elements without builder start ================= ///
 
 
-  def createElement[P, S](key: js.UndefOr[String] = js.undefined,
+  def createElement[P , S ](key: js.UndefOr[String] = js.undefined,
                             ref: RefType = null,
                             props: P,
                             instance: => ReactComponent[P, S]) = createElementC(key, ref, props, instance)(Nil)
 
-  def createElementC[P, S](key: js.UndefOr[String] = js.undefined,
+  def createElementC[P , S ](key: js.UndefOr[String] = js.undefined,
                              ref: RefType = null,
                              props: P,
                              instance: => ReactComponent[P, S]): Traversable[ReactElement] => ReactElementU[P, S] =

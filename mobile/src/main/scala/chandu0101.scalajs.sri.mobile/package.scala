@@ -43,8 +43,8 @@ package object mobile {
    * @param rootComponent
    * @return
    */
-  def createMobileRoot[P, S](rootComponent: => ReactElementU[P, S]) = {
-    ReactNative.createClass(json(render = () => rootComponent))
+  def createMobileRoot[P , S ](rootComponent: => ReactElementU[P, S],name : String = "SriMobileApp") = {
+    ReactNative.createClass(json(render = () => rootComponent ,displayName = name))
   }
 
 }

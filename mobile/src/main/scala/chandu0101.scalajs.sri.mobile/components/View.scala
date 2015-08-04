@@ -88,7 +88,7 @@ case class View(onResponderReject : js.UndefOr[js.Function] = js.undefined ,
     p
   }
 
-  def apply(children : ReactNode*) = {
+  def apply(children : ReactElement*) = {
     val f = ReactNative.createFactory(ReactNative.View)
     f(toJS,children.toJSArray).asInstanceOf[ReactElement]
   }
