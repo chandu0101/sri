@@ -5,10 +5,9 @@ import scala.scalajs.js.Dynamic.{literal => json}
 
 
 
-trait NativeAttrs extends FlexBoxStyles with TextStyles with ImageStyles with ViewStyles{
+trait NativeAttrs extends FlexBoxStyles with TextStyles with ImageStyles with ViewStyles
 
-
-}
+object NativeAttrs extends NativeAttrs
 
 trait FlexBoxStyles {
 

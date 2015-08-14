@@ -12,7 +12,9 @@ trait React extends js.Object {
 
   def cloneElement(element: ReactElement, props: js.Any = ???, children: js.Any = ???): ReactElement = js.native
 
-  def createFactory(tpe: String | ReactClass): js.Dynamic = js.native
+//  def createFactory[P,S](tpe: String | ReactClass): js.Dynamic = js.native
+
+//  def createFactory[P,S](cons : () => ReactComponent[P,S]): js.Dynamic = js.native
 
   def createFactory(tpe: js.Any): js.Dynamic = js.native
 
@@ -86,6 +88,7 @@ trait ReactElementM[P, S] extends ReactComponent[P, S] with ReactElement
 @JSName("React.Component")
 class ReactJSComponent[P, S] extends js.Object {
 
+
   @JSName("props") private[core] var jsProps: JSProps[P] = js.native
 
   @JSName("state") private[core] var jsState: JSState[S] = js.native
@@ -118,7 +121,9 @@ class ReactJSComponent[P, S] extends js.Object {
 @ScalaJSDefined
 abstract class ReactComponent[P, S] extends ReactJSComponent[P, S] {
 
-  if(jsState == null) jsState = js.Dictionary[Any]("sstate" -> null).asInstanceOf[JSState[S]]
+  if (js.isUndefined(jsState) || jsState == null) {
+    jsState = js.Dictionary[Any]("sstate" -> null).asInstanceOf[JSState[S]]
+  }
 
   @JSName("sProps")
   @inline
@@ -133,6 +138,7 @@ abstract class ReactComponent[P, S] extends ReactJSComponent[P, S] {
 
   @inline
   def children: PropsChildren = jsProps.children
+
 
   @inline
   def initialState(s: S): Unit = {
@@ -156,6 +162,7 @@ abstract class ReactComponent[P, S] extends ReactJSComponent[P, S] {
     refs.selectDynamic(name).asInstanceOf[T]
   }
 
+
   def render(): ReactElement
 
   @JSName("sComponentWillUpdate")
@@ -163,8 +170,19 @@ abstract class ReactComponent[P, S] extends ReactJSComponent[P, S] {
 
   @JSName("componentWillUpdate")
   override def jsComponentWillUpdate(nextProps: JSProps[P], nextState: JSState[S]): Unit = {
-     componentWillUpdate(nextProps.sprops, nextState.sstate)
+    componentWillUpdate(nextProps.sprops, nextState.sstate)
   }
 
+  @JSName("sComponentWillReceiveProps")
+  def componentWillReceiveProps(nextProps: => P): Unit = ()
 
+  @JSName("componentWillReceiveProps")
+  override def jsComponentWillReceiveProps(nextProps: JSProps[P]): Unit = {
+    componentWillReceiveProps(nextProps.sprops)
+  }
+
+}
+
+trait ReactComponentFactory[P,S] extends ReactComponent[P,S] {
+  def apply(props : js.Dynamic,children : ReactElement*):ReactElementU[P,S] = js.native
 }

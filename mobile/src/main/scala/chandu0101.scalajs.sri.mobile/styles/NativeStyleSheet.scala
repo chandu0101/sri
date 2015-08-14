@@ -19,6 +19,7 @@ trait NativeStyleSheet extends NativeAttrs{
   }
 }
 
+object NativeStyleSheet extends NativeStyleSheet
 
 class NativeStyle[T](name : String) {
   def := (v :T) = new NativeStylePair[T](name,v)

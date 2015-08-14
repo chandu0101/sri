@@ -118,7 +118,7 @@ case class ScrollView(zoomScale: js.UndefOr[Int] = js.undefined,
     p
   }
 
-  def apply(children: ReactElement*) = {
+  def apply(children: ReactElement*) : ReactElement = {
     val f = ReactNative.createFactory(ReactNative.ScrollView)
     f(toJS, children.toJSArray).asInstanceOf[ReactElement]
   }

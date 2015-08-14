@@ -2,6 +2,7 @@ package chandu0101.scalajs.sri.mobile.components
 
 import chandu0101.scalajs.sri.core.{ReactClass, ReactElement}
 import chandu0101.scalajs.sri.mobile.ReactNative
+import chandu0101.scalajs.sri.mobile.components.NavigatorNavigationBar.RouteMapperType
 
 import scala.scalajs.js
 import scala.scalajs.js.Dynamic.{literal => json}
@@ -14,11 +15,11 @@ import scala.scalajs.js.JSConverters.genTravConvertible2JSRichGenTrav
 key: PropTypes.string,
      style: PropTypes.js.Any,
      ref: PropTypes.string,
-    configureScene: PropTypes.NavigatorRoute => js.Dynamic,
-    renderScene: PropTypes.(NavigatorRoute,NavigatorM) => ReactElement.isRequired,
+    configureScene: PropTypes.js.Dynamic => NavigatorSceneConfig,
+    renderScene: PropTypes.(js.Dynamic,NavigatorM) => ReactElement.isRequired,
     initialRoute: PropTypes.js.Dynamic,
     initialRouteStack: PropTypes.js.Array[js.Dynamic],
-    onItemRef: PropTypes.(String,Int,NavigatorRoute) => Unit,
+    onItemRef: PropTypes.(String,Int,js.Dynamic) => Unit,
     navigationBar: PropTypes.node,
     navigator: PropTypes.object,
     sceneStyle: PropTypes.js.Any,
@@ -28,20 +29,20 @@ key: PropTypes.string,
 object Navigator {
 
   def apply(navigator: js.UndefOr[js.Object] = js.undefined,
-            onItemRef: js.UndefOr[(String, Int, NavigatorRoute) => Unit] = js.undefined,
-            ref: js.UndefOr[String] = js.undefined,
+            onItemRef: js.UndefOr[(String, Int, js.Dynamic) => Unit] = js.undefined,
+            ref: js.UndefOr[js.Function] = js.undefined,
             navigationBar: js.UndefOr[ReactElement] = js.undefined,
             key: js.UndefOr[String] = js.undefined,
             renderScene: (js.Dynamic, NavigatorM) => ReactElement,
             initialRouteStack: js.UndefOr[js.Array[js.Dynamic]] = js.undefined,
             sceneStyle: js.UndefOr[js.Any] = js.undefined,
             style: js.UndefOr[js.Any] = js.undefined,
-            configureScene: js.UndefOr[js.Dynamic => js.Dynamic] = js.undefined,
+            configureScene: js.UndefOr[js.Dynamic => NavigatorSceneConfig] = js.undefined,
             initialRoute: js.UndefOr[js.Dynamic] = js.undefined) = {
 
     val p = js.Dynamic.literal()
     navigator.foreach(v => p.updateDynamic("navigator")(v))
-    onItemRef.foreach(v => p.updateDynamic("onItemRef")((s: String, i: Int, r: js.Dynamic) => v(s, i, NavigatorRoute.fromJson(r))))
+    onItemRef.foreach(v => p.updateDynamic("onItemRef")(v))
     ref.foreach(v => p.updateDynamic("ref")(v))
     navigationBar.foreach(v => p.updateDynamic("navigationBar")(v))
     key.foreach(v => p.updateDynamic("key")(v))
@@ -101,71 +102,50 @@ trait NavigatorM extends js.Object {
 
 trait NavigatorSceneConfigs extends js.Object {
 
-  val FloatFromBottom: js.Dynamic = js.native
+  val FloatFromBottom: NavigatorSceneConfig = js.native
 
-  val FloatFromBottomAndroid: js.Dynamic = js.native
+  val FloatFromBottomAndroid: NavigatorSceneConfig = js.native
 
-  val PushFromRight: js.Dynamic = js.native
+  val PushFromRight: NavigatorSceneConfig = js.native
 
-  val HorizontalSwipeJump: js.Dynamic = js.native
+  val HorizontalSwipeJump: NavigatorSceneConfig = js.native
 
-  val FadeAndroid: js.Dynamic = js.native
+  val FadeAndroid: NavigatorSceneConfig = js.native
 
-  val FloatFromLeft: js.Dynamic = js.native
+  val FloatFromLeft: NavigatorSceneConfig = js.native
 
-  val FloatFromRight: js.Dynamic = js.native
+  val FloatFromRight: NavigatorSceneConfig = js.native
 
 }
 
-case class NavigatorRoute(id: js.UndefOr[String] = js.undefined,
-                          sceneConfig: js.UndefOr[js.Dynamic] = js.undefined,
-                          title: String,
-                          component: Any,
-                          getProps: js.Function1[NavigatorM, Any]) {
-  def toJson: js.Dynamic = {
-    val p = json("component" -> component.asInstanceOf[js.Any],
-      "getProps" -> getProps
-    )
-    sceneConfig.foreach(v => p.updateDynamic("sceneConfig")(v))
-    p.updateDynamic("title")(title)
-    id.foreach(v => p.updateDynamic("id")(v))
-    p
-  }
-}
+trait NavigatorSceneConfig extends js.Object
 
-object NavigatorRoute {
-  def fromJson(obj: js.Dynamic) = NavigatorRoute(sceneConfig = if (js.isUndefined(obj.sceneConfig)) js.undefined else obj.sceneConfig,
-    component = obj.component.asInstanceOf[Any],
-    title = obj.title.toString,
-    getProps = obj.getProps.asInstanceOf[js.Function1[NavigatorM, Any]],
-    id = if (js.isUndefined(obj.id)) js.undefined else obj.id.asInstanceOf[String])
-}
-
-case class NavigationBarNavState(routeStack: Seq[NavigatorRoute], idStack: Seq[Int], presentedIndex: Int) {
+case class NavigationBarNavState(routeStack: Seq[js.Dynamic],presentedIndex: Int) {
   def toJson = {
     val p = json(
-      "idStack" -> idStack.toJSArray,
-      "routeStack" -> routeStack.map(_.toJson).toJSArray)
+      "routeStack" -> routeStack.toJSArray)
     p.updateDynamic("presentedIndex")(presentedIndex)
     p
   }
 }
 
 object NavigationBarNavState {
-  def fromJson(obj: js.Dynamic) = NavigationBarNavState(idStack = obj.idStack.asInstanceOf[js.Array[Int]].toSeq,
-    routeStack = obj.routeStack.asInstanceOf[js.Array[js.Dynamic]].map(r => NavigatorRoute.fromJson(r)).toSeq,
+  def fromJson(obj: js.Dynamic) = NavigationBarNavState(
+    routeStack = obj.routeStack.asInstanceOf[js.Array[js.Dynamic]].toSeq,
     presentedIndex = obj.presentedIndex.asInstanceOf[Int])
 }
 
-case class NavigationBarRouteMapper(Title: (NavigatorRoute, NavigatorM, Int, NavigationBarNavState) => ReactElement,
-                                    LeftButton: (NavigatorRoute, NavigatorM, Int, NavigationBarNavState) => ReactElement,
-                                    RightButton: (NavigatorRoute, NavigatorM, Int, NavigationBarNavState) => ReactElement) {
+
+
+case class NavigationBarRouteMapper(Title: RouteMapperType,
+                                    LeftButton: RouteMapperType,
+                                    RightButton: RouteMapperType) {
 
   def toJson = {
     val p = json(
-      Title = (r: js.Dynamic, nav: NavigatorM, index: Int, state: js.Dynamic) => Title(NavigatorRoute.fromJson(r), nav, index, NavigationBarNavState.fromJson(state)),
-      LeftButton = (r: js.Dynamic, nav: NavigatorM, index: Int, state: js.Dynamic) => LeftButton(NavigatorRoute.fromJson(r), nav, index, NavigationBarNavState.fromJson(state)),
-      RightButton = (r: js.Dynamic, nav: NavigatorM, index: Int, state: js.Dynamic) => RightButton(NavigatorRoute.fromJson(r), nav, index, NavigationBarNavState.fromJson(state))
+      Title = Title,
+      LeftButton = LeftButton,
+      RightButton = RightButton
     )
     p
   }
@@ -205,6 +185,8 @@ object NavigatorNavigationBar {
     f(p).asInstanceOf[ReactElement]
   }
 
+  type RouteMapperType = (js.Dynamic, NavigatorM, Int, js.Dynamic) => ReactElement
+
 }
 
 
@@ -241,16 +223,16 @@ object NavigatorBreadcrumbNavigationBar {
 }
 
 
-case class BreadcrumbNavigationBarRouteMapper(rightContentForRoute: (NavigatorRoute, NavigatorM) => ReactElement,
-                                              titleContentForRoute: (NavigatorRoute, NavigatorM) => ReactElement,
+case class BreadcrumbNavigationBarRouteMapper(rightContentForRoute: (js.Dynamic, NavigatorM) => ReactElement,
+                                              titleContentForRoute: (js.Dynamic, NavigatorM) => ReactElement,
                                               iconForRoute: (js.Dynamic, NavigatorM) => ReactElement,
-                                              separatorForRoute: (NavigatorRoute, NavigatorM) => ReactElement) {
+                                              separatorForRoute: (js.Dynamic, NavigatorM) => ReactElement) {
   def toJson: js.Dynamic = {
     val p = json(
-      titleContentForRoute = (r: js.Dynamic, nav: NavigatorM) => titleContentForRoute(NavigatorRoute.fromJson(r), nav),
-      rightContentForRoute = (r: js.Dynamic, nav: NavigatorM) => rightContentForRoute(NavigatorRoute.fromJson(r), nav),
+      titleContentForRoute = titleContentForRoute,
+      rightContentForRoute = rightContentForRoute,
       iconForRoute = iconForRoute,
-      separatorForRoute = (r: js.Dynamic, nav: NavigatorM) => separatorForRoute(NavigatorRoute.fromJson(r), nav))
+      separatorForRoute = separatorForRoute)
     p
   }
 }

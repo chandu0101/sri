@@ -4,20 +4,18 @@ import scala.scalajs.js
 import scala.scalajs.js.annotation.JSName
 import scala.scalajs.js.{Array => JArray, UndefOr}
 
-/**
- * Created by chandrasekharkode on 4/1/15.
- */
-@JSName("ListViewDataSource")
-class ListViewDataSource[T] extends js.Object {
+
+@JSName("React.ListView.DataSource")
+class ListViewDataSource[T,H] extends js.Object {
 
   def this(params: js.Object) = this()
 
-  def cloneWithRows(dataBlob: JArray[T], rowIdentities: JArray[String] = ???): ListViewDataSource[T] = js.native
+  def cloneWithRows(dataBlob: JArray[T], rowIdentities: JArray[String] = ???): ListViewDataSource[T,H] = js.native
 
   @JSName("cloneWithRows")
-  def cloneWithRowsWithObject(dataBlob: js.Dictionary[Any], rowIdentities: JArray[String] = ???): ListViewDataSource[T] = js.native
+  def cloneWithRowsWithObject(dataBlob: js.Dictionary[Any], rowIdentities: JArray[String] = ???): ListViewDataSource[T,_] = js.native
 
-  def cloneWithRowsAndSections(dataBlob: Any, sectionIdentities: JArray[String] = ???, rowIdentities: JArray[JArray[String]] = ???): ListViewDataSource[T] = js.native
+  def cloneWithRowsAndSections(dataBlob: Any, sectionIdentities: JArray[String] = ???, rowIdentities: JArray[JArray[String]] = ???): ListViewDataSource[T,H] = js.native
 
   def getRowCount(): Int = js.native
 
@@ -33,6 +31,6 @@ class ListViewDataSource[T] extends js.Object {
 
   def sectionHeaderShouldUpdate(sectionIndex: Int): Boolean = js.native
 
-  def getSectionHeaderData(sectionIndex: Int): js.Dynamic = js.native
+  def getSectionHeaderData(sectionIndex: Int): H = js.native
 
 }

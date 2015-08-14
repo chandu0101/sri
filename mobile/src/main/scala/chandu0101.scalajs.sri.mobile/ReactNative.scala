@@ -52,77 +52,9 @@ trait ReactNative extends React {
   val VibrationIOS: VibrationIOS = js.native
   val Dimensions: js.Dynamic = js.native
 
-//  @JSName("React.Component")
-
-
 }
 
 
 @JSName("React")
-object ReactNative extends ReactNative {
-  class Component[P, S] extends js.Object {
+object ReactNative extends ReactNative
 
-    @JSName("props") private var jsProps: JSProps[P] = js.native
-
-    @JSName("state") private var jsState: JSState[S] = js.native
-
-    var refs: js.Dynamic = js.native
-
-    @JSName("setState") def jsSetState(newState: JSState[S]): Unit = js.native
-
-    @JSName ("setState") def jsSetState(callback: js.Function2[S, P, S]): Unit = js.native
-
-    def forceUpdate(callback: js.Function = ???): Unit = js.native
-
-    def componentWillMount(): Unit = js.native
-
-    def componentDidMount(): Unit = js.native
-
-    def componentWillUnmount(): Unit = js.native
-
-    @JSName("componentWillReceiveProps") def jsComponentWillReceiveProps(nextProps: JSProps[P]): Unit = js.native
-
-    @JSName("shouldComponentUpdate") def jsShouldComponentUpdate(nextProps: JSProps[P], nextState: JSState[S]): Boolean = js.native
-
-    @JSName("componentWillUpdate") def jsComponentWillUpdate(nextProps: JSProps[P], nextState: JSState[S]): Unit = js.native
-
-    @JSName("componentDidUpdate") def jsComponentDidUpdate(prevProps: JSProps[P], prevState: JSState[S]): Unit = js.native
-
-  }
-}
-
-@JSName("React.Component")
-class View2[P,S] extends js.Object
-
-@JSName("React.Component")
-class ReactJSComponent2[P, S] extends js.Object {
-
-  @JSName("props")  var jsProps: JSProps[P] = js.native
-
-  @JSName("state")  var jsState: JSState[S] = js.native
-
-  var refs: js.Dynamic = js.native
-
-  def render() : ReactElement  = js.native
-
-  @JSName("setState") def jsSetState(newState: JSState[S]): Unit = js.native
-
-  @JSName ("setState") def jsSetState(callback: js.Function2[S, P, S]): Unit = js.native
-
-  def forceUpdate(callback: js.Function = ???): Unit = js.native
-
-  def componentWillMount(): Unit = js.native
-
-  def componentDidMount(): Unit = js.native
-
-  def componentWillUnmount(): Unit = js.native
-
-  @JSName("componentWillReceiveProps") def jsComponentWillReceiveProps(nextProps: JSProps[P]): Unit = js.native
-
-  @JSName("shouldComponentUpdate") def jsShouldComponentUpdate(nextProps: JSProps[P], nextState: JSState[S]): Boolean = js.native
-
-  @JSName("componentWillUpdate") def jsComponentWillUpdate(nextProps: JSProps[P], nextState: JSState[S]): Unit = js.native
-
-  @JSName("componentDidUpdate") def jsComponentDidUpdate(prevProps: JSProps[P], prevState: JSState[S]): Unit = js.native
-
-}

@@ -7,13 +7,14 @@ object Sri extends Build {
 
   import Dependencies._
   import LauncherConfigs._
+  import PublicationDetails._
 
   val Scala211 = "2.11.7"
 
   lazy val commonSettings =
     Seq(
       organization := "com.github.chandu0101.sri",
-      version := "0.0.1",
+      version := "0.1.0-SNAPSHOT",
       homepage := Some(url("https://github.com/chandu0101/sri")),
       licenses +=("Apache-2.0", url("http://opensource.org/licenses/Apache-2.0")),
       scalaVersion := Scala211,
@@ -56,26 +57,34 @@ object Sri extends Build {
     "tt" -> ";+test:compile ;+test/test",
     "T" -> "; clean ;t",
     "TT" -> ";+clean ;tt"))
+    .settings(preventPublication)
 
   lazy val core = DefProject("core")
     .settings(coreModuleDeps)
     .settings(scalatestJSSettings)
+    .settings(publicationSettings)
 
   lazy val web = DefProject("web")
     .dependsOn(core)
     .settings(webModuleDeps)
     .settings(scalatestJSSettings)
+    .settings(publicationSettings)
 
   lazy val webExamples = DefProject("web-examples")
     .dependsOn(web)
     .settings(webExamplesLauncher)
+    .settings(preventPublication)
 
   lazy val mobile = DefProject("mobile")
     .dependsOn(core)
+    .settings(mobileModuleDeps)
+    .settings(publicationSettings)
 
   lazy val mobileExamples = DefProject("mobile-examples")
     .dependsOn(mobile)
     .settings(iosLauncher)
+    .settings(mobileExamplesModuleDeps)
+    .settings(preventPublication)
 
 
 }

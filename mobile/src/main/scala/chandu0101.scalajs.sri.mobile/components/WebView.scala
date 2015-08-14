@@ -9,7 +9,7 @@ import scala.scalajs.js
  *
  *
  * key: PropTypes.string,
-    ref: PropTypes.string,
+    ref: PropTypes.WebViewM => Unit,
     style: PropTypes.js.Any,
  automaticallyAdjustContentInsets: PropTypes.bool,
      bounces: PropTypes.bool,
@@ -34,7 +34,7 @@ object WebView {
             url: String,
             style: js.UndefOr[js.Any] = js.undefined,
             javaScriptEnabledAndroid: js.UndefOr[Boolean] = js.undefined,
-            ref: js.UndefOr[String] = js.undefined,
+            ref: js.UndefOr[WebViewM => Unit] = js.undefined,
             injectedJavaScript: js.UndefOr[String] = js.undefined,
             scalesPageToFit: js.UndefOr[Boolean] = js.undefined,
             key: js.UndefOr[String] = js.undefined,

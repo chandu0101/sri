@@ -1,26 +1,23 @@
 package chandu0101.scalajs.sri.mobile.examples.router
 
-import chandu0101.scalajs.sri.mobile.router.{MobileRouter, StaticRoute, MobileRouterConfig, StaticPage}
+import chandu0101.scalajs.sri.mobile.router.MobileRouter.NavigationBarConfig
+import chandu0101.scalajs.sri.mobile.router._
 
 
+object RouterExample {
 
+  object Home extends StaticPage
 
+  object Second extends StaticPage
 
-object Home extends StaticPage
+  object Config extends MobileRouterConfig {
 
-object Second extends StaticPage
+    override val initialRoute = Home -> StaticRoute("Home", HomeScreen())
 
-object Config extends MobileRouterConfig {
+    staticRoute(Second, StaticRoute("Second",SecondScreen()))
 
-//  initialRoute(Home,StaticRoute(HomeScreen()))
-  addStaticRoute(Home,StaticRoute(HomeScreen()))
-  addStaticRoute(Second,StaticRoute(SecondScreen()))
+  }
 
-  override val initialRoute: (StaticPage, StaticRoute) = Home -> StaticRoute(HomeScreen())
-}
-
-object  AppRouter {
-
-  val routerElement = MobileRouter(Config)
+  val routerElement = MobileRouter(Config,NavigationBarConfig())
 
 }

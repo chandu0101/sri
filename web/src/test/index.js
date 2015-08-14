@@ -1,5 +1,6 @@
 var React = require('react'),
-    ReactDOM = require('react-dom');
+    ReactDOM = require('react-dom'),
+    ReactTestUtils = require('react-addons-test-utils');
 
 
 //window.React = React;
@@ -7,5 +8,6 @@ var React = require('react'),
 
 global.React = React;
 global.ReactDOM = ReactDOM;
+global.ReactTestUtils = ReactTestUtils;
 
 

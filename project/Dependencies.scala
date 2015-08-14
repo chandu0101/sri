@@ -33,5 +33,8 @@ object Dependencies {
   jsDependencies += ProvidedJS / "webtest-bundle.js" % Test
   )
 
+  val mobileModuleDeps = Seq(scalaJSDOM)
+
+  val mobileExamplesModuleDeps = Seq(scalaAsync)
 
 }

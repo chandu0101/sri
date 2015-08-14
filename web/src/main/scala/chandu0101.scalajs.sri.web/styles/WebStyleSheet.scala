@@ -57,3 +57,5 @@ trait WebStyleSheet extends WebStyleAttrs {
     paddingTop.name)
 
 }
+
+object WebStyleSheet extends WebStyleSheet

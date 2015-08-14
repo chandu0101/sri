@@ -1,11 +1,17 @@
 package chandu0101.scalajs.sri.mobile.examples.router
 
-import chandu0101.scalajs.sri.core.{ReactElement, ElementFactory, ReactComponent}
+import chandu0101.scalajs.sri.core.{ReactElement, ElementFactory_DONTUSE$, ReactComponent}
 import chandu0101.scalajs.sri.mobile.components._
+import chandu0101.scalajs.sri.mobile.examples.router.RouterExample.Second
 import chandu0101.scalajs.sri.mobile.router.MobileRouter
 import chandu0101.scalajs.sri.mobile.styles.NativeStyleSheet
 
 import scala.scalajs.js.annotation.ScalaJSDefined
+import chandu0101.scalajs.sri.core.{RefType, ReactComponent}
+import chandu0101.scalajs.sri.mobile.components._
+import scala.scalajs.js
+import scala.scalajs.js.annotation.ScalaJSDefined
+import chandu0101.scalajs.sri.core.ElementFactory._
 
 object HomeScreen {
 
@@ -14,6 +20,8 @@ object HomeScreen {
     override def render(): ReactElement = View(style = styles.container)(
        Text(onPress = onTextClick _)("Home Screen ... ")
     )
+    val displayName = "HomeScreen"
+
   }
 
 
@@ -21,7 +29,9 @@ object HomeScreen {
     MobileRouter.routerCtrl.navigateTo(Second)
   }
 
-  def apply() = ElementFactory(new Component).buildNoProps
+  val factory = getComponentFactory(new Component)
+
+  def apply() = createElementNoProps(factory)
 }
 
 object styles extends NativeStyleSheet {

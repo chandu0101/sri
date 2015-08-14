@@ -10,7 +10,7 @@ import scala.scalajs.js.JSConverters.genTravConvertible2JSRichGenTrav
  * Created by chandrasekharkode on 3/31/15.
  *
  * key: PropTypes.string,
-    ref: PropTypes.string,
+    ref: PropTypes.TextInputM => Unit,
     style: PropTypes.js.Any,
     autoCapitalize: PropTypes.AutoCapitalize,
     autoCorrect: PropTypes.bool,
@@ -56,7 +56,7 @@ case class TextInput(onBlur: js.UndefOr[(NEvent) => Unit] = js.undefined,
                 selectionState: js.UndefOr[DocumentSelectionState] = js.undefined,
                 enablesReturnKeyAutomatically: js.UndefOr[Boolean] = js.undefined,
                 clearTextOnFocus: js.UndefOr[Boolean] = js.undefined,
-                ref: js.UndefOr[String] = js.undefined,
+                ref: js.UndefOr[TextInputM => Unit] = js.undefined,
                 textAlignVertical: js.UndefOr[TextAlignVertical] = js.undefined,
                 onSubmitEditing: js.UndefOr[NEvent => Unit] = js.undefined,
                 placeholder: js.UndefOr[String] = js.undefined,

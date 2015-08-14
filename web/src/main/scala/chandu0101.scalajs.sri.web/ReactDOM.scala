@@ -23,8 +23,6 @@ object ReactDOM extends js.Object {
 
   def renderToStaticMarkup(element: ReactElement): String = js.native
 
-  def Addons: js.Dynamic = js.native
-
   def initializeTouchEvents(shouldUseTouch: Boolean): Unit = js.native
 }
 
