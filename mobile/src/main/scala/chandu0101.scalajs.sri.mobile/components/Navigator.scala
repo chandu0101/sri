@@ -116,6 +116,10 @@ trait NavigatorSceneConfigs extends js.Object {
 
   val FloatFromRight: NavigatorSceneConfig = js.native
 
+  val VerticalUpSwipeJump: NavigatorSceneConfig = js.native
+
+  val VerticalDownSwipeJump: NavigatorSceneConfig = js.native
+
 }
 
 trait NavigatorSceneConfig extends js.Object

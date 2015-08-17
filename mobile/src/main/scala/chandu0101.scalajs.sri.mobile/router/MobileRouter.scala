@@ -126,11 +126,9 @@ object MobileRouter {
       else {
         if (index > 0) {
           val routeStack = NavigationBarNavState.fromJson(navState).routeStack
-//          val previousRoute = routeStack(index - 1)
-          TouchableOpacity(onPress = () => navigator.pop())(
-            View(style = props.navigationBarConfig.theme.navBarLeftButton)(
+          //          val previousRoute = routeStack(index - 1)
+          TouchableOpacity(onPress = () => navigator.pop(),style = props.navigationBarConfig.theme.navBarLeftButton)(
               Text(style = props.navigationBarConfig.theme.navBarButtonText)("Back")
-            )
           )
         } else null
       }

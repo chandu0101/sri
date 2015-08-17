@@ -5,7 +5,7 @@ import scala.scalajs.js.Dynamic.{literal => json}
 
 
 
-trait NativeAttrs extends FlexBoxStyles with TextStyles with ImageStyles with ViewStyles
+trait NativeAttrs extends FlexBoxStyles with TextStyles with ImageStyles with ViewStyles with Transforms
 
 object NativeAttrs extends NativeAttrs
 
@@ -162,5 +162,10 @@ trait ViewStyles {
   val transformMatrix = new NativeStyle[js.Array[Double]]("transformMatrix")
   val borderTopLeftRadius = new NativeStyle[Double]("borderTopLeftRadius")
   val borderTopRightRadius = new NativeStyle[Double]("borderTopRightRadius")
+
+}
+
+trait Transforms {
+  val transform = new NativeStyle[js.Array[js.Dynamic]]("transform")
 
 }

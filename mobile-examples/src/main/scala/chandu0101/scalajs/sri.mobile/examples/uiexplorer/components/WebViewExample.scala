@@ -45,10 +45,8 @@ object WebViewExample extends UIExample {
               onChange = handleTextInputChange _,
               clearButtonMode = "while-editing",
               style = styles.addressBarTextInput)(),
-            TouchableOpacity(onPress = pressGoButton _)(
-              View(style = styles.goButton)(
+            TouchableOpacity(onPress = pressGoButton _,style = styles.goButton)(
                 Text()("Go!")
-              )
             )
           ),
           WebView(ref = storeWebViewRef _,

@@ -18,11 +18,12 @@ import scala.scalajs.js.JSConverters.genTravConvertible2JSRichGenTrav
      bufferDelay: PropTypes.number,
     clearButtonMode: PropTypes.string,
     clearTextOnFocus: PropTypes.bool,
-    controlled: PropTypes.bool,
+    defaultValue: PropTypes.string,
     editable: PropTypes.bool,
     enablesReturnKeyAutomatically: PropTypes.bool,
     keyboardType: PropTypes.KeyboardType,
     multiline: PropTypes.bool,
+    maxLength : PropTypes.Int,
     onBlur: PropTypes.(NEvent) => Unit,
     onChange: PropTypes.(NEvent) => Unit,
     onChangeText: PropTypes.(String) => Unit,
@@ -48,6 +49,7 @@ import scala.scalajs.js.JSConverters.genTravConvertible2JSRichGenTrav
 case class TextInput(onBlur: js.UndefOr[(NEvent) => Unit] = js.undefined,
                 placeholderTextColor: js.UndefOr[String] = js.undefined,
                 multiline: js.UndefOr[Boolean] = js.undefined,
+                maxLength: js.UndefOr[Int] = js.undefined,
                 style: js.UndefOr[js.Any] = js.undefined,
                 onChange: js.UndefOr[(NEvent) => Unit] = js.undefined,
                 underlineColorAndroid: js.UndefOr[String] = js.undefined,
@@ -70,10 +72,10 @@ case class TextInput(onBlur: js.UndefOr[(NEvent) => Unit] = js.undefined,
                 onEndEditing: js.UndefOr[NEvent => Unit] = js.undefined,
                 testID: js.UndefOr[String] = js.undefined,
                 returnKeyType: js.UndefOr[ReturnKeyType] = js.undefined,
-                controlled: js.UndefOr[Boolean] = js.undefined,
                 onFocus: js.UndefOr[(NEvent) => Unit] = js.undefined,
                 clearButtonMode: js.UndefOr[String] = js.undefined,
                 value: js.UndefOr[String] = js.undefined,
+                defaultValue: js.UndefOr[String] = js.undefined,
                 selectTextOnFocus: js.UndefOr[Boolean] = js.undefined,
                 editable: js.UndefOr[Boolean] = js.undefined,
                 password: js.UndefOr[Boolean] = js.undefined) {
@@ -84,6 +86,7 @@ case class TextInput(onBlur: js.UndefOr[(NEvent) => Unit] = js.undefined,
     multiline.foreach(v => p.updateDynamic("multiline")(v))
     style.foreach(v => p.updateDynamic("style")(v))
     onChange.foreach(v => p.updateDynamic("onChange")(v))
+    maxLength.foreach(v => p.updateDynamic("maxLength")(v))
     underlineColorAndroid.foreach(v => p.updateDynamic("underlineColorAndroid")(v))
     keyboardType.foreach(v => p.updateDynamic("keyboardType")(v.tpe))
     onLayout.foreach(v => p.updateDynamic("onLayout")(v))
@@ -104,10 +107,10 @@ case class TextInput(onBlur: js.UndefOr[(NEvent) => Unit] = js.undefined,
     onEndEditing.foreach(v => p.updateDynamic("onEndEditing")(v))
     testID.foreach(v => p.updateDynamic("testID")(v))
     returnKeyType.foreach(v => p.updateDynamic("returnKeyType")(v.tpe))
-    controlled.foreach(v => p.updateDynamic("controlled")(v))
     onFocus.foreach(v => p.updateDynamic("onFocus")(v))
     clearButtonMode.foreach(v => p.updateDynamic("clearButtonMode")(v))
     value.foreach(v => p.updateDynamic("value")(v))
+    defaultValue.foreach(v => p.updateDynamic("defaultValue")(v))
     selectTextOnFocus.foreach(v => p.updateDynamic("selectTextOnFocus")(v))
     editable.foreach(v => p.updateDynamic("editable")(v))
     password.foreach(v => p.updateDynamic("password")(v))

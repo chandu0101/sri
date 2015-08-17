@@ -20,6 +20,7 @@ itemWrapperStyle: PropTypes.js.Any,
     titleTextColor: PropTypes.string,
     navigationBarHidden: PropTypes.bool,
     translucent: PropTypes.bool,
+    shadowHidden: PropTypes.bool,
 initialRoute:PropTypes.NavigatorIOSRoute.isRequired
 
  */
@@ -36,6 +37,7 @@ object NavigatorIOS {
             key: js.UndefOr[String] = js.undefined,
             itemWrapperStyle: js.UndefOr[js.Any] = js.undefined,
             translucent: js.UndefOr[Boolean] = js.undefined,
+            shadowHidden: js.UndefOr[Boolean] = js.undefined,
             initialRoute: NavigatorIOSRoute) = {
 
     val p = js.Dynamic.literal()
@@ -48,6 +50,7 @@ object NavigatorIOS {
     key.foreach(v => p.updateDynamic("key")(v))
     itemWrapperStyle.foreach(v => p.updateDynamic("itemWrapperStyle")(v))
     translucent.foreach(v => p.updateDynamic("translucent")(v))
+    shadowHidden.foreach(v => p.updateDynamic("shadowHidden")(v))
     p.updateDynamic("initialRoute")(initialRoute.toJson)
 
     val f = ReactNative.createFactory(ReactNative.NavigatorIOS)
