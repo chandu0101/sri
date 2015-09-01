@@ -2,7 +2,7 @@ package chandu0101.scalajs.sri.mobile.apis
 
 import scala.scalajs.js
 
-
+@js.native
 trait AppRegistry extends js.Object {
 
   def registerConfig(config: js.Array[js.Object]): Unit = js.native

@@ -110,6 +110,7 @@ object AsyncStorage {
 
 }
 
+@js.native
 trait AsyncStorageJS extends js.Object {
 
   def getItem(key: String, callback: js.Function2[UndefOr[js.Dynamic], UndefOr[String], _] = ???): Unit = js.native

@@ -25,25 +25,28 @@ object AsyncStorageExample extends UIExample {
 
     initialState(State())
 
-    def render() = UIExplorerPage(
-      UIExplorerBlock("Basics - getItem, setItem, removeItem")(
-        View()(
-          PickerIOS(selectedValue = state.selectedValue, onValueChange = onValueChange _)(
-            COLORS.map(v => PickerItemIOS(key = v, value = v, label = v)) :_*
-          ),
-          Text()("Selected : ",
-            Text(style = styles.getColorStyle(state.selectedValue))(state.selectedValue)
-          ),
-          Text()(" "),
-          Text(onPress = removeStorage _)("Press here to remove from storage"),
-          Text()(" "),
-          Text()("Messages : "),
+    def render() = {
+      println(s"In render result ${state.selectedValue} , setting info")
+      UIExplorerPage(
+        UIExplorerBlock("Basics - getItem, setItem, removeItem")(
           View()(
-            state.messages.map(m => Text()(m)) :_*
+            PickerIOS(selectedValue = state.selectedValue, onValueChange = onValueChange _)(
+              COLORS.map(v => PickerItemIOS(key = v, value = v, label = v)): _*
+            ),
+            Text()("Selected : ",
+              Text(style = styles.getColorStyle(state.selectedValue))(state.selectedValue)
+            ),
+            Text()(" "),
+            Text(onPress = removeStorage _)("Press here to remove from storage"),
+            Text()(" "),
+            Text()("Messages : "),
+            View()(
+              state.messages.map(m => Text()(m)): _*
+            )
           )
         )
       )
-    )
+    }
 
     def appendMessage(message: String) = {
       setState(state.copy(messages = state.messages.+:(message)))
@@ -56,15 +59,17 @@ object AsyncStorageExample extends UIExample {
     }
 
 
-    override def componentDidMount(): Unit = async {
-      val result = await(AsyncStorage.getItem(STORAGE_KEY))
-      if (result != null) {
-        setState(state.copy(selectedValue = result))
-        appendMessage(s"Recovered selection from disk : ${result}")
-      } else {
-        appendMessage(s"Initialized with no selection on disk")
-      }
-    }.recover(saveError)
+    override def componentDidMount(): Unit = {
+      async {
+        val result = await(AsyncStorage.getItem(STORAGE_KEY))
+        if (result != null) {
+          println(s"got result $result , setting info")
+          setState(state.copy(selectedValue = result,messages = js.Array(s"Recovered selection from disk : ${result}")))
+        } else {
+          appendMessage(s"Initialized with no selection on disk")
+        }
+      }.recover(saveError)
+    }
 
     def onValueChange(selectedValue: String): Unit = {
       setState(state.copy(selectedValue = selectedValue))
@@ -80,7 +85,7 @@ object AsyncStorageExample extends UIExample {
     }.recover(saveError)
   }
 
-  val factory = getComponentFactory(new Component)
+  val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
 
   val component = createElementNoProps(factory)
 

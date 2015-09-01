@@ -2,7 +2,7 @@ package chandu0101.scalajs.sri.mobile.apis
 
 import scala.scalajs.js
 
-
+@js.native
 trait InteractionManager extends js.Object {
 
   def runAfterInteractions(callback: js.Function): Unit = js.native

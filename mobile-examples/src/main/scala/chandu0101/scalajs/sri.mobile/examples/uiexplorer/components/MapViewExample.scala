@@ -98,7 +98,7 @@ object MapViewExample extends UIExample {
     case class Props(region: MapViewRegion, onChange: (MapViewRegion) => _)
 
 
-    val factory = getComponentFactory(new Component)
+    val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
 
     def apply(props: Props, key: UndefOr[String] = js.undefined, ref: RefType = null) = createElement(factory, props)
 
@@ -152,7 +152,7 @@ object MapViewExample extends UIExample {
       }
     }
 
-    val factory = getComponentFactory(new Component)
+    val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
 
 
     def apply(key: UndefOr[String] = js.undefined, ref: RefType = null) = createElementNoProps(factory)
@@ -171,7 +171,7 @@ object MapViewExample extends UIExample {
     )
   }
 
-  val factory = getComponentFactory(new Component)
+  val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
 
   val component = createElementNoProps(factory)
 

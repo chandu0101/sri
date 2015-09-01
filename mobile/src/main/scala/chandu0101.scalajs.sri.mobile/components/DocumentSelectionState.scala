@@ -5,6 +5,8 @@ import scala.scalajs.js
 /**
  * Created by chandrasekharkode on 4/3/15.
  */
+
+@js.native
 class DocumentSelectionState extends js.Object {
 
   def this(anchor: Int, focus: Int) = this()

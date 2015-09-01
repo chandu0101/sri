@@ -54,7 +54,7 @@ object ListViewPagingExample extends UIExample {
       }
     }
 
-    val factory = getComponentFactory(new Component)
+    val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
 
     def apply(key: UndefOr[String] = js.undefined, ref: RefType = null) = createElementNoProps(factory)
   }
@@ -148,7 +148,7 @@ object ListViewPagingExample extends UIExample {
 
   }
 
-  val factory = getComponentFactory(new Component)
+  val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
 
   val component = createElementNoProps(factory)
 

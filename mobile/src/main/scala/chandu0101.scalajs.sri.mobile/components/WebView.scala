@@ -71,7 +71,7 @@ object WebView {
 
 }
 
-
+@js.native
 trait NavigationState extends js.Object {
 
   def url: String = js.native
@@ -86,6 +86,7 @@ trait NavigationState extends js.Object {
 
 }
 
+@js.native
 trait WebViewM extends js.Object {
 
   def reload(): Unit = js.native

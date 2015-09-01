@@ -36,7 +36,7 @@ object MovieDetails {
       }
     }
 
-    val factory = getComponentFactory(new Component)
+    val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
 
     def apply(rating: js.Dynamic, key: UndefOr[String] = js.undefined, ref: RefType = null) = createElement(factory, rating, key = key, ref = ref)
 
@@ -57,7 +57,7 @@ object MovieDetails {
     }
 
 
-    val factory = getComponentFactory(new Component)
+    val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
 
     def apply(cast: js.Array[js.Dynamic], key: UndefOr[String] = js.undefined, ref: RefType = null) = createElement(factory, cast, key = key, ref = ref)
 
@@ -91,7 +91,7 @@ object MovieDetails {
 
   }
 
-  val factory = getComponentFactory(new Component)
+  val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
 
   def apply(movie: js.Dynamic, key: UndefOr[String] = js.undefined, ref: RefType = null) = createElement(factory, movie, key = key, ref = ref)
 

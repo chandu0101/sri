@@ -6,6 +6,7 @@ import chandu0101.scalajs.sri.mobile.components._
 import chandu0101.scalajs.sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
 import chandu0101.scalajs.sri.mobile.styles.NativeStyleSheet
 
+import scala.scalajs.js
 import scala.scalajs.js.annotation.ScalaJSDefined
 
 
@@ -36,7 +37,7 @@ object SliderIOSExample extends UIExample {
     }
   }
 
-  val factory = getComponentFactory(new Component)
+  val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
 
   val component = createElementNoProps(factory)
 

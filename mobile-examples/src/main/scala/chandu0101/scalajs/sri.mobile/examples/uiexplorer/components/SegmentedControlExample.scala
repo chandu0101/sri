@@ -23,7 +23,7 @@ object SegmentedControlExample extends UIExample {
       )
     }
 
-    val factory = getComponentFactory(new Component)
+    val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
 
     def apply(key: UndefOr[String] = js.undefined, ref: RefType = null) = createElementNoProps(factory, key = key, ref = ref)
   }
@@ -37,7 +37,7 @@ object SegmentedControlExample extends UIExample {
       )
     }
 
-    val factory = getComponentFactory(new Component)
+    val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
 
     def apply(key: UndefOr[String] = js.undefined, ref: RefType = null) = createElementNoProps(factory, key = key, ref = ref)
   }
@@ -51,7 +51,7 @@ object SegmentedControlExample extends UIExample {
       )
     }
 
-    val factory = getComponentFactory(new Component)
+    val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
 
     def apply(key: UndefOr[String] = js.undefined, ref: RefType = null) = createElementNoProps(factory, key = key, ref = ref)
   }
@@ -65,7 +65,7 @@ object SegmentedControlExample extends UIExample {
       )
     }
 
-    val factory = getComponentFactory(new Component)
+    val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
 
     def apply(key: UndefOr[String] = js.undefined, ref: RefType = null) = createElementNoProps(factory, key = key, ref = ref)
   }
@@ -79,7 +79,7 @@ object SegmentedControlExample extends UIExample {
       )
     }
 
-    val factory = getComponentFactory(new Component)
+    val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
 
     def apply(key: UndefOr[String] = js.undefined, ref: RefType = null) = createElementNoProps(factory, key = key, ref = ref)
   }
@@ -110,7 +110,7 @@ object SegmentedControlExample extends UIExample {
       def onValueChange(value: String) = setState(state.copy(value = value))
     }
 
-    val factory = getComponentFactory(new Component)
+    val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
 
     def apply(key: UndefOr[String] = js.undefined, ref: RefType = null) = createElementNoProps(factory, key = key, ref = ref)
 
@@ -143,7 +143,7 @@ object SegmentedControlExample extends UIExample {
     )
   }
 
-  val factory = getComponentFactory(new Component)
+  val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
 
   val component = createElementNoProps(factory)
 

@@ -7,7 +7,7 @@ import org.scalajs.dom.raw.Element
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSName
 
-
+@js.native
 object ReactDOM extends js.Object {
 
   // i know what i am doing! okay go a head ..
@@ -26,6 +26,7 @@ object ReactDOM extends js.Object {
   def initializeTouchEvents(shouldUseTouch: Boolean): Unit = js.native
 }
 
+@js.native
 object ReactDOMServer extends js.Object {
 
   def renderToString(element: ReactElement): String = js.native

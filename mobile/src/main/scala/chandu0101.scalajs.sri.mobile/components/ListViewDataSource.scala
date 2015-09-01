@@ -5,7 +5,7 @@ import scala.scalajs.js.annotation.JSName
 import scala.scalajs.js.{Array => JArray, UndefOr}
 
 
-@JSName("React.ListView.DataSource")
+@js.native @JSName("React.ListView.DataSource")
 class ListViewDataSource[T,H] extends js.Object {
 
   def this(params: js.Object) = this()

@@ -42,7 +42,7 @@ object SearchScreen {
 
     case class Props(filter: String, isLoading: Boolean)
 
-    val factory = getComponentFactory(new Component)
+    val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
 
     def apply(filter: String, isLoading: Boolean, key: UndefOr[String] = js.undefined, ref: RefType = null) = createElement(factory, Props(filter, isLoading), key = key, ref = ref)
 
@@ -63,7 +63,7 @@ object SearchScreen {
 
     case class Props(onChange: NEvent => Unit, onFocus: NEvent => Unit, isLoading: Boolean)
 
-    val factory = getComponentFactory(new Component)
+    val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
 
     def apply(onChange: NEvent => Unit, onFocus: NEvent => Unit, isLoading: Boolean, key: UndefOr[String] = js.undefined, ref: RefType = null) = createElement(factory, Props(onChange, onFocus, isLoading), key = key, ref = ref)
 
@@ -219,7 +219,7 @@ object SearchScreen {
     }
   }
 
-  val factory = getComponentFactory(new Component)
+  val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
 
   def apply(key: UndefOr[String] = js.undefined, ref: RefType = null) = createElementNoProps(factory, key = key, ref = ref)
 

@@ -2,7 +2,7 @@ package chandu0101.scalajs.sri.mobile.apis
 
 import scala.scalajs.js
 
-
+@js.native
 trait LinkingIOS extends js.Object {
 
   def addEventListener(tpe : String,handler : js.Function):Unit = js.native

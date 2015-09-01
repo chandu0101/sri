@@ -50,7 +50,7 @@ object Sri extends Build {
 
   // ================================ Module definitions  ================================ //
   lazy val Sri = DefProject(".", "root")
-    .aggregate(core, web, mobile, mobileExamples, webExamples)
+    .aggregate(core, web, mobile,relay, mobileExamples, webExamples)
     .configure(addCommandAliases(
     "ct" -> "; test:compile ; core/test",
     "wt" -> "; test:compile ; web/test",
@@ -64,6 +64,10 @@ object Sri extends Build {
     .settings(scalatestJSSettings)
     .settings(publicationSettings)
 
+  lazy val relay = DefProject("relay")
+    .dependsOn(core)
+    .settings(publicationSettings)
+
   lazy val web = DefProject("web")
     .dependsOn(core)
     .settings(webModuleDeps)
@@ -71,7 +75,7 @@ object Sri extends Build {
     .settings(publicationSettings)
 
   lazy val webExamples = DefProject("web-examples")
-    .dependsOn(web)
+    .dependsOn(web,relay)
     .settings(webExamplesLauncher)
     .settings(preventPublication)
 

@@ -178,7 +178,7 @@ object VisibleSection {
   def fromJson(obj: js.Dynamic) = VisibleSection(rowID = obj.rowID.asInstanceOf[Boolean])
 }
 
-
+@js.native
 trait ListViewM extends js.Object {
 
   def getScrollResponder(): ScrollViewM = js.native

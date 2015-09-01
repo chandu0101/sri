@@ -163,7 +163,7 @@ object UIExplorerListScreen {
     val displayName = "UIExplorerListScreen"
   }
 
-  val factory = getComponentFactory(new Component)
+  val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
 
   def apply(key: js.UndefOr[String] = js.undefined, ref: RefType = null) = createElementNoProps(factory)
 }

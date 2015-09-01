@@ -7,6 +7,7 @@ import chandu0101.scalajs.sri.mobile.apis._
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSName
 
+@js.native
 trait ReactNative extends React {
 
 
@@ -55,6 +56,6 @@ trait ReactNative extends React {
 }
 
 
-@JSName("React")
+@js.native @JSName("React")
 object ReactNative extends ReactNative
 

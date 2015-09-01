@@ -5,6 +5,7 @@ import chandu0101.scalajs.sri.core.{ReactComponent, ReactElement}
 import chandu0101.scalajs.sri.mobile.components._
 import chandu0101.scalajs.sri.mobile.styles.NativeStyleSheet
 
+import scala.scalajs.js
 import scala.scalajs.js.annotation.ScalaJSDefined
 
 
@@ -52,7 +53,7 @@ object UIExplorerBlock {
     val displayName = "UIExplorerBlock"
   }
 
-  val factory = getComponentFactory(new Component)
+  val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
 
   def apply(title: String)(children: ReactElement) = createElementWithChildren(factory, title)(children)
 

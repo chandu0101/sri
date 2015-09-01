@@ -2,6 +2,7 @@ package chandu0101.scalajs.sri.mobile.apis
 
 import scala.scalajs.js
 
+@js.native
 trait NetInfo  extends js.Object{
 
   val isConnected : NetInfoIsConnected = js.native
@@ -10,6 +11,7 @@ trait NetInfo  extends js.Object{
 
 }
 
+@js.native
 trait NetInfoIsConnected extends js.Object{
 
   def addEventListener(eventName : String,handler : (Boolean) => _) : Unit = js.native
@@ -17,6 +19,7 @@ trait NetInfoIsConnected extends js.Object{
   def fetch() : js.Dynamic = js.native
 }
 
+@js.native
 trait NetInfoReachabilityIOS extends js.Object{
 
   def addEventListener(eventName : String,handler : (String) => _) : Unit = js.native

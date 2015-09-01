@@ -1,6 +1,6 @@
 package chandu0101.scalajs.sri.web.styles
 
-import chandu0101.scalajs.sri.core.|
+import scala.scalajs.js.`|`
 
 /**
  *

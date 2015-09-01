@@ -1,6 +1,7 @@
 package chandu0101.scalajs.sri
 
 import scala.scalajs.js
+import scala.scalajs.js.`|`
 import scala.scalajs.js.JSConverters.genTravConvertible2JSRichGenTrav
 
 package object core {

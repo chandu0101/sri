@@ -70,7 +70,7 @@ object AlertIOSExample extends UIExample {
     }
   }
 
-  val factory = getComponentFactory(new Component)
+  val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
 
   val component = createElementNoProps(factory)
 

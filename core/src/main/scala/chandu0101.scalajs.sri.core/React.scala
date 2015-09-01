@@ -4,6 +4,7 @@ import scala.scalajs.js
 import scala.scalajs.js.annotation.{JSName, ScalaJSDefined}
 import scala.scalajs.js.{UndefOr, undefined}
 
+@js.native
 trait React extends js.Object {
 
   def createClass(specification: js.Object): ReactClass = js.native
@@ -23,17 +24,20 @@ trait React extends js.Object {
   def Children: ReactChildren = js.native
 }
 
+@js.native
 object React extends React
 
+@js.native
 trait ReactElement extends js.Object {
   def key: UndefOr[String] = js.native
 
   def ref: UndefOr[RefType] = js.native
 }
 
+@js.native
 trait ReactClass extends js.Object
 
-
+@js.native
 trait JSProps[P] extends js.Object {
   def key: UndefOr[String] = js.native
 
@@ -55,6 +59,7 @@ object JSProps {
   }
 }
 
+@js.native
 trait JSState[S] extends js.Object {
   var sstate: S = js.native
 }
@@ -63,7 +68,7 @@ object JSState {
   def apply[S](sstate: S) = js.Dictionary("sstate" -> sstate).asInstanceOf[JSState[S]]
 }
 
-
+@js.native
 trait ReactChildren extends js.Object {
 
   def map(children: js.Object, fn: js.Function1[js.Object, _]): js.UndefOr[js.Object] = js.native
@@ -76,16 +81,17 @@ trait ReactChildren extends js.Object {
 
 }
 
+@js.native
 trait PropsChildren extends ReactElement
 
-// unmounted react element
+@js.native  // unmounted react element
 trait ReactElementU[P, S] extends ReactComponent[P, S] with ReactElement
 
-// mounted react element
+@js.native // mounted react element
 trait ReactElementM[P, S] extends ReactComponent[P, S] with ReactElement
 
 
-@JSName("React.Component")
+@js.native @JSName("React.Component")
 class ReactJSComponent[P, S] extends js.Object {
 
 
@@ -95,9 +101,9 @@ class ReactJSComponent[P, S] extends js.Object {
 
   var refs: js.Dynamic = js.native
 
-  @JSName("setState") def jsSetState(newState: JSState[S]): Unit = js.native
+  @JSName("setState") def jsSetState(newState: JSState[S],callback : UndefOr[() => _] = js.undefined): Unit = js.native
 
-  @JSName("setState") def jsSetState(callback: js.Function2[JSState[S], JSProps[P], JSState[S]]): Unit = js.native
+  @JSName("setState") def jsSetState(func: js.Function2[JSState[S], JSProps[P], JSState[S]]): Unit = js.native
 
   def forceUpdate(callback: js.Function = ???): Unit = js.native
 
@@ -147,14 +153,14 @@ abstract class ReactComponent[P, S] extends ReactJSComponent[P, S] {
 
   @JSName("sSetState")
   @inline
-  def setState(newState: S): Unit = {
-    jsSetState(JSState(newState))
+  def setState(newState: S,callback : UndefOr[() => _] = js.undefined): Unit = {
+    jsSetState(JSState(newState),callback)
   }
 
   @JSName("sSetStateFunc")
   @inline
-  def setState(callback: js.Function2[S, P, S]): Unit = {
-    jsSetState((s: JSState[S], p: JSProps[P]) => JSState[S](callback(s.sstate, p.sprops)))
+  def setState(func: js.Function2[S, P, S]): Unit = {
+    jsSetState((s: JSState[S], p: JSProps[P]) => JSState[S](func(s.sstate, p.sprops)))
   }
 
   @inline
@@ -183,6 +189,7 @@ abstract class ReactComponent[P, S] extends ReactJSComponent[P, S] {
 
 }
 
+@js.native
 trait ReactComponentFactory[P,S] extends ReactComponent[P,S] {
   def apply(props : js.Dynamic,children : ReactElement*):ReactElementU[P,S] = js.native
 }

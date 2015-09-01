@@ -59,7 +59,7 @@ object NavigatorIOS {
 
 }
 
-
+@js.native
 trait NavigatorIOSM extends js.Object {
 
   def push(route: NavigatorIOSRoute): Unit = js.native

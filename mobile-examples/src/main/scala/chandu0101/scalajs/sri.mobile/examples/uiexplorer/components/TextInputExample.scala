@@ -31,7 +31,7 @@ object TextInputExample extends UIExample {
       )
     }
 
-    val factory = getComponentFactory(new Component)
+    val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
 
     def apply(label: String, key: UndefOr[String] = js.undefined, ref: RefType = null)(children: ReactElement*) = createElementWithChildren(factory, label, key = key, ref = ref)(children: _*)
 
@@ -74,7 +74,7 @@ object TextInputExample extends UIExample {
       }
     }
 
-    val factory = getComponentFactory(new Component)
+    val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
 
     def apply(key: UndefOr[String] = js.undefined, ref: RefType = null) = createElementNoProps(factory, key = key, ref = ref)
 
@@ -117,7 +117,7 @@ object TextInputExample extends UIExample {
     )
   }
 
-  val factory = getComponentFactory(new Component)
+  val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
 
   val component = createElementNoProps(factory)
 

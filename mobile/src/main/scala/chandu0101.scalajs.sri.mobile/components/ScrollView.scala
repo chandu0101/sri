@@ -135,6 +135,7 @@ object keyboardDismissMode {
   def newMode(mode: String) = new keyboardDismissMode(mode)
 }
 
+@js.native
 trait ScrollViewM extends js.Object {
 
   def scrollTo(destY: Double = 0, destX: Double = 0): Unit = js.native

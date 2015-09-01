@@ -39,7 +39,7 @@ object AppStateIOSExample extends UIExample {
     }
 
 
-    val factory = getComponentFactory(new Component)
+    val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
 
     def apply(state: Boolean, key: UndefOr[String] = js.undefined, ref: RefType = null) = createElement(factory, state, key = key, ref = ref)
 
@@ -61,7 +61,7 @@ object AppStateIOSExample extends UIExample {
     )
   }
 
-  val factory = getComponentFactory(new Component)
+  val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
 
   val component = createElementNoProps(factory)
 

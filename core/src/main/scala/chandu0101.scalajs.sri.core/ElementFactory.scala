@@ -5,9 +5,8 @@ import scala.scalajs.js.JSConverters.genTravConvertible2JSRichGenTrav
 
 object ElementFactory {
 
-
-  def getComponentFactory[P, S](instance: => ReactComponent[P, S]) = {
-    React.createFactory(() => instance).asInstanceOf[ReactComponentFactory[P, S]]
+  def getComponentFactory[P,S](ctor : js.Dynamic,clz : Class[_ <: ReactJSComponent[P,S]]) = {
+    React.createFactory(ctor).asInstanceOf[ReactComponentFactory[P, S]]
   }
 
   def createElement[P, S](factory: ReactComponentFactory[P, S],

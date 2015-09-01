@@ -28,7 +28,7 @@ object ScrollViewExample extends UIExample {
         )
       }
 
-    val factory = getComponentFactory(new Component)
+    val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
 
     def apply(url : String, key : UndefOr[String] = js.undefined,ref : RefType = null) = createElement(factory,url,key = key)
 
@@ -62,7 +62,7 @@ object ScrollViewExample extends UIExample {
        )
      }
 
-  val factory = getComponentFactory(new Component)
+  val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
 
   val component = createElementNoProps(factory)
 

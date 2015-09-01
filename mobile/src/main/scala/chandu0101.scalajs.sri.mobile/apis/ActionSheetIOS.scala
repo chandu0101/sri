@@ -2,6 +2,7 @@ package chandu0101.scalajs.sri.mobile.apis
 
 import scala.scalajs.js
 
+@js.native
 trait ActionSheetIOS extends js.Object {
 
   def showActionSheetWithOptions(options: js.Object, callback: js.Function): Unit = js.native

@@ -29,7 +29,7 @@ object SecondScreen {
     MobileRouter.routerCtrl.navigateToHome()
   }
 
-  val factory = getComponentFactory(new Component)
+  val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
 
   def apply() = createElementNoProps(factory)
 }

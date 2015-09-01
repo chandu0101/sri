@@ -70,7 +70,7 @@ object Navigator {
 
 }
 
-
+@js.native
 trait NavigatorM extends js.Object {
 
   def getCurrentRoutes(): js.Array[js.Dynamic] = js.native
@@ -99,7 +99,7 @@ trait NavigatorM extends js.Object {
 
 }
 
-
+@js.native
 trait NavigatorSceneConfigs extends js.Object {
 
   val FloatFromBottom: NavigatorSceneConfig = js.native
@@ -122,6 +122,7 @@ trait NavigatorSceneConfigs extends js.Object {
 
 }
 
+@js.native
 trait NavigatorSceneConfig extends js.Object
 
 case class NavigationBarNavState(routeStack: Seq[js.Dynamic],presentedIndex: Int) {

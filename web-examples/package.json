@@ -1,5 +1,5 @@
 {
-  "name": "sr-web-examples",
+  "name": "sri-web-examples",
   "version": "0.1.0",
   "description": "sri web",
   "repository": {
@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "react": "^0.14.0-beta1",
-    "react-dom": "^0.14.0-beta1"
+    "react-dom": "^0.14.0-beta1",
+    "react-relay": "^0.1.1"
   }
 }

@@ -155,7 +155,7 @@ object MobileRouter {
 
   case class Props(config: MobileRouterConfig, navigationBarConfig: NavigationBarConfig, sceneStyle: js.Any)
 
-  val factory = getComponentFactory(new Component)
+  val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
 
   def apply(routerConfig: MobileRouterConfig, navigationBarConfig: NavigationBarConfig = null, sceneStyle: js.Any = sceneStyle) = createElement(factory, Props(routerConfig, navigationBarConfig, sceneStyle))
 

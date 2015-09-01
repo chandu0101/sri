@@ -128,6 +128,7 @@ case class TextInput(onBlur: js.UndefOr[(NEvent) => Unit] = js.undefined,
 /**
  * mounted TextInput component methods
  */
+@js.native
 trait TextInputM extends js.Object {
 
   def blur(): Unit = js.native

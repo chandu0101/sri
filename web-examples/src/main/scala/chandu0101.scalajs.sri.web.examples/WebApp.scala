@@ -46,7 +46,7 @@ object WebApp extends JSApp {
       val displayName: String = "SmallHello"
     }
 
-    val factory = getComponentFactory(new Component)
+    val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
 
     def apply(props: String) = createElement(props = props, factory = factory, ref = "smallman")
 //    def apply(props: String) = React.createElement(js.Dynamic.global.SmallHello,JSProps(sprops = props))

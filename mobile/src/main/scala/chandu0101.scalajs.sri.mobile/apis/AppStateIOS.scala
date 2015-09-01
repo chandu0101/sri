@@ -2,7 +2,7 @@ package chandu0101.scalajs.sri.mobile.apis
 
 import scala.scalajs.js
 
-
+@js.native
 trait AppStateIOS extends js.Object {
 
   def addEventListener(tpe :String,handler : js.Function1[String,_]):Unit = js.native

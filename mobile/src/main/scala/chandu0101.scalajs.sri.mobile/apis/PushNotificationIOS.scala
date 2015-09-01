@@ -3,7 +3,7 @@ package chandu0101.scalajs.sri.mobile.apis
 import scala.scalajs.js
 import scala.scalajs.js.UndefOr
 
-
+@js.native
 trait PushNotificationIOS extends js.Object {
 
   def presentLocalNotification(details : js.Object) : Unit = js.native
