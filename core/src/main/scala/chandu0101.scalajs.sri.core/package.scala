@@ -2,7 +2,6 @@ package chandu0101.scalajs.sri
 
 import scala.scalajs.js
 import scala.scalajs.js.`|`
-import scala.scalajs.js.JSConverters.genTravConvertible2JSRichGenTrav
 
 package object core {
 
@@ -12,6 +11,8 @@ package object core {
 
   type ReactNode = String | ReactElement | Double
 
+
+  implicit def seqElementToSeqNode(elm : Seq[ReactElement]): Seq[ReactNode] = elm.asInstanceOf[Seq[ReactNode]]
 
 
 }

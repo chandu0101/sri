@@ -26,6 +26,7 @@ object UIExplorerListScreen {
     SegmentedControlExample,
     SwitchIOSExample,
     SliderIOSExample,
+    ModalExample,
     ScrollViewExample,
     ActivityIndicatorIOSExample,
     PickerIOSExample,

@@ -26,7 +26,7 @@ object ElementFactory {
                                       props: P,
                                       key: js.UndefOr[String] = js.undefined,
                                       ref: RefType = null
-                                       )(children: ReactElement*): ReactElementU[P, S] =
+                                       )(children: ReactNode*): ReactElementU[P, S] =
     factory.asInstanceOf[js.Dynamic](
       JSProps(key, if (ref != null) ref else js.undefined, props),
       children.toJSArray).asInstanceOf[ReactElementU[P, S]]
@@ -35,7 +35,7 @@ object ElementFactory {
   def createElementNoPropsWithChildren[P, S](factory: ReactComponentFactory[P, S],
                                              key: js.UndefOr[String] = js.undefined,
                                              ref: RefType = null
-                                              )(children: ReactElement*): ReactElementU[P, S] =
+                                              )(children: ReactNode*): ReactElementU[P, S] =
     factory.asInstanceOf[js.Dynamic](
       JSProps(key, if (ref != null) ref else js.undefined, ()),
       children.toJSArray).asInstanceOf[ReactElementU[P, S]]

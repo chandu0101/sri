@@ -1,6 +1,7 @@
 package chandu0101.scalajs.sri.mobile.examples.uiexplorer
 
 import chandu0101.scalajs.sri.core.ElementFactory._
+import chandu0101.scalajs.sri.core._
 import chandu0101.scalajs.sri.core.{ReactComponent, ReactElement}
 import chandu0101.scalajs.sri.mobile.components._
 import chandu0101.scalajs.sri.mobile.styles.NativeStyleSheet

@@ -3,6 +3,7 @@ package chandu0101.scalajs.sri.mobile
 
 import chandu0101.scalajs.sri.core._
 import chandu0101.scalajs.sri.mobile.apis._
+import chandu0101.scalajs.sri.mobile.modules.NativeModules
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSName
@@ -33,6 +34,7 @@ trait ReactNative extends React {
   val WebView: ReactClass = js.native
   val TabBarIOS: ReactClass = js.native
   val SegmentedControlIOS: ReactClass = js.native
+  val Modal: ReactClass = js.native
 
   // apis
 
@@ -52,6 +54,10 @@ trait ReactNative extends React {
   val StatusBarIOS: js.Dynamic = js.native
   val VibrationIOS: VibrationIOS = js.native
   val Dimensions: js.Dynamic = js.native
+
+  // native stuff
+  val NativeModules : NativeModules = js.native
+
 
 }
 
