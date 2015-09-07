@@ -56,7 +56,7 @@ object WebViewExample extends UIExample {
             url = state.url,
             onNavigationStateChange = onNavigationStateChange _,
             startInLoadingState = true
-          ),
+          )(),
           View(style = styles.statusBar)(
             Text(style = styles.statusBarText)(state.status)
           )

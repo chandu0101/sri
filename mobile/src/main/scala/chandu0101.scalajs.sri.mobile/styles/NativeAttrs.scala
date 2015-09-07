@@ -4,7 +4,6 @@ import scala.scalajs.js
 import scala.scalajs.js.Dynamic.{literal => json}
 
 
-
 trait NativeAttrs extends FlexBoxStyles with TextStyles with ImageStyles with ViewStyles with Transforms
 
 object NativeAttrs extends NativeAttrs
@@ -143,10 +142,12 @@ trait ViewStyles {
   val borderLeftColor = new NativeStyle[String]("borderLeftColor")
   val borderRightColor = new NativeStyle[String]("borderRightColor")
   val borderTopColor = new NativeStyle[String]("borderTopColor")
+
   object overflow extends NativeStyle[String]("overflow") {
     val visible = this := "visible"
     val hidden = this := "hidden"
   }
+
   val rotation = new NativeStyle[Double]("rotation")
   val scaleX = new NativeStyle[Double]("scaleX")
   val scaleY = new NativeStyle[Double]("scaleY")
@@ -155,9 +156,11 @@ trait ViewStyles {
   val translateX = new NativeStyle[Double]("translateX")
   val translateY = new NativeStyle[Double]("translateY")
   val shadowColor = new NativeStyle[String]("shadowColor")
-  case class ShadowOffset(height : Double, width: Double) {
-    def toJson = json(height = height, width = width )
+
+  case class ShadowOffset(height: Double, width: Double) {
+    def toJson = json(height = height, width = width)
   }
+
   val shadowOffset = new NativeStyle[js.Object]("shadowOffset")
   val transformMatrix = new NativeStyle[js.Array[Double]]("transformMatrix")
   val borderTopLeftRadius = new NativeStyle[Double]("borderTopLeftRadius")

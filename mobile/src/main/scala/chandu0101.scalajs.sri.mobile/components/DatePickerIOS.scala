@@ -1,57 +1,31 @@
 package chandu0101.scalajs.sri.mobile.components
 
+import chandu0101.macros.tojs.JSMacro
 import chandu0101.scalajs.sri.core.ReactElement
 import chandu0101.scalajs.sri.mobile.ReactNative
 
 import scala.scalajs.js
 
-/**
- * Created by chandrasekharkode on 4/1/15.
- *
- * key: PropTypes.string,
-   ref: PropTypes.string,
-   date: PropTypes.Date.isRequired,
-    onDateChange: PropTypes.js.Date => Unit.isRequired,
-    maximumDate: PropTypes.Date,
-    minimumDate: PropTypes.Date,
-    mode: PropTypes.DatePickerIOSMode,
-    minuteInterval: PropTypes.MinuteInterval,
-    timeZoneOffsetInMinutes: PropTypes.number,
- */
+case class DatePickerIOS(ref: js.UndefOr[String] = js.undefined,
+                         timeZoneOffsetInMinutes: js.UndefOr[Int] = js.undefined,
+                         key: js.UndefOr[String] = js.undefined,
+                         date: js.Date,
+                         minuteInterval: js.UndefOr[MinuteInterval] = js.undefined,
+                         mode: js.UndefOr[DatePickerIOSMode] = js.undefined,
+                         minimumDate: js.UndefOr[js.Date] = js.undefined,
+                         maximumDate: js.UndefOr[js.Date] = js.undefined,
+                         onDateChange: js.Date => Unit) {
 
-
-
-object DatePickerIOS {
-
-  def apply(ref : js.UndefOr[String] = js.undefined,
-            timeZoneOffsetInMinutes : js.UndefOr[Int] = js.undefined,
-            key : js.UndefOr[String] = js.undefined,
-            date : js.Date,
-            minuteInterval : js.UndefOr[MinuteInterval] = js.undefined,
-            mode : js.UndefOr[DatePickerIOSMode] = js.undefined,
-            minimumDate : js.UndefOr[js.Date] = js.undefined ,
-            maximumDate : js.UndefOr[js.Date] = js.undefined ,
-            onDateChange : js.Date => Unit) = {
-
-    val p = js.Dynamic.literal()
-    ref.foreach(v => p.updateDynamic("ref")(v))
-    timeZoneOffsetInMinutes.foreach(v => p.updateDynamic("timeZoneOffsetInMinutes")(v))
-    key.foreach(v => p.updateDynamic("key")(v))
-    p.updateDynamic("date")(date)
-    minuteInterval.foreach(v => p.updateDynamic("minuteInterval")(v.interval))
-    mode.foreach(v => p.updateDynamic("mode")(v.mode))
-    minimumDate.foreach(v => p.updateDynamic("minimumDate")(v))
-    maximumDate.foreach(v => p.updateDynamic("maximumDate")(v))
-    p.updateDynamic("onDateChange")(onDateChange)
-
+  def apply() = {
+    val props = JSMacro[DatePickerIOS](this)
     val f = ReactNative.createFactory(ReactNative.DatePickerIOS)
-    f(p).asInstanceOf[ReactElement]
+    f(props).asInstanceOf[ReactElement]
   }
 
 }
 
 
-class DatePickerIOSMode private(val mode : String) extends AnyVal
+class DatePickerIOSMode private(val value: String) extends AnyVal
 
 object DatePickerIOSMode {
 
@@ -59,11 +33,10 @@ object DatePickerIOSMode {
   val TIME = new DatePickerIOSMode(("time"))
   val DATE_TIME = new DatePickerIOSMode(("datetime"))
 
-  def newMode(mode : String) = new DatePickerIOSMode(mode)
+  def newMode(mode: String) = new DatePickerIOSMode(mode)
 }
 
-class MinuteInterval private(val interval : Int) extends AnyVal
-
+class MinuteInterval private(val value: Int) extends AnyVal
 
 object MinuteInterval {
 
@@ -79,5 +52,5 @@ object MinuteInterval {
   val _20 = new MinuteInterval(20)
   val _30 = new MinuteInterval(30)
 
-  def newInterval(interval : Int) = new MinuteInterval(interval)
+  def newInterval(interval: Int) = new MinuteInterval(interval)
 }

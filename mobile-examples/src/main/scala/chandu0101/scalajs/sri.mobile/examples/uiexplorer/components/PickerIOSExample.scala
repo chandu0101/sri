@@ -30,21 +30,21 @@ object PickerIOSExample extends UIExample {
           View()(
             Text()("Please choose a make for your car :"),
             PickerIOS(selectedValue = state.carMake,
-              onValueChange = handleCarMakeChange _)(
+              onValueChange = handleCarMakeChange)(
                 js.Object.keys(CAR_MAKES_AND_MODELS.asInstanceOf[js.Object]).map(key => {
-                  PickerItemIOS(key = key, value = key, label = CAR_MAKES_AND_MODELS.selectDynamic(key).name.toString)
+                  PickerItemIOS(key = key, value = key, label = CAR_MAKES_AND_MODELS.selectDynamic(key).name.toString)()
                 }): _*
               ),
             Text()(s"Please choose a model of ${make.selectDynamic("name")} :"),
             PickerIOS(key = state.carMake, selectedValue = state.modelIndex,
-              onValueChange = handleCarModelChange _)(
+              onValueChange = handleCarModelChange)(
                 CAR_MAKES_AND_MODELS.selectDynamic(state.carMake).models.asInstanceOf[js.Array[String]].zipWithIndex
                   .map {
                   case (modelName, index) => PickerItemIOS(
                     key = s"${state.carMake}_${index.toString}",
                     value = index,
                     label = modelName
-                  )
+                  )()
                 }: _*
               ),
             Text()(s"You selected : ${selectionString}")
@@ -53,16 +53,16 @@ object PickerIOSExample extends UIExample {
       )
     }
 
-    def handleCarMakeChange(carMake: String) = {
+    val handleCarMakeChange: js.Function1[String, _] = (carMake: String) => {
       setState(state.copy(carMake = carMake, modelIndex = 0))
     }
 
-    def handleCarModelChange(modelIndex: Int) = {
+    val handleCarModelChange: js.Function1[Int, _] = (modelIndex: Int) => {
       setState(state.copy(modelIndex = modelIndex))
     }
   }
 
-  val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
+  val factory = getComponentFactory(js.constructorOf[Component], classOf[Component])
 
   val component = createElementNoProps(factory)
 

@@ -25,7 +25,7 @@ object ActivityIndicatorIOSExample extends UIExample {
 
       def render() = ActivityIndicatorIOS(animating = state.animating,
         style = styles.animating,
-        size = ActivityIndicatorIOSSize.LARGE)
+        size = ActivityIndicatorIOSSize.LARGE)()
 
       override def componentDidMount() = {
         setToggleTimeout
@@ -47,22 +47,22 @@ object ActivityIndicatorIOSExample extends UIExample {
   class Component extends ReactComponent[Unit, Unit] {
     def render() = UIExplorerPage(
       UIExplorerBlock("Default white")(
-        ActivityIndicatorIOS(style = styles.default, color = "white")
+        ActivityIndicatorIOS(style = styles.default, color = "white")()
       ),
       UIExplorerBlock("Gray")(
-        ActivityIndicatorIOS(style = styles.default)
+        ActivityIndicatorIOS(style = styles.default)()
       ),
       UIExplorerBlock("Large")(
         ActivityIndicatorIOS(style = styles.default,
           color = "white",
-          size = ActivityIndicatorIOSSize.LARGE)
+          size = ActivityIndicatorIOSSize.LARGE)()
       ),
       UIExplorerBlock("Large custom colors")(
         View(style = styles.horizontal)(
           ActivityIndicatorIOS(
             key = "3",
             color = "#00aa00",
-            size = ActivityIndicatorIOSSize.LARGE)
+            size = ActivityIndicatorIOSSize.LARGE)()
         )
       ),
       UIExplorerBlock("Start/Stop")(

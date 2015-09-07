@@ -56,12 +56,13 @@ trait ReactNative extends React {
   val Dimensions: js.Dynamic = js.native
 
   // native stuff
-  val NativeModules : NativeModules = js.native
+  val NativeModules: NativeModules = js.native
 
 
 }
 
 
-@js.native @JSName("React")
+@js.native
+@JSName("React")
 object ReactNative extends ReactNative
 

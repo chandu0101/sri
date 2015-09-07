@@ -123,7 +123,7 @@ object UIExplorerListScreen {
         dataSource = state.datasource,
         renderRow = renderRow,
         renderSectionHeader = renderSectionHeader _,
-        automaticallyAdjustContentInsets = false)
+        automaticallyAdjustContentInsets = false)()
     )
 
     def onPressRow(example: UIExample): Unit = {

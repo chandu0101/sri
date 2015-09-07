@@ -36,9 +36,9 @@ object ListViewPagingExample extends UIExample {
 
       def render() = TouchableOpacity(onPress = () => onPressThumb)(
         View(style = styles.buttonCOntentsDir(state.dir))(
-          Image(style = styles.img, source = ImageSource(uri = THUMB_URLS(state.thumbIndex))),
-          Image(style = styles.img, source = ImageSource(uri = THUMB_URLS(state.thumbIndex))),
-          Image(style = styles.img, source = ImageSource(uri = THUMB_URLS(state.thumbIndex))),
+          Image(style = styles.img, source = ImageSource(uri = THUMB_URLS(state.thumbIndex)))(),
+          Image(style = styles.img, source = ImageSource(uri = THUMB_URLS(state.thumbIndex)))(),
+          Image(style = styles.img, source = ImageSource(uri = THUMB_URLS(state.thumbIndex)))(),
           if (state.dir == "column") Text()(
             "Oooo, look at this new text!  So awesome it may just be crazy.Let me keep typing here so it wraps at least one line."
           )
@@ -106,7 +106,7 @@ object ListViewPagingExample extends UIExample {
       renderSectionHeader = renderSectionHeader _,
       initialListSize = 10,
       scrollRenderAheadDistance = 2000
-    )
+    )()
 
     def renderRow(rowData: String, sectionID: String, rowID: String) = {
       THUMB()

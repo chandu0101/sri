@@ -1,5 +1,6 @@
 package chandu0101.scalajs.sri.mobile.components
 
+import chandu0101.macros.tojs.JSMacro
 import chandu0101.scalajs.sri.core.ReactElement
 import chandu0101.scalajs.sri.mobile.ReactNative
 
@@ -26,44 +27,29 @@ initialRoute:PropTypes.NavigatorIOSRoute.isRequired
  */
 
 
-object NavigatorIOS {
+case class NavigatorIOS(barTintColor: js.UndefOr[String] = js.undefined,
+                        navigationBarHidden: js.UndefOr[Boolean] = js.undefined,
+                        style: js.UndefOr[js.Any] = js.undefined,
+                        ref: js.UndefOr[String] = js.undefined,
+                        titleTextColor: js.UndefOr[String] = js.undefined,
+                        tintColor: js.UndefOr[String] = js.undefined,
+                        key: js.UndefOr[String] = js.undefined,
+                        itemWrapperStyle: js.UndefOr[js.Any] = js.undefined,
+                        translucent: js.UndefOr[Boolean] = js.undefined,
+                        shadowHidden: js.UndefOr[Boolean] = js.undefined,
+                        initialRoute: NavigatorIOSRoute) {
 
-  def apply(barTintColor: js.UndefOr[String] = js.undefined,
-            navigationBarHidden: js.UndefOr[Boolean] = js.undefined,
-            style: js.UndefOr[js.Any] = js.undefined,
-            ref: js.UndefOr[String] = js.undefined,
-            titleTextColor: js.UndefOr[String] = js.undefined,
-            tintColor: js.UndefOr[String] = js.undefined,
-            key: js.UndefOr[String] = js.undefined,
-            itemWrapperStyle: js.UndefOr[js.Any] = js.undefined,
-            translucent: js.UndefOr[Boolean] = js.undefined,
-            shadowHidden: js.UndefOr[Boolean] = js.undefined,
-            initialRoute: NavigatorIOSRoute) = {
-
-    val p = js.Dynamic.literal()
-    barTintColor.foreach(v => p.updateDynamic("barTintColor")(v))
-    navigationBarHidden.foreach(v => p.updateDynamic("navigationBarHidden")(v))
-    style.foreach(v => p.updateDynamic("style")(v))
-    ref.foreach(v => p.updateDynamic("ref")(v))
-    titleTextColor.foreach(v => p.updateDynamic("titleTextColor")(v))
-    tintColor.foreach(v => p.updateDynamic("tintColor")(v))
-    key.foreach(v => p.updateDynamic("key")(v))
-    itemWrapperStyle.foreach(v => p.updateDynamic("itemWrapperStyle")(v))
-    translucent.foreach(v => p.updateDynamic("translucent")(v))
-    shadowHidden.foreach(v => p.updateDynamic("shadowHidden")(v))
-    p.updateDynamic("initialRoute")(initialRoute.toJson)
-
+  def apply() = {
+    val props = JSMacro[NavigatorIOS](this)
     val f = ReactNative.createFactory(ReactNative.NavigatorIOS)
-    f(p).asInstanceOf[ReactElement]
+    f(props).asInstanceOf[ReactElement]
   }
 
 }
 
 @js.native
 trait NavigatorIOSM extends js.Object {
-
   def push(route: NavigatorIOSRoute): Unit = js.native
-
 }
 
 
@@ -79,21 +65,7 @@ case class NavigatorIOSRoute(onRightButtonPress: UndefOr[js.Function] = undefine
                              onLeftButtonPress: UndefOr[js.Function] = undefined,
                              title: String,
                              component: js.Object) {
-  def toJson = {
-    val p = json("component" -> component)
-    leftButtonIcon.foreach(v => p.updateDynamic("leftButtonIcon")(v.toJson))
-    backButtonIcon.foreach(v => p.updateDynamic("backButtonIcon")(v.toJson))
-    backButtonTitle.foreach(v => p.updateDynamic("backButtonTitle")(v))
-    rightButtonTitle.foreach(v => p.updateDynamic("rightButtonTitle")(v))
-    wrapperStyle.foreach(v => p.updateDynamic("wrapperStyle")(v))
-    p.updateDynamic("title")(title)
-    onLeftButtonPress.foreach(v => p.updateDynamic("onLeftButtonPress")(v))
-    passProps.foreach(v => p.updateDynamic("passProps")(v))
-    onRightButtonPress.foreach(v => p.updateDynamic("onRightButtonPress")(v))
-    rightButtonIcon.foreach(v => p.updateDynamic("rightButtonIcon")(v.toJson))
-    leftButtonTitle.foreach(v => p.updateDynamic("leftButtonTitle")(v))
-    p
-  }
+  val toJS = JSMacro[NavigatorIOSRoute](this)
 }
 
 object NavigatorIOSRoute {

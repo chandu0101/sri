@@ -30,8 +30,8 @@ object AsyncStorageExample extends UIExample {
       UIExplorerPage(
         UIExplorerBlock("Basics - getItem, setItem, removeItem")(
           View()(
-            PickerIOS(selectedValue = state.selectedValue, onValueChange = onValueChange _)(
-              COLORS.map(v => PickerItemIOS(key = v, value = v, label = v)): _*
+            PickerIOS(selectedValue = state.selectedValue, onValueChange = onValueChange)(
+              COLORS.map(v => PickerItemIOS(key = v, value = v, label = v)()): _*
             ),
             Text()("Selected : ",
               Text(style = styles.getColorStyle(state.selectedValue))(state.selectedValue)
@@ -71,7 +71,7 @@ object AsyncStorageExample extends UIExample {
       }.recover(saveError)
     }
 
-    def onValueChange(selectedValue: String): Unit = {
+    val  onValueChange : js.Function1[String,_] = (selectedValue: String) => {
       setState(state.copy(selectedValue = selectedValue))
       async {
         val result = await(AsyncStorage.setItem(STORAGE_KEY, selectedValue))

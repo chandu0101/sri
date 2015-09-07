@@ -14,6 +14,10 @@ object Dependencies {
 
   val scalaJSDOMVersion = "0.8.1"
 
+
+  val chandu0101MacrosVersion = "0.5"
+
+
   val utestJS = libraryDependencies += "com.lihaoyi" %%% "utest" % "0.3.0" % Test
 
   val scalatestJS = libraryDependencies += "org.scalatest" %%% "scalatest" % scalatestVersion % Test
@@ -24,16 +28,19 @@ object Dependencies {
 
   val scalaJSDOM = libraryDependencies += "org.scala-js" %%% "scalajs-dom" % scalaJSDOMVersion
 
+  val chandu0101Macros = libraryDependencies += "com.github.chandu0101" %%% "macros" % chandu0101MacrosVersion
+
 
   val coreModuleDeps = Seq(
-
   )
 
   val webModuleDeps = Seq(scalaJSDOM,
   jsDependencies += ProvidedJS / "webtest-bundle.js" % Test
   )
 
-  val mobileModuleDeps = Seq(scalaJSDOM)
+  val mobileModuleDeps = Seq(scalaJSDOM,
+    chandu0101Macros
+  )
 
   val mobileExamplesModuleDeps = Seq(scalaAsync)
 

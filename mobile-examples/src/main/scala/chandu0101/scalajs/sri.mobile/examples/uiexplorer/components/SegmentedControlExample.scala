@@ -19,7 +19,7 @@ object SegmentedControlExample extends UIExample {
     @ScalaJSDefined
     class Component extends ReactComponent[Unit, Unit] {
       def render() = View()(
-        SegmentedControlIOS(values = Seq("One", "Two"))
+        SegmentedControlIOS(values = Seq("One", "Two"))()
       )
     }
 
@@ -33,7 +33,7 @@ object SegmentedControlExample extends UIExample {
     @ScalaJSDefined
     class Component extends ReactComponent[Unit, Unit] {
       def render() = View()(
-        SegmentedControlIOS(values = Seq("One", "Two"), selectedIndex = 0)
+        SegmentedControlIOS(values = Seq("One", "Two"), selectedIndex = 0)()
       )
     }
 
@@ -47,7 +47,7 @@ object SegmentedControlExample extends UIExample {
     @ScalaJSDefined
     class Component extends ReactComponent[Unit, Unit] {
       def render() = View()(
-        SegmentedControlIOS(values = Seq("One", "Two"), momentary = true)
+        SegmentedControlIOS(values = Seq("One", "Two"), momentary = true)()
       )
     }
 
@@ -61,7 +61,7 @@ object SegmentedControlExample extends UIExample {
     @ScalaJSDefined
     class Component extends ReactComponent[Unit, Unit] {
       def render() = View()(
-        SegmentedControlIOS(values = Seq("One", "Two"), enabled = false, selectedIndex = 0)
+        SegmentedControlIOS(values = Seq("One", "Two"), enabled = false, selectedIndex = 0)()
       )
     }
 
@@ -75,7 +75,7 @@ object SegmentedControlExample extends UIExample {
     @ScalaJSDefined
     class Component extends ReactComponent[Unit, Unit] {
       def render() = View()(
-        SegmentedControlIOS(values = Seq("One", "Two"), selectedIndex = 0, tintColor = "#ff0000")
+        SegmentedControlIOS(values = Seq("One", "Two"), selectedIndex = 0, tintColor = "#ff0000")()
       )
     }
 
@@ -100,7 +100,7 @@ object SegmentedControlExample extends UIExample {
           tintColor = "#cf00a2",
           onChange = onChange _,
           onValueChange = onValueChange _
-        )
+        )()
       )
 
       def onChange(e: js.Dynamic) = {

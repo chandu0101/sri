@@ -12,7 +12,7 @@ package object core {
   type ReactNode = String | ReactElement | Double
 
 
-  implicit def seqElementToSeqNode(elm : Seq[ReactElement]): Seq[ReactNode] = elm.asInstanceOf[Seq[ReactNode]]
+  implicit def seqElementToSeqNode(elm: Seq[ReactElement]): Seq[ReactNode] = elm.asInstanceOf[Seq[ReactNode]]
 
 
 }

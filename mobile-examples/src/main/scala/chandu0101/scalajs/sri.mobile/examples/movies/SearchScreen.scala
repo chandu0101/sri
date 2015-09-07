@@ -57,7 +57,7 @@ object SearchScreen {
         TextInput(autoCapitalize = AutoCapitalize.NONE, autoCorrect = false,
           onChange = props.onChange, onFocus = props.onFocus, placeholder = "Search a movie..", style = styles.searchBarInput
         )(),
-        ActivityIndicatorIOS(animating = props.isLoading, style = styles.spinner)
+        ActivityIndicatorIOS(animating = props.isLoading, style = styles.spinner)()
       )
     }
 
@@ -92,7 +92,7 @@ object SearchScreen {
         showsVerticalScrollIndicator = false,
         keyboardShouldPersistTaps = true,
         automaticallyAdjustContentInsets = false
-      )
+      )()
       View(style = styles.container)(
         SearchBar(onSearchChange, onSearchInputFocus, state.isLoading),
         View(style = styles.separator)(),
@@ -203,7 +203,7 @@ object SearchScreen {
 
     def renderFooter = {
       if (!hasMore || !state.isLoadingTail) View(style = styles.scrollSpinner)()
-      else ActivityIndicatorIOS(style = styles.scrollSpinner)
+      else ActivityIndicatorIOS(style = styles.scrollSpinner)()
     }
 
     def onSearchChange(event: NEvent) = {

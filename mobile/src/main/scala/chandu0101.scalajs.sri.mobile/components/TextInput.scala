@@ -1,126 +1,52 @@
 package chandu0101.scalajs.sri.mobile.components
 
+import chandu0101.macros.tojs.JSMacro
 import chandu0101.scalajs.sri.core.ReactElement
 import chandu0101.scalajs.sri.mobile._
 
 import scala.scalajs.js
 import scala.scalajs.js.JSConverters.genTravConvertible2JSRichGenTrav
 
-/**
- * Created by chandrasekharkode on 3/31/15.
- *
- * key: PropTypes.string,
-    ref: PropTypes.TextInputM => Unit,
-    style: PropTypes.js.Any,
-    autoCapitalize: PropTypes.AutoCapitalize,
-    autoCorrect: PropTypes.bool,
-    autoFocus: PropTypes.bool,
-     bufferDelay: PropTypes.number,
-    clearButtonMode: PropTypes.string,
-    clearTextOnFocus: PropTypes.bool,
-    defaultValue: PropTypes.string,
-    editable: PropTypes.bool,
-    enablesReturnKeyAutomatically: PropTypes.bool,
-    keyboardType: PropTypes.KeyboardType,
-    multiline: PropTypes.bool,
-    maxLength : PropTypes.Int,
-    onBlur: PropTypes.(NEvent) => Unit,
-    onChange: PropTypes.(NEvent) => Unit,
-    onChangeText: PropTypes.(String) => Unit,
-    onEndEditing: PropTypes.NEvent => Unit,
-    onFocus: PropTypes.(NEvent) => Unit,
-    onLayout: PropTypes.func,
-    onSubmitEditing: PropTypes.NEvent => Unit,
-    password: PropTypes.bool,
-    placeholder: PropTypes.string,
-    placeholderTextColor: PropTypes.string,
-    returnKeyType: PropTypes.ReturnKeyType,
-    selectTextOnFocus: PropTypes.bool,
-    selectionState: PropTypes.DocumentSelectionState,
-    testID: PropTypes.string,
-    textAlign: PropTypes.TextAlign,
-    textAlignVertical: PropTypes.TextAlignVertical,
-    underlineColorAndroid: PropTypes.string,
-    value: PropTypes.string,
-
- */
-
 
 case class TextInput(onBlur: js.UndefOr[(NEvent) => Unit] = js.undefined,
-                placeholderTextColor: js.UndefOr[String] = js.undefined,
-                multiline: js.UndefOr[Boolean] = js.undefined,
-                maxLength: js.UndefOr[Int] = js.undefined,
-                style: js.UndefOr[js.Any] = js.undefined,
-                onChange: js.UndefOr[(NEvent) => Unit] = js.undefined,
-                underlineColorAndroid: js.UndefOr[String] = js.undefined,
-                keyboardType: js.UndefOr[KeyboardType] = js.undefined,
-                onLayout: js.UndefOr[js.Function] = js.undefined,
-                selectionState: js.UndefOr[DocumentSelectionState] = js.undefined,
-                enablesReturnKeyAutomatically: js.UndefOr[Boolean] = js.undefined,
-                clearTextOnFocus: js.UndefOr[Boolean] = js.undefined,
-                ref: js.UndefOr[TextInputM => Unit] = js.undefined,
-                textAlignVertical: js.UndefOr[TextAlignVertical] = js.undefined,
-                onSubmitEditing: js.UndefOr[NEvent => Unit] = js.undefined,
-                placeholder: js.UndefOr[String] = js.undefined,
-                textAlign: js.UndefOr[TextAlign] = js.undefined,
-                onChangeText: js.UndefOr[(String) => Unit] = js.undefined,
-                autoFocus: js.UndefOr[Boolean] = js.undefined,
-                autoCorrect: js.UndefOr[Boolean] = js.undefined,
-                autoCapitalize: js.UndefOr[AutoCapitalize] = js.undefined,
-                key: js.UndefOr[String] = js.undefined,
-                bufferDelay: js.UndefOr[Int] = js.undefined,
-                onEndEditing: js.UndefOr[NEvent => Unit] = js.undefined,
-                testID: js.UndefOr[String] = js.undefined,
-                returnKeyType: js.UndefOr[ReturnKeyType] = js.undefined,
-                onFocus: js.UndefOr[(NEvent) => Unit] = js.undefined,
-                clearButtonMode: js.UndefOr[String] = js.undefined,
-                value: js.UndefOr[String] = js.undefined,
-                defaultValue: js.UndefOr[String] = js.undefined,
-                selectTextOnFocus: js.UndefOr[Boolean] = js.undefined,
-                editable: js.UndefOr[Boolean] = js.undefined,
-                password: js.UndefOr[Boolean] = js.undefined) {
-  def toJS = {
-    val p = js.Dynamic.literal()
-    onBlur.foreach(v => p.updateDynamic("onBlur")(v))
-    placeholderTextColor.foreach(v => p.updateDynamic("placeholderTextColor")(v))
-    multiline.foreach(v => p.updateDynamic("multiline")(v))
-    style.foreach(v => p.updateDynamic("style")(v))
-    onChange.foreach(v => p.updateDynamic("onChange")(v))
-    maxLength.foreach(v => p.updateDynamic("maxLength")(v))
-    underlineColorAndroid.foreach(v => p.updateDynamic("underlineColorAndroid")(v))
-    keyboardType.foreach(v => p.updateDynamic("keyboardType")(v.tpe))
-    onLayout.foreach(v => p.updateDynamic("onLayout")(v))
-    selectionState.foreach(v => p.updateDynamic("selectionState")(v))
-    enablesReturnKeyAutomatically.foreach(v => p.updateDynamic("enablesReturnKeyAutomatically")(v))
-    clearTextOnFocus.foreach(v => p.updateDynamic("clearTextOnFocus")(v))
-    ref.foreach(v => p.updateDynamic("ref")(v))
-    textAlignVertical.foreach(v => p.updateDynamic("textAlignVertical")(v.dir))
-    onSubmitEditing.foreach(v => p.updateDynamic("onSubmitEditing")(v))
-    placeholder.foreach(v => p.updateDynamic("placeholder")(v))
-    textAlign.foreach(v => p.updateDynamic("textAlign")(v.dir))
-    onChangeText.foreach(v => p.updateDynamic("onChangeText")(v))
-    autoFocus.foreach(v => p.updateDynamic("autoFocus")(v))
-    autoCorrect.foreach(v => p.updateDynamic("autoCorrect")(v))
-    autoCapitalize.foreach(v => p.updateDynamic("autoCapitalize")(v.name))
-    key.foreach(v => p.updateDynamic("key")(v))
-    bufferDelay.foreach(v => p.updateDynamic("bufferDelay")(v))
-    onEndEditing.foreach(v => p.updateDynamic("onEndEditing")(v))
-    testID.foreach(v => p.updateDynamic("testID")(v))
-    returnKeyType.foreach(v => p.updateDynamic("returnKeyType")(v.tpe))
-    onFocus.foreach(v => p.updateDynamic("onFocus")(v))
-    clearButtonMode.foreach(v => p.updateDynamic("clearButtonMode")(v))
-    value.foreach(v => p.updateDynamic("value")(v))
-    defaultValue.foreach(v => p.updateDynamic("defaultValue")(v))
-    selectTextOnFocus.foreach(v => p.updateDynamic("selectTextOnFocus")(v))
-    editable.foreach(v => p.updateDynamic("editable")(v))
-    password.foreach(v => p.updateDynamic("password")(v))
-    p
-  }
+                     placeholderTextColor: js.UndefOr[String] = js.undefined,
+                     multiline: js.UndefOr[Boolean] = js.undefined,
+                     maxLength: js.UndefOr[Int] = js.undefined,
+                     style: js.UndefOr[js.Any] = js.undefined,
+                     onChange: js.UndefOr[(NEvent) => Unit] = js.undefined,
+                     underlineColorAndroid: js.UndefOr[String] = js.undefined,
+                     keyboardType: js.UndefOr[KeyboardType] = js.undefined,
+                     onLayout: js.UndefOr[js.Function] = js.undefined,
+                     selectionState: js.UndefOr[DocumentSelectionState] = js.undefined,
+                     enablesReturnKeyAutomatically: js.UndefOr[Boolean] = js.undefined,
+                     clearTextOnFocus: js.UndefOr[Boolean] = js.undefined,
+                     ref: js.UndefOr[TextInputM => Unit] = js.undefined,
+                     textAlignVertical: js.UndefOr[TextAlignVertical] = js.undefined,
+                     onSubmitEditing: js.UndefOr[NEvent => Unit] = js.undefined,
+                     placeholder: js.UndefOr[String] = js.undefined,
+                     textAlign: js.UndefOr[TextAlign] = js.undefined,
+                     onChangeText: js.UndefOr[(String) => Unit] = js.undefined,
+                     autoFocus: js.UndefOr[Boolean] = js.undefined,
+                     autoCorrect: js.UndefOr[Boolean] = js.undefined,
+                     autoCapitalize: js.UndefOr[AutoCapitalize] = js.undefined,
+                     key: js.UndefOr[String] = js.undefined,
+                     bufferDelay: js.UndefOr[Int] = js.undefined,
+                     onEndEditing: js.UndefOr[NEvent => Unit] = js.undefined,
+                     testID: js.UndefOr[String] = js.undefined,
+                     returnKeyType: js.UndefOr[ReturnKeyType] = js.undefined,
+                     onFocus: js.UndefOr[(NEvent) => Unit] = js.undefined,
+                     clearButtonMode: js.UndefOr[String] = js.undefined,
+                     value: js.UndefOr[String] = js.undefined,
+                     defaultValue: js.UndefOr[String] = js.undefined,
+                     selectTextOnFocus: js.UndefOr[Boolean] = js.undefined,
+                     editable: js.UndefOr[Boolean] = js.undefined,
+                     password: js.UndefOr[Boolean] = js.undefined) {
 
   def apply(children: ReactElement*) = {
+    val props = JSMacro[TextInput](this)
     val f = ReactNative.createFactory(ReactNative.TextInput)
-    if (children.isEmpty) f(toJS).asInstanceOf[ReactElement]
-    else f(toJS, children.toJSArray).asInstanceOf[ReactElement]
+    if (children.isEmpty) f(props).asInstanceOf[ReactElement]
+    else f(props, children.toJSArray).asInstanceOf[ReactElement]
   }
 }
 
@@ -136,7 +62,7 @@ trait TextInputM extends js.Object {
 }
 
 
-class AutoCapitalize private(val name: String) extends AnyVal
+class AutoCapitalize private(val value: String) extends AnyVal
 
 object AutoCapitalize {
 
@@ -152,7 +78,7 @@ object AutoCapitalize {
 
 }
 
-class KeyboardType private(val tpe: String) extends AnyVal
+class KeyboardType private(val value: String) extends AnyVal
 
 object KeyboardType {
 
@@ -171,7 +97,7 @@ object KeyboardType {
 
 }
 
-class ReturnKeyType private(val tpe: String) extends AnyVal
+class ReturnKeyType private(val value: String) extends AnyVal
 
 object ReturnKeyType {
 
@@ -188,7 +114,7 @@ object ReturnKeyType {
   val EMERGENCY_CALL = new ReturnKeyType("emergency-call")
 }
 
-class TextAlign private(val dir: String) extends AnyVal
+class TextAlign private(val value: String) extends AnyVal
 
 object TextAlign {
 
@@ -197,7 +123,7 @@ object TextAlign {
   val END = new TextAlign("end")
 }
 
-class TextAlignVertical private(val dir: String) extends AnyVal
+class TextAlignVertical private(val value: String) extends AnyVal
 
 object TextAlignVertical {
 

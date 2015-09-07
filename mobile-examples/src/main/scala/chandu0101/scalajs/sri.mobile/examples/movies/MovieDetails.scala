@@ -71,7 +71,7 @@ object MovieDetails {
       ScrollView(contentContainerStyle = styles.contentContainer)(
         View()(
           View(style = styles.mainSection)(
-            Image(style = styles.detailsImage, source = getImageSource(props, "det")),
+            Image(style = styles.detailsImage, source = getImageSource(props, "det"))(),
             View(style = styles.rightPane)(
               Text()(props.year.toString),
               View(style = styles.mpaaWrapper)(

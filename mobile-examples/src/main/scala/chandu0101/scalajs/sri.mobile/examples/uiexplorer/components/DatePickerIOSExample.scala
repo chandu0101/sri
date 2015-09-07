@@ -77,17 +77,17 @@ object DatePickerIOSExample extends UIExample {
           Heading("Date + TimePicker"),
           DatePickerIOS(date = state.date,
             mode = DatePickerIOSMode.DATE_TIME, timeZoneOffsetInMinutes = (state.timeZoneOffsetInHours * 60).toInt,
-            onDateChange = onDateChange _),
+            onDateChange = onDateChange _)(),
           Heading("Date Picker"),
           DatePickerIOS(date = state.date,
             mode = DatePickerIOSMode.DATE, timeZoneOffsetInMinutes = (state.timeZoneOffsetInHours * 60).toInt,
-            onDateChange = onDateChange _),
+            onDateChange = onDateChange _)(),
           Heading("Time picker 10-minute interval"),
           DatePickerIOS(date = state.date,
             mode = DatePickerIOSMode.TIME,
             timeZoneOffsetInMinutes = (state.timeZoneOffsetInHours * 60).toInt,
             onDateChange = onDateChange _,
-            minuteInterval = MinuteInterval._10)
+            minuteInterval = MinuteInterval._10)()
 
         )
 

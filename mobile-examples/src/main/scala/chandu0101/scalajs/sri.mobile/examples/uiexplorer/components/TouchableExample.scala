@@ -62,7 +62,7 @@ object TouchableExample extends UIExample {
       UIExplorerBlock(title = "TouchableHighlight")(
         View(style = styles.row)(
           TouchableHighlight(style = styles.wrapper, onPress = () => println("stock THW image - highlight"))(
-            Image(source = heartImage, style = styles.image)
+            Image(source = heartImage, style = styles.image)()
           ),
           TouchableHighlight(style = styles.wrapper,
             activeOpacity = 1,

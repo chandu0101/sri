@@ -6,9 +6,9 @@ import scala.scalajs.js.UndefOr
 @js.native
 trait PushNotificationIOS extends js.Object {
 
-  def presentLocalNotification(details : js.Object) : Unit = js.native
+  def presentLocalNotification(details: js.Object): Unit = js.native
 
-  def scheduleLocalNotification(details : js.Object) : Unit = js.native
+  def scheduleLocalNotification(details: js.Object): Unit = js.native
 
   def setApplicationIconBadgeNumber(number: Int): Unit = js.native
 

@@ -70,11 +70,11 @@ object ModalExample extends UIExample {
           ),
         View(style = styles.row)(
           Text(style = styles.rowTitle)("Animated"),
-          SwitchIOS(value = state.animated, onValueChange = toggleAnimated _)
+          SwitchIOS(value = state.animated, onValueChange = toggleAnimated _)()
         ),
         View(style = styles.row)(
           Text(style = styles.rowTitle)("Transparent"),
-          SwitchIOS(value = state.transparent, onValueChange = toggleTransparent _)
+          SwitchIOS(value = state.transparent, onValueChange = toggleTransparent _)()
         ),
         Button(onPress = () => setModalVisible(true))("Present")
       )

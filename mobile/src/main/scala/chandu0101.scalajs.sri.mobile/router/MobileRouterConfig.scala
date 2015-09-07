@@ -24,7 +24,7 @@ trait MobileRouterConfig {
 
   def notFound: StaticRoute = initialRoute._2
 
-  def renderScene(route: js.Dynamic,navigator : NavigatorM): ReactElement = {
+  def renderScene(route: js.Dynamic, navigator: NavigatorM): ReactElement = {
     if (!js.isUndefined(route.data)) {
       route.getComponent(route.data).asInstanceOf[ReactElement]
     } else {

@@ -18,7 +18,7 @@ final class MobileRouterCtrl private[router](navigator: NavigatorM, config: Mobi
    */
   def navigateToHome() = navigator.popToTop()
 
-  def navigateToDynamic[T](page: DynamicPage[T], data: T,title : String) = config.routes.get(page) match {
+  def navigateToDynamic[T](page: DynamicPage[T], data: T, title: String) = config.routes.get(page) match {
     case Some(route) => {
       val obj = route.toJson
       obj.updateDynamic("data")(data.asInstanceOf[js.Any])

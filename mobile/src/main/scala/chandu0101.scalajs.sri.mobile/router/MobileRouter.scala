@@ -3,7 +3,7 @@ package chandu0101.scalajs.sri.mobile.router
 import chandu0101.scalajs.sri.core.ElementFactory._
 import chandu0101.scalajs.sri.core._
 import chandu0101.scalajs.sri.mobile.ReactNative
-import chandu0101.scalajs.sri.mobile.components.NavigatorNavigationBar._
+import chandu0101.scalajs.sri.mobile.components.NavigatorNavigationBarS._
 import chandu0101.scalajs.sri.mobile.components._
 import chandu0101.scalajs.sri.mobile.styles.NativeStyleSheet
 import chandu0101.scalajs.sri.mobile.styles.NativeStyleSheet._
@@ -96,14 +96,14 @@ object MobileRouter {
         routeMapper = NavigationBarRouteMapper(
           Title = onTitle _,
           LeftButton = onLeftButton _,
-          RightButton = onRightButton _))
+          RightButton = onRightButton _))()
 
       Navigator(renderScene = renderScene _,
         ref = getNavRef,
         sceneStyle = props.sceneStyle,
         navigationBar = navigationBar,
         initialRoute = props.config.initialRoute._2.toJson,
-        configureScene = configureScene _)
+        configureScene = configureScene _)()
     }
 
     val getNavRef: js.Function = (nav: NavigatorM) => {
@@ -114,7 +114,7 @@ object MobileRouter {
 
     def configureScene(route: js.Dynamic) = {
       if (!js.isUndefined(route.sceneConfig)) route.sceneConfig.asInstanceOf[NavigatorSceneConfig]
-      else Navigator.SceneConfigs.FloatFromRight
+      else NavigatorS.SceneConfigs.FloatFromRight
     }
 
     def renderScene(route: js.Dynamic, nav: NavigatorM) = {
@@ -127,8 +127,8 @@ object MobileRouter {
         if (index > 0) {
           val routeStack = NavigationBarNavState.fromJson(navState).routeStack
           //          val previousRoute = routeStack(index - 1)
-          TouchableOpacity(onPress = () => navigator.pop(),style = props.navigationBarConfig.theme.navBarLeftButton)(
-              Text(style = props.navigationBarConfig.theme.navBarButtonText)("Back")
+          TouchableOpacity(onPress = () => navigator.pop(), style = props.navigationBarConfig.theme.navBarLeftButton)(
+            Text(style = props.navigationBarConfig.theme.navBarButtonText)("Back")
           )
         } else null
       }
@@ -155,7 +155,7 @@ object MobileRouter {
 
   case class Props(config: MobileRouterConfig, navigationBarConfig: NavigationBarConfig, sceneStyle: js.Any)
 
-  val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
+  val factory = getComponentFactory(js.constructorOf[Component], classOf[Component])
 
   def apply(routerConfig: MobileRouterConfig, navigationBarConfig: NavigationBarConfig = null, sceneStyle: js.Any = sceneStyle) = createElement(factory, Props(routerConfig, navigationBarConfig, sceneStyle))
 

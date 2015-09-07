@@ -1,23 +1,16 @@
 package chandu0101.scalajs.sri.mobile.components
 
+import chandu0101.macros.tojs.JSMacro
+
 import scala.scalajs.js
-import scala.scalajs.js.Dynamic.{literal => json}
 
-/**
- * Created by chandrasekharkode on 4/1/15.
- */
-case class ImageSource(uri : String,isStatic : js.UndefOr[Boolean] = js.undefined) {
 
- def toJson = {
-   val p = json()
-   p.updateDynamic("uri")(uri)
-   isStatic.foreach(v => p.updateDynamic("isStatic")(v))
-   p
- }
+case class ImageSource(uri: String, isStatic: js.UndefOr[Boolean] = js.undefined) {
+  val toJS: js.Object = JSMacro[ImageSource](this)
 }
 
 object ImageSource {
-  def fromJson(obj : js.Dynamic) = {
-     ImageSource(obj.uri.toString,if(js.isUndefined(obj.isStatic)) js.undefined else obj.isStatic.asInstanceOf[Boolean] )
+  def fromJson(obj: js.Dynamic) = {
+    ImageSource(obj.uri.toString, if (js.isUndefined(obj.isStatic)) js.undefined else obj.isStatic.asInstanceOf[Boolean])
   }
 }

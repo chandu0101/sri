@@ -24,7 +24,7 @@ object MovieCell {
       View()(
         TouchableHighlight(key = "th", onPress = () => MobileRouter.routerCtrl.navigateToDynamic(DetailsPage,props,props.title.toString))(
           View(key = "pap", style = styles.row)(
-            Image(key = "is", source = getImageSource(props, "det"), style = styles.cellImage),
+            Image(key = "is", source = getImageSource(props, "det"), style = styles.cellImage)(),
             View(key = "sv", style = styles.textContainer)(
               Text(key = "tt", style = styles.movieTitle)(props.title.toString),
               Text(key = "year", style = styles.movieYear, numberOfLines = 1)(

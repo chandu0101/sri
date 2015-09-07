@@ -27,7 +27,7 @@ object SliderIOSExample extends UIExample {
             state.value
           ),
           SliderIOS(style = styles.slider,
-            onValueChange = handleValueChnage _)
+            onValueChange = handleValueChnage _)()
         )
       )
     )

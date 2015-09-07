@@ -19,12 +19,12 @@ package object mobile {
   def createListViewDataSource[T, H](rowHasChanged: (T, T) => Boolean,
                                      sectionHeaderHasChanged: js.UndefOr[(H, H) => Boolean] = js.undefined,
                                      getRowData: js.UndefOr[(_, String, String) => _] = js.undefined,
-                                     getSectionHeaderData: js.UndefOr[(_, String) => _] = js.undefined): ListViewDataSource[T,H] = {
+                                     getSectionHeaderData: js.UndefOr[(_, String) => _] = js.undefined): ListViewDataSource[T, H] = {
     val j = json(rowHasChanged = rowHasChanged)
     sectionHeaderHasChanged.foreach(v => j.updateDynamic("sectionHeaderHasChanged")(v))
     getRowData.foreach(v => j.updateDynamic("getRowData")(v))
     getSectionHeaderData.foreach(v => j.updateDynamic("getSectionHeaderData")(v))
-     new ListViewDataSource[T,H](j)
+    new ListViewDataSource[T, H](j)
   }
 
 
@@ -33,8 +33,8 @@ package object mobile {
    * @param rootComponent
    * @return
    */
-  def createMobileRoot[P , S ](rootComponent: => ReactElementU[P, S],name : String = "SriMobileApp") = {
-    ReactNative.createClass(json(render = () => rootComponent ,displayName = name))
+  def createMobileRoot[P, S](rootComponent: => ReactElementU[P, S], name: String = "SriMobileApp") = {
+    ReactNative.createClass(json(render = () => rootComponent, displayName = name))
   }
 
 }

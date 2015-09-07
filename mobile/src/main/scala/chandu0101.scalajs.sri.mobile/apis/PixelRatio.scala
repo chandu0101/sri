@@ -5,5 +5,5 @@ import scala.scalajs.js
 @js.native
 trait PixelRatio extends js.Object {
 
-  def get() : Int = js.native
+  def get(): Int = js.native
 }

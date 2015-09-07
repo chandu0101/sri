@@ -26,9 +26,9 @@ object SwitchIOSExample extends UIExample {
       def render() = View()(
         SwitchIOS(onValueChange = handleFalseSwitch _,
           style = styles.basicFalseSwitch,
-          value = state.falseSwitchIsOn),
+          value = state.falseSwitchIsOn)(),
         SwitchIOS(onValueChange = handleTrueSwitch _,
-          value = state.trueSwitchIsOn)
+          value = state.trueSwitchIsOn)()
       )
 
       def handleFalseSwitch(value: Boolean) = {
@@ -52,9 +52,9 @@ object SwitchIOSExample extends UIExample {
     @ScalaJSDefined
     class Component extends ReactComponent[Unit, Unit] {
       def render() = View()(
-        SwitchIOS(disabled = true, style = styles.basicFalseSwitch, value = true),
+        SwitchIOS(disabled = true, style = styles.basicFalseSwitch, value = true)(),
         SwitchIOS(disabled = true,
-          value = false)
+          value = false)()
       )
     }
 
@@ -77,11 +77,11 @@ object SwitchIOSExample extends UIExample {
           style = styles.basicFalseSwitch,
           onTintColor = "#00ff00",
           tintColor = "#ff0000",
-          value = state.falseSwitchIsOn),
+          value = state.falseSwitchIsOn)(),
         SwitchIOS(onValueChange = handleTrueSwitch _,
           onTintColor = "#00ff00",
           tintColor = "#ff0000",
-          value = state.trueSwitchIsOn)
+          value = state.trueSwitchIsOn)()
       )
 
       def handleFalseSwitch(value: Boolean) = {
@@ -114,19 +114,19 @@ object SwitchIOSExample extends UIExample {
         View()(
           SwitchIOS(onValueChange = handleEventSwitch _,
             style = styles.basicFalseSwitch,
-            value = state.eventSwitchIsOn),
+            value = state.eventSwitchIsOn)(),
           SwitchIOS(onValueChange = handleEventSwitch _,
             style = styles.basicFalseSwitch,
-            value = state.eventSwitchIsOn),
+            value = state.eventSwitchIsOn)(),
           Text()(if (state.eventSwitchIsOn) "On" else "Off")
         ),
         View()(
           SwitchIOS(onValueChange = handleEventSwitchRegression _,
             style = styles.basicFalseSwitch,
-            value = state.eventSwitchRegressionIsOn),
+            value = state.eventSwitchRegressionIsOn)(),
           SwitchIOS(onValueChange = handleEventSwitchRegression _,
             style = styles.basicFalseSwitch,
-            value = state.eventSwitchRegressionIsOn),
+            value = state.eventSwitchRegressionIsOn)(),
           Text()(if (state.eventSwitchRegressionIsOn) "On" else "Off")
         )
       )

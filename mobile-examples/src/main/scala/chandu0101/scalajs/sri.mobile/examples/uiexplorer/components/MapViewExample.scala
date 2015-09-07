@@ -120,7 +120,7 @@ object MapViewExample extends UIExample {
           onRegionChangeComplete = onRegionChangeComplete _,
           region = state.mapRegion,
           annotations = state.annotations
-        ),
+        )(),
         MapRegionInput(MapRegionInput.Props(onChange = onRegionInputChanged _, region = state.mapRegionInput))
       )
 
@@ -166,7 +166,7 @@ object MapViewExample extends UIExample {
         MapExample()
       ),
       UIExplorerBlock("Map shows user location")(
-        MapView(style = styles.map, showsUserLocation = true)
+        MapView(style = styles.map, showsUserLocation = true)()
       )
     )
   }
