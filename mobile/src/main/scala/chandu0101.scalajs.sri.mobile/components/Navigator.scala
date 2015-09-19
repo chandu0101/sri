@@ -11,7 +11,7 @@ import scala.scalajs.js.Dynamic.{literal => json}
 
 case class Navigator(navigator: js.UndefOr[js.Object] = js.undefined,
                      onItemRef: js.UndefOr[(String, Int, js.Dynamic) => Unit] = js.undefined,
-                     ref: js.UndefOr[js.Function] = js.undefined,
+                     ref: js.UndefOr[NavigatorM => _] = js.undefined,
                      navigationBar: js.UndefOr[ReactElement] = js.undefined,
                      key: js.UndefOr[String] = js.undefined,
                      renderScene: (js.Dynamic, NavigatorM) => ReactElement,
@@ -123,7 +123,6 @@ case class NavigatorNavigationBar(navigator: js.UndefOr[NavigatorM] = js.undefin
                                   key: js.UndefOr[String] = js.undefined,
                                   routeMapper: js.UndefOr[NavigationBarRouteMapper] = js.undefined,
                                   navState: js.UndefOr[NavigationBarNavState] = js.undefined) {
-
   def apply() = {
     val props = JSMacro[NavigatorNavigationBar](this)
     val f = ReactNative.createFactory(NavigatorS.NavigationBar)
@@ -141,7 +140,7 @@ object NavigatorNavigationBarS {
 
 case class NavigatorBreadcrumbNavigationBar(navigator: js.UndefOr[NavigatorM] = js.undefined,
                                             style: js.UndefOr[js.Any] = js.undefined,
-                                            ref: js.UndefOr[String] = js.undefined,
+                                            ref: js.UndefOr[NavigatorBreadcrumbNavigationBar => _] = js.undefined,
                                             key: js.UndefOr[String] = js.undefined,
                                             routeMapper: js.UndefOr[BreadcrumbNavigationBarRouteMapper] = js.undefined,
                                             navState: js.UndefOr[NavigationBarNavState] = js.undefined) {
@@ -154,6 +153,8 @@ case class NavigatorBreadcrumbNavigationBar(navigator: js.UndefOr[NavigatorM] = 
 
 }
 
+@js.native
+trait NavigatorBreadcrumbNavigationBarM extends js.Object
 
 case class BreadcrumbNavigationBarRouteMapper(rightContentForRoute: (js.Dynamic, NavigatorM) => ReactElement,
                                               titleContentForRoute: (js.Dynamic, NavigatorM) => ReactElement,

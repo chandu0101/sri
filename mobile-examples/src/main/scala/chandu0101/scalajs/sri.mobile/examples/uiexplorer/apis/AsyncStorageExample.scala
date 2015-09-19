@@ -5,7 +5,7 @@ import chandu0101.scalajs.sri.core.ReactComponent
 import chandu0101.scalajs.sri.mobile.apis.{AsyncStorage, AsyncStorageException}
 import chandu0101.scalajs.sri.mobile.components._
 import chandu0101.scalajs.sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
-import chandu0101.scalajs.sri.mobile.styles.NativeStyleSheet
+import chandu0101.scalajs.sri.mobile.styles.MobileStyleSheet
 
 import scala.async.Async.{async, await}
 import scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
@@ -19,7 +19,6 @@ object AsyncStorageExample extends UIExample {
 
   case class State(selectedValue: String = COLORS.head, messages: js.Array[String] = js.Array())
 
-
   @ScalaJSDefined
   class Component extends ReactComponent[Unit, State] {
 
@@ -31,7 +30,7 @@ object AsyncStorageExample extends UIExample {
         UIExplorerBlock("Basics - getItem, setItem, removeItem")(
           View()(
             PickerIOS(selectedValue = state.selectedValue, onValueChange = onValueChange)(
-              COLORS.map(v => PickerItemIOS(key = v, value = v, label = v)()): _*
+              COLORS.map(v => PickerItemIOS(key = v, value = v, label = v)())
             ),
             Text()("Selected : ",
               Text(style = styles.getColorStyle(state.selectedValue))(state.selectedValue)
@@ -41,7 +40,7 @@ object AsyncStorageExample extends UIExample {
             Text()(" "),
             Text()("Messages : "),
             View()(
-              state.messages.map(m => Text()(m)): _*
+              state.messages.map(m => Text()(m))
             )
           )
         )
@@ -90,7 +89,7 @@ object AsyncStorageExample extends UIExample {
   val component = createElementNoProps(factory)
 
 
-  object styles extends NativeStyleSheet {
+  object styles extends MobileStyleSheet {
 
     def getColorStyle(c: String) = style(color := c)
   }

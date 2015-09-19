@@ -1,10 +1,10 @@
 package chandu0101.scalajs.sri.mobile.examples.uiexplorer.components
 
 import chandu0101.scalajs.sri.core.ElementFactory._
-import chandu0101.scalajs.sri.core.{React, ReactComponentFactory, ReactComponent}
+import chandu0101.scalajs.sri.core.ReactComponent
 import chandu0101.scalajs.sri.mobile.components.{View, _}
 import chandu0101.scalajs.sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
-import chandu0101.scalajs.sri.mobile.styles.NativeStyleSheet
+import chandu0101.scalajs.sri.mobile.styles.MobileStyleSheet
 
 import scala.scalajs.js
 import scala.scalajs.js.Dynamic.{literal => json}
@@ -40,7 +40,7 @@ object ViewExample extends UIExample {
 
   val component = createElementNoProps(factory)
 
-  object styles extends NativeStyleSheet {
+  object styles extends MobileStyleSheet {
     val container = style(flex := 1,
       backgroundColor := "#F5FCFF")
 

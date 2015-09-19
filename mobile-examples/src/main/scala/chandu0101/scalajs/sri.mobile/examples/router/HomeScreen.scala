@@ -1,42 +1,39 @@
 package chandu0101.scalajs.sri.mobile.examples.router
 
-import chandu0101.scalajs.sri.core.{ReactElement, ElementFactory_DONTUSE$, ReactComponent}
+import chandu0101.scalajs.sri.core.ElementFactory._
+import chandu0101.scalajs.sri.core.ReactElement
 import chandu0101.scalajs.sri.mobile.components._
-import chandu0101.scalajs.sri.mobile.examples.router.RouterExample.Second
-import chandu0101.scalajs.sri.mobile.router.MobileRouter
-import chandu0101.scalajs.sri.mobile.styles.NativeStyleSheet
+import chandu0101.scalajs.sri.mobile.examples.router.RouterExampleApp.Second
+import chandu0101.scalajs.sri.mobile.router
+import chandu0101.scalajs.sri.mobile.router.MobileRouterComponent
+import chandu0101.scalajs.sri.mobile.styles.MobileStyleSheet
 
-import scala.scalajs.js.annotation.ScalaJSDefined
-import chandu0101.scalajs.sri.core.{RefType, ReactComponent}
-import chandu0101.scalajs.sri.mobile.components._
 import scala.scalajs.js
 import scala.scalajs.js.annotation.ScalaJSDefined
-import chandu0101.scalajs.sri.core.ElementFactory._
 
 object HomeScreen {
 
   @ScalaJSDefined
-  class Component extends ReactComponent[Unit,Unit] {
+  class Component extends MobileRouterComponent[Unit, Unit] {
     override def render(): ReactElement = View(style = styles.container)(
-       Text(onPress = onTextClick _)("Home Screen ... ")
+      Text(onPress = onTextClick _)("Home Screen ... ")
     )
-    val displayName = "HomeScreen"
 
+    def onTextClick() = {
+      navigateToStatic(Second)
+    }
   }
 
+  js.constructorOf[Component].contextTypes = router.routerContextTypes
 
-  def onTextClick() = {
-    MobileRouter.routerCtrl.navigateTo(Second)
-  }
-
-  val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
+  val factory = getComponentFactory(js.constructorOf[Component], classOf[Component])
 
   def apply() = createElementNoProps(factory)
 }
 
-object styles extends NativeStyleSheet {
+object styles extends MobileStyleSheet {
 
-  val container = style(flexOne,alignItems.center,justifyContent.center)
+  val container = style(flexOne, alignItems.center, justifyContent.center)
 
 
 }

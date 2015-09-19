@@ -1,7 +1,7 @@
 package chandu0101.scalajs.sri.mobile.components
 
 import chandu0101.macros.tojs.JSMacro
-import chandu0101.scalajs.sri.core.ReactElement
+import chandu0101.scalajs.sri.core.{ReactNode, ReactElement}
 import chandu0101.scalajs.sri.mobile.ReactNative
 
 import scala.scalajs.js
@@ -21,7 +21,7 @@ case class ScrollView(zoomScale: js.UndefOr[Int] = js.undefined,
                       contentOffset: js.UndefOr[PointProp] = js.undefined,
                       centerContent: js.UndefOr[Boolean] = js.undefined,
                       removeClippedSubviews: js.UndefOr[Boolean] = js.undefined,
-                      ref: js.UndefOr[String] = js.undefined,
+                      ref: js.UndefOr[ScrollViewM => _] = js.undefined,
                       onScroll: js.UndefOr[() => Unit] = js.undefined,
                       scrollEventThrottle: js.UndefOr[Int] = js.undefined,
                       throttleScrollCallbackMS: js.UndefOr[Int] = js.undefined,
@@ -42,10 +42,10 @@ case class ScrollView(zoomScale: js.UndefOr[Int] = js.undefined,
                       showsVerticalScrollIndicator: js.UndefOr[Boolean] = js.undefined,
                       scrollIndicatorInsets: js.UndefOr[EdgeInsets] = js.undefined) {
 
-  def apply(children: ReactElement*): ReactElement = {
+  def apply(children: ReactNode*): ReactElement = {
     val props = JSMacro[ScrollView](this)
     val f = ReactNative.createFactory(ReactNative.ScrollView)
-    f(props, children.toJSArray).asInstanceOf[ReactElement]
+    f(props, children: _*).asInstanceOf[ReactElement]
   }
 }
 

@@ -10,7 +10,7 @@ trait React extends js.Object {
 
   def createClass(specification: js.Object): ReactClass = js.native
 
-  def createElement(tpe: js.Any, props: js.Any = ???, children: js.Any = ???): ReactElement = js.native
+  def createElement(tpe: js.Any, props: js.Any, children: ReactNode *): ReactElement = js.native
 
   def cloneElement(element: ReactElement, props: js.Any = ???, children: js.Any = ???): ReactElement = js.native
 
@@ -18,12 +18,15 @@ trait React extends js.Object {
 
   //  def createFactory[P,S](cons : () => ReactComponent[P,S]): js.Dynamic = js.native
 
-  def createFactory(tpe: js.Any): js.Dynamic = js.native
+  def createFactory(tpe: js.Any): ReactComponentFactory[Any,Any] = js.native
 
   def render(elm: ReactElement, dom: js.Any, callback: js.Function = ???): js.Any = js.native
 
   def Children: ReactChildren = js.native
+
+  val PropTypes : js.Dynamic = js.native
 }
+
 
 @js.native
 object React extends React
@@ -102,6 +105,8 @@ class ReactJSComponent[P, S] extends js.Object {
   @JSName("state") private[core] var jsState: JSState[S] = js.native
 
   var refs: js.Dynamic = js.native
+
+  var context: js.Dynamic = js.native
 
   @JSName("setState") def jsSetState(newState: JSState[S], callback: UndefOr[() => _] = js.undefined): Unit = js.native
 
@@ -192,5 +197,8 @@ abstract class ReactComponent[P, S] extends ReactJSComponent[P, S] {
 
 @js.native
 trait ReactComponentFactory[P, S] extends ReactComponent[P, S] {
-  def apply(props: js.Dynamic, children: ReactElement*): ReactElementU[P, S] = js.native
+  def apply(props: js.Any, children: ReactNode*): ReactElementU[P, S] = js.native
 }
+
+@js.native
+trait ReactComponentConstructor[P,S] extends js.Object

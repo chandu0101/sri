@@ -6,7 +6,7 @@ import chandu0101.scalajs.sri.mobile
 import chandu0101.scalajs.sri.mobile.ReactNative
 import chandu0101.scalajs.sri.mobile.components._
 import chandu0101.scalajs.sri.mobile.examples.uiexplorer.UIExample
-import chandu0101.scalajs.sri.mobile.styles.NativeStyleSheet
+import chandu0101.scalajs.sri.mobile.styles.MobileStyleSheet
 
 import scala.scalajs.js
 import scala.scalajs.js.Dynamic.{literal => json}
@@ -152,7 +152,7 @@ object ListViewPagingExample extends UIExample {
 
   val component = createElementNoProps(factory)
 
-  object styles extends NativeStyleSheet {
+  object styles extends MobileStyleSheet {
 
     val listView = style(backgroundColor := "#B0C4DE")
 

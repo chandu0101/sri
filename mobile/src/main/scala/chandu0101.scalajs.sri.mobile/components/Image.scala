@@ -12,7 +12,7 @@ case class Image(onLoaded: js.UndefOr[Boolean] = js.undefined,
                  onLayout: js.UndefOr[js.Function] = js.undefined,
                  accessibilityLabel: js.UndefOr[String] = js.undefined,
                  onLoadError: js.UndefOr[js.Dynamic => Unit] = js.undefined,
-                 ref: js.UndefOr[String] = js.undefined,
+                 ref: js.UndefOr[ImageM => _] = js.undefined,
                  onLoadAbort: js.UndefOr[js.Function] = js.undefined,
                  key: js.UndefOr[String] = js.undefined,
                  resizeMode: js.UndefOr[ImageResizeMode] = js.undefined,
@@ -43,3 +43,6 @@ object ImageResizeMode {
   def newMode(mode: String) = new ImageResizeMode(mode)
 
 }
+
+@js.native
+trait ImageM extends js.Object

@@ -1,15 +1,14 @@
 package chandu0101.scalajs.sri.mobile.examples.uiexplorer.components
 
-import chandu0101.scalajs.sri.mobile.examples.uiexplorer.{UIExplorerPage, UIExplorerBlock, UIExample}
-import chandu0101.scalajs.sri.core.{RefType, ReactComponent}
+import chandu0101.scalajs.sri.core.ElementFactory._
+import chandu0101.scalajs.sri.core.{ReactComponent, RefType}
 import chandu0101.scalajs.sri.mobile.components._
-import chandu0101.scalajs.sri.mobile.styles.NativeStyleSheet
+import chandu0101.scalajs.sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
+import chandu0101.scalajs.sri.mobile.styles.MobileStyleSheet
+
 import scala.scalajs.js
 import scala.scalajs.js.UndefOr
 import scala.scalajs.js.annotation.ScalaJSDefined
-import chandu0101.scalajs.sri.core.ElementFactory._
-
-import scala.scalajs.js
 
 object ScrollViewExample extends UIExample {
 
@@ -41,7 +40,7 @@ object ScrollViewExample extends UIExample {
              onScroll = () => println(s"on Scroll!"))(
                THUMBS.++(THUMBS).zipWithIndex.map {
                  case (u, i) => THUMB(u,key = i.toString)
-               } :_*
+               }
              )
          ),
          UIExplorerBlock("ScrollView horizontal")(
@@ -52,7 +51,7 @@ object ScrollViewExample extends UIExample {
              onScroll = () => println(s"on Scroll!"))(
                  THUMBS.++(THUMBS).zipWithIndex.map {
                    case (u, i) => THUMB(u,key = i.toString)
-                 } :_*
+                 }
              )
          )
        )
@@ -62,7 +61,7 @@ object ScrollViewExample extends UIExample {
 
   val component = createElementNoProps(factory)
 
-  object styles extends NativeStyleSheet {
+  object styles extends MobileStyleSheet {
 
     val scrollView = style(
       backgroundColor := "#6A85B1",

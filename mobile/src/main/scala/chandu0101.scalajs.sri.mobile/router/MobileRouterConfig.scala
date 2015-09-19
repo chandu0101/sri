@@ -22,11 +22,15 @@ trait MobileRouterConfig {
     _routes += page -> route
   }
 
-  def notFound: StaticRoute = initialRoute._2
+  def moduleRoutes(config : MobileRouterModuleConfig) = {
+    _routes ++= config.module_routes
+  }
 
-  def renderScene(route: js.Dynamic, navigator: NavigatorM): ReactElement = {
+  def notFound: (StaticPage, StaticRoute)
+
+   def renderScene(route: NavigatorRoute): ReactElement = {
     if (!js.isUndefined(route.data)) {
-      route.getComponent(route.data).asInstanceOf[ReactElement]
+      route.component(route.data).asInstanceOf[ReactElement]
     } else {
       route.component().asInstanceOf[ReactElement]
     }

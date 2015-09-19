@@ -1,16 +1,18 @@
 package chandu0101.scalajs.sri.mobile.examples
 
-import chandu0101.scalajs.sri.core.{ReactComponent, ReactElementU}
+import chandu0101.scalajs.sri.core.ElementFactory._
+import chandu0101.scalajs.sri.core.ReactComponent
 import chandu0101.scalajs.sri.mobile.ReactNative
 import chandu0101.scalajs.sri.mobile.components._
-import chandu0101.scalajs.sri.mobile.styles.NativeStyleSheet
+import chandu0101.scalajs.sri.mobile.styles.MobileStyleSheet
 
+import scala.scalajs.js
 import scala.scalajs.js.annotation.ScalaJSDefined
 
 
 object HelloSriMobile {
 
-  object styles extends NativeStyleSheet {
+  object styles extends MobileStyleSheet {
 
     val container = style(flexOne,
       backgroundColor := "rgb(76, 73, 75)",
@@ -27,21 +29,19 @@ object HelloSriMobile {
 
   @ScalaJSDefined
   class Component extends ReactComponent[Unit, Unit] {
-    val displayName = "Test"
 
     def render() = {
       View(style = styles.container)(
-        Text(style = styles.text)("Welcome to Sri Mobile"),
+        Text(style = styles.text)(s"Welcome to Sri Mobile(${ReactNative.Platform.OS})"),
         Image(style = styles.image, source = ImageSource(uri = "http://www.scala-js.org/images/scala-js-logo-256.png"))(),
         Text(style = styles.text)("Scala.js - Future of app development!")
       )
     }
   }
 
-  val instance = ReactNative.createFactory(() => new Component)
+  val factory = getComponentFactory(js.constructorOf[Component], classOf[Component])
 
-  //  def apply() = createElementNoProps(new Component)
-  def apply() = instance().asInstanceOf[ReactElementU[_, _]]
+  def apply() = createElementNoProps(factory)
 
 }
 

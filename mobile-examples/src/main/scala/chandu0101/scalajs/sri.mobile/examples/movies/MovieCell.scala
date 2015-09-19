@@ -1,13 +1,13 @@
 package chandu0101.scalajs.sri.mobile.examples.movies
 
 import chandu0101.scalajs.sri.core.ElementFactory._
-import chandu0101.scalajs.sri.core.{ReactComponent, RefType}
+import chandu0101.scalajs.sri.core.RefType
 import chandu0101.scalajs.sri.mobile._
 import chandu0101.scalajs.sri.mobile.components._
-import chandu0101.scalajs.sri.mobile.examples.movies.MoviesRouter.DetailsPage
+import chandu0101.scalajs.sri.mobile.examples.movies.MoviesApp.DetailsPage
 import chandu0101.scalajs.sri.mobile.examples.movies.MoviesUtil._
-import chandu0101.scalajs.sri.mobile.router.MobileRouter
-import chandu0101.scalajs.sri.mobile.styles.NativeStyleSheet
+import chandu0101.scalajs.sri.mobile.router.MobileRouterComponent
+import chandu0101.scalajs.sri.mobile.styles.MobileStyleSheet
 
 import scala.scalajs.js
 import scala.scalajs.js.Dynamic.{literal => json}
@@ -18,11 +18,11 @@ object MovieCell {
 
 
   @ScalaJSDefined
-  class Component extends ReactComponent[js.Dynamic, Unit] {
+  class Component extends MobileRouterComponent[js.Dynamic, Unit] {
     def render() = {
       val criticScore = props.ratings.critics_score.asInstanceOf[Int]
       View()(
-        TouchableHighlight(key = "th", onPress = () => MobileRouter.routerCtrl.navigateToDynamic(DetailsPage,props,props.title.toString))(
+        TouchableHighlight(key = "th", onPress = () => navigateToDynamic(DetailsPage,props,props.title.toString))(
           View(key = "pap", style = styles.row)(
             Image(key = "is", source = getImageSource(props, "det"), style = styles.cellImage)(),
             View(key = "sv", style = styles.textContainer)(
@@ -44,10 +44,12 @@ object MovieCell {
 
   val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
 
+  js.constructorOf[Component].contextTypes = router.routerContextTypes
+
   def apply(movie: js.Dynamic, key: UndefOr[String] = js.undefined, ref: RefType = null) = createElement(factory, movie, key = key, ref = ref)
 
 
-  object styles extends NativeStyleSheet {
+  object styles extends MobileStyleSheet {
     val textContainer = style(
       flex := 1
     )

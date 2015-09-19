@@ -3,8 +3,9 @@ package chandu0101.scalajs.sri.mobile.examples.uiexplorer.components
 import chandu0101.scalajs.sri.core.ElementFactory._
 import chandu0101.scalajs.sri.core.{ReactComponent, RefType}
 import chandu0101.scalajs.sri.mobile.components._
+import chandu0101.scalajs.sri.mobile.components.ios.SegmentedControlIOS
 import chandu0101.scalajs.sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
-import chandu0101.scalajs.sri.mobile.styles.NativeStyleSheet
+import chandu0101.scalajs.sri.mobile.styles.MobileStyleSheet
 
 import scala.scalajs.js
 import scala.scalajs.js.Dynamic.{literal => json}
@@ -148,7 +149,7 @@ object SegmentedControlExample extends UIExample {
   val component = createElementNoProps(factory)
 
 
-  object styles extends NativeStyleSheet {
+  object styles extends MobileStyleSheet {
 
     val text = style(fontSize := 14,
       textAlign.center,

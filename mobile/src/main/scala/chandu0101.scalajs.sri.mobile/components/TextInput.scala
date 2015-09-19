@@ -1,7 +1,7 @@
 package chandu0101.scalajs.sri.mobile.components
 
 import chandu0101.macros.tojs.JSMacro
-import chandu0101.scalajs.sri.core.ReactElement
+import chandu0101.scalajs.sri.core.{ReactNode, ReactElement}
 import chandu0101.scalajs.sri.mobile._
 
 import scala.scalajs.js
@@ -20,7 +20,7 @@ case class TextInput(onBlur: js.UndefOr[(NEvent) => Unit] = js.undefined,
                      selectionState: js.UndefOr[DocumentSelectionState] = js.undefined,
                      enablesReturnKeyAutomatically: js.UndefOr[Boolean] = js.undefined,
                      clearTextOnFocus: js.UndefOr[Boolean] = js.undefined,
-                     ref: js.UndefOr[TextInputM => Unit] = js.undefined,
+                     ref: js.UndefOr[TextInputM => _] = js.undefined,
                      textAlignVertical: js.UndefOr[TextAlignVertical] = js.undefined,
                      onSubmitEditing: js.UndefOr[NEvent => Unit] = js.undefined,
                      placeholder: js.UndefOr[String] = js.undefined,
@@ -42,11 +42,11 @@ case class TextInput(onBlur: js.UndefOr[(NEvent) => Unit] = js.undefined,
                      editable: js.UndefOr[Boolean] = js.undefined,
                      password: js.UndefOr[Boolean] = js.undefined) {
 
-  def apply(children: ReactElement*) = {
+  def apply(children: ReactNode*) = {
     val props = JSMacro[TextInput](this)
     val f = ReactNative.createFactory(ReactNative.TextInput)
     if (children.isEmpty) f(props).asInstanceOf[ReactElement]
-    else f(props, children.toJSArray).asInstanceOf[ReactElement]
+    else f(props, children: _*).asInstanceOf[ReactElement]
   }
 }
 
@@ -58,6 +58,8 @@ case class TextInput(onBlur: js.UndefOr[(NEvent) => Unit] = js.undefined,
 trait TextInputM extends js.Object {
 
   def blur(): Unit = js.native
+
+  def focus(): Unit = js.native
 
 }
 

@@ -1,11 +1,11 @@
 package chandu0101.scalajs.sri.mobile.examples.uiexplorer.components
 
 import chandu0101.scalajs.sri.core.ElementFactory._
-import chandu0101.scalajs.sri.core.{ReactComponent, ReactElement, RefType}
+import chandu0101.scalajs.sri.core.{ReactComponent, ReactNode, RefType}
 import chandu0101.scalajs.sri.mobile._
 import chandu0101.scalajs.sri.mobile.components._
 import chandu0101.scalajs.sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
-import chandu0101.scalajs.sri.mobile.styles.NativeStyleSheet
+import chandu0101.scalajs.sri.mobile.styles.MobileStyleSheet
 
 import scala.scalajs.js
 import scala.scalajs.js.UndefOr
@@ -33,7 +33,7 @@ object TextInputExample extends UIExample {
 
     val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
 
-    def apply(label: String, key: UndefOr[String] = js.undefined, ref: RefType = null)(children: ReactElement*) = createElementWithChildren(factory, label, key = key, ref = ref)(children: _*)
+    def apply(label: String, key: UndefOr[String] = js.undefined, ref: RefType = null)(children: ReactNode*) = createElementWithChildren(factory, label, key = key, ref = ref)(children: _*)
 
 
   }
@@ -121,7 +121,7 @@ object TextInputExample extends UIExample {
 
   val component = createElementNoProps(factory)
 
-  object styles extends NativeStyleSheet {
+  object styles extends MobileStyleSheet {
 
     val page = style(paddingBottom := 30)
 

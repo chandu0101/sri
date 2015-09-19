@@ -10,6 +10,7 @@ import scala.scalajs.js.Dynamic.{global => g, literal => json}
 
 
 package object mobile {
+
   @inline def load[T](lib: String): T = g.require(lib).asInstanceOf[T]
 
   lazy val Dimensions = load[js.Dynamic]("Dimensions")
@@ -37,4 +38,12 @@ package object mobile {
     ReactNative.createClass(json(render = () => rootComponent, displayName = name))
   }
 
+  private[mobile] val JSMacro   = chandu0101.macros.tojs.JSMacro
+  private[mobile] type U[T] = js.UndefOr[T]
+  private[mobile] val undefined = js.undefined
+
+
+  val IOS_OS = "ios"
+
+  val ANDROID_OS = "android"
 }

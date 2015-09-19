@@ -10,7 +10,7 @@ case class TouchableOpacity(onPressIn: js.UndefOr[() => Unit] = js.undefined,
                             onPress: js.UndefOr[() => Unit] = js.undefined,
                             style: js.UndefOr[js.Any] = js.undefined,
                             delayPressIn: js.UndefOr[Int] = js.undefined,
-                            ref: js.UndefOr[String] = js.undefined,
+                            ref: js.UndefOr[TouchableOpacityM => _] = js.undefined,
                             onPressOut: js.UndefOr[() => Unit] = js.undefined,
                             key: js.UndefOr[String] = js.undefined,
                             onLongPress: js.UndefOr[() => Unit] = js.undefined,
@@ -25,3 +25,6 @@ case class TouchableOpacity(onPressIn: js.UndefOr[() => Unit] = js.undefined,
     f(props, children).asInstanceOf[ReactElement]
   }
 }
+
+@js.native
+trait TouchableOpacityM extends js.Object

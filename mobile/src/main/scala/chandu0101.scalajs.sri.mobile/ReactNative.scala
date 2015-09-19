@@ -35,6 +35,12 @@ trait ReactNative extends React {
   val TabBarIOS: ReactClass = js.native
   val SegmentedControlIOS: ReactClass = js.native
   val Modal: ReactClass = js.native
+  val DrawerLayoutAndroid: ReactClass = js.native
+  val ProgressBarAndroid: ReactClass = js.native
+  val SwitchAndroid: ReactClass = js.native
+  val ToolbarAndroid: ReactClass = js.native
+  val TouchableNativeFeedback: ReactClass = js.native
+
 
   // apis
 
@@ -59,8 +65,16 @@ trait ReactNative extends React {
   val NativeModules: NativeModules = js.native
 
 
+  //misc
+  val Platform: ReactPlatForm = js.native
+
 }
 
+@js.native
+trait ReactPlatForm extends js.Object {
+  val OS: String = js.native
+  val Version: Double = js.native
+}
 
 @js.native
 @JSName("React")

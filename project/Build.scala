@@ -67,6 +67,7 @@ object Sri extends Build {
   lazy val relay = DefProject("relay")
     .dependsOn(core)
     .settings(publicationSettings)
+    .settings(relayModuleDeps)
 
   lazy val web = DefProject("web")
     .dependsOn(core)
@@ -87,6 +88,7 @@ object Sri extends Build {
   lazy val mobileExamples = DefProject("mobile-examples")
     .dependsOn(mobile)
     .settings(iosLauncher)
+    .settings(mobilelauncher)
     .settings(mobileExamplesModuleDeps)
     .settings(preventPublication)
 

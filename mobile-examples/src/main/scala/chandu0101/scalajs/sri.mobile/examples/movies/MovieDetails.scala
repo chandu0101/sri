@@ -5,7 +5,7 @@ import chandu0101.scalajs.sri.core.{ReactComponent, RefType}
 import chandu0101.scalajs.sri.mobile._
 import chandu0101.scalajs.sri.mobile.components._
 import chandu0101.scalajs.sri.mobile.examples.movies.MoviesUtil._
-import chandu0101.scalajs.sri.mobile.styles.NativeStyleSheet
+import chandu0101.scalajs.sri.mobile.styles.MobileStyleSheet
 
 import scala.scalajs.js
 import scala.scalajs.js.Dynamic.{literal => json}
@@ -50,7 +50,7 @@ object MovieDetails {
         View()(
           Text(style = styles.castTitle)("Actors"),
           View()(
-            props.map(actor => Text(key = actor.name.toString, style = styles.castActor)(s"${actor.name.toString}")): _*
+            props.map(actor => Text(key = actor.name.toString, style = styles.castActor)(s"${actor.name.toString}"))
           )
         )
       }
@@ -95,7 +95,7 @@ object MovieDetails {
 
   def apply(movie: js.Dynamic, key: UndefOr[String] = js.undefined, ref: RefType = null) = createElement(factory, movie, key = key, ref = ref)
 
-  object styles extends NativeStyleSheet {
+  object styles extends MobileStyleSheet {
 
     val contentContainer = style(
       padding := 10

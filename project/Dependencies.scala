@@ -30,11 +30,13 @@ object Dependencies {
 
   val chandu0101Macros = libraryDependencies += "com.github.chandu0101" %%% "macros" % chandu0101MacrosVersion
 
+  val scalaReflect = libraryDependencies +=   "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided
 
   val coreModuleDeps = Seq(
   )
 
   val webModuleDeps = Seq(scalaJSDOM,
+  chandu0101Macros,
   jsDependencies += ProvidedJS / "webtest-bundle.js" % Test
   )
 
@@ -44,4 +46,5 @@ object Dependencies {
 
   val mobileExamplesModuleDeps = Seq(scalaAsync)
 
+  val relayModuleDeps = Seq(scalaReflect)
 }

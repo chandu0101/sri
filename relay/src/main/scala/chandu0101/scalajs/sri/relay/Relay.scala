@@ -1,79 +1,36 @@
 package chandu0101.scalajs.sri.relay
 
-import chandu0101.scalajs.sri.core.{React, ReactClass, ReactElement}
+import chandu0101.scalajs.sri.core.{React, ReactClass, ReactComponentConstructor, ReactElement}
 
 import scala.scalajs.js
 import scala.scalajs.js.Dynamic.{literal => json}
-import scala.scalajs.js.annotation.JSName
+import scala.scalajs.js.annotation.{JSExport, JSName, ScalaJSDefined}
+import scala.scalajs.js.{UndefOr => U}
 
 @js.native
 trait Relay extends js.Object {
 
+  type Scheduler = js.Function => Unit
+
   val RootContainer: ReactClass = js.native
 
-  def createContainer(component : js.Any,config : RelayContainer) : RelayContainer = js.native
+  def createContainer[P, S](component: ReactComponentConstructor[P, S], config: RelayContainerConfig): RelayContainer[P, S] = js.native
 
+  def injectNetworkLayer(layer: js.Any): Unit = js.native
+
+  def injectTaskScheduler(scheduler: Scheduler): Unit = js.native
+
+  def isContainer(component: js.Object): Boolean = js.native
 }
 
+
+@js.native
 object Relay extends Relay
 
 
-@js.native @JSName("Relay.DefaultNetworkLayer")
+@js.native
+@JSName("Relay.DefaultNetworkLayer")
 class DefaultNetworkLayer(val url: String) extends js.Object {
 
 }
 
-@js.native
-trait RelayContainer extends js.Object {
-
-  val fragments: js.Dictionary[Any] = js.native
-
-  val initialVariables: js.Dictionary[Any] = js.native
-
-  val prepareVariables: js.Function1[js.Dictionary[Any], js.Dictionary[Any]] = js.native
-
-  @JSName("route") val query: js.Dynamic = js.native
-
-  val variables: js.Dictionary[Any] = js.native
-
-
-}
-
-object RelayContainer {
-
-
-  def apply(fragments: js.Dictionary[Any],
-            initialVariables: js.UndefOr[js.Dictionary[Any]] = js.undefined,
-            prepareVariables: js.UndefOr[js.Function1[js.Dictionary[Any], js.Dictionary[Any]]] = js.undefined) = {
-
-    val x = json(fragments = fragments)
-    initialVariables.foreach(v => x.updateDynamic("initialVariables")(v))
-    prepareVariables.foreach(v => x.updateDynamic("prepareVariables")(v))
-
-    x.asInstanceOf[RelayContainer]
-  }
-
-}
-
-
-@js.native @JSName("Relay.Route")
-class RelayQueryConfig extends js.Object {
-
-  def paramDefinitions: js.Dictionary[Any] = js.native
-
-  def queries: js.Dictionary[Any] = js.native
-
-  def routeName: String = js.native
-}
-
-
-object RelayRootContainer {
-
-  def apply(component: RelayContainer, route: RelayQueryConfig) = {
-
-    val js = json(component = component, route = route)
-
-    val f = React.createFactory(Relay.RootContainer)
-    f(js).asInstanceOf[ReactElement]
-  }
-}

@@ -1,0 +1,103 @@
+package chandu0101.scalajs.sri.mobile.examples.uiexplorer.components.android
+
+import chandu0101.scalajs.sri.core.ElementFactory._
+import chandu0101.scalajs.sri.core._
+import chandu0101.scalajs.sri.mobile._
+import chandu0101.scalajs.sri.mobile.components.android.{SwitchAndroid, ToolbarAndroid, ToolbarAndroidAction, ToolbarAndroidActionShow}
+import chandu0101.scalajs.sri.mobile.components.{ImageSource, Text, View}
+import chandu0101.scalajs.sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
+import chandu0101.scalajs.sri.mobile.styles.MobileStyleSheet
+
+import scala.scalajs.js
+import scala.scalajs.js.annotation.ScalaJSDefined
+
+object ToolbarAndroidExample extends UIExample {
+
+  override val title: String = "ToolbarAndroid"
+
+  override val description: String = "Examples of using the Android toolbar"
+
+  val createImage = ImageSource.fromJson(load[js.Dynamic]("image!ic_create_black_48dp"))
+
+  val settingsImage = ImageSource.fromJson(load[js.Dynamic]("image!ic_settings_black_48dp"))
+
+  val blackMenuImage = ImageSource.fromJson(load[js.Dynamic]("image!ic_menu_black_24dp"))
+
+  val launcherImage = ImageSource.fromJson(load[js.Dynamic]("image!launcher_icon"))
+
+
+  val toolbarActions = List(
+    ToolbarAndroidAction(title = "Create", icon = createImage, show = ToolbarAndroidActionShow.ALWAYS),
+    ToolbarAndroidAction(title = "Filter"),
+    ToolbarAndroidAction(title = "Settings", icon = settingsImage, show = ToolbarAndroidActionShow.ALWAYS)
+  )
+
+  case class State(actionText: String = "Example app with toolbar component", toolbarSwitch: Boolean = false, titleColor: String = "#3b5998", subtitleColor: String = "#6a7180")
+
+  @ScalaJSDefined
+  class Component extends ReactComponent[Unit, State] {
+
+    initialState(State())
+
+    def render() = {
+      UIExplorerPage(
+        UIExplorerBlock("Toolbar with title/subtitle and actions")(
+          ToolbarAndroid(actions = toolbarActions,
+            style = styles.toolbar,
+            title = "Toolbar",
+            navIcon = blackMenuImage,
+            onActionSelected = onActionSelected _,
+            subtitle = state.actionText)(),
+          Text()(state.actionText)
+        ),
+        UIExplorerBlock("Toolbar with logo & custom title view (a View with Switch+Text)")(
+          ToolbarAndroid(logo = launcherImage, style = styles.toolbar)(
+            View(style = styles.view1)(
+              SwitchAndroid(value = state.toolbarSwitch, onValueChange = handleSwitchChange _)(),
+              Text()(s"a switch")
+            )
+          )
+        ),
+        UIExplorerBlock("Toolbar with no icon")(
+          ToolbarAndroid(actions = toolbarActions, style = styles.toolbar, subtitle = "there is no icon here")()
+        ),
+        UIExplorerBlock("Toolbar with navIcon & logo, no title")(
+          ToolbarAndroid(actions = toolbarActions, style = styles.toolbar, logo = launcherImage, navIcon = blackMenuImage)()
+        ),
+        UIExplorerBlock("Toolbar with custom title colors")(
+          ToolbarAndroid(
+            style = styles.toolbar,
+            navIcon = blackMenuImage,
+            title = "Wow such a toolbar",
+            subtitle = "Much Native",
+            subtitleColor = state.subtitleColor,
+            titleColor = state.titleColor)(),
+          Text()("Touch the icon to reset the custom colors to the default (theme-provided) ones.")
+        )
+      )
+    }
+
+    def onActionSelected(position: Int) = {
+      val text = toolbarActions(position).title
+      setState(state.copy(actionText = text))
+    }
+
+    def handleSwitchChange(value: Boolean) = {
+      setState(state.copy(toolbarSwitch = value))
+    }
+
+  }
+
+  val factory = getComponentFactory(js.constructorOf[Component], classOf[Component])
+
+  val component = createElementNoProps(factory)
+
+
+  object styles extends MobileStyleSheet {
+
+    val toolbar = style(backgroundColor := "#e9eaed", height := 56)
+
+    val view1 = style(height := 56, flexDirection.row, alignItems.center)
+  }
+
+}

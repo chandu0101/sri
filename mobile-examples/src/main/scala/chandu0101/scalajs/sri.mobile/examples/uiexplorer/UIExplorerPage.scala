@@ -1,17 +1,16 @@
 package chandu0101.scalajs.sri.mobile.examples.uiexplorer
 
 import chandu0101.scalajs.sri.core.ElementFactory._
-import chandu0101.scalajs.sri.core._
-import chandu0101.scalajs.sri.core.{ReactComponent, ReactElement}
+import chandu0101.scalajs.sri.core.{ReactComponent, _}
 import chandu0101.scalajs.sri.mobile.components._
-import chandu0101.scalajs.sri.mobile.styles.NativeStyleSheet
+import chandu0101.scalajs.sri.mobile.styles.MobileStyleSheet
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.ScalaJSDefined
 
 object UIExplorerPage {
 
-  object styles extends NativeStyleSheet {
+  object styles extends MobileStyleSheet {
 
     val wrapper = style(
       flex := 1)
@@ -30,6 +29,6 @@ object UIExplorerPage {
 
   val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
 
-  def apply(children: ReactElement*) = createElementNoPropsWithChildren(factory)(children: _*)
+  def apply(children: ReactNode*) = createElementNoPropsWithChildren(factory)(children: _*)
 
 }

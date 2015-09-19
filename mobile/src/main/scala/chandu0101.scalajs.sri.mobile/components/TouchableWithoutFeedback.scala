@@ -1,7 +1,7 @@
 package chandu0101.scalajs.sri.mobile.components
 
 import chandu0101.macros.tojs.JSMacro
-import chandu0101.scalajs.sri.core.ReactElement
+import chandu0101.scalajs.sri.core.{ReactNode, ReactElement}
 import chandu0101.scalajs.sri.mobile.ReactNative
 
 import scala.scalajs.js
@@ -11,7 +11,7 @@ case class TouchableWithoutFeedback(onPressIn: js.UndefOr[() => Unit] = js.undef
                                     onPress: js.UndefOr[() => Unit] = js.undefined,
                                     style: js.UndefOr[js.Any] = js.undefined,
                                     delayPressIn: js.UndefOr[Int] = js.undefined,
-                                    ref: js.UndefOr[String] = js.undefined,
+                                    ref: js.UndefOr[TouchableWithoutFeedbackM => _] = js.undefined,
                                     onPressOut: js.UndefOr[() => Unit] = js.undefined,
                                     key: js.UndefOr[String] = js.undefined,
                                     onLongPress: js.UndefOr[() => Unit] = js.undefined,
@@ -19,9 +19,12 @@ case class TouchableWithoutFeedback(onPressIn: js.UndefOr[() => Unit] = js.undef
                                     delayLongPress: js.UndefOr[Int] = js.undefined,
                                     accessible: js.UndefOr[Boolean] = js.undefined) {
 
-  def apply(children: ReactElement*) = {
+  def apply(children: ReactNode*) = {
     val props = JSMacro[TouchableWithoutFeedback](this)
     val f = ReactNative.createFactory(ReactNative.TouchableWithoutFeedback)
-    f(props, children.toJSArray).asInstanceOf[ReactElement]
+    f(props, children: _*).asInstanceOf[ReactElement]
   }
 }
+
+@js.native
+trait TouchableWithoutFeedbackM extends js.Object

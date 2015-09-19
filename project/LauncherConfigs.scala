@@ -34,6 +34,35 @@ object LauncherConfigs {
       }
     )
 
+  val fullOptMobile = Def.taskKey[File]("Generate the file given to react native")
+
+  lazy val mobilelauncher =
+    Seq(
+      artifactPath in Compile in fullOptMobile :=
+        baseDirectory.value / "index.ios.js",
+      fullOptMobile in Compile := {
+        val outFile = (artifactPath in Compile in fullOptIOS).value
+
+        val loaderFile = (resourceDirectory in Compile).value / "loader.js"
+
+        IO.copyFile(loaderFile, outFile)
+
+        val fullOutputCode = IO.read((fullOptJS in Compile).value.data)
+
+        IO.append(outFile, fullOutputCode)
+
+        val launcher = (scalaJSLauncher in Compile).value.data.content
+        IO.append(outFile, launcher)
+
+        IO.copyFile(outFile,baseDirectory.value / "index.android.js")
+        outFile
+      }
+    )
+
+
+
+
+
   val webExamplesAssets = "web-examples/assets"
 
   lazy val webExamplesLauncher = Seq(crossTarget in(Compile, fullOptJS) := file(webExamplesAssets),

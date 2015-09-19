@@ -6,7 +6,7 @@ import chandu0101.scalajs.sri.mobile._
 import chandu0101.scalajs.sri.mobile.apis.AlertButton
 import chandu0101.scalajs.sri.mobile.components._
 import chandu0101.scalajs.sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
-import chandu0101.scalajs.sri.mobile.styles.NativeStyleSheet
+import chandu0101.scalajs.sri.mobile.styles.MobileStyleSheet
 
 import scala.scalajs.js
 import scala.scalajs.js.Dynamic.{literal => json}
@@ -74,7 +74,7 @@ object AlertIOSExample extends UIExample {
 
   val component = createElementNoProps(factory)
 
-  object styles extends NativeStyleSheet {
+  object styles extends MobileStyleSheet {
     val alertsContainer = style(backgroundColor := "white",
       padding := 20)
     val wrapper = style(borderRadius := 5, marginBottom := 5)

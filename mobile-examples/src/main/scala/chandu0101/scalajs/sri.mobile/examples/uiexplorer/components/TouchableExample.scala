@@ -5,7 +5,7 @@ import chandu0101.scalajs.sri.core.{ReactComponent, RefType}
 import chandu0101.scalajs.sri.mobile.ReactNative
 import chandu0101.scalajs.sri.mobile.components.{ImageSource, _}
 import chandu0101.scalajs.sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
-import chandu0101.scalajs.sri.mobile.styles.NativeStyleSheet
+import chandu0101.scalajs.sri.mobile.styles.MobileStyleSheet
 
 import scala.scalajs.js
 import scala.scalajs.js.UndefOr
@@ -38,7 +38,7 @@ object TouchableExample extends UIExample {
         View(style = styles.eventLogBox)(
           state.eventLog.zipWithIndex.map {
             case (e, i) => Text(key = i.toString)(e)
-          }: _*
+          }
         )
       )
 
@@ -85,7 +85,7 @@ object TouchableExample extends UIExample {
   val component = createElementNoProps(factory)
 
 
-  object styles extends NativeStyleSheet {
+  object styles extends MobileStyleSheet {
 
     val row = style(justifyContent.center,
       flexDirection.row)

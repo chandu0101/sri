@@ -1,9 +1,9 @@
 package chandu0101.scalajs.sri.mobile.examples.uiexplorer
 
 import chandu0101.scalajs.sri.core.ElementFactory._
-import chandu0101.scalajs.sri.core.{ReactComponent, ReactElement}
+import chandu0101.scalajs.sri.core.{ReactNode, ReactComponent, ReactElement}
 import chandu0101.scalajs.sri.mobile.components._
-import chandu0101.scalajs.sri.mobile.styles.NativeStyleSheet
+import chandu0101.scalajs.sri.mobile.styles.MobileStyleSheet
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.ScalaJSDefined
@@ -11,7 +11,7 @@ import scala.scalajs.js.annotation.ScalaJSDefined
 
 object UIExplorerBlock {
 
-  object styles extends NativeStyleSheet {
+  object styles extends MobileStyleSheet {
 
     val container = style(
       borderRadius := 3,
@@ -55,6 +55,6 @@ object UIExplorerBlock {
 
   val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
 
-  def apply(title: String)(children: ReactElement) = createElementWithChildren(factory, title)(children)
+  def apply(title: String)(children: ReactNode*) = createElementWithChildren(factory, title)(children :_*)
 
 }

@@ -14,18 +14,18 @@ case class MapView(maxDelta: js.UndefOr[Int] = js.undefined,
                    mapType: js.UndefOr[MapType] = js.undefined,
                    style: js.UndefOr[js.Any] = js.undefined,
                    legalLabelInsets: js.UndefOr[EdgeInsets] = js.undefined,
-                   onRegionChange: js.UndefOr[MapViewRegion => Unit] = js.undefined,
-                   ref: js.UndefOr[String] = js.undefined,
+                   onRegionChange: js.UndefOr[js.Dynamic => _] = js.undefined,
+                   ref: js.UndefOr[MapViewM => _] = js.undefined,
                    minDelta: js.UndefOr[Int] = js.undefined,
                    key: js.UndefOr[String] = js.undefined,
                    scrollEnabled: js.UndefOr[Boolean] = js.undefined,
                    annotations: js.UndefOr[Seq[MapViewAnnotation]] = js.undefined,
                    rotateEnabled: js.UndefOr[Boolean] = js.undefined,
-                   onRegionChangeComplete: js.UndefOr[MapViewRegion => Unit] = js.undefined,
+                   onRegionChangeComplete: js.UndefOr[js.Dynamic => _] = js.undefined,
                    region: js.UndefOr[MapViewRegion] = js.undefined,
                    zoomEnabled: js.UndefOr[Boolean] = js.undefined,
                    showsUserLocation: js.UndefOr[Boolean] = js.undefined,
-                   onAnnotationPress: js.UndefOr[MapViewAnnotation => Unit] = js.undefined) {
+                   onAnnotationPress: js.UndefOr[js.Dynamic => Unit] = js.undefined) {
 
   def apply() = {
     val props = JSMacro[MapView](this)
@@ -68,3 +68,6 @@ object MapViewAnnotation {
     title = if (js.isUndefined(obj.title)) js.undefined else obj.title.asInstanceOf[String],
     longitude = obj.longitude.asInstanceOf[Double])
 }
+
+@js.native
+trait MapViewM extends js.Object

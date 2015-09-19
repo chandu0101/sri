@@ -1,7 +1,7 @@
 package chandu0101.scalajs.sri.mobile.components
 
 import chandu0101.macros.tojs.JSMacro
-import chandu0101.scalajs.sri.core.ReactElement
+import chandu0101.scalajs.sri.core.{ReactNode, ReactElement}
 import chandu0101.scalajs.sri.mobile.ReactNative
 
 import scala.scalajs.js
@@ -20,7 +20,7 @@ case class View(onResponderReject: js.UndefOr[js.Function] = js.undefined,
                 accessibilityLabel: js.UndefOr[String] = js.undefined,
                 onMoveShouldSetResponder: js.UndefOr[js.Function] = js.undefined,
                 removeClippedSubviews: js.UndefOr[Boolean] = js.undefined,
-                ref: js.UndefOr[String] = js.undefined,
+                ref: js.UndefOr[ViewM => _] = js.undefined,
                 accessibilityTraits: js.UndefOr[Seq[AccessibilityTraits]] = js.undefined,
                 onAcccessibilityTap: js.UndefOr[js.Function] = js.undefined,
                 collapsible: js.UndefOr[Boolean] = js.undefined,
@@ -33,10 +33,10 @@ case class View(onResponderReject: js.UndefOr[js.Function] = js.undefined,
                 onResponderGrant: js.UndefOr[js.Function] = js.undefined,
                 accessible: js.UndefOr[Boolean] = js.undefined) {
 
-  def apply(children: ReactElement*) = {
+  def apply(children: ReactNode*) = {
     val props = JSMacro[View](this)
     val f = ReactNative.createFactory(ReactNative.View)
-    f(props, children.toJSArray).asInstanceOf[ReactElement]
+    f(props, children: _*)
   }
 }
 
@@ -77,3 +77,5 @@ object PointerEvents {
   val AUTO = new PointerEvents("auto")
 }
 
+@js.native
+trait ViewM extends js.Object

@@ -30,7 +30,7 @@ initialRoute:PropTypes.NavigatorIOSRoute.isRequired
 case class NavigatorIOS(barTintColor: js.UndefOr[String] = js.undefined,
                         navigationBarHidden: js.UndefOr[Boolean] = js.undefined,
                         style: js.UndefOr[js.Any] = js.undefined,
-                        ref: js.UndefOr[String] = js.undefined,
+                        ref: js.UndefOr[NavigatorIOSM => _] = js.undefined,
                         titleTextColor: js.UndefOr[String] = js.undefined,
                         tintColor: js.UndefOr[String] = js.undefined,
                         key: js.UndefOr[String] = js.undefined,

@@ -1,8 +1,12 @@
 package chandu0101.scalajs.sri.mobile.examples.movies
 
-import chandu0101.scalajs.sri.mobile.styles.NativeStyleSheet
+import chandu0101.scalajs.sri.mobile.apis.AjaxNative
+import chandu0101.scalajs.sri.mobile.components.ios.ActivityIndicatorIOS
+import chandu0101.scalajs.sri.mobile.examples.movies.android.SearchBarAndroid
+import chandu0101.scalajs.sri.mobile.examples.movies.ios.SearchBarIOS
+import chandu0101.scalajs.sri.mobile.styles.MobileStyleSheet
 import org.scalajs.dom
-import org.scalajs.dom.ext.Ajax
+import org.scalajs.dom.ext.AjaxException
 
 import scala.async.Async._
 
@@ -42,38 +46,18 @@ object SearchScreen {
 
     case class Props(filter: String, isLoading: Boolean)
 
-    val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
+    val factory = getComponentFactory(js.constructorOf[Component], classOf[Component])
 
     def apply(filter: String, isLoading: Boolean, key: UndefOr[String] = js.undefined, ref: RefType = null) = createElement(factory, Props(filter, isLoading), key = key, ref = ref)
 
   }
 
-  object SearchBar {
-
-    @ScalaJSDefined
-    class Component extends ReactComponent[Props, Unit] {
-
-      def render() = View(style = styles.searchBar)(
-        TextInput(autoCapitalize = AutoCapitalize.NONE, autoCorrect = false,
-          onChange = props.onChange, onFocus = props.onFocus, placeholder = "Search a movie..", style = styles.searchBarInput
-        )(),
-        ActivityIndicatorIOS(animating = props.isLoading, style = styles.spinner)()
-      )
-    }
-
-    case class Props(onChange: NEvent => Unit, onFocus: NEvent => Unit, isLoading: Boolean)
-
-    val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
-
-    def apply(onChange: NEvent => Unit, onFocus: NEvent => Unit, isLoading: Boolean, key: UndefOr[String] = js.undefined, ref: RefType = null) = createElement(factory, Props(onChange, onFocus, isLoading), key = key, ref = ref)
-
-  }
 
   val LOADING = collection.mutable.Map.empty[String, Boolean].withDefaultValue(false)
 
   case class ResultsCache(dataForQuery: Map[String, js.Array[js.Dynamic]] = Map().withDefaultValue(js.Array()), nextPageNumberForQuery: Map[String, Int] = Map().withDefaultValue(0), totalForQuery: Map[String, Int] = Map().withDefaultValue(0))
 
-  case class State(isLoading: Boolean = false, isLoadingTail: Boolean = false, dataSource: ListViewDataSource[js.Dynamic, String] = createListViewDataSource((row1: js.Dynamic, row2: js.Dynamic) => row1 != row2),queryNumber: Int = 0)
+  case class State(isLoading: Boolean = false, isLoadingTail: Boolean = false, dataSource: ListViewDataSource[js.Dynamic, String] = createListViewDataSource((row1: js.Dynamic, row2: js.Dynamic) => row1 != row2), queryNumber: Int = 0)
 
 
   @ScalaJSDefined
@@ -94,7 +78,9 @@ object SearchScreen {
         automaticallyAdjustContentInsets = false
       )()
       View(style = styles.container)(
-        SearchBar(onSearchChange, onSearchInputFocus, state.isLoading),
+        if (ReactNative.Platform.OS == "ios")
+          SearchBarIOS(onSearchChange, onSearchInputFocus, state.isLoading)
+        else SearchBarAndroid(onSearchChange, onSearchInputFocus, state.isLoading),
         View(style = styles.separator)(),
         content
       )
@@ -144,7 +130,7 @@ object SearchScreen {
         setState(state.copy(isLoading = true, queryNumber = state.queryNumber + 1, isLoadingTail = false))
         val page = resultsCache.nextPageNumberForQuery.getOrElse(query, 1)
         async {
-          val result = await(Ajax.get(_urlForQueryAndPage(query, page)))
+          val result = await(AjaxNative.get(_urlForQueryAndPage(query, page)))
           val response = JSON.parse(result.responseText)
           val movies = response.movies.asInstanceOf[js.Array[js.Dynamic]]
           LOADING.update(query, false)
@@ -156,7 +142,7 @@ object SearchScreen {
           case ex => {
             LOADING.update(query, false)
             setState(state.copy(isLoading = false))
-            println(s"Error searching movies with query $query ")
+            println(s"Error searching movies with query $query -> ${ex.asInstanceOf[AjaxException].xhr.responseText}")
           }
         }
       }
@@ -177,7 +163,7 @@ object SearchScreen {
         setState(state.copy(queryNumber = state.queryNumber + 1, isLoadingTail = true))
         val page = resultsCache.nextPageNumberForQuery(query)
         async {
-          val result = await(Ajax.get(_urlForQueryAndPage(query, page)))
+          val result = await(AjaxNative.get(_urlForQueryAndPage(query, page)))
           val response = JSON.parse(result.responseText)
           val moviesForQuery = resultsCache.dataForQuery(query)
           LOADING.update(query, false)
@@ -193,8 +179,6 @@ object SearchScreen {
         }
       }
     }
-
-
 
 
     def renderRow(movie: js.Dynamic, sectionID: String, rowID: String): ReactElement = {
@@ -219,12 +203,13 @@ object SearchScreen {
     }
   }
 
-  val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
+
+  val factory = getComponentFactory(js.constructorOf[Component], classOf[Component])
 
   def apply(key: UndefOr[String] = js.undefined, ref: RefType = null) = createElementNoProps(factory, key = key, ref = ref)
 
 
-  object styles extends NativeStyleSheet {
+  object styles extends MobileStyleSheet {
 
     val container = style(
       flex := 1,
@@ -237,25 +222,12 @@ object SearchScreen {
       marginTop := 40,
       color := "#888888"
     )
-    val searchBar = style(
-      marginTop := 20,
-      padding := 3,
-      paddingLeft := 8,
-      flexDirection.row,
-      alignItems.center
-    )
-    val searchBarInput = style(
-      fontSize := 15,
-      flex := 1,
-      height := 30
-    )
+
     val separator = style(
       height := 1,
       backgroundColor := "#eeeeee"
     )
-    val spinner = style(
-      width := 30
-    )
+
     val scrollSpinner = style(
       marginVertical := 20
     )
