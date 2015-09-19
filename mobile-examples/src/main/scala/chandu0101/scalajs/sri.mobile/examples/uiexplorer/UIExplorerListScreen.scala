@@ -43,7 +43,8 @@ object UIExplorerListScreen {
     WebViewExample
   )
 
-  val ANDROID_COMPONENTS: List[UIExample] = List(ToolbarAndroidExample)
+  val ANDROID_COMPONENTS: List[UIExample] = List(ToolbarAndroidExample,    SwitchAndroidExample
+  )
 
 
   val APIS: List[UIExample] = List(
@@ -57,8 +58,7 @@ object UIExplorerListScreen {
   )
 
   val ANDROID_APIS: List[UIExample] = List(
-    ToastAndroidExample
-  )
+    ToastAndroidExample)
 
 
   def getComponents() = {
