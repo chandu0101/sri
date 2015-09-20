@@ -1,6 +1,6 @@
-package chandu0101.scalajs.sri.web
+package sri.web
 
-import chandu0101.scalajs.sri.core.ReactElement
+import sri.core.ReactElement
 
 import scala.scalajs.js
 

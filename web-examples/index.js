@@ -1,6 +1,6 @@
 var React = require('react'),
      Relay = require('react-relay'),
-     ReactNativeWeb = require('react-native-web'),
+     ReactNativeWeb = require('react-native-sri.web'),
      createHistory = require('history'),
     RelayLocalSchema = require('relay-local-schema'),
      ReactDOM = require('react-dom');

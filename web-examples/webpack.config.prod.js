@@ -7,7 +7,7 @@ var webpack = require('webpack'),
 module.exports = _.merge(require('./webpack.config.js'), {
 
     output: {
-        publicPath: "sri/web-examples/assets/"
+        publicPath: "sri/sri.web-examples/assets/"
     },
     plugins: [
         new CommonsChunkPlugin({

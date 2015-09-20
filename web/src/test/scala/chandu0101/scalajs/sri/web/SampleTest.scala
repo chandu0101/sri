@@ -1,6 +1,6 @@
-package chandu0101.scalajs.sri.web
+package sri.web
 
-import chandu0101.scalajs.sri.core.{ReactJSComponent, React}
+import sri.core.ReactJSComponent
 import org.scalatest.FunSuite
 
 import scala.scalajs.js.annotation.ScalaJSDefined

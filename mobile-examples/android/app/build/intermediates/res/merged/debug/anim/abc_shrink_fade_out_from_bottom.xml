@@ -24,4 +24,4 @@
     <alpha 	android:interpolator="@android:anim/decelerate_interpolator"
               android:fromAlpha="1.0" android:toAlpha="0.0"
               android:duration="@integer/abc_config_activityShortDur" />
-</set><!-- From: file:/usr/local/google/buildbot/repo_clients/https___googleplex-android.googlesource.com_a_platform_manifest.git/mnc-release/frameworks/support/v7/appcompat/res/anim/abc_shrink_fade_out_from_bottom.xml --><!-- From: file:/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.0/res/anim/abc_shrink_fade_out_from_bottom.xml -->
+</set><!-- From: file:/usr/local/google/buildbot/repo_clients/https___googleplex-android.googlesource.com_a_platform_manifest.git/mnc-release/frameworks/support/v7/appcompat/res/anim/abc_shrink_fade_out_from_bottom.xml --><!-- From: file:/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/sri.mobile-sri.web.examples/android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.0/res/anim/abc_shrink_fade_out_from_bottom.xml -->

@@ -1,4 +1,4 @@
-package chandu0101.scalajs.sri.web.styles
+package sri.web.styles
 
 import org.scalatest.FunSuite
 

@@ -11,4 +11,4 @@
           android:duration="@android:integer/config_shortAnimTime"
           />
 </set>
-<!-- From: file:/Users/mkonicek/code/react-native-android/ReactAndroid/src/main/res/devsupport/anim/catalyst_push_up_in.xml --><!-- From: file:/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/exploded-aar/com.facebook.react/react-native/0.11.0/res/anim/catalyst_push_up_in.xml -->
+<!-- From: file:/Users/mkonicek/code/react-native-android/ReactAndroid/src/main/res/devsupport/anim/catalyst_push_up_in.xml --><!-- From: file:/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/sri.mobile-sri.web.examples/android/app/build/intermediates/exploded-aar/com.facebook.react/react-native/0.11.0/res/anim/catalyst_push_up_in.xml -->
