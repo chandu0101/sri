@@ -19,8 +19,7 @@ case class SwitchIOS(style: js.UndefOr[js.Any] = js.undefined,
 
   def apply() = {
     val props = JSMacro[SwitchIOS](this)
-    val f = ReactNative.createFactory(ReactNative.SwitchIOS)
-    f(props).asInstanceOf[ReactElement]
+    ReactNative.createElement(ReactNative.SwitchIOS,props)
   }
 
 }

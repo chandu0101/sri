@@ -18,8 +18,7 @@ case class Text(suppressHighlighting: js.UndefOr[Boolean] = js.undefined,
 
   def apply(children: ReactNode*) = {
     val props = JSMacro[Text](this)
-    val f = ReactNative.createFactory(ReactNative.Text)
-    f(props, children: _*).asInstanceOf[ReactElement]
+    ReactNative.createElement(ReactNative.Text,props,children :_*)
   }
 }
 

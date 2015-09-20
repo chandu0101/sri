@@ -18,8 +18,7 @@ case class ActivityIndicatorIOS(size: js.UndefOr[ActivityIndicatorIOSSize] = js.
 
   def apply() = {
     val props = JSMacro[ActivityIndicatorIOS](this)
-    val f = ReactNative.createFactory(ReactNative.ActivityIndicatorIOS)
-    f(props).asInstanceOf[ReactElement]
+    ReactNative.createElement(ReactNative.ActivityIndicatorIOS,props)
   }
 
 }

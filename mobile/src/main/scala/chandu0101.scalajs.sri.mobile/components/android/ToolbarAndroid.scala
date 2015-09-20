@@ -26,8 +26,7 @@ case class ToolbarAndroid(key: U[String] = undefined,
 
   def apply(children: ReactNode*) = {
     val props = JSMacro[ToolbarAndroid](this)
-    val f = ReactNative.createFactory(ReactNative.ToolbarAndroid)
-    f(props, children: _*)
+    ReactNative.createElement(ReactNative.ToolbarAndroid,props,children: _*)
   }
 
 }

@@ -24,8 +24,7 @@ case class Image(onLoaded: js.UndefOr[Boolean] = js.undefined,
 
   def apply() = {
     val props = JSMacro[Image](this)
-    val f = ReactNative.createFactory(ReactNative.Image)
-    f(props).asInstanceOf[ReactElement]
+    ReactNative.createElement(ReactNative.Image,props)
   }
 
 }

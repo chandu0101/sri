@@ -1,88 +1,31 @@
+# Creating Elements 
 
-## Component with No Props and No State
+We cannot directly use component classes to construct ReactElement's , if you're interested in knowing in detail .. 
 
-#### ReactJS
-```js
-class HelloMessage extends React.Component {
-  render() {
-    return <View ...view_props>Hello React</View>;
-  }
-}
-```
-#### Sri 
+>We can't just create an instance of the class using the constructor and use that as an element because a single element can be inserted into the DOM in several places. We need to create an instance of that class for each insertion point of the element. This is why elements are not instances of the class.
+
+[New React Element Factories and JSX](https://gist.github.com/sebmarkbage/d7bce729f38730399d28)
+
+React uses [JSX](https://facebook.github.io/react/docs/jsx-in-depth.html) to create elements from component classes ,as we can't use JSX we(all third party langs that compile to JS and interface with react) need some over engineering here.
+
+Sri comes with some helpers methods to achieve this .  [ElementFactory](https://github.com/chandu0101/sri/blob/master/core/src/main/scala/chandu0101.scalajs.sri.core/ElementFactory.scala)
+
+## Examples
+
+Let's say we have a react component `HelloMessge` to construct element for this first we need to create reusable factory and then we can use that factory to create elements by passing props and children 
+
 ```scala
+import sri.core.ElementFactory._
 @ScalaJSDefined
 class HelloMessage extends ReactComponent[Unit,Unit] {
   def render() = {
    View(...view_props)("Hello Sri")
   }
 }
+// create factory 
+val factory = getComponentFactory(js.constructor[HelloMessage],classOf[HelloMessage])
+val element = createElementNoProps(factory)
 ```
 
-## Component with Props and No State
-
-#### ReactJS
-
-```js
-class HelloMessage extends React.Component {
-  render() {
-    return <View ...view_props>Hello {this.props.name}</View>;
-  }
-}
-HelloMessage.propTypes = { name: React.PropTypes.string };
-```
-
-#### Sri 
-```scala
-@ScalaJSDefined
-class HelloMessage extends ReactComponent[Props,Unit] {
-  def render() = {
-   View(...view_props)(s"Hello ${props.name}")
-  }
-}
-case class Props(name : String)
-```
-
-## Component with Props and State
-
-#### ReactJS
-```js
-export class Counter extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {count: 0};
-  }
-  tick() {
-    this.setState({count: this.state.count + 1});
-  }
-  render() {
-    return (
-      <View onClick={this.tick.bind(this)}>
-        Clicks: {this.state.count}
-      </View>
-    );
-  }
-}
-Counter.propTypes = { initialCount: React.PropTypes.number };
-Counter.defaultProps = { initialCount: 0 };
-```
-
-#### Sri 
-```scala
-@ScalaJSDefined
-class Counter extends ReactComponent[Props,State] {
-  initialState(State())
-  def render() = {
-   View(onClick = tick _)(s"Clicks: ${state.count}")
-  }
-  def tick() = {
-   setState(state.copy(count = state.count + 1)
-  }
-}
-case class Props(initialCount: Int = 0)
-case class State(count: Int = 0)
-```
-
-
-`Note: @ScalaJSDefined  is not needed in future versions of scala.js`
+please check the source code of [ElementFactory](https://github.com/chandu0101/sri/blob/master/core/src/main/scala/chandu0101.scalajs.sri.core/ElementFactory.scala)  for all helper methods documentations
 

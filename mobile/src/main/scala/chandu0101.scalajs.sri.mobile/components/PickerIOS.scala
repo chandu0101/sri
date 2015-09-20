@@ -16,8 +16,7 @@ case class PickerIOS[T](style: js.UndefOr[js.Any] = js.undefined,
 
   def apply(children: ReactNode*) = {
     val props = JSMacroAny[PickerIOS[T]](this)
-    val f = ReactNative.createFactory(ReactNative.PickerIOS)
-    f(props, children: _*).asInstanceOf[ReactElement]
+    ReactNative.createElement(ReactNative.PickerIOS,props,children :_*)
   }
 }
 
@@ -32,8 +31,7 @@ case class PickerItemIOS[T](style: js.UndefOr[js.Any] = js.undefined,
 
   def apply() = {
     val props = JSMacroAny[PickerItemIOS[T]](this)
-    val f = ReactNative.createFactory(ReactNative.PickerIOS.asInstanceOf[js.Dynamic].Item.asInstanceOf[ReactClass])
-    f(props).asInstanceOf[ReactElement]
+    ReactNative.createElement(ReactNative.PickerIOS.asInstanceOf[js.Dynamic].Item,props)
   }
 
 }

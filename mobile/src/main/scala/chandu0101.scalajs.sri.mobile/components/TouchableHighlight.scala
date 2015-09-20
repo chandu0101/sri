@@ -25,8 +25,7 @@ case class TouchableHighlight(onPressIn: js.UndefOr[() => Unit] = js.undefined,
 
   def apply(children: ReactElement) = {
     val props = JSMacro[TouchableHighlight](this)
-    val f = ReactNative.createFactory(ReactNative.TouchableHighlight)
-    f(props, children).asInstanceOf[ReactElement]
+    ReactNative.createElement(ReactNative.TouchableHighlight,props,children)
   }
 }
 

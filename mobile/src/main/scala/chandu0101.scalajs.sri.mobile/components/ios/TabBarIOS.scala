@@ -1,7 +1,7 @@
 package chandu0101.scalajs.sri.mobile.components.ios
 
 import chandu0101.macros.tojs.JSMacro
-import chandu0101.scalajs.sri.core.{ReactClass, ReactElement, ReactNode}
+import chandu0101.scalajs.sri.core.{ReactElement, ReactNode}
 import chandu0101.scalajs.sri.mobile._
 import chandu0101.scalajs.sri.mobile.components.ImageSource
 
@@ -17,8 +17,7 @@ case class TabBarIOS(barTintColor: js.UndefOr[String] = js.undefined,
 
   def apply(children: ReactNode*) = {
     val props = JSMacro[TabBarIOS](this)
-    val f = ReactNative.createFactory(ReactNative.TabBarIOS)
-    f(props, children: _*).asInstanceOf[ReactElement]
+    ReactNative.createElement(ReactNative.TabBarIOS, props, children: _*)
   }
 }
 
@@ -38,8 +37,7 @@ case class TabBarItemIOS(systemIcon: js.UndefOr[SystemIcon] = js.undefined,
 
   def apply(children: ReactElement) = {
     val props = JSMacro[TabBarItemIOS](this)
-    val f = ReactNative.createFactory(ReactNative.TabBarIOS.asInstanceOf[js.Dynamic].Item.asInstanceOf[ReactClass])
-    f(props, children).asInstanceOf[ReactElement]
+    ReactNative.createElement(ReactNative.TabBarIOS.asInstanceOf[js.Dynamic].Item, props,children)
   }
 }
 

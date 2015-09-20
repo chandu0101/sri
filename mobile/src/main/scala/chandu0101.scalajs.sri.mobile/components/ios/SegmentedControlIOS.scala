@@ -20,8 +20,7 @@ case class SegmentedControlIOS(momentary: js.UndefOr[Boolean] = js.undefined,
 
   def apply() = {
     val props = JSMacro[SegmentedControlIOS](this)
-    val f = ReactNative.createFactory(ReactNative.SegmentedControlIOS)
-    f(props).asInstanceOf[ReactElement]
+    ReactNative.createElement(ReactNative.SegmentedControlIOS,props)
   }
 
 }

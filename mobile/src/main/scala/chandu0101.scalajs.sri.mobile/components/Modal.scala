@@ -17,8 +17,7 @@ case class Modal(visible: js.UndefOr[Boolean] = js.undefined,
 
   def apply(children: ReactNode*) = {
     val props = JSMacro[Modal](this)
-    val f = ReactNative.createFactory(ReactNative.Modal)
-    f(props, children: _*).asInstanceOf[ReactElement]
+    ReactNative.createElement(ReactNative.Modal,props,children: _*)
   }
 }
 

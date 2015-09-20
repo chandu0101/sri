@@ -29,8 +29,7 @@ case class MapView(maxDelta: js.UndefOr[Int] = js.undefined,
 
   def apply() = {
     val props = JSMacro[MapView](this)
-    val f = ReactNative.createFactory(ReactNative.MapView)
-    f(props).asInstanceOf[ReactElement]
+    ReactNative.createElement(ReactNative.MapView,props)
   }
 
 }

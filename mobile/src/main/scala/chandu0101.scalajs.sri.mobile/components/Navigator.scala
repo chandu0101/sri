@@ -23,8 +23,7 @@ case class Navigator(navigator: js.UndefOr[js.Object] = js.undefined,
 
   def apply() = {
     val props = JSMacro[Navigator](this)
-    val f = ReactNative.createFactory(ReactNative.Navigator)
-    f(props).asInstanceOf[ReactElement]
+    ReactNative.createElement(ReactNative.Navigator,props)
   }
 
 }

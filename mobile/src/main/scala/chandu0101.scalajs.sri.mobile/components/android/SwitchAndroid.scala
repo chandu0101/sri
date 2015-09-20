@@ -17,8 +17,7 @@ case class SwitchAndroid(key: U[String] = undefined,
 
   def apply() = {
     val props = JSMacro[SwitchAndroid](this)
-    val f = ReactNative.createFactory(ReactNative.SwitchAndroid)
-    f(props)
+    ReactNative.createElement(ReactNative.SwitchAndroid,props)
   }
 
 }

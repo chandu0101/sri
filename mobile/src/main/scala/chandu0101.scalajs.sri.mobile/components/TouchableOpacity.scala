@@ -21,8 +21,7 @@ case class TouchableOpacity(onPressIn: js.UndefOr[() => Unit] = js.undefined,
 
   def apply(children: ReactElement) = {
     val props = JSMacro[TouchableOpacity](this)
-    val f = ReactNative.createFactory(ReactNative.TouchableOpacity)
-    f(props, children).asInstanceOf[ReactElement]
+    ReactNative.createElement(ReactNative.TouchableOpacity,props,children)
   }
 }
 

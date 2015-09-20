@@ -21,8 +21,7 @@ case class TouchableNativeFeedback(key: U[String] = undefined,
 
   def apply(children: ReactNode) = {
     val props = JSMacro[TouchableNativeFeedback](this)
-    val f = ReactNative.createFactory(ReactNative.TouchableNativeFeedback)
-    f(props, children)
+    ReactNative.createElement(ReactNative.TouchableNativeFeedback,props,children)
   }
 
 

@@ -44,9 +44,7 @@ case class TextInput(onBlur: js.UndefOr[(NEvent) => Unit] = js.undefined,
 
   def apply(children: ReactNode*) = {
     val props = JSMacro[TextInput](this)
-    val f = ReactNative.createFactory(ReactNative.TextInput)
-    if (children.isEmpty) f(props).asInstanceOf[ReactElement]
-    else f(props, children: _*).asInstanceOf[ReactElement]
+    ReactNative.createElement(ReactNative.TextInput,props,children :_*)
   }
 }
 

@@ -21,8 +21,7 @@ case class TouchableWithoutFeedback(onPressIn: js.UndefOr[() => Unit] = js.undef
 
   def apply(children: ReactNode*) = {
     val props = JSMacro[TouchableWithoutFeedback](this)
-    val f = ReactNative.createFactory(ReactNative.TouchableWithoutFeedback)
-    f(props, children: _*).asInstanceOf[ReactElement]
+    ReactNative.createElement(ReactNative.TouchableWithoutFeedback,props,children : _*)
   }
 }
 

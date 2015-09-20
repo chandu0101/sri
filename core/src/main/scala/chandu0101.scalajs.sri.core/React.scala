@@ -14,10 +14,6 @@ trait React extends js.Object {
 
   def cloneElement(element: ReactElement, props: js.Any = ???, children: js.Any = ???): ReactElement = js.native
 
-  //  def createFactory[P,S](tpe: String | ReactClass): js.Dynamic = js.native
-
-  //  def createFactory[P,S](cons : () => ReactComponent[P,S]): js.Dynamic = js.native
-
   def createFactory(tpe: js.Any): ReactComponentFactory[Any,Any] = js.native
 
   def render(elm: ReactElement, dom: js.Any, callback: js.Function = ???): js.Any = js.native

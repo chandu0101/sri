@@ -25,8 +25,7 @@ case class WebView(contentInset: js.UndefOr[EdgeInsets] = js.undefined,
 
   def apply() = {
     val props = JSMacro[WebView](this)
-    val f = ReactNative.createFactory(ReactNative.WebView)
-    f(props).asInstanceOf[ReactElement]
+    ReactNative.createElement(ReactNative.WebView,props)
   }
 
 }

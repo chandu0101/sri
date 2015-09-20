@@ -41,8 +41,7 @@ case class NavigatorIOS(barTintColor: js.UndefOr[String] = js.undefined,
 
   def apply() = {
     val props = JSMacro[NavigatorIOS](this)
-    val f = ReactNative.createFactory(ReactNative.NavigatorIOS)
-    f(props).asInstanceOf[ReactElement]
+    ReactNative.createElement(ReactNative.NavigatorIOS,props)
   }
 
 }

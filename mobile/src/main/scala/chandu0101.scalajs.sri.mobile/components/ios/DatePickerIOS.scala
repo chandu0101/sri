@@ -18,8 +18,7 @@ case class DatePickerIOS(ref: js.UndefOr[DatePickerIOSM => _] = js.undefined,
 
   def apply() = {
     val props = JSMacro[DatePickerIOS](this)
-    val f = ReactNative.createFactory(ReactNative.DatePickerIOS)
-    f(props).asInstanceOf[ReactElement]
+    ReactNative.createElement(ReactNative.DatePickerIOS,props)
   }
 
 }

@@ -20,8 +20,7 @@ case class SliderIOS(style: js.UndefOr[js.Any] = js.undefined,
 
   def apply() = {
     val props = JSMacro[SliderIOS](this)
-    val f = ReactNative.createFactory(ReactNative.SliderIOS)
-    f(props).asInstanceOf[ReactElement]
+    ReactNative.createElement(ReactNative.SliderIOS,props)
   }
 
 }

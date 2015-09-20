@@ -35,8 +35,7 @@ case class View(onResponderReject: js.UndefOr[js.Function] = js.undefined,
 
   def apply(children: ReactNode*) = {
     val props = JSMacro[View](this)
-    val f = ReactNative.createFactory(ReactNative.View)
-    f(props, children: _*)
+    ReactNative.createElement(ReactNative.View,props,children : _*)
   }
 }
 

@@ -57,8 +57,7 @@ case class ListView[T, H](zoomScale: js.UndefOr[Int] = js.undefined,
 
   def apply() = {
     val props = JSMacro[ListView[T, H]](this)
-    val f = ReactNative.createFactory(ReactNative.ListView)
-    f(props).asInstanceOf[ReactElement]
+    ReactNative.createElement(ReactNative.ListView,props)
   }
 
 }
