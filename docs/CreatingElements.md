@@ -8,7 +8,7 @@ We cannot directly use component classes to construct ReactElement's , if you're
 
 React uses [JSX](https://facebook.github.io/react/docs/jsx-in-depth.html) to create elements from component classes ,as we can't use JSX we(all third party langs that compile to JS and interface with react) need some over engineering here.
 
-Sri comes with some helpers methods to achieve this .  [ElementFactory](https://github.com/chandu0101/sri/blob/master/core/src/main/scala/chandu0101.scalajs.sri.core/ElementFactory.scala)
+Sri comes with some helpers methods to achieve this .  [ElementFactory](https://github.com/chandu0101/sri/blob/master/core/src/main/scala/sri/core/ElementFactory.scala)
 
 ## Examples
 
@@ -27,5 +27,5 @@ val factory = getComponentFactory(js.constructor[HelloMessage],classOf[HelloMess
 val element = createElementNoProps(factory)
 ```
 
-please check the source code of [ElementFactory](https://github.com/chandu0101/sri/blob/master/core/src/main/scala/chandu0101.scalajs.sri.core/ElementFactory.scala)  for all helper methods documentations
+please check the source code of [ElementFactory](https://github.com/chandu0101/sri/blob/master/core/src/main/scala/sri/core/ElementFactory.scala)  for all helper methods documentations
 

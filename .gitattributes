@@ -1,2 +1,2 @@
 web/src/test/resources/webtest-bundle.js linguist-vendored
-mobile-examples/android linguist-vendored
+mobile-examples/android/* linguist-vendored
