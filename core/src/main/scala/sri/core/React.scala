@@ -1,6 +1,5 @@
 package sri.core
 
-
 import scala.scalajs.js
 import scala.scalajs.js.annotation.{JSName, ScalaJSDefined}
 import scala.scalajs.js.{UndefOr, undefined}

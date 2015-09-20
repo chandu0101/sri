@@ -1,4 +1,4 @@
-package sri.web.examples.starterkit
+package sri.web.examples.relay.starterkit
 
 import sri.relay.{RelayQL, RelayQueryConfig}
 

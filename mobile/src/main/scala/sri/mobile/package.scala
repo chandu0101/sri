@@ -1,7 +1,6 @@
 
 package sri
 
-
 import sri.core.ReactElementU
 import sri.mobile.components.ListViewDataSource
 

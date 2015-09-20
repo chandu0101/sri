@@ -1,6 +1,6 @@
 package sri.web.examples
 
-import sri.web.router._
+import sri.web.router.StaticContent
 
 object AppRouter {
 

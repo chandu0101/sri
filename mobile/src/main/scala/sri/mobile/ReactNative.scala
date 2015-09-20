@@ -1,6 +1,5 @@
 package sri.mobile
 
-
 import sri.core._
 import sri.mobile.apis._
 import sri.mobile.modules.NativeModules
