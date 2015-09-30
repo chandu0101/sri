@@ -32,9 +32,15 @@ node_modules/
 npm-debug.log
 
 
-#ios
+#mobile
 index.ios.js
+index.android.js
 
 #web-examples
 web-examples/assets/
 web-examples/node_modules/
+
+
+#relay-web-examples
+relay-web-examples/assets/
+relay-web-examples/node_modules/

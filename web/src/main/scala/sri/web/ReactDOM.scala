@@ -1,8 +1,7 @@
 package sri.web
 
-
-import sri.core._
 import org.scalajs.dom.raw.Element
+import sri.core._
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSName
