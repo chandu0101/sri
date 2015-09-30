@@ -1,6 +1,6 @@
 package sri.relay.container
 
-import sri.core.{ReactComponent, ReactElement, ReactJSComponent}
+import sri.core.ReactElement
 import sri.relay.RelayComponent
 import sri.relay.container.RelayContainer.{Fragment, Fragments, RootQueries}
 import sri.relay.mutation.RelayMutationTransaction
@@ -10,6 +10,7 @@ import sri.relay.route.RelayQueryConfig
 import sri.relay.tools.RelayTypes.{ComponentReadyStateChangeCallback, Variables}
 
 import scala.scalajs.js
+import scala.scalajs.js.Dynamic.{literal => json}
 import scala.scalajs.js.JSConverters.JSRichGenMap
 import scala.scalajs.js.annotation.ScalaJSDefined
 import scala.scalajs.js.{UndefOr => U}
@@ -28,21 +29,22 @@ object RelayContainer {
   type RootQueries = js.Dictionary[QueryBuilder]
 }
 
-@ScalaJSDefined
-abstract class RelayContainerSpec extends AbstractRelayContainerSpec {
-  override val initialVariables: Variables = js.Dictionary()
-  override val prepareVariables: js.Function = () => Unit
-}
 
 @ScalaJSDefined
 trait AbstractRelayContainerSpec extends js.Object {
 
   val fragments: Fragments
 
-  val initialVariables: Variables
+  val initialVariables: js.UndefOr[js.Object]
 
-  val prepareVariables: js.Function
+  val prepareVariables: js.UndefOr[js.Function]
 
+}
+
+@ScalaJSDefined
+abstract class RelayContainerSpec extends AbstractRelayContainerSpec {
+  override val initialVariables: js.UndefOr[js.Object] = js.undefined
+  override val prepareVariables: js.UndefOr[js.Function] = js.undefined
 }
 
 /**
@@ -59,7 +61,7 @@ trait AbstractRelayContainerSpec extends js.Object {
  */
 
 @js.native
-trait RelayContainer[C <: RelayComponent[_,_]] extends js.Object {
+trait RelayContainer[C <: RelayComponent[_, _]] extends js.Object {
 
   var route: RelayQueryConfig = js.native
 
