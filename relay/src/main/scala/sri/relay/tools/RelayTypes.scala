@@ -7,7 +7,7 @@ import sri.relay.tools.RelayInternalTypes.DataID
 import sri.relay.tools.RelayTypes._
 
 import scala.scalajs.js
-import scala.scalajs.js.annotation.JSName
+import scala.scalajs.js.annotation.{ScalaJSDefined, JSName}
 
 object RelayTypes {
   type RelayMutationTransactionCommitSuccessCallback = js.Function1[js.Dictionary[js.Any], Unit]
@@ -103,17 +103,17 @@ trait XHRErrorData extends js.Object {
   val errorType: js.UndefOr[String] = js.native
 }
 
-@js.native
-trait MutationResult extends js.Object {
-  val response: js.Object = js.native
+@ScalaJSDefined
+abstract class MutationResult extends js.Object {
+  val response: js.Object
 }
 
-@js.native
-trait QueryResult extends js.Object {
-  val error: js.UndefOr[js.Error] = js.native
+@ScalaJSDefined
+abstract class QueryResult extends js.Object {
+  val error: js.UndefOr[js.Error] = js.undefined
   @JSName("ref_params")
-  val refParams: js.UndefOr[js.Dictionary[js.Any]] = js.native
-  val response: js.Object = js.native
+  val refParams: js.UndefOr[js.Dictionary[js.Any]] = js.undefined
+  val response: js.Object
 }
 
 @js.native
