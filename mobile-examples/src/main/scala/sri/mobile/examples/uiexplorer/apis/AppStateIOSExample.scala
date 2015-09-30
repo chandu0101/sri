@@ -42,7 +42,7 @@ object AppStateIOSExample extends UIExample {
 
     val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
 
-    def apply(state: Boolean, key: UndefOr[String] = js.undefined, ref: js.Function = null) = createElement(factory, state, key = key, ref = ref)
+    def apply(state: Boolean, key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElement(factory, state, key = key, ref = ref)
 
   }
 

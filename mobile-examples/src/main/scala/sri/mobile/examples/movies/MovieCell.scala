@@ -45,7 +45,7 @@ object MovieCell {
 
   js.constructorOf[Component].contextTypes = router.routerContextTypes
 
-  def apply(movie: js.Dynamic, key: UndefOr[String] = js.undefined, ref: js.Function = null) = createElement(factory, movie, key = key, ref = ref)
+  def apply(movie: js.Dynamic, key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElement(factory, movie, key = key, ref = ref)
 
 
   object styles extends MobileStyleSheet {

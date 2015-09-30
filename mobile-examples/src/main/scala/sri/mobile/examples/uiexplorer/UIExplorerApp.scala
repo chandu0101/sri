@@ -14,9 +14,9 @@ object UIExplorerApp {
 
 
   object Config extends MobileRouterConfig {
-    override def initialRoute = UIExplorerList -> StaticRoute("Scala.js - UIExplorer", UIExplorerListScreen())
+    override val initialRoute = defineInitialRoute(UIExplorerList, title = "Scala.js - UIExplorer", component = UIExplorerListScreen())
 
-    dynamicRoute(UIExplorerDetails, DynamicRoute((c: ReactElement) => c))
+    dynamicRoute(UIExplorerDetails, component = (c: ReactElement) => c)
 
     override def renderScene(route: NavigatorRoute): ReactElement = {
       View(style = MobileStyleSheet.wholeContainer)(
@@ -26,12 +26,10 @@ object UIExplorerApp {
 
     }
 
-    override def notFound: (StaticPage, StaticRoute) = initialRoute
+    override def notFound: (StaticPage, NavigatorRoute) = initialRoute
   }
 
-  object styles extends MobileStyleSheet {
 
-  }
   val router = MobileRouter(Config)
 
 }

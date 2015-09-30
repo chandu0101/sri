@@ -196,4 +196,4 @@ trait ReactComponentFactory[P, S] extends ReactComponent[P, S] {
 }
 
 @js.native
-trait ReactComponentConstructor[P,S] extends js.Object
+trait ReactComponentConstructor[C <: ReactComponent[_,_]] extends js.Object

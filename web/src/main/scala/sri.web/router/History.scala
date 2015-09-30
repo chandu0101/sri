@@ -1,4 +1,6 @@
-package sri.web.router
+package sri.web
+
+package router
 
 import scala.scalajs.js
 import scala.scalajs.js.{UndefOr => U}
@@ -14,11 +16,11 @@ trait History extends js.Object {
 
   def transitionTo(location: Location): Unit = js.native
 
-  def pushState(state: U[js.Dynamic] = ???, path: String): Unit = js.native
+  def pushState(state: U[js.Object] = ???, path: String): Unit = js.native
 
-  def replaceState(state: U[js.Dynamic] = ???, path: String): Unit = js.native
+  def replaceState(state: U[js.Object] = ???, path: String): Unit = js.native
 
-  def setState(state: js.Dynamic): Unit = js.native
+  def setState(state: js.Object): Unit = js.native
 
   def go(n: Int): Unit = js.native
 

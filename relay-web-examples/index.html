@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>sri relay web examples</title>
+    <style>
+        html {
+            font-family:  sans-serif;
+            /* 1 */
+            -ms-text-size-adjust: 100%;
+            /* 2 */
+            -webkit-text-size-adjust: 100%;
+            /* 2 */
+        }
+        body {
+            margin: 0;
+            font-size: 13px;
+            line-height: 20px;
+        }
+        a {
+            color: red;
+            background: transparent;
+            text-decoration: none;
+        }
+    </style>
+
+</head>
+<body>
+
+<div id="container"></div>
+
+
+
+ <!--all js dependencies-->
+<script type="text/javascript" src="assets/mainpage-bundle.js"></script>
+<script type="text/javascript" src="node_modules/react-relay/dist/relay.js"></script>
+<!-- Include Scala.js compiled code -->
+<script type="text/javascript" src="assets/relay-web-examples-opt.js"></script>
+<!-- Run JSApp -->
+ <script>sri.relay.webexamples.RelayWebApp().main()</script>
+</body>
+</html>

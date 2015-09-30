@@ -33,15 +33,16 @@ object Dependencies {
   val scalaReflect = libraryDependencies +=   "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided
 
   val coreModuleDeps = Seq(
+    scalaJSDOM,
+    chandu0101Macros
   )
 
-  val webModuleDeps = Seq(scalaJSDOM,
-  chandu0101Macros,
+  val webModuleDeps = Seq(
   jsDependencies += ProvidedJS / "webtest-bundle.js" % Test
   )
 
-  val mobileModuleDeps = Seq(scalaJSDOM,
-    chandu0101Macros
+  val mobileModuleDeps = Seq(
+
   )
 
   val mobileExamplesModuleDeps = Seq(scalaAsync)

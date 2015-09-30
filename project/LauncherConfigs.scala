@@ -73,6 +73,16 @@ object LauncherConfigs {
   )
 
 
+  val relayWebExamplesAssets = "relay-web-examples/assets"
+
+  lazy val relayWebExamplesLauncher = Seq(crossTarget in(Compile, fullOptJS) := file(relayWebExamplesAssets),
+    crossTarget in(Compile, fastOptJS) := file(relayWebExamplesAssets),
+    crossTarget in(Compile, packageScalaJSLauncher) := file(relayWebExamplesAssets),
+    artifactPath in(Compile, fastOptJS) := ((crossTarget in(Compile, fastOptJS)).value /
+      ((moduleName in fastOptJS).value + "-opt.js"))
+  )
+
+
 
   def addCommandAliases(m: (String, String)*) = {
     val s = m.map(p => addCommandAlias(p._1, p._2)).reduce(_ ++ _)

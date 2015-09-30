@@ -42,7 +42,7 @@ object SearchScreen {
 
     val factory = getComponentFactory(js.constructorOf[Component], classOf[Component])
 
-    def apply(filter: String, isLoading: Boolean, key: UndefOr[String] = js.undefined, ref: js.Function = null) = createElement(factory, Props(filter, isLoading), key = key, ref = ref)
+    def apply(filter: String, isLoading: Boolean, key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElement(factory, Props(filter, isLoading), key = key, ref = ref)
 
   }
 
@@ -72,7 +72,7 @@ object SearchScreen {
         automaticallyAdjustContentInsets = false
       )()
       View(style = styles.container)(
-        if (ReactNative.Platform.OS == "ios")
+        if (isIOSPlatform)
           SearchBarIOS(onSearchChange, onSearchInputFocus, state.isLoading)
         else SearchBarAndroid(onSearchChange, onSearchInputFocus, state.isLoading),
         View(style = styles.separator)(),
@@ -200,7 +200,7 @@ object SearchScreen {
 
   val factory = getComponentFactory(js.constructorOf[Component], classOf[Component])
 
-  def apply(key: UndefOr[String] = js.undefined, ref: js.Function = null) = createElementNoProps(factory, key = key, ref = ref)
+  def apply(key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElementNoProps(factory, key = key, ref = ref)
 
 
   object styles extends MobileStyleSheet {

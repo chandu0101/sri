@@ -44,7 +44,7 @@ object ModalExample extends UIExample {
 
     val factory = getComponentFactory(js.constructorOf[Component], classOf[Component])
 
-    def apply(onPress: () => Unit, style: js.Dictionary[Any] = js.Dictionary(), key: UndefOr[String] = js.undefined, ref: js.Function = null)(children: ReactNode) = createElementWithChildren(factory, Props(onPress, style), key = key, ref = ref)(children)
+    def apply(onPress: () => Unit, style: js.Dictionary[Any] = js.Dictionary(), key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null)(children: ReactNode) = createElementWithChildren(factory, Props(onPress, style), key = key, ref = ref)(children)
 
   }
 

@@ -1,7 +1,7 @@
 package sri.mobile.examples.movies
 
 import sri.core.ReactElement
-import sri.mobile.ReactNative
+import sri.mobile
 import sri.mobile.components.View
 import sri.mobile.router._
 import sri.mobile.styles.MobileStyleSheet
@@ -17,15 +17,15 @@ object MoviesApp {
 
   object Config extends MobileRouterConfig {
 
-    val initialRoute = Home -> StaticRoute("Movies", SearchScreen())
+    val initialRoute = defineInitialRoute(Home, "Movies", SearchScreen())
 
-    dynamicRoute(DetailsPage, DynamicRoute((movie: js.Dynamic) => MovieDetails(movie)))
+    dynamicRoute(DetailsPage, (movie: js.Dynamic) => MovieDetails(movie))
 
     override def renderScene(route: NavigatorRoute): ReactElement = {
       View(style = styles.c)(
-        if (ReactNative.Platform.OS == "ios") DefaultNavigationBar(route)
+        if (mobile.isIOSPlatform) DefaultNavigationBar(route)
         else {
-          if (route.title.toString.toLowerCase != "movies")
+          if (route.page != Home)
             DefaultAndroidNavigationBar(route)
           else null
         },
@@ -33,7 +33,7 @@ object MoviesApp {
       )
     }
 
-    override def notFound: (StaticPage, StaticRoute) = initialRoute
+    override def notFound: (StaticPage, NavigatorRoute) = initialRoute
   }
 
   val router = MobileRouter(Config)

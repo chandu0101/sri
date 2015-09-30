@@ -7,7 +7,9 @@ import org.scalajs.dom.raw.Element
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSName
 
+//TODO remove this JSname when react-native-web support 0.14
 @js.native
+//@JSName("React")
 object ReactDOM extends js.Object {
 
   // i know what i am doing! okay go a head ..

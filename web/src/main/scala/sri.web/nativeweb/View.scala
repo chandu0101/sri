@@ -6,18 +6,16 @@ import sri.core.{React, ReactNode}
 import scala.scalajs.js
 import scala.scalajs.js.{UndefOr => U}
 
-case class View( style : U[js.Any] = js.undefined,
-                 accessibilityLabel : U[String] = js.undefined,
-                component:U[String] = js.undefined,
-                pointerEvents:U[PointerEvents] = js.undefined,
-                 testID : U[String] = js.undefined) {
+case class View(style: U[js.Any] = js.undefined,
+                accessibilityLabel: U[String] = js.undefined,
+                component: U[String] = js.undefined,
+                pointerEvents: U[PointerEvents] = js.undefined,
+                testID: U[String] = js.undefined) {
 
-  def apply(children : ReactNode*) = {
+  def apply(children: ReactNode*) = {
     val props = JSMacro[View](this)
-//    val c = children.toSeq
-    React.createElement(ReactNativeWeb.View,props,children: _*)
-//    val f = React.createFactory(ReactNativeWeb.View)
-//    f(props, children: _*).asInstanceOf[ReactElement]
+//    React.createElement(ReactNativeWeb.View, props, children: _*)
+    React.createElement("div", props, children: _*)
   }
 
 

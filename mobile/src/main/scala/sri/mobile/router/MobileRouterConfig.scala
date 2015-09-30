@@ -1,37 +1,43 @@
 package sri.mobile.router
 
 import sri.core.ReactElement
+import sri.mobile.components.NavigatorSceneConfig
 
 import scala.scalajs.js
 
 
 trait MobileRouterConfig {
 
-  private var _routes: Map[Page, Route] = Map()
+  private var _routes: Map[Page, NavigatorRoute] = Map()
 
-  @inline lazy val routes: Map[Page, Route] = _routes.+(initialRoute)
+  @inline lazy val routes: Map[Page, NavigatorRoute] = _routes.+(initialRoute)
 
-  def initialRoute: (StaticPage, StaticRoute)
+  val initialRoute: (StaticPage, NavigatorRoute)
 
-  def staticRoute(page: StaticPage, route: StaticRoute) = {
-    _routes += page -> route
+  def defineInitialRoute(page: StaticPage, title: String, component: => ReactElement, sceneConfig: js.UndefOr[NavigatorSceneConfig] = js.undefined) = {
+    page -> NavigatorRoute(title = title, component = () => component, sceneConfig = sceneConfig, page = page)
   }
 
-  def dynamicRoute[T](page: DynamicPage[T], route: DynamicRoute[T]) = {
-    _routes += page -> route
+  def staticRoute(page: StaticPage, title: String, component: => ReactElement, sceneConfig: js.UndefOr[NavigatorSceneConfig] = js.undefined) = {
+    _routes += page -> NavigatorRoute(title = title, component = () => component, sceneConfig = sceneConfig, page = page)
   }
 
-  def moduleRoutes(config : MobileRouterModuleConfig) = {
+  def dynamicRoute[T](page: DynamicPage[T], component: js.Function1[T, ReactElement], sceneConfig: js.UndefOr[NavigatorSceneConfig] = js.undefined) = {
+    _routes += page -> NavigatorRoute(title = "", component = component, sceneConfig = sceneConfig, page = page)
+  }
+
+  def moduleRoutes(config: MobileRouterModuleConfig) = {
     _routes ++= config.module_routes
   }
 
-  def notFound: (StaticPage, StaticRoute)
+  def notFound: (StaticPage, NavigatorRoute)
 
-   def renderScene(route: NavigatorRoute): ReactElement = {
-    if (!js.isUndefined(route.data)) {
-      route.component(route.data).asInstanceOf[ReactElement]
+  def renderScene(route: NavigatorRoute): ReactElement = {
+    if (route.props.isDefined) {
+      route.component.asInstanceOf[js.Function1[Any, ReactElement]](route.props.get)
     } else {
-      route.component().asInstanceOf[ReactElement]
+      route.component.asInstanceOf[js.Function0[ReactElement]]()
     }
   }
 }
+

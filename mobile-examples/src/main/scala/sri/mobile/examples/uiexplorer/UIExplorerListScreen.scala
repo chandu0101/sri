@@ -29,7 +29,6 @@ object UIExplorerListScreen {
   val COMPONENTS: List[UIExample] = List(
     ViewExample,
     TouchableExample,
-    ScrollViewExample,
     TextInputExample,
     ListViewPagingExample
     //    NavigatorExample
@@ -38,6 +37,7 @@ object UIExplorerListScreen {
   val IOS_COMPONENTS: List[UIExample] = List(TabBarIOSExample,
     SegmentedControlExample,
     SwitchIOSExample,
+    ScrollViewExample,
     SliderIOSExample,
     ActivityIndicatorIOSExample,
     PickerIOSExample,
@@ -47,7 +47,7 @@ object UIExplorerListScreen {
     WebViewExample
   )
 
-  val ANDROID_COMPONENTS: List[UIExample] = List(ToolbarAndroidExample,    SwitchAndroidExample
+  val ANDROID_COMPONENTS: List[UIExample] = List(ToolbarAndroidExample, ScrollViewSimpleExample,   SwitchAndroidExample
   )
 
 
@@ -66,13 +66,13 @@ object UIExplorerListScreen {
 
 
   def getComponents() = {
-    if (ReactNative.Platform.OS == IOS_OS) {
+    if (isIOSPlatform) {
       COMPONENTS.++(IOS_COMPONENTS).toJSArray
     } else COMPONENTS.++(ANDROID_COMPONENTS).toJSArray
   }
 
   def getAPIs() = {
-    if (ReactNative.Platform.OS == IOS_OS) {
+    if (isIOSPlatform) {
       APIS.++(IOS_APIS).toJSArray
     } else APIS.++(ANDROID_APIS).toJSArray
   }
@@ -201,5 +201,5 @@ object UIExplorerListScreen {
 
   val factory = getComponentFactory(js.constructorOf[Component], classOf[Component])
 
-  def apply(key: js.UndefOr[String] = js.undefined, ref: js.Function = null) = createElementNoProps(factory)
+  def apply(key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElementNoProps(factory)
 }

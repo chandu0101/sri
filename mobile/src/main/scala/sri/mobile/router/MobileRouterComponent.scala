@@ -23,27 +23,24 @@ abstract class MobileRouterComponent[P, S] extends ReactComponent[P, S] {
 
 
   /**
-   *  use this method to navigate to static pages ,it pushes new scene to the stack
+   * use this method to navigate to static pages ,it pushes new scene to the stack
    * @param page
    */
   def navigateToStatic(page: StaticPage) = {
     ctrl.config.routes.get(page) match {
       case Some(route) => {
-        val r = route.toJson
-        r.updateDynamic("page")(page.asInstanceOf[js.Any])
-        ctrl.navigator.push(r)
+        ctrl.navigator.push(route.toJS)
       }
       case None => handleNotFound()
     }
   }
 
-  def navigateToDynamic[T](page: DynamicPage[T], data: T, title: String) = ctrl.config.routes.get(page) match {
+  def navigateToDynamic[T](page: DynamicPage[T], props: T, title: String) = ctrl.config.routes.get(page) match {
     case Some(route) => {
-      val obj = route.toJson
-      obj.updateDynamic("data")(data.asInstanceOf[js.Any])
+      val obj = route.toJS.asInstanceOf[js.Dynamic]
+      obj.updateDynamic("props")(props.asInstanceOf[js.Any])
       obj.updateDynamic("title")(title)
-      obj.updateDynamic("page")(page.asInstanceOf[js.Any])
-      ctrl.navigator.push(obj)
+      ctrl.navigator.push(obj.asInstanceOf[js.Object])
     }
     case None => handleNotFound()
   }
@@ -70,13 +67,9 @@ abstract class MobileRouterComponent[P, S] extends ReactComponent[P, S] {
   def getCurrentRoutes() = ctrl.navigator.getCurrentRoutes().toList.map(NavigatorRoute.fromJson)
 
 
-
   //TODO may be add strategy flag ? (replace/push)
   private def handleNotFound() = {
-    val page = ctrl.config.notFound._1
-    val route = ctrl.config.notFound._2.toJson
-    route.updateDynamic("page")(page.asInstanceOf[js.Any])
-    ctrl.navigator.push(route)
+    ctrl.navigator.push(ctrl.config.notFound._2.toJS)
   }
 
 }

@@ -1,14 +1,13 @@
 package sri.mobile.router
 
+import chandu0101.macros.tojs.JSMacroAny
 import sri.core.ElementFactory._
 import sri.core._
 import sri.mobile.U
 import sri.mobile.components._
 import sri.mobile.styles.MobileStyleSheet
 import sri.mobile.styles.MobileStyleSheet._
-
 import scala.scalajs.js
-import scala.scalajs.js.Dynamic.{literal => json}
 import scala.scalajs.js.annotation.ScalaJSDefined
 
 
@@ -22,24 +21,14 @@ sealed trait Route {
   def toJson: js.Dynamic
 }
 
-class StaticRoute private(title: String, component: => ReactElement, sceneConfig: js.UndefOr[NavigatorSceneConfig]) extends Route {
-  def toJson = json(title = title, component = () => component, sceneConfig = sceneConfig)
+
+case class NavigatorRoute(title: String, component: js.Any, props: js.UndefOr[Any] = js.undefined, page: Page, sceneConfig: js.UndefOr[NavigatorSceneConfig] = js.undefined) {
+  val toJS = JSMacroAny[NavigatorRoute](this)
 }
-
-object StaticRoute {
-  def apply(title: String, component: => ReactElement, sceneConfig: js.UndefOr[NavigatorSceneConfig] = js.undefined) = new StaticRoute(title, component, sceneConfig)
-}
-
-case class DynamicRoute[T](component: js.Function1[T, ReactElement], sceneConfig: js.UndefOr[String] = js.undefined) extends Route {
-
-  def toJson = json(component = component, sceneConfig = sceneConfig)
-}
-
-case  class NavigatorRoute(title : String,component: js.Dynamic,data: js.Dynamic , page : Page ,sceneConfig: NavigatorSceneConfig)
 
 object NavigatorRoute {
-  def fromJson(obj : js.Dynamic) = {
-    NavigatorRoute(title = obj.title.toString,component = obj.component,data = obj.data,page = obj.page.asInstanceOf[Page],sceneConfig = obj.sceneConfig.asInstanceOf[NavigatorSceneConfig])
+  def fromJson(obj: js.Dynamic) = {
+    NavigatorRoute(title = obj.title.toString, component = obj.component, props = obj.props, page = obj.page.asInstanceOf[Page], sceneConfig = obj.sceneConfig.asInstanceOf[NavigatorSceneConfig])
   }
 
 }
@@ -67,7 +56,7 @@ object MobileRouter {
 
     js.constructorOf[Component].childContextTypes = routerContextTypes
 
-    def apply(ctrl: MobileRouterCtrl, key: U[String] = js.undefined, ref: js.Function = null)(children: ReactNode*) = createElementWithChildren(factory, Props(ctrl), key = key, ref = ref)(children: _*)
+    def apply(ctrl: MobileRouterCtrl, key: U[String] = js.undefined, ref: js.Function1[Component,_] = null)(children: ReactNode*) = createElementWithChildren(factory, Props(ctrl), key = key, ref = ref)(children: _*)
 
   }
 
@@ -79,7 +68,7 @@ object MobileRouter {
 
       Navigator(renderScene = renderScene _,
         //        sceneStyle = props.sceneStyle,
-        initialRoute = props.config.initialRoute._2.toJson,
+        initialRoute = props.config.initialRoute._2.toJS,
         configureScene = configureScene _)()
     }
 

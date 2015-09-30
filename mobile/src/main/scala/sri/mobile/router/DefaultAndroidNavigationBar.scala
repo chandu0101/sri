@@ -1,6 +1,7 @@
 package sri.mobile.router
 
 import sri.core.ElementFactory._
+import sri.core.ReactComponent
 import sri.mobile._
 import sri.mobile.apis.android.BackAndroid
 import sri.mobile.components._
@@ -25,7 +26,7 @@ object DefaultAndroidNavigationBar {
   @ScalaJSDefined
   class Component extends MobileRouterComponent[Props, Unit] {
     def render() = {
-      val androidback = if (showBackButton()) ImageSource.fromJson(js.Dynamic.global.require("image!android_back_white")) else null
+      val androidback : js.UndefOr[ImageSource] = if (showBackButton()) ImageSource.fromJson(js.Dynamic.global.require("image!android_back_white")) else js.undefined
       ToolbarAndroid(
         style = props.style.toolbar,
         actions = Seq(),
@@ -64,6 +65,6 @@ object DefaultAndroidNavigationBar {
 
   val factory = getComponentFactory(js.constructorOf[Component], classOf[Component])
 
-  def apply(route: NavigatorRoute, style: Style = DefaultTheme, key: U[String] = js.undefined, ref: js.Function = null) = createElement(factory, props = Props(route, style), key = key, ref = ref)
+  def apply(route: NavigatorRoute, style: Style = DefaultTheme, key: U[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElement(factory, props = Props(route, style), key = key, ref = ref)
 
 }

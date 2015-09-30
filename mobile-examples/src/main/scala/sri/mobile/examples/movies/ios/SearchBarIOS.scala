@@ -48,6 +48,6 @@ object SearchBarIOS {
 
   val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
 
-  def apply(onChange: NEvent => Unit, onFocus: NEvent => Unit, isLoading: Boolean, key: UndefOr[String] = js.undefined, ref: js.Function = null) = createElement(factory, Props(onChange, onFocus, isLoading), key = key, ref = ref)
+  def apply(onChange: NEvent => Unit, onFocus: NEvent => Unit, isLoading: Boolean, key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElement(factory, Props(onChange, onFocus, isLoading), key = key, ref = ref)
 
 }

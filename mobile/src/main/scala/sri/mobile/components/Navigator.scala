@@ -19,7 +19,7 @@ case class Navigator(navigator: js.UndefOr[js.Object] = js.undefined,
                      sceneStyle: js.UndefOr[js.Any] = js.undefined,
                      style: js.UndefOr[js.Any] = js.undefined,
                      configureScene: js.UndefOr[js.Dynamic => NavigatorSceneConfig] = js.undefined,
-                     initialRoute: js.UndefOr[js.Dynamic] = js.undefined) {
+                     initialRoute: js.UndefOr[js.Object] = js.undefined) {
 
   def apply() = {
     val props = JSMacro[Navigator](this)
@@ -50,21 +50,21 @@ trait NavigatorM extends js.Object {
 
   def jumpForward(): Unit = js.native
 
-  def jumpTo(route: js.Dynamic): Unit = js.native
+  def jumpTo(route: js.Object): Unit = js.native
 
-  def push(route: js.Dynamic): Unit = js.native
+  def push(route: js.Object): Unit = js.native
 
   def pop(): Unit = js.native
 
-  def replace(route: js.Dynamic): Unit = js.native
+  def replace(route: js.Object): Unit = js.native
 
-  def replaceAtIndex(route: js.Dynamic, index: Int): Unit = js.native
+  def replaceAtIndex(route: js.Object, index: Int): Unit = js.native
 
-  def replacePrevious(route: js.Dynamic): Unit = js.native
+  def replacePrevious(route: js.Object): Unit = js.native
 
   def immediatelyResetRouteStack(routeStack: js.Array[js.Dynamic]): Unit = js.native
 
-  def popToRoute(route: js.Dynamic): Unit = js.native
+  def popToRoute(route: js.Object): Unit = js.native
 
   def popToTop(): Unit = js.native
 

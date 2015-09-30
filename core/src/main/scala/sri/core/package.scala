@@ -7,7 +7,7 @@ import scala.scalajs.js.`|`
 
 package object core {
 
-  type RefType = String | js.Function
+  type RefType =  js.Function
 
   type PropsChildrenType = ReactElement | js.Array[ReactChildren]
 

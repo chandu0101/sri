@@ -1,17 +1,20 @@
-var React = require('react'),
-     Relay = require('react-relay'),
-     ReactNativeWeb = require('react-native-sri.web'),
-     createHistory = require('history'),
-    RelayLocalSchema = require('relay-local-schema'),
-     ReactDOM = require('react-dom');
+//var React = require('react'),
+//var  ReactDOM = require('react-dom')
+var
+    React = require('react'),
+    ReactDOM = require('react-dom'),
+    createHistory = require('history'),
+     //ReactNativeWeb = require('react-native-web'),
+     Navigator = require('bh-react-navigator'),
+    RelayLocalSchema = require('relay-local-schema');
 
-
+//window.ReactNativeWeb = ReactNativeWeb;
 window.React = React;
 window.RelayLocalSchema = RelayLocalSchema;
 window.createHistory = createHistory;
+window.Navigator = Navigator;
 window.ReactDOM = ReactDOM;
-window.Relay = Relay;
-window.ReactNativeWeb = ReactNativeWeb;
+//window.Relay = Relay;
 
 //js
 

@@ -49,7 +49,7 @@ object DatePickerIOSExample extends UIExample {
 
     val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
 
-    def apply(props: String, key: UndefOr[String] = js.undefined, ref: js.Function = null)(children: ReactElement) = createElementWithChildren(factory, props)(children)
+    def apply(props: String, key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null)(children: ReactElement) = createElementWithChildren(factory, props)(children)
   }
 
 
@@ -105,7 +105,7 @@ object DatePickerIOSExample extends UIExample {
 
     val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
 
-    def apply(props: js.Date, key: UndefOr[String] = js.undefined, ref: js.Function = null) = createElement(factory, props)
+    def apply(props: js.Date, key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElement(factory, props)
   }
 
 

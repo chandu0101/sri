@@ -45,4 +45,10 @@ package object mobile {
   val IOS_OS = "ios"
 
   val ANDROID_OS = "android"
+
+  val isIOSPlatform : Boolean = ReactNative.Platform.OS == IOS_OS
+
+  val isAndroidPlatForm : Boolean = ReactNative.Platform.OS == ANDROID_OS
+
+
 }

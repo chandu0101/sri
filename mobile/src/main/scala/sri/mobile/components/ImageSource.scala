@@ -5,7 +5,7 @@ import chandu0101.macros.tojs.JSMacro
 import scala.scalajs.js
 
 
-case class ImageSource(uri: String, isStatic: js.UndefOr[Boolean] = js.undefined) {
+case class ImageSource(uri: String, isStatic: js.UndefOr[Boolean] = js.undefined,scale : js.UndefOr[Double] = js.undefined) {
   val toJS: js.Object = JSMacro[ImageSource](this)
 }
 

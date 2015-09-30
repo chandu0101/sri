@@ -1,7 +1,7 @@
 package sri.web.nativeweb
 
 import chandu0101.macros.tojs.JSMacro
-import sri.core.{React, ReactElement, ReactNode}
+import sri.core.{React, ReactNode}
 
 import scala.scalajs.js
 import scala.scalajs.js.{UndefOr => U}
@@ -15,8 +15,7 @@ case class Text(style: U[js.Any] = js.undefined,
 
   def apply(children: ReactNode*) = {
     val props = JSMacro[Text](this)
-    val f = React.createFactory(ReactNativeWeb.Text)
-    f(props, children: _*).asInstanceOf[ReactElement]
+    React.createElement(ReactNativeWeb.Text, props, children: _*)
   }
 
 }

@@ -24,11 +24,11 @@ case class TabBarIOS(barTintColor: js.UndefOr[String] = js.undefined,
 @js.native
 trait TabBarIOSM extends js.Object
 
-case class TabBarItemIOS(systemIcon: js.UndefOr[SystemIcon] = js.undefined,
+case class TabBarIOSItem(systemIcon: js.UndefOr[SystemIcon] = js.undefined,
                          selectedIcon: js.UndefOr[ImageSource] = js.undefined,
                          onPress: () => Unit,
                          style: js.UndefOr[js.Any] = js.undefined,
-                         icon: ImageSource,
+                         icon: js.UndefOr[ImageSource] = js.undefined,
                          ref: js.UndefOr[TabBarItemIOSM => _] = js.undefined,
                          selected: Boolean,
                          key: js.UndefOr[String] = js.undefined,
@@ -36,7 +36,7 @@ case class TabBarItemIOS(systemIcon: js.UndefOr[SystemIcon] = js.undefined,
                          title: js.UndefOr[String] = js.undefined) {
 
   def apply(children: ReactElement) = {
-    val props = JSMacro[TabBarItemIOS](this)
+    val props = JSMacro[TabBarIOSItem](this)
     ReactNative.createElement(ReactNative.TabBarIOS.asInstanceOf[js.Dynamic].Item, props,children)
   }
 }
