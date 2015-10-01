@@ -3,16 +3,25 @@ package sri.relay.network
 import org.scalajs.dom.raw.Promise
 
 import scala.scalajs.js
-import scala.scalajs.js.UndefOr
 import scala.scalajs.js.annotation.{JSName, ScalaJSDefined}
+
+@js.native
+trait GraphQLError extends js.Object {
+  val message: String  = js.native
+  val locations: js.UndefOr[js.Array[GraphQLErrorLocation]] = js.native
+}
+
+@js.native
+trait GraphQLErrorLocation extends js.Object {
+  val column: Int = js.native
+  val line: Int = js.native
+}
 
 @ScalaJSDefined
 trait NetworkLayer extends js.Object {
-  def sendMutation(mutationRequest: RelayMutationRequest): js.UndefOr[Promise[js.Any]]
-
-  def sendQueries(queryRequests: Seq[RelayQueryRequest]): js.UndefOr[Promise[js.Any]]
-
-  def supports(options: Seq[String]): Boolean
+  def sendMutation(mutationRequest: RelayMutationRequest): Promise[Unit]
+  def sendQueries(queryRequests: js.Array[RelayQueryRequest]): Promise[Unit]
+  def supports(options: js.Array[String]): Boolean
 }
 
 @js.native
@@ -24,9 +33,9 @@ class DefaultNetworkLayerConfig(val fetchTimeout: js.UndefOr[Int] = js.undefined
 @js.native
 @JSName("Relay.DefaultNetworkLayer")
 class DefaultNetworkLayer(val url: js.UndefOr[String] = js.undefined, config: js.UndefOr[DefaultNetworkLayerConfig] = js.undefined) extends NetworkLayer {
-  override def sendMutation(mutationRequest: RelayMutationRequest): UndefOr[Promise[js.Any]] = js.native
+  override def sendMutation(mutationRequest: RelayMutationRequest): Promise[Unit] = js.native
 
-  override def sendQueries(queryRequests: Seq[RelayQueryRequest]): UndefOr[Promise[js.Any]] = js.native
+  override def sendQueries(queryRequests: js.Array[RelayQueryRequest]): Promise[Unit] = js.native
 
-  override def supports(options: Seq[String]): Boolean = js.native
+  override def supports(options: js.Array[String]): Boolean = js.native
 }
