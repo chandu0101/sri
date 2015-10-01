@@ -1,7 +1,7 @@
 package sri.web.router
 
 import sri.core.ReactElement
-import sri.web.nativeweb.NavigatorSceneConfig
+import sri.web.components.nativeweb.NavigatorSceneConfig
 
 import scala.scalajs.js
 

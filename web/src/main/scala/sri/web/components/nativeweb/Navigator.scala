@@ -1,4 +1,4 @@
-package sri.web.nativeweb
+package sri.web.components.nativeweb
 
 import chandu0101.macros.tojs.JSMacro
 import sri.core.{ReactElement, React}

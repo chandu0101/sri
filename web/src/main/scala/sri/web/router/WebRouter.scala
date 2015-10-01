@@ -5,7 +5,7 @@ package router
 import chandu0101.macros.tojs.JSMacroAny
 import sri.core.ElementFactory._
 import sri.core._
-import sri.web.nativeweb.{Navigator, NavigatorM, NavigatorSceneConfig}
+import sri.web.components.nativeweb.{Navigator, NavigatorM, NavigatorSceneConfig}
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.ScalaJSDefined

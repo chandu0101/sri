@@ -47,18 +47,51 @@
 	
 	// START OF QUERY
 
-	"use strict";
+	'use strict';
 
-	(function () {
+	(function (sub_0, sub_1, sub_2, sub_3) {
 	  var GraphQL = Relay.QL.__GraphQL;
-	  return new GraphQL.QueryFragment("Relay", "Ship", [new GraphQL.Field("name", null, null, null, null, null, {
-	    parentType: "Ship"
-	  }), new GraphQL.Field("id", null, null, null, null, null, {
-	    parentType: "Ship",
+	  return new GraphQL.QueryFragment('Relay', 'User', [new GraphQL.Field('completedCount', null, null, null, null, null, {
+	    parentType: 'User'
+	  }), new GraphQL.Field('todos', [new GraphQL.Field('edges', [new GraphQL.Field('node', [new GraphQL.Field('id', null, null, null, null, null, {
+	    parentType: 'Todo',
+	    requisite: true
+	  })], [Relay.QL.__frag(sub_0)], null, null, null, {
+	    parentType: 'TodoEdge',
+	    rootCall: 'node',
+	    pk: 'id',
+	    requisite: true
+	  }), new GraphQL.Field('cursor', null, null, null, null, null, {
+	    parentType: 'TodoEdge',
 	    generated: true,
 	    requisite: true
-	  })]);
-	})();
+	  })], null, null, null, null, {
+	    parentType: 'TodoConnection',
+	    plural: true
+	  }), new GraphQL.Field('pageInfo', [new GraphQL.Field('hasNextPage', null, null, null, null, null, {
+	    parentType: 'PageInfo',
+	    generated: true,
+	    requisite: true
+	  }), new GraphQL.Field('hasPreviousPage', null, null, null, null, null, {
+	    parentType: 'PageInfo',
+	    generated: true,
+	    requisite: true
+	  })], null, null, null, null, {
+	    parentType: 'TodoConnection',
+	    generated: true,
+	    requisite: true
+	  })], [Relay.QL.__frag(sub_1)], [new GraphQL.Callv('status', new GraphQL.CallVariable('status')), new GraphQL.Callv('first', new GraphQL.CallVariable('limit'))], null, null, {
+	    parentType: 'User',
+	    connection: true,
+	    nonFindable: true
+	  }), new GraphQL.Field('totalCount', null, null, null, null, null, {
+	    parentType: 'User'
+	  }), new GraphQL.Field('id', null, null, null, null, null, {
+	    parentType: 'User',
+	    generated: true,
+	    requisite: true
+	  })], [Relay.QL.__frag(sub_2), Relay.QL.__frag(sub_3)]);
+	})(Todo.getFragment('todo'), MarkAllTodosMutation.getFragment('todos'), MarkAllTodosMutation.getFragment('viewer'), Todo.getFragment('viewer'));
 
 	// END OF QUERY
 

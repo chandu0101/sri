@@ -15,14 +15,19 @@ case class View(onResponderReject: js.UndefOr[js.Function] = js.undefined,
                 onMagicTap: js.UndefOr[js.Function] = js.undefined,
                 onResponderMove: js.UndefOr[js.Function] = js.undefined,
                 style: js.UndefOr[js.Any] = js.undefined,
+                collapsable: js.UndefOr[Boolean] = js.undefined,
+                shouldRasterizeIOS: js.UndefOr[Boolean] = js.undefined,
                 onLayout: js.UndefOr[js.Function] = js.undefined,
+                onAccessibilityTap: js.UndefOr[() => _] = js.undefined,
                 accessibilityLabel: js.UndefOr[String] = js.undefined,
+                AccessibilityComponentType: js.UndefOr[js.Any] = js.undefined,
                 onMoveShouldSetResponder: js.UndefOr[js.Function] = js.undefined,
                 removeClippedSubviews: js.UndefOr[Boolean] = js.undefined,
                 ref: js.UndefOr[ViewM => _] = js.undefined,
                 accessibilityTraits: js.UndefOr[Seq[AccessibilityTraits]] = js.undefined,
                 onAcccessibilityTap: js.UndefOr[js.Function] = js.undefined,
                 collapsible: js.UndefOr[Boolean] = js.undefined,
+                needsOffscreenAlphaCompositing: js.UndefOr[Boolean] = js.undefined,
                 key: js.UndefOr[String] = js.undefined,
                 onResponderTerminationRequest: js.UndefOr[js.Function] = js.undefined,
                 testID: js.UndefOr[String] = js.undefined,
@@ -30,6 +35,7 @@ case class View(onResponderReject: js.UndefOr[js.Function] = js.undefined,
                 onResponderTerminate: js.UndefOr[js.Function] = js.undefined,
                 onStartShouldSetResponderCapture: js.UndefOr[js.Function] = js.undefined,
                 onResponderGrant: js.UndefOr[js.Function] = js.undefined,
+                importantForAccessibility: js.UndefOr[ImportantForAccessibility] = js.undefined,
                 accessible: js.UndefOr[Boolean] = js.undefined) {
 
   def apply(children: ReactNode*) = {
@@ -77,3 +83,14 @@ object PointerEvents {
 
 @js.native
 trait ViewM extends js.Object
+
+
+class ImportantForAccessibility private(val value : String) extends AnyVal
+
+object ImportantForAccessibility {
+
+  val AUTO = new ImportantForAccessibility("auto")
+  val YES = new ImportantForAccessibility("yes")
+  val NO = new ImportantForAccessibility("no")
+  val NO_HIDE_DESCEDANTS = new ImportantForAccessibility("no-hide-descendants")
+}

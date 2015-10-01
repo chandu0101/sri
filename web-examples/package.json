@@ -33,12 +33,9 @@
   },
   "dependencies": {
     "bh-react-navigator": "^0.1.1",
-    "cors": "^2.7.1",
     "history": "^1.9.0",
     "react": "0.14.0-rc1",
     "react-dom": "0.14.0-rc1",
-    "react-relay": "^0.3.2",
-    "relay-local-schema": "^0.2.1",
-    "sync-request": "^2.0.1"
+    "react-native-web": "0.0.6"
   }
 }

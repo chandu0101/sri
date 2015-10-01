@@ -27,10 +27,10 @@ object StarWarsShip {
 
   val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
 
-  val container = Relay.createContainer(ctor, new RelayContainerSpec {
-    override val fragments = Fragments("ship" -> (() => js.eval(RelayQL( """fragment on Ship { name }"""))))
-  })
+//  val container = Relay.createContainer(ctor, new RelayContainerSpec {
+//    override val fragments = Fragments("ship" -> (() => js.eval(RelayQL( """fragment on Ship { name }"""))))
+//  })
 
-  def apply(props: js.Dynamic, key: U[String] = js.undefined, ref: js.Function1[Component, _] = null) = React.createElement(container, props)
+//  def apply(props: js.Dynamic, key: U[String] = js.undefined, ref: js.Function1[Component, _] = null) = React.createElement(container, props)
 
 }

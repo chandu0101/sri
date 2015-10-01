@@ -22,7 +22,8 @@ object StarWarsApp {
       val edges = factions.head.ships.edges.asInstanceOf[js.Array[js.Dynamic]]
       println(s"edges count : ${edges.length}")
       dom.window.console.log(edges.head.node)
-      React.createElement("div", json(onClick = increaseLimit _), s"out here : ${JSON.stringify(factions.head)}", StarWarsShip(props = json(ship = edges.head.node)))
+      null
+//      React.createElement("div", json(onClick = increaseLimit _), s"out here : ${JSON.stringify(factions.head)}", StarWarsShip(props = json(ship = edges.head.node)))
     }
 
     def increaseLimit() = {
@@ -47,24 +48,24 @@ object StarWarsApp {
 
   val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
 
-  val container = Relay.createContainer(ctor, new RelayContainerSpec {
-
-    override val initialVariables : js.UndefOr[js.Object] = json(limit = 1)
-
-    override val fragments = Fragments("factions" -> (() => js.eval(RelayQL(
-      """
-        fragment on Faction @relay(plural: true) {
-                name,
-                ships(first: $limit) {
-                  edges {
-                    node {
-                      ${StarWarsShip.getFragment('ship')}
-                    }
-                  }
-                }
-              }
-      """))))
-  })
+//  val container = Relay.createContainer(ctor, new RelayContainerSpec {
+//
+//    override val initialVariables : js.UndefOr[js.Object] = json(limit = 1)
+//
+//    override val fragments = Fragments("factions" -> (() => js.eval(RelayQL(
+//      """
+//        fragment on Faction @relay(plural: true) {
+//                name,
+//                ships(first: $limit) {
+//                  edges {
+//                    node {
+//                      ${StarWarsShip.getFragment('ship')}
+//                    }
+//                  }
+//                }
+//              }
+//      """))))
+//  })
 
 
 }

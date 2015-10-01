@@ -3,7 +3,8 @@ package sri.web.examples
 import org.scalajs.dom
 import sri.core.ElementFactory._
 import sri.core.{ReactElement, ReactComponent}
-import sri.web.nativeweb._
+import sri.web.NEvent
+import sri.web.components.nativeweb._
 import scalajs.js.Dynamic.{literal => json}
 import scala.scalajs.js
 import scala.scalajs.js.annotation.ScalaJSDefined
@@ -17,12 +18,18 @@ object HelloWeb {
     def render() = {
       View()(
         Navigator(ref = storeNavRef _ ,
-          initialRoute = json(title = "Home",component = () => View()("Hello")),
+          initialRoute = json(title = "Home",component = () => View(onClick = test _)("Hello")),
           renderScene = renderScene _
          )()
       )
+
+
     }
 
+    def test(e : NEvent) = {
+      dom.window.console.log(e)
+      println(s"ding")
+    }
     def storeNavRef(nref : NavigatorM) = {
        dom.window.console.log(nref)
     }
