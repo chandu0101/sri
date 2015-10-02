@@ -21,6 +21,7 @@ object UIExplorerApp {
     override def renderScene(route: NavigatorRoute): ReactElement = {
       View(style = WebStyleSheet.wholeContainer)(
 //        DefaultNavigationBar(route),
+        TopNavBar(),
         super.renderScene(route)
       )
 

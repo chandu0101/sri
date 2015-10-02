@@ -23,4 +23,8 @@ Open  `mobile-examples/ios/SriMobile.xcodeproj` in xcode(> 6.3) and hir run butt
 ##### Android
 Follow this guide : https://facebook.github.io/react-native/docs/android-setup.html
 
-in web-examples folder run `react-native run-android`
+in mobile-examples folder run `react-native run-android`
+
+## Windows and Linux
+
+http://suyogkc.com.np/react-native-for-windowslinux/

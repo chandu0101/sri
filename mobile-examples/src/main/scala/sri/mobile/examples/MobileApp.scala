@@ -1,6 +1,7 @@
 package sri.mobile.examples
 
 import sri.mobile._
+import sri.mobile.examples.movies.MoviesApp
 import sri.mobile.examples.router.routes.RouterExampleApp
 
 import scala.scalajs.js.JSApp
@@ -13,9 +14,9 @@ object MobileApp extends JSApp {
 
     val root = createMobileRoot(
       //                  HelloSriMobile()
-      RouterExampleApp.router
+//      RouterExampleApp.router
       //      UIExplorerApp.router
-      //      MoviesApp.router
+            MoviesApp.router
     )
     ReactNative.AppRegistry.registerComponent("SriMobile", () => root)
   }
