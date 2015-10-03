@@ -3,6 +3,7 @@ package sri.mobile.router
 import chandu0101.macros.tojs.JSMacroAny
 import sri.core.ElementFactory._
 import sri.core._
+import sri.mobile
 import sri.mobile.U
 import sri.mobile.components._
 import sri.mobile.styles.MobileStyleSheet
@@ -76,6 +77,7 @@ object MobileRouter {
 
     def configureScene(route: js.Dynamic) = {
       if (!js.isUndefined(route.sceneConfig)) route.sceneConfig.asInstanceOf[NavigatorSceneConfig]
+      else if(mobile.isAndroidPlatForm) NavigatorS.SceneConfigs.FadeAndroid
       else NavigatorS.SceneConfigs.FloatFromRight
     }
 

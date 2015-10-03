@@ -22,7 +22,9 @@ object UIExplorerApp {
       View(style = WebStyleSheet.wholeContainer)(
 //        DefaultNavigationBar(route),
         TopNavBar(),
-        super.renderScene(route)
+       View(style = UIExplorerListScreen.styles.content)(
+         super.renderScene(route)
+       )
       )
 
     }

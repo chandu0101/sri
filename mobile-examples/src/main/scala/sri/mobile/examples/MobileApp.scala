@@ -2,7 +2,7 @@ package sri.mobile.examples
 
 import sri.mobile._
 import sri.mobile.examples.movies.MoviesApp
-import sri.mobile.examples.router.routes.RouterExampleApp
+import sri.mobile.examples.router.RouterExampleApp
 
 import scala.scalajs.js.JSApp
 

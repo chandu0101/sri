@@ -3,7 +3,8 @@ package sri.mobile.examples.router.components
 import sri.core.ElementFactory._
 import sri.core.ReactElement
 import sri.mobile.components._
-import sri.mobile.examples.router.routes.RouterExampleApp.{Fourth, Second}
+import sri.mobile.examples.router.RouterExampleApp
+import RouterExampleApp.{Fourth, Second}
 import sri.mobile.examples.router.routes.ThirdModule
 import sri.mobile.router
 import sri.mobile.router.{MobileRouterComponent, Page, StaticPage}

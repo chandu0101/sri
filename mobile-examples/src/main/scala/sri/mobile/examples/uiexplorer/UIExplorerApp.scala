@@ -26,7 +26,7 @@ object UIExplorerApp {
 
     }
 
-    override def notFound: (StaticPage, NavigatorRoute) = initialRoute
+    override val notFound: (StaticPage, NavigatorRoute) = initialRoute
   }
 
 

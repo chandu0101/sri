@@ -32,6 +32,7 @@ object TopNavBar {
 
     val back = style(marginLeft := "40px",
       width := "50px")
+    val next = style(width := "50px")
     val text = style(color := "white")
 
   }
@@ -46,7 +47,7 @@ object TopNavBar {
         else null
       ),
       View(style = styles.block)(Text(style = styles.text)("Title")),
-      View(style = styles.block)(Text(style = styles.text)(""))
+      View(style = styles.next)(Text(style = styles.text)(""))
     )
   }
 

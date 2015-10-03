@@ -26,11 +26,12 @@ case class Touchable(
                       onPressOut: U[NEvent => _] = undefined
                       ) {
 
-  def apply(children: ReactNode*) = {
+  def apply(children: ReactNode) = {
     val props = JSMacro[Touchable](this)
-    React.createElement(ReactNativeWeb.Touchable, props, children: _*)
+    React.createElement(ReactNativeWeb.Touchable, props, children)
   }
 
 }
 
+@js.native
 trait TouchableM extends js.Object

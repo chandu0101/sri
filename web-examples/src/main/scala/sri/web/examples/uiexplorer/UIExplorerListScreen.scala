@@ -27,7 +27,7 @@ object UIExplorerListScreen {
   class Component extends WebRouterComponent[Unit, Unit] {
 
 
-    def render() = View(style = styles.listContainer)(
+    def render() = View()(
 
       COMPONENTS.map(renderRow _)
     )
@@ -40,7 +40,7 @@ object UIExplorerListScreen {
 
     def renderRow(example: UIExample) = {
       View(key = example.title)(
-        Touchable(onPress = (e: NEvent) => onPressRow(example))(
+        Touchable(onPress = (e: NEvent) => onPressRow(example),style = styles.rowButton,activeUnderlayColor = "lighblue",activeOpacity = 0.8)(
           View(style = styles.row)(
             Text(style = styles.rowTitleText)(
               example.title
@@ -54,63 +54,42 @@ object UIExplorerListScreen {
       )
     }
 
-    def renderSectionHeader(data: String, sectionID: String) = {
-      View(style = styles.sectionHeader)(
-        Text(style = styles.sectionHeaderTitle)(
-          sectionID.toString.toUpperCase
-        )
-      )
-    }
 
   }
 
   object styles extends WebStyleSheet {
-    val listContainer = styleM(
-      flex := 1
+    val content = style(
+      flex := 1,
+      margin := "90px 45px",
+      minHeight := "600px",
+      boxShadow := "0 2px 4px grey"
     )
-    val list = styleM(
-      backgroundColor := "#eeeeee"
-    )
-    val sectionHeader = styleM(
-      padding := 5
-    )
-    val group = styleM(
-      backgroundColor := "white"
-    )
-    val sectionHeaderTitle = styleM(
-      fontWeight.bold,
-      fontSize := 11
-    )
-    val row = styleM(
-      backgroundColor := "white",
-      justifyContent.center
-    )
-    val separator = styleM(
-      height := 1.0 / 345,
+
+    val row = style(
+      justifyContent.center,
+      alignItems.center)
+    val separator = style(
+      height := "1px",
       backgroundColor := "#bbbbbb",
-      marginLeft := 15
+      marginLeft := "15px",
+      marginBottom := "15px"
+
     )
-    val rowTitleText = styleM(
-      fontSize := 17,
-      fontWeight.bold
+    val rowTitleText = style(
+      fontSize := "17px",
+      fontWeight.bold,
+      paddingBottom := "5px"
     )
-    val rowDetailText = styleM(
-      fontSize := 15,
+    val rowDetailText = style(
+      fontSize := "15px",
       color := "#888888",
-      lineHeight := 20
+      lineHeight := "20px"
     )
-    val searchRow = styleM(
-      backgroundColor := "#eeeeee",
-      padding := 10
+
+    val rowButton = style(
+      marginBottom := "20px"
     )
-    val searchTextInput = styleM(
-      backgroundColor := "white",
-      borderColor := "#cccccc",
-      borderRadius := 3,
-      borderWidth := 1,
-      height := 40,
-      paddingLeft := 8
-    )
+
   }
 
 
