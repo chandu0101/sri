@@ -4,12 +4,12 @@ var
     React = require('react'),
     ReactDOM = require('react-dom'),
     createHistory = require('history'),
-    //Relay = require('/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/relay-web-examples/node_modules/react-relay/dist/relay.js'),
-     //ReactNativeWeb = require('react-native-web'),
+    //Relay = require('react-relay'),
+     ReactNativeWeb = require('react-native-web'),
      Navigator = require('bh-react-navigator'),
     RelayLocalSchema = require('relay-local-schema');
 
-//window.ReactNativeWeb = ReactNativeWeb;
+window.ReactNativeWeb = ReactNativeWeb;
 window.React = React;
 window.RelayLocalSchema = RelayLocalSchema;
 window.createHistory = createHistory;

@@ -1,13 +1,14 @@
 {
-  "name": "sri-web-examples",
+  "name": "sri-relay-web-examples",
   "version": "0.1.0",
-  "description": "sri web",
+  "description": "sri relay web",
   "repository": {
     "type": "git",
     "url": ""
   },
   "scripts": {
-    "start": "webpack --watch & webpack-dev-server --progress --colors --port 8090",
+    "start": "webpack --watch & webpack-dev-server --progress --colors --port 8090&babel-node ./server.js",
+    "gs": "babel-node ./server.js",
     "build": "webpack --config webpack.config.prod.js",
     "relayquery": "webpack --config webpack_relay.config.js"
   },
@@ -37,6 +38,7 @@
     "history": "^1.9.0",
     "react": "0.14.0-rc1",
     "react-dom": "0.14.0-rc1",
+    "react-native-web": "0.0.6",
     "react-relay": "^0.3.2",
     "relay-local-schema": "^0.2.1",
     "sync-request": "^2.0.1"

@@ -22,6 +22,7 @@ case class View(
                  testID: U[String] = undefined,
                  component: U[String] = undefined,
                  onClick: U[NEvent => _] = undefined,
+                 className: U[String] = undefined,
                  pointerEvents: U[PointerEvents] = undefined,
                  accessible: U[Boolean] = undefined) {
 

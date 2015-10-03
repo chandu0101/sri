@@ -117,6 +117,7 @@ object RelayMacro {
     }
 
     val out = Source.fromFile(outputFilePath.toFile).getLines().toList.filter(_.nonEmpty)
+
     val start = out.zipWithIndex.find { case (s, i) => s.contains(START_OF_QUERY)}.get._2
     val end = out.zipWithIndex.find { case (s, i) => s.contains(END_OF_QUERY)}.get._2
 
@@ -124,7 +125,9 @@ object RelayMacro {
      if (parsedText.contains("throw new Error")) {
       println(s"Command Output :  $result")
       c.abort(c.enclosingPosition, "GraphQL Validation Error please check the console for detailed message.")
-    }
+    } else {
+       println(s"babel-relay plugin successful!")
+     }
 
     q"""$parsedText"""
 

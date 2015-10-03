@@ -4,6 +4,7 @@ import sri.relay.tools.RelayTypes.Variables
 
 import scala.scalajs.js
 
+@js.native
 trait RelayRequest extends js.Object {
   /**
    * @public

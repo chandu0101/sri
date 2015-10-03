@@ -4,16 +4,9 @@ var webpack = require('webpack');
 var path = require('path');
 var CommonsChunkPlugin = webpack.optimize.CommonsChunkPlugin;
 
-var getbabelRelayPlugin = require('babel-relay-plugin');
-var schema = require('./data/schema.json');
-
-var babelRelayPlugin   = require('babel-relay-plugin');
 var introspectionQuery = require('graphql/utilities').introspectionQuery;
 var request            = require('sync-request');
 
-
-
-var plugin = getbabelRelayPlugin(schema.data);
 
 module.exports = {
 
