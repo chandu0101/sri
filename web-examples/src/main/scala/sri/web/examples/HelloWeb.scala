@@ -5,6 +5,7 @@ import sri.core.ElementFactory._
 import sri.core.{ReactElement, ReactComponent}
 import sri.web.NEvent
 import sri.web.components.nativeweb._
+import sri.web.styles.WebStyleSheet
 import scalajs.js.Dynamic.{literal => json}
 import scala.scalajs.js
 import scala.scalajs.js.annotation.ScalaJSDefined
@@ -16,30 +17,32 @@ object HelloWeb {
   @ScalaJSDefined
   class Component extends ReactComponent[Unit, Unit] {
     def render() = {
-      View()(
-        Navigator(ref = storeNavRef _ ,
-          initialRoute = json(title = "Home",component = () => View(onClick = test _)("Hello")),
-          renderScene = renderScene _
-         )()
+      View(style = styles.container)(
+        Text(style = styles.text)(s"Welcome to Sri Web"),
+        Image(style = styles.image, source = ImageSource(uri = "http://www.scala-js.org/images/scala-js-logo-256.png"))(),
+        Text(style = styles.text)("Scala.js - Future of app development!")
       )
-
-
     }
 
-    def test(e : NEvent) = {
-      dom.window.console.log(e)
-      println(s"ding")
-    }
-    def storeNavRef(nref : NavigatorM) = {
-       dom.window.console.log(nref)
-    }
+  }
 
-    def renderScene(route : js.Dynamic,nav : NavigatorM) = {
-      js.Dynamic.global.nav = nav
-      dom.window.console.log(nav)
-      println(s"rendring babe ${route.title}")
-      route.component().asInstanceOf[ReactElement]
-    }
+  object styles extends WebStyleSheet {
+
+    val container = styleM(flex := 1,
+      width := "100%",
+      height := "100%",
+      backgroundColor := "rgb(76, 73, 75)",
+      justifyContent.center,
+      alignItems.center)
+
+    val image = styleM(width := 256,
+      height := 256,
+      margin := 20)
+
+    val text = styleM(fontWeight.bold,
+      fontSize := 18,
+      color := "white")
+
   }
 
   val factory = getComponentFactory(js.constructorOf[Component], classOf[Component])

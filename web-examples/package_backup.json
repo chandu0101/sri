@@ -8,9 +8,13 @@
   },
   "scripts": {
     "start": "webpack --watch & webpack-dev-server --progress --colors --port 8090",
-    "build": "webpack --config webpack.config.prod.js"
+    "build": "webpack --config webpack.config.prod.js",
+    "relayquery": "webpack --config webpack_relay.config.js"
   },
   "devDependencies": {
+    "babel": "5.8.21",
+    "babel-loader": "5.3.2",
+    "babel-relay-plugin": "^0.2.2",
     "compression-webpack-plugin": "^0.2.0",
     "css-loader": "^0.14.5",
     "file-loader": "^0.8.4",
@@ -21,13 +25,17 @@
     "style-loader": "^0.12.3",
     "url-loader": "^0.5.6",
     "webpack": "^1.9.10",
+    "express": "^4.13.1",
+    "express-graphql": "^0.3.0",
+    "graphql": "^0.4.2",
+    "graphql-relay": "^0.3.1",
     "webpack-dev-server": "^1.9.0"
   },
   "dependencies": {
-    "babel-relay-plugin": "^0.2.2",
-    "react": "^0.14.0-beta1",
-    "react-dom": "^0.14.0-beta1",
-    "react-native-web": "0.0.5",
-    "react-relay": "^0.1.1"
+    "bh-react-navigator": "^0.1.1",
+    "history": "^1.9.0",
+    "react": "0.14.0-rc1",
+    "react-dom": "0.14.0-rc1",
+    "react-native-web": "0.0.6"
   }
 }

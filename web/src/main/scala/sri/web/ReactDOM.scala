@@ -1,5 +1,6 @@
 package sri.web
 
+import org.scalajs.dom
 import org.scalajs.dom.raw.Element
 import sri.core._
 
@@ -18,7 +19,7 @@ object ReactDOM extends js.Object {
 
   def unmountComponentAtNode(container: js.Any): Boolean = js.native
 
-  def findDOMNode[N](component: ReactComponent[Any, Any]): N = js.native
+  def findDOMNode(component: ReactComponent[_, _]): dom.Node = js.native
 
   def renderToString(element: ReactElement): String = js.native
 

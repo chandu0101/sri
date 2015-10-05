@@ -13,12 +13,10 @@ import scala.scalajs.js.annotation.{ScalaJSDefined, JSName}
  */
 @js.native
 @JSName("Relay.Mutation")
-abstract class RelayMutationJS extends js.Object {
+abstract class RelayMutationJS(var props : js.Dynamic) extends js.Object {
 
-  val props: js.Dynamic = js.native
 
   val fragments: js.Any = js.native
-
 
   /**
    * These will be sent along with the mutation query to the server.
@@ -37,7 +35,7 @@ abstract class RelayMutationJS extends js.Object {
    * can be a superset of the actual response payload if certain fields that are
    * affected have not been queried by the client, yet.
    */
-  def getOptimisticResponse(): js.UndefOr[js.Dictionary[js.Any]] = js.native
+  def getOptimisticResponse(): js.UndefOr[js.Object] = js.native
 
   /**
    * Optional. Similar to `getConfig`, this is used to create the query
@@ -58,7 +56,7 @@ abstract class RelayMutationJS extends js.Object {
 }
 
 @ScalaJSDefined
-abstract class RelayMutation extends RelayMutationJS {
+abstract class RelayMutation(props : js.Dynamic) extends RelayMutationJS(props) {
   /**
    * Each mutation has a server name which is used by clients to communicate the
    * type of mutation that should be executed on the server.
@@ -162,7 +160,7 @@ abstract class RelayMutation extends RelayMutationJS {
   /**
    * These variables form the "input" to the mutation query sent to the server.
    */
-  def getVariables(): Variables
+  def getVariables(): js.Object
 
 
 }

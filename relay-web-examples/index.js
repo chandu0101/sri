@@ -5,7 +5,7 @@ var
     ReactDOM = require('react-dom'),
     createHistory = require('history'),
     //Relay = require('react-relay'),
-     ReactNativeWeb = require('react-native-web'),
+     ReactNativeWeb = require('react-native-for-web'),
      Navigator = require('bh-react-navigator'),
     RelayLocalSchema = require('relay-local-schema');
 

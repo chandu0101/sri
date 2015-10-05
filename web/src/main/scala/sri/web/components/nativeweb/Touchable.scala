@@ -28,7 +28,7 @@ case class Touchable(
 
   def apply(children: ReactNode) = {
     val props = JSMacro[Touchable](this)
-    React.createElement(ReactNativeWeb.Touchable, props, children)
+    React.createElement(ReactNativeWeb.TouchableOpacity, props, children)
   }
 
 }

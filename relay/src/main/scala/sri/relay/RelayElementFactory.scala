@@ -30,9 +30,9 @@ object RelayElementFactory {
                                            key: js.UndefOr[String] = js.undefined,
                                            ref: js.Function1[_ <: C, _] = null
                                             )(children: ReactNode*): ReactElementU[_, _] = {
-    val finalProps  = JSProps(key, if (ref != null) ref else js.undefined, props).asInstanceOf[js.Dynamic]
-    val fragmentNames = container.getFragmentNames()
-    fragmentNames.foreach(s => finalProps.updateDynamic(s)(null))
+    val finalProps  = props.asInstanceOf[js.Dynamic]
+     key.foreach(v => finalProps.updateDynamic("key")(v))
+    if(ref != null ) finalProps.updateDynamic("ref")(ref)
     React.createElement(
       container, finalProps,
       children: _*).asInstanceOf[ReactElementU[_, _]]

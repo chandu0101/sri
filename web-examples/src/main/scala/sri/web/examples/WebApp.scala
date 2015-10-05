@@ -16,11 +16,9 @@ object WebApp extends JSApp {
 
   @JSExport
   override def main(): Unit = {
-    dom.console.log(new RelayContainerSpec {
-      override val fragments: Fragments = Fragments()
-    } )
-    //    ReactDOM.render(HelloWeb(), dom.document.getElementById("container"))
-    ReactDOM.render(UIExplorerApp.router, dom.document.getElementById("container"))
+
+//        ReactDOM.render(HelloWeb(), dom.document.getElementById("app"))
+    ReactDOM.render(UIExplorerApp.router, dom.document.getElementById("app"))
   }
 
 
