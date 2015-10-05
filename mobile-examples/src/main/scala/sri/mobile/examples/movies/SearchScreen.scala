@@ -1,17 +1,17 @@
 package sri.mobile.examples.movies
 
-import sri.mobile.apis.AjaxNative
-import sri.mobile.components.ios.ActivityIndicatorIOS
-import sri.mobile.styles.MobileStyleSheet
 import org.scalajs.dom
-import org.scalajs.dom.ext.AjaxException
-import sri.mobile.examples.movies.android.SearchBarAndroid
-import sri.mobile.examples.movies.ios.SearchBarIOS
-import scala.async.Async._
+import org.scalajs.dom.ext.{Ajax, AjaxException}
 import sri.core.ElementFactory._
 import sri.core.{ReactComponent, ReactElement}
 import sri.mobile._
 import sri.mobile.components._
+import sri.mobile.components.ios.ActivityIndicatorIOS
+import sri.mobile.examples.movies.android.SearchBarAndroid
+import sri.mobile.examples.movies.ios.SearchBarIOS
+import sri.mobile.styles.MobileStyleSheet
+
+import scala.async.Async._
 import scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 import scala.scalajs.js
 import scala.scalajs.js.annotation.ScalaJSDefined
@@ -42,7 +42,7 @@ object SearchScreen {
 
     val factory = getComponentFactory(js.constructorOf[Component], classOf[Component])
 
-    def apply(filter: String, isLoading: Boolean, key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElement(factory, Props(filter, isLoading), key = key, ref = ref)
+    def apply(filter: String, isLoading: Boolean, key: UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElement(factory, Props(filter, isLoading), key = key, ref = ref)
 
   }
 
@@ -124,7 +124,7 @@ object SearchScreen {
         setState(state.copy(isLoading = true, queryNumber = state.queryNumber + 1, isLoadingTail = false))
         val page = resultsCache.nextPageNumberForQuery.getOrElse(query, 1)
         async {
-          val result = await(AjaxNative.get(_urlForQueryAndPage(query, page)))
+          val result = await(Ajax.get(_urlForQueryAndPage(query, page)))
           val response = JSON.parse(result.responseText)
           val movies = response.movies.asInstanceOf[js.Array[js.Dynamic]]
           LOADING.update(query, false)
@@ -157,7 +157,7 @@ object SearchScreen {
         setState(state.copy(queryNumber = state.queryNumber + 1, isLoadingTail = true))
         val page = resultsCache.nextPageNumberForQuery(query)
         async {
-          val result = await(AjaxNative.get(_urlForQueryAndPage(query, page)))
+          val result = await(Ajax.get(_urlForQueryAndPage(query, page)))
           val response = JSON.parse(result.responseText)
           val moviesForQuery = resultsCache.dataForQuery(query)
           LOADING.update(query, false)
@@ -200,7 +200,7 @@ object SearchScreen {
 
   val factory = getComponentFactory(js.constructorOf[Component], classOf[Component])
 
-  def apply(key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElementNoProps(factory, key = key, ref = ref)
+  def apply(key: UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElementNoProps(factory, key = key, ref = ref)
 
 
   object styles extends MobileStyleSheet {

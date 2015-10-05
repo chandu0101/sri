@@ -13,6 +13,18 @@ import scala.scalajs.js.annotation.ScalaJSDefined
 
 object SearchBarIOS {
 
+
+  @ScalaJSDefined
+  class Component extends ReactComponent[Props, Unit] {
+
+    def render() = View(style = styles.searchBar)(
+      TextInput(autoCapitalize = AutoCapitalize.NONE, autoCorrect = false,
+        onChange = props.onChange, onFocus = props.onFocus, placeholder = "Search a movie..", style = styles.searchBarInput
+      )(),
+      ActivityIndicatorIOS(animating = props.isLoading, style = styles.spinner)()
+    )
+  }
+
   object styles extends MobileStyleSheet {
 
     val searchBar = style(
@@ -30,17 +42,6 @@ object SearchBarIOS {
 
     val spinner = style(
       width := 30
-    )
-  }
-
-  @ScalaJSDefined
-  class Component extends ReactComponent[Props, Unit] {
-
-    def render() = View(style = styles.searchBar)(
-      TextInput(autoCapitalize = AutoCapitalize.NONE, autoCorrect = false,
-        onChange = props.onChange, onFocus = props.onFocus, placeholder = "Search a movie..", style = styles.searchBarInput
-      )(),
-      ActivityIndicatorIOS(animating = props.isLoading, style = styles.spinner)()
     )
   }
 
