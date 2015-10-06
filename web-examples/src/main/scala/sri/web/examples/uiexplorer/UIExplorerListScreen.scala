@@ -1,12 +1,13 @@
 package sri.web.examples.uiexplorer
 
 import sri.core.ElementFactory._
-import sri.web.components.nativeweb.{Text, Touchable, View}
+import sri.universal.components.{TouchableOpacity, Text, View}
+import sri.universal.router
+import sri.universal.router.SriRouterComponent
+import sri.web.NEvent
 import sri.web.examples.uiexplorer.UIExplorerApp.UIExplorerDetails
 import sri.web.examples.uiexplorer.components.{TextInputExample, ViewExample}
-import sri.web.router.WebRouterComponent
 import sri.web.styles.WebStyleSheet
-import sri.web.{NEvent, router}
 
 import scala.scalajs.js
 import scala.scalajs.js.Dynamic.{literal => json}
@@ -24,7 +25,7 @@ object UIExplorerListScreen {
 
 
   @ScalaJSDefined
-  class Component extends WebRouterComponent[Unit, Unit] {
+  class Component extends SriRouterComponent[Unit, Unit] {
 
 
     def render() = View()(
@@ -40,7 +41,7 @@ object UIExplorerListScreen {
 
     def renderRow(example: UIExample) = {
       View(key = example.title)(
-        Touchable(onPress = (e: NEvent) => onPressRow(example),style = styles.rowButton,activeUnderlayColor = "lighblue",activeOpacity = 0.8)(
+        TouchableOpacity(onPress = () => onPressRow(example), style = styles.rowButton,  activeOpacity = 0.8)(
           View(style = styles.row)(
             Text(style = styles.rowTitleText)(
               example.title

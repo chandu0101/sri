@@ -2,10 +2,10 @@ package sri.mobile.examples.uiexplorer.components
 
 import sri.core.ElementFactory._
 import sri.core.ReactComponent
-import sri.mobile.components._
+import sri.universal.components._
 import sri.mobile.examples.uiexplorer.UIExplorerPage
-import sri.mobile.styles.MobileStyleSheet
 import sri.mobile.examples.uiexplorer.{UIExplorerPage, UIExample, UIExplorerBlock}
+import sri.universal.styles.SriStyleSheet
 
 import scala.scalajs.js
 import scala.scalajs.js.UndefOr
@@ -62,7 +62,7 @@ object ScrollViewExample extends UIExample {
 
   val component = createElementNoProps(factory)
 
-  object styles extends MobileStyleSheet {
+  object styles extends SriStyleSheet {
 
     val scrollView = style(
       backgroundColor := "#6A85B1",

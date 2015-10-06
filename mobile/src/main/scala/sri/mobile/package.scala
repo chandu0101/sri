@@ -2,7 +2,7 @@
 package sri
 
 import sri.core.ReactElementU
-import sri.mobile.components.ListViewDataSource
+import sri.universal.components._
 
 import scala.scalajs.js
 import scala.scalajs.js.Dynamic.{global => g, literal => json}
@@ -37,18 +37,9 @@ package object mobile {
     ReactNative.createClass(json(render = () => rootComponent, displayName = name))
   }
 
-  private[mobile] val JSMacro   = chandu0101.macros.tojs.JSMacro
+  private[mobile] val JSMacro = chandu0101.macros.tojs.JSMacro
   private[mobile] type U[T] = js.UndefOr[T]
   private[mobile] val undefined = js.undefined
-
-
-  val IOS_OS = "ios"
-
-  val ANDROID_OS = "android"
-
-  val isIOSPlatform : Boolean = ReactNative.Platform.OS == IOS_OS
-
-  val isAndroidPlatForm : Boolean = ReactNative.Platform.OS == ANDROID_OS
 
 
 }

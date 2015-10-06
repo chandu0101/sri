@@ -3,14 +3,15 @@ package sri.mobile.examples.uiexplorer.apis.android
 import sri.core.ElementFactory._
 import sri.core.ReactComponent
 import sri.mobile.apis.android.ToastAndroid
-import sri.mobile.components._
+import sri.universal.components._
 import sri.mobile.examples.uiexplorer.UIExplorerPage
-import sri.mobile.styles.MobileStyleSheet
 import sri.mobile.examples.uiexplorer.{UIExplorerPage, UIExplorerBlock, UIExample}
+import sri.universal.styles.SriStyleSheet
 
 import scala.scalajs.js
 import scala.scalajs.js.Dynamic.{literal => json}
 import scala.scalajs.js.annotation.ScalaJSDefined
+import sri.universal.components._
 
 
 object ToastAndroidExample extends UIExample {
@@ -41,7 +42,7 @@ object ToastAndroidExample extends UIExample {
 
   val component = createElementNoProps(factory)
 
-  object styles extends MobileStyleSheet {
+  object styles extends SriStyleSheet {
     val text = style(color := "black")
   }
 

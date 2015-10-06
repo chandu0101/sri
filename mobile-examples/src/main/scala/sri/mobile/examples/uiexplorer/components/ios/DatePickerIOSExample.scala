@@ -3,11 +3,11 @@ package sri.mobile.examples.uiexplorer.components.ios
 import sri.core.ElementFactory._
 import sri.core.{ReactComponent, ReactElement}
 import sri.mobile.NEvent
-import sri.mobile.components._
+import sri.universal.components._
 import sri.mobile.components.ios.{DatePickerIOS, DatePickerIOSMode, MinuteInterval}
 import sri.mobile.examples.uiexplorer.UIExplorerPage
-import sri.mobile.styles.MobileStyleSheet
 import sri.mobile.examples.uiexplorer.{UIExplorerPage, UIExample, UIExplorerBlock}
+import sri.universal.styles.SriStyleSheet
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.ScalaJSDefined
@@ -123,7 +123,7 @@ object DatePickerIOSExample extends UIExample {
   val component = createElementNoProps(factory)
 
 
-  object styles extends MobileStyleSheet {
+  object styles extends SriStyleSheet {
 
     val container = style(flexOne, paddingTop := 50)
 

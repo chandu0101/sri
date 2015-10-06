@@ -2,11 +2,11 @@ package sri.mobile.examples.uiexplorer.apis
 
 import sri.core.ElementFactory._
 import sri.core.ReactComponent
-import sri.mobile.apis.{AsyncStorage, AsyncStorageException}
-import sri.mobile.components._
-import sri.mobile.examples.uiexplorer.UIExplorerPage
-import sri.mobile.styles.MobileStyleSheet
-import sri.mobile.examples.uiexplorer.{UIExplorerPage, UIExplorerBlock, UIExample}
+import sri.mobile.components.ios.{PickerIOS, PickerItemIOS}
+import sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
+import sri.universal.apis.{AsyncStorage, AsyncStorageException}
+import sri.universal.components._
+import sri.universal.styles.SriStyleSheet
 
 import scala.async.Async.{async, await}
 import scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
@@ -64,14 +64,14 @@ object AsyncStorageExample extends UIExample {
         val result = await(AsyncStorage.getItem(STORAGE_KEY))
         if (result != null) {
           println(s"got result $result , setting info")
-          setState(state.copy(selectedValue = result,messages = js.Array(s"Recovered selection from disk : ${result}")))
+          setState(state.copy(selectedValue = result, messages = js.Array(s"Recovered selection from disk : ${result}")))
         } else {
           appendMessage(s"Initialized with no selection on disk")
         }
       }.recover(saveError)
     }
 
-    val  onValueChange : js.Function1[String,_] = (selectedValue: String) => {
+    val onValueChange: js.Function1[String, _] = (selectedValue: String) => {
       setState(state.copy(selectedValue = selectedValue))
       async {
         val result = await(AsyncStorage.setItem(STORAGE_KEY, selectedValue))
@@ -85,12 +85,12 @@ object AsyncStorageExample extends UIExample {
     }.recover(saveError)
   }
 
-  val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
+  val factory = getComponentFactory(js.constructorOf[Component], classOf[Component])
 
   val component = createElementNoProps(factory)
 
 
-  object styles extends MobileStyleSheet {
+  object styles extends SriStyleSheet {
 
     def getColorStyle(c: String) = style(color := c)
   }

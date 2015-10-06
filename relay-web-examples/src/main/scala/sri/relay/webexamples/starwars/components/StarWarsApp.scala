@@ -4,7 +4,7 @@ import sri.relay.RelayElementFactory._
 import sri.relay.container.{Fragments, RelayContainerSpec}
 import sri.relay.query.RelayQL
 import sri.relay.{Relay, RelayComponent}
-import sri.web.components.nativeweb.{Text, View}
+import sri.universal.components.{Text, View}
 
 import scala.scalajs.js
 import scala.scalajs.js.Dynamic.{literal => json}

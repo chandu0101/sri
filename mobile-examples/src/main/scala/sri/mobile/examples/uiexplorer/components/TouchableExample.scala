@@ -3,10 +3,10 @@ package sri.mobile.examples.uiexplorer.components
 import sri.core.ElementFactory._
 import sri.core.ReactComponent
 import sri.mobile.ReactNative
-import sri.mobile.components.{ImageSource, _}
+import sri.universal.components.{ImageSource, _}
 import sri.mobile.examples.uiexplorer.UIExplorerPage
-import sri.mobile.styles.MobileStyleSheet
 import sri.mobile.examples.uiexplorer.{UIExplorerPage, UIExample, UIExplorerBlock}
+import sri.universal.styles.SriStyleSheet
 
 import scala.scalajs.js
 import scala.scalajs.js.UndefOr
@@ -86,7 +86,7 @@ object TouchableExample extends UIExample {
   val component = createElementNoProps(factory)
 
 
-  object styles extends MobileStyleSheet {
+  object styles extends SriStyleSheet {
 
     val row = style(justifyContent.center,
       flexDirection.row)

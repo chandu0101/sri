@@ -2,13 +2,12 @@ package sri.mobile.examples.router.components
 
 import sri.core.ElementFactory._
 import sri.core.ReactElement
-import sri.mobile.components._
-import sri.mobile.examples.router.RouterExampleApp
-import RouterExampleApp.{Fourth, Second}
+import sri.mobile.examples.router.RouterExampleApp.{Fourth, Second}
 import sri.mobile.examples.router.routes.ThirdModule
-import sri.mobile.router
-import sri.mobile.router.{MobileRouterComponent, Page, StaticPage}
-import sri.mobile.styles.MobileStyleSheet
+import sri.universal.components._
+import sri.universal.router
+import sri.universal.router.{SriRouterComponent, _}
+import sri.universal.styles.SriStyleSheet
 
 import scala.scalajs.js
 import scala.scalajs.js.Dynamic.{literal => json}
@@ -17,7 +16,7 @@ import scala.scalajs.js.annotation.ScalaJSDefined
 object HomeScreen {
 
   @ScalaJSDefined
-  class Component extends MobileRouterComponent[Unit, Unit] {
+  class Component extends SriRouterComponent[Unit, Unit] {
     override def render(): ReactElement = View(style = styles.container)(
       View(style = styles.row)(
         getStaticBlock("Static Second Screen", Second),
@@ -34,7 +33,7 @@ object HomeScreen {
       TouchableHighlight(style = styles.block,
         underlayColor = "grey",
         key = text,
-        onPress = () =>  navigateToStatic(page))(
+        onPress = () => navigateToStatic(page))(
           Text(style = styles.text)(text)
         )
     }
@@ -43,7 +42,7 @@ object HomeScreen {
       TouchableHighlight(style = styles.block,
         underlayColor = "grey",
         key = text,
-        onPress = () =>  navigateToDynamic(Fourth, Person("Sri"), "Sri") )(
+        onPress = () => navigateToDynamic(Fourth, Person("Sri"), "Sri"))(
           Text(style = styles.text)(text)
         )
     }
@@ -60,12 +59,12 @@ object HomeScreen {
   def apply() = createElementNoProps(factory)
 }
 
-object styles extends MobileStyleSheet {
+object styles extends SriStyleSheet {
 
   val container = style(flexOne,
-//        alignItems.center,
-        justifyContent.center,
-//    backgroundColor := "purple"
+    //        alignItems.center,
+    justifyContent.center,
+    //    backgroundColor := "purple"
     backgroundColor := "#ED4721"
   )
   val row = style(
@@ -91,7 +90,7 @@ object styles extends MobileStyleSheet {
   val text = style(fontSize := 16,
     overflow.hidden,
     textAlign.center,
-  color := "grey",
+    color := "grey",
     fontWeight._500)
 
 }

@@ -3,10 +3,10 @@ package sri.mobile.examples.uiexplorer.components.ios
 import sri.core.ElementFactory._
 import sri.core._
 import sri.mobile._
-import sri.mobile.components._
-import sri.mobile.examples.uiexplorer.UIExplorerPage
-import sri.mobile.styles.MobileStyleSheet
-import sri.mobile.examples.uiexplorer.{UIExplorerPage, UIExample, UIExplorerBlock}
+import sri.mobile.components.{MapView, MapViewAnnotation, MapViewRegion}
+import sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
+import sri.universal.components._
+import sri.universal.styles.SriStyleSheet
 
 import scala.scalajs.js
 import scala.scalajs.js.UndefOr
@@ -99,9 +99,9 @@ object MapViewExample extends UIExample {
     case class Props(region: MapViewRegion, onChange: (MapViewRegion) => _)
 
 
-    val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
+    val factory = getComponentFactory(js.constructorOf[Component], classOf[Component])
 
-    def apply(props: Props, key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElement(factory, props)
+    def apply(props: Props, key: UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElement(factory, props)
 
   }
 
@@ -153,10 +153,10 @@ object MapViewExample extends UIExample {
       }
     }
 
-    val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
+    val factory = getComponentFactory(js.constructorOf[Component], classOf[Component])
 
 
-    def apply(key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElementNoProps(factory)
+    def apply(key: UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElementNoProps(factory)
 
   }
 
@@ -172,12 +172,12 @@ object MapViewExample extends UIExample {
     )
   }
 
-  val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
+  val factory = getComponentFactory(js.constructorOf[Component], classOf[Component])
 
   val component = createElementNoProps(factory)
 
 
-  object styles extends MobileStyleSheet {
+  object styles extends SriStyleSheet {
 
     val map = style(height := 150,
       margin := 10,

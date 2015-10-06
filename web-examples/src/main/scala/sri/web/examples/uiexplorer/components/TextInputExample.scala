@@ -3,7 +3,7 @@ package sri.web.examples.uiexplorer.components
 import sri.core.ElementFactory._
 import sri.core.{ReactComponent, ReactNode}
 import sri.web.NEvent
-import sri.web.components.nativeweb.{Text, TextInput, View}
+import sri.universal.components.{Text, TextInput, View}
 import sri.web.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
 import sri.web.styles.WebStyleSheet
 

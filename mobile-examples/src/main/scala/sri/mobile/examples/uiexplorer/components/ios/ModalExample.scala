@@ -2,11 +2,11 @@ package sri.mobile.examples.uiexplorer.components.ios
 
 import sri.core.ElementFactory._
 import sri.core.{ReactComponent, ReactNode}
-import sri.mobile.components._
+import sri.mobile.components.Modal
 import sri.mobile.components.ios.SwitchIOS
-import sri.mobile.examples.uiexplorer.UIExplorerPage
-import sri.mobile.styles.MobileStyleSheet
-import sri.mobile.examples.uiexplorer.{UIExplorerPage, UIExample}
+import sri.mobile.examples.uiexplorer.{UIExample, UIExplorerPage}
+import sri.universal.components._
+import sri.universal.styles.SriStyleSheet
 
 import scala.scalajs.js
 import scala.scalajs.js.UndefOr
@@ -44,7 +44,7 @@ object ModalExample extends UIExample {
 
     val factory = getComponentFactory(js.constructorOf[Component], classOf[Component])
 
-    def apply(onPress: () => Unit, style: js.Dictionary[Any] = js.Dictionary(), key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null)(children: ReactNode) = createElementWithChildren(factory, Props(onPress, style), key = key, ref = ref)(children)
+    def apply(onPress: () => Unit, style: js.Dictionary[Any] = js.Dictionary(), key: UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null)(children: ReactNode) = createElementWithChildren(factory, Props(onPress, style), key = key, ref = ref)(children)
 
   }
 
@@ -101,7 +101,7 @@ object ModalExample extends UIExample {
   val component = createElementNoProps(factory)
 
 
-  object styles extends MobileStyleSheet {
+  object styles extends SriStyleSheet {
     val container = style(flexOne,
       justifyContent.center,
       padding := 20)

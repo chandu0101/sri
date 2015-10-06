@@ -3,7 +3,7 @@ package sri.mobile.examples.uiexplorer.apis
 import sri.core.ElementFactory._
 import sri.core.ReactComponent
 import sri.mobile.ReactNative
-import sri.mobile.components._
+import sri.universal.components._
 import sri.mobile.examples.uiexplorer.UIExplorerPage
 import sri.mobile.examples.uiexplorer.{UIExplorerPage, UIExample, UIExplorerBlock}
 

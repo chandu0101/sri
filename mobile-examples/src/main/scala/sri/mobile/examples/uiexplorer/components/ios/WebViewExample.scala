@@ -3,10 +3,10 @@ package sri.mobile.examples.uiexplorer.components.ios
 import sri.core.ElementFactory._
 import sri.core.ReactComponent
 import sri.mobile._
-import sri.mobile.components._
-import sri.mobile.examples.uiexplorer.UIExplorerPage
-import sri.mobile.styles.MobileStyleSheet
-import sri.mobile.examples.uiexplorer.{UIExplorerPage, UIExplorerBlock, UIExample}
+import sri.mobile.components.{NavigationState, WebView, WebViewM}
+import sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
+import sri.universal.components._
+import sri.universal.styles.SriStyleSheet
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.ScalaJSDefined
@@ -47,8 +47,8 @@ object WebViewExample extends UIExample {
               onChange = handleTextInputChange _,
               clearButtonMode = "while-editing",
               style = styles.addressBarTextInput)(),
-            TouchableOpacity(onPress = pressGoButton _,style = styles.goButton)(
-                Text()("Go!")
+            TouchableOpacity(onPress = pressGoButton _, style = styles.goButton)(
+              Text()("Go!")
             )
           ),
           WebView(ref = storeWebViewRef _,
@@ -67,16 +67,16 @@ object WebViewExample extends UIExample {
 
     var inputText = ""
 
-    var webViewMounted : WebViewM = null
+    var webViewMounted: WebViewM = null
 
-    var textInputMounted : TextInputM = null
+    var textInputMounted: TextInputM = null
 
 
-    def storeWebViewRef(ref : WebViewM) = {
+    def storeWebViewRef(ref: WebViewM) = {
       webViewMounted = ref
     }
 
-    def storeTextInputRef(ref : TextInputM) = {
+    def storeTextInputRef(ref: TextInputM) = {
       textInputMounted = ref
     }
 
@@ -85,11 +85,11 @@ object WebViewExample extends UIExample {
       inputText = event.nativeEvent.text.toString
     }
 
-    def goBack = if(webViewMounted != null) webViewMounted.goBack()
+    def goBack = if (webViewMounted != null) webViewMounted.goBack()
 
-    def goForward = if(webViewMounted != null) webViewMounted.goForward()
+    def goForward = if (webViewMounted != null) webViewMounted.goForward()
 
-    def reload = if(webViewMounted != null) webViewMounted.reload()
+    def reload = if (webViewMounted != null) webViewMounted.reload()
 
     def onNavigationStateChange(navState: NavigationState) = {
       setState(state.copy(url = navState.url, loading = navState.loading, backButtonEnabled = navState.canGoBack, forwardButtonEnabled = navState.canGoForward, status = navState.title))
@@ -106,11 +106,11 @@ object WebViewExample extends UIExample {
 
   }
 
-  val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
+  val factory = getComponentFactory(js.constructorOf[Component], classOf[Component])
 
   val component = createElementNoProps(factory)
 
-  object styles extends MobileStyleSheet {
+  object styles extends SriStyleSheet {
 
     val container = style(flex := 1,
       backgroundColor := HEADER)

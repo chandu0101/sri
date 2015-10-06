@@ -1,21 +1,22 @@
 package sri.mobile.examples.movies
 
 import sri.core.ReactElement
-import sri.mobile
-import sri.mobile.components.View
-import sri.mobile.router._
-import sri.mobile.styles.MobileStyleSheet
+import sri.mobile.components.DefaultNavigationBar
+import sri.mobile.examples.movies.android.DefaultAndroidNavigationBar
+import sri.universal
+import sri.universal.components.View
+import sri.universal.router._
+import sri.universal.styles.SriStyleSheet
 
 import scala.scalajs.js
 
 object MoviesApp {
 
-
   object Home extends StaticPage
 
   object DetailsPage extends DynamicPage[js.Dynamic]
 
-  object Config extends MobileRouterConfig {
+  object Config extends SriRouterConfig {
 
     val initialRoute = defineInitialRoute(Home, "Movies", SearchScreen())
 
@@ -23,7 +24,7 @@ object MoviesApp {
 
     override def renderScene(route: NavigatorRoute): ReactElement = {
       View(style = styles.c)(
-        if (mobile.isIOSPlatform) DefaultNavigationBar(route)
+        if (universal.isIOSPlatform) DefaultNavigationBar(route)
         else {
           if (route.page != Home)
             DefaultAndroidNavigationBar(route)
@@ -36,11 +37,11 @@ object MoviesApp {
     override val notFound: (StaticPage, NavigatorRoute) = initialRoute
   }
 
-  val router = MobileRouter(Config)
+  val router = SriRouter(Config)
 
 
 }
 
-object styles extends MobileStyleSheet {
+object styles extends SriStyleSheet {
   val c = style(flexOne)
 }

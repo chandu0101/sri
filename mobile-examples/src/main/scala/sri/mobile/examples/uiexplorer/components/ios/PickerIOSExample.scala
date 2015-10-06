@@ -2,10 +2,11 @@ package sri.mobile.examples.uiexplorer.components.ios
 
 import sri.core.ElementFactory._
 import sri.core.ReactComponent
-import sri.mobile.components._
+import sri.universal.components._
+import sri.mobile.components.ios.{PickerItemIOS, PickerIOS}
 import sri.mobile.examples.uiexplorer.UIExplorerPage
-import sri.mobile.styles.MobileStyleSheet
 import sri.mobile.examples.uiexplorer.{UIExplorerPage, UIExample, UIExplorerBlock}
+import sri.universal.styles.SriStyleSheet
 
 import scala.scalajs.js
 import scala.scalajs.js.Dynamic.{literal => json}
@@ -68,7 +69,7 @@ object PickerIOSExample extends UIExample {
   val component = createElementNoProps(factory)
 
 
-  object styles extends MobileStyleSheet {
+  object styles extends SriStyleSheet {
 
 
   }

@@ -3,9 +3,9 @@ package sri.mobile.examples.movies
 import sri.core.ElementFactory._
 import sri.core.ReactComponent
 import sri.mobile._
-import sri.mobile.components._
+import sri.universal.components._
 import MoviesUtil._
-import sri.mobile.styles.MobileStyleSheet
+import sri.universal.styles.SriStyleSheet
 
 import scala.scalajs.js
 import scala.scalajs.js.Dynamic.{literal => json}
@@ -95,7 +95,7 @@ object MovieDetails {
 
   def apply(movie: js.Dynamic, key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElement(factory, movie, key = key, ref = ref)
 
-  object styles extends MobileStyleSheet {
+  object styles extends SriStyleSheet {
 
     val contentContainer = style(
       padding := 10

@@ -1,12 +1,13 @@
 package sri.mobile.examples.router
 
 import sri.core.ReactElement
-import sri.mobile.components.View
+import sri.mobile.components.DefaultNavigationBar
+import sri.universal.components.View
 import sri.mobile.examples.router.components.{FourthScreen, HomeScreen, Person, SecondScreen}
 import sri.mobile.examples.router.routes.ThirdModule
-import sri.mobile.router.DefaultNavigationBar.Style
-import sri.mobile.router._
-import sri.mobile.styles.MobileStyleSheet
+import sri.mobile.components.DefaultNavigationBar.Style
+import sri.universal.router._
+import sri.universal.styles.SriStyleSheet
 
 
 object RouterExampleApp {
@@ -17,7 +18,7 @@ object RouterExampleApp {
 
   object Fourth extends DynamicPage[Person]
 
-  object Config extends MobileRouterConfig {
+  object Config extends SriRouterConfig {
 
     override val initialRoute = defineInitialRoute(Home, "Home", HomeScreen())
 
@@ -30,14 +31,14 @@ object RouterExampleApp {
     override val notFound: (StaticPage, NavigatorRoute) = initialRoute
 
     override def renderScene(route: NavigatorRoute): ReactElement = {
-      View(style = MobileStyleSheet.wholeContainer)(
+      View(style = SriStyleSheet.wholeContainer)(
         DefaultNavigationBar(route, CustomNavigationBarTheme),
         super.renderScene(route)
       )
     }
   }
 
-  val router = MobileRouter(Config)
+  val router = SriRouter(Config)
 
 }
 

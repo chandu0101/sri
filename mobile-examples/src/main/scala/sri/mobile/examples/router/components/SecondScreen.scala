@@ -2,9 +2,7 @@ package sri.mobile.examples.router.components
 
 import sri.core.ElementFactory._
 import sri.core.{ReactComponent, ReactElement}
-import sri.mobile.components._
-import sri.mobile.router
-import sri.mobile.router.MobileRouterComponent
+import sri.universal.components._
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.ScalaJSDefined

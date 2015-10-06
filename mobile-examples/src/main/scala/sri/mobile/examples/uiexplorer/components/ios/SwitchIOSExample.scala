@@ -2,11 +2,11 @@ package sri.mobile.examples.uiexplorer.components.ios
 
 import sri.core.ElementFactory._
 import sri.core.ReactComponent
-import sri.mobile.components._
+import sri.universal.components._
 import sri.mobile.components.ios.SwitchIOS
 import sri.mobile.examples.uiexplorer.UIExplorerPage
-import sri.mobile.styles.MobileStyleSheet
 import sri.mobile.examples.uiexplorer.{UIExplorerPage, UIExample, UIExplorerBlock}
+import sri.universal.styles.SriStyleSheet
 
 import scala.scalajs.js
 import scala.scalajs.js.UndefOr
@@ -172,7 +172,7 @@ object SwitchIOSExample extends UIExample {
   val component = createElementNoProps(factory)
 
 
-  object styles extends MobileStyleSheet {
+  object styles extends SriStyleSheet {
 
     val basicFalseSwitch = style(marginBottom := 10)
 

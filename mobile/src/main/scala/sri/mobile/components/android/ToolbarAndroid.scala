@@ -3,7 +3,7 @@ package sri.mobile.components.android
 import chandu0101.macros.tojs.JSMacro
 import sri.core.ReactNode
 import sri.mobile.ReactNative
-import sri.mobile.components._
+import sri.universal.components.ImageSource
 
 import scala.scalajs.js
 import scala.scalajs.js.{UndefOr => U, undefined}
@@ -26,7 +26,7 @@ case class ToolbarAndroid(key: U[String] = undefined,
 
   def apply(children: ReactNode*) = {
     val props = JSMacro[ToolbarAndroid](this)
-    ReactNative.createElement(ReactNative.ToolbarAndroid,props,children: _*)
+    ReactNative.createElement(ReactNative.ToolbarAndroid, props, children: _*)
   }
 
 }

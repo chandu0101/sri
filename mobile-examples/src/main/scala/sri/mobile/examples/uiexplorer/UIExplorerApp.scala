@@ -1,9 +1,10 @@
 package sri.mobile.examples.uiexplorer
 
 import sri.core.ReactElement
-import sri.mobile.components.View
-import sri.mobile.router._
-import sri.mobile.styles.MobileStyleSheet
+import sri.mobile.components.DefaultNavigationBar
+import sri.universal.components.View
+import sri.universal.router._
+import sri.universal.styles.SriStyleSheet
 
 object UIExplorerApp {
 
@@ -13,23 +14,22 @@ object UIExplorerApp {
   object UIExplorerDetails extends DynamicPage[ReactElement]
 
 
-  object Config extends MobileRouterConfig {
+  object Config extends SriRouterConfig {
     override val initialRoute = defineInitialRoute(UIExplorerList, title = "Scala.js - UIExplorer", component = UIExplorerListScreen())
 
     dynamicRoute(UIExplorerDetails, component = (c: ReactElement) => c)
 
     override def renderScene(route: NavigatorRoute): ReactElement = {
-      View(style = MobileStyleSheet.wholeContainer)(
+      View(style = SriStyleSheet.wholeContainer)(
         DefaultNavigationBar(route),
         super.renderScene(route)
       )
-
     }
 
     override val notFound: (StaticPage, NavigatorRoute) = initialRoute
   }
 
 
-  val router = MobileRouter(Config)
+  val router = SriRouter(Config)
 
 }

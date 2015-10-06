@@ -2,20 +2,16 @@ package sri.mobile.examples.uiexplorer
 
 import sri.core.ElementFactory._
 import sri.mobile._
-import sri.mobile.components._
-import UIExplorerApp.UIExplorerDetails
-import sri.mobile.examples.uiexplorer.apis._
-import sri.mobile.examples.uiexplorer.apis.android._
-import sri.mobile.examples.uiexplorer.components._
-import sri.mobile.examples.uiexplorer.components.android._
-import sri.mobile.examples.uiexplorer.components.ios._
-import sri.mobile.router.MobileRouterComponent
-import sri.mobile.styles.MobileStyleSheet
+import sri.mobile.examples.uiexplorer.UIExplorerApp.UIExplorerDetails
 import sri.mobile.examples.uiexplorer.apis.android.ToastAndroidExample
-import sri.mobile.examples.uiexplorer.apis.{AlertIOSExample, AsyncStorageExample, AppStateIOSExample}
+import sri.mobile.examples.uiexplorer.apis.{AlertIOSExample, AppStateIOSExample, AsyncStorageExample}
+import sri.mobile.examples.uiexplorer.components._
 import sri.mobile.examples.uiexplorer.components.android.{SwitchAndroidExample, ToolbarAndroidExample}
 import sri.mobile.examples.uiexplorer.components.ios._
-import sri.mobile.examples.uiexplorer.components._
+import sri.universal.components._
+import sri.universal.router.SriRouterComponent
+import sri.universal.styles.SriStyleSheet
+import sri.universal.{isIOSPlatform, router}
 
 import scala.scalajs.js
 import scala.scalajs.js.Dynamic.{literal => json}
@@ -47,7 +43,7 @@ object UIExplorerListScreen {
     WebViewExample
   )
 
-  val ANDROID_COMPONENTS: List[UIExample] = List(ToolbarAndroidExample, ScrollViewSimpleExample,   SwitchAndroidExample
+  val ANDROID_COMPONENTS: List[UIExample] = List(ToolbarAndroidExample, ScrollViewSimpleExample, SwitchAndroidExample
   )
 
 
@@ -87,7 +83,7 @@ object UIExplorerListScreen {
 
 
   @ScalaJSDefined
-  class Component extends MobileRouterComponent[Unit, State] {
+  class Component extends SriRouterComponent[Unit, State] {
 
     initialState(State())
 
@@ -145,7 +141,7 @@ object UIExplorerListScreen {
 
   }
 
-  object styles extends MobileStyleSheet {
+  object styles extends SriStyleSheet {
     val listContainer = style(
       flex := 1
     )
@@ -201,5 +197,5 @@ object UIExplorerListScreen {
 
   val factory = getComponentFactory(js.constructorOf[Component], classOf[Component])
 
-  def apply(key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElementNoProps(factory)
+  def apply(key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElementNoProps(factory)
 }

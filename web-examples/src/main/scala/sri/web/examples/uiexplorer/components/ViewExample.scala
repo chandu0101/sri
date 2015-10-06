@@ -2,7 +2,7 @@ package sri.web.examples.uiexplorer.components
 
 import sri.core.ElementFactory._
 import sri.core.ReactComponent
-import sri.web.components.nativeweb.{Text, View}
+import sri.universal.components.{Text, View}
 import sri.web.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
 import sri.web.styles.WebStyleSheet
 

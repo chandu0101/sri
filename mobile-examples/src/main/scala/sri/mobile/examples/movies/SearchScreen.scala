@@ -5,11 +5,12 @@ import org.scalajs.dom.ext.{Ajax, AjaxException}
 import sri.core.ElementFactory._
 import sri.core.{ReactComponent, ReactElement}
 import sri.mobile._
-import sri.mobile.components._
+import sri.universal
+import sri.universal.components._
 import sri.mobile.components.ios.ActivityIndicatorIOS
 import sri.mobile.examples.movies.android.SearchBarAndroid
 import sri.mobile.examples.movies.ios.SearchBarIOS
-import sri.mobile.styles.MobileStyleSheet
+import sri.universal.styles.SriStyleSheet
 
 import scala.async.Async._
 import scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
@@ -72,7 +73,7 @@ object SearchScreen {
         automaticallyAdjustContentInsets = false
       )()
       View(style = styles.container)(
-        if (isIOSPlatform)
+        if (universal.isIOSPlatform)
           SearchBarIOS(onSearchChange, onSearchInputFocus, state.isLoading)
         else SearchBarAndroid(onSearchChange, onSearchInputFocus, state.isLoading),
         View(style = styles.separator)(),
@@ -203,7 +204,7 @@ object SearchScreen {
   def apply(key: UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElementNoProps(factory, key = key, ref = ref)
 
 
-  object styles extends MobileStyleSheet {
+  object styles extends SriStyleSheet {
 
     val container = style(
       flex := 1,

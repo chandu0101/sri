@@ -2,11 +2,12 @@ package sri.mobile.examples.movies
 
 import sri.core.ElementFactory._
 import sri.mobile._
-import sri.mobile.components._
-import MoviesApp.DetailsPage
-import MoviesUtil._
-import sri.mobile.router.MobileRouterComponent
-import sri.mobile.styles.MobileStyleSheet
+import sri.mobile.examples.movies.MoviesApp.DetailsPage
+import sri.mobile.examples.movies.MoviesUtil._
+import sri.universal.components._
+import sri.universal.router
+import sri.universal.router.SriRouterComponent
+import sri.universal.styles.SriStyleSheet
 
 import scala.scalajs.js
 import scala.scalajs.js.Dynamic.{literal => json}
@@ -17,11 +18,11 @@ object MovieCell {
 
 
   @ScalaJSDefined
-  class Component extends MobileRouterComponent[js.Dynamic, Unit] {
+  class Component extends SriRouterComponent[js.Dynamic, Unit] {
     def render() = {
       val criticScore = props.ratings.critics_score.asInstanceOf[Int]
       View()(
-        TouchableHighlight(key = "th", onPress = () => navigateToDynamic(DetailsPage,props,props.title.toString))(
+        TouchableHighlight(key = "th", onPress = () => navigateToDynamic(DetailsPage, props, props.title.toString))(
           View(key = "pap", style = styles.row)(
             Image(key = "is", source = getImageSource(props, "det"), style = styles.cellImage)(),
             View(key = "sv", style = styles.textContainer)(
@@ -41,14 +42,14 @@ object MovieCell {
   }
 
 
-  val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
+  val factory = getComponentFactory(js.constructorOf[Component], classOf[Component])
 
   js.constructorOf[Component].contextTypes = router.routerContextTypes
 
-  def apply(movie: js.Dynamic, key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElement(factory, movie, key = key, ref = ref)
+  def apply(movie: js.Dynamic, key: UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElement(factory, movie, key = key, ref = ref)
 
 
-  object styles extends MobileStyleSheet {
+  object styles extends SriStyleSheet {
     val textContainer = style(
       flex := 1
     )

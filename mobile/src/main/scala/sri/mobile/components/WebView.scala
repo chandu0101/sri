@@ -2,6 +2,7 @@ package sri.mobile.components
 
 import chandu0101.macros.tojs.JSMacro
 import sri.mobile.{NEvent, ReactNative}
+import sri.universal.components.EdgeInsets
 
 import scala.scalajs.js
 
@@ -24,7 +25,7 @@ case class WebView(contentInset: js.UndefOr[EdgeInsets] = js.undefined,
 
   def apply() = {
     val props = JSMacro[WebView](this)
-    ReactNative.createElement(ReactNative.WebView,props)
+    ReactNative.createElement(ReactNative.WebView, props)
   }
 
 }

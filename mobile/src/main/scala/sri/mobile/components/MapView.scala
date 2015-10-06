@@ -2,6 +2,7 @@ package sri.mobile.components
 
 import chandu0101.macros.tojs.JSMacro
 import sri.mobile.ReactNative
+import sri.universal.components.EdgeInsets
 
 import scala.scalajs.js
 import scala.scalajs.js.Dynamic.{literal => json}
@@ -28,7 +29,7 @@ case class MapView(maxDelta: js.UndefOr[Int] = js.undefined,
 
   def apply() = {
     val props = JSMacro[MapView](this)
-    ReactNative.createElement(ReactNative.MapView,props)
+    ReactNative.createElement(ReactNative.MapView, props)
   }
 
 }

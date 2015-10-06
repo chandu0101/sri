@@ -2,6 +2,7 @@ package sri.mobile.components
 
 import chandu0101.macros.tojs.JSMacro
 import sri.mobile.ReactNative
+import sri.universal.components.ImageSource
 
 import scala.scalajs.js
 import scala.scalajs.js.Dynamic.{literal => json}
@@ -40,7 +41,7 @@ case class NavigatorIOS(barTintColor: js.UndefOr[String] = js.undefined,
 
   def apply() = {
     val props = JSMacro[NavigatorIOS](this)
-    ReactNative.createElement(ReactNative.NavigatorIOS,props)
+    ReactNative.createElement(ReactNative.NavigatorIOS, props)
   }
 
 }

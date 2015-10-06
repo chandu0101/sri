@@ -4,7 +4,7 @@ import org.scalajs.dom
 import sri.core.ElementFactory._
 import sri.core.{ReactElement, ReactComponent}
 import sri.web.NEvent
-import sri.web.components.nativeweb._
+import sri.universal.components._
 import sri.web.styles.WebStyleSheet
 import scalajs.js.Dynamic.{literal => json}
 import scala.scalajs.js

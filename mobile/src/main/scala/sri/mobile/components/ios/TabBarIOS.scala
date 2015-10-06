@@ -3,7 +3,7 @@ package sri.mobile.components.ios
 import chandu0101.macros.tojs.JSMacro
 import sri.core.{ReactElement, ReactNode}
 import sri.mobile._
-import sri.mobile.components.ImageSource
+import sri.universal.components.ImageSource
 
 import scala.scalajs.js
 
@@ -37,7 +37,7 @@ case class TabBarIOSItem(systemIcon: js.UndefOr[SystemIcon] = js.undefined,
 
   def apply(children: ReactElement) = {
     val props = JSMacro[TabBarIOSItem](this)
-    ReactNative.createElement(ReactNative.TabBarIOS.asInstanceOf[js.Dynamic].Item, props,children)
+    ReactNative.createElement(ReactNative.TabBarIOS.asInstanceOf[js.Dynamic].Item, props, children)
   }
 }
 

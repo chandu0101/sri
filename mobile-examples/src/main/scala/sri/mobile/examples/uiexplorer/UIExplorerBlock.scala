@@ -2,8 +2,8 @@ package sri.mobile.examples.uiexplorer
 
 import sri.core.ElementFactory._
 import sri.core.{ReactComponent, ReactNode}
-import sri.mobile.components._
-import sri.mobile.styles.MobileStyleSheet
+import sri.universal.components._
+import sri.universal.styles.SriStyleSheet
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.ScalaJSDefined
@@ -11,7 +11,7 @@ import scala.scalajs.js.annotation.ScalaJSDefined
 
 object UIExplorerBlock {
 
-  object styles extends MobileStyleSheet {
+  object styles extends SriStyleSheet {
 
     val container = style(
       borderRadius := 3,

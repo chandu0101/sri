@@ -2,7 +2,7 @@ package sri.web.examples.uiexplorer
 
 import sri.core.ElementFactory._
 import sri.core.{ReactComponent, _}
-import sri.web.components.nativeweb.View
+import sri.universal.components.View
 import sri.web.styles.WebStyleSheet
 
 import scala.scalajs.js
