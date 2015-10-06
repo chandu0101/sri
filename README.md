@@ -35,8 +35,8 @@ libraryDependencies += "com.github.chandu0101.sri" %%% "relay" % "0.1.0"
  - [Defining Components](/docs/DefiningComponents.md)
  - [Creating Elements](/docs/CreatingElements.md)
  - [Refs To Components](/docs/RefsToComponents.md)
- - [Mobile Styles](/docs/MobileStyles.md)
- - [Mobile Router](/docs/MobileRouter.md)
+ - [Sri Styles](/docs/SriStyles.md)
+ - [Sri Router](/docs/SriRouter.md)
  
 #Examples
   - [Mobile Examples](/mobile-examples)
