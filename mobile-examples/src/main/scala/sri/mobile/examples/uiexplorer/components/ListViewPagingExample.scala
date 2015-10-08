@@ -1,11 +1,10 @@
 package sri.mobile.examples.uiexplorer.components
 
-import sri.core.ElementFactory._
 import sri.core.ReactComponent
-import sri.mobile
 import sri.mobile.ReactNative
-import sri.universal.components._
+import sri.mobile.all._
 import sri.mobile.examples.uiexplorer.UIExample
+import sri.universal.components._
 import sri.universal.styles.SriStyleSheet
 
 import scala.scalajs.js
@@ -65,7 +64,7 @@ object ListViewPagingExample extends UIExample {
 
     val getRowData = (dataBlob: js.Dictionary[String], sectionID: String, rowID: String) => dataBlob(rowID)
 
-    val dataSource = mobile.createListViewDataSource[String, String](rowHasChanged = (r1, r2) => r1 != r2,
+    val dataSource = createListViewDataSource[String, String](rowHasChanged = (r1, r2) => r1 != r2,
       getSectionHeaderData = getSectionData,
       getRowData = getRowData,
       sectionHeaderHasChanged = (s1: String, s2: String) => s1 != s2)

@@ -6,7 +6,7 @@ import sri.universal.components._
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.ScalaJSDefined
-import scala.scalajs.js.{UndefOr => U, undefined}
+import scala.scalajs.js.{UndefOr => U}
 
 
 object ThirdModuleHomeScreen {

@@ -1,10 +1,10 @@
 package sri.mobile.examples.movies
 
-import sri.core.ElementFactory._
 import sri.core.ReactComponent
-import sri.mobile._
+import sri.mobile.ReactNative
+import sri.mobile.all._
+import sri.mobile.examples.movies.MoviesUtil._
 import sri.universal.components._
-import MoviesUtil._
 import sri.universal.styles.SriStyleSheet
 
 import scala.scalajs.js

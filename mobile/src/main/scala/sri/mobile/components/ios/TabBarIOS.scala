@@ -1,7 +1,7 @@
 package sri.mobile.components.ios
 
 import chandu0101.macros.tojs.JSMacro
-import sri.core.{ReactElement, ReactNode}
+import sri.core.{React, ReactElement, ReactNode}
 import sri.mobile._
 import sri.universal.components.ImageSource
 
@@ -17,7 +17,7 @@ case class TabBarIOS(barTintColor: js.UndefOr[String] = js.undefined,
 
   def apply(children: ReactNode*) = {
     val props = JSMacro[TabBarIOS](this)
-    ReactNative.createElement(ReactNative.TabBarIOS, props, children: _*)
+    React.createElement(ReactNative.TabBarIOS, props, children: _*)
   }
 }
 
@@ -37,7 +37,7 @@ case class TabBarIOSItem(systemIcon: js.UndefOr[SystemIcon] = js.undefined,
 
   def apply(children: ReactElement) = {
     val props = JSMacro[TabBarIOSItem](this)
-    ReactNative.createElement(ReactNative.TabBarIOS.asInstanceOf[js.Dynamic].Item, props, children)
+    React.createElement(ReactNative.TabBarIOS.asInstanceOf[js.Dynamic].Item, props, children)
   }
 }
 

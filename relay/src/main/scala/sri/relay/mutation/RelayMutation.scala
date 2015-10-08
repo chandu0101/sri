@@ -1,9 +1,9 @@
 package sri.relay.mutation
 
-import sri.relay.tools.RelayTypes.{MutationFragment, FileMap, Variables}
+import sri.relay.tools.RelayTypes.{FileMap, MutationFragment}
 
 import scala.scalajs.js
-import scala.scalajs.js.annotation.{ScalaJSDefined, JSName}
+import scala.scalajs.js.annotation.{JSName, ScalaJSDefined}
 
 
 /**

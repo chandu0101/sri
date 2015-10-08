@@ -1,7 +1,7 @@
 package sri.mobile.components.ios
 
 import chandu0101.macros.tojs.JSMacroAny
-import sri.core.ReactNode
+import sri.core.{React, ReactNode}
 import sri.mobile.ReactNative
 
 import scala.scalajs.js
@@ -15,7 +15,7 @@ case class PickerIOS[T](style: js.UndefOr[js.Any] = js.undefined,
 
   def apply(children: ReactNode*) = {
     val props = JSMacroAny[PickerIOS[T]](this)
-    ReactNative.createElement(ReactNative.PickerIOS,props,children :_*)
+    React.createElement(ReactNative.PickerIOS,props,children :_*)
   }
 }
 
@@ -30,7 +30,7 @@ case class PickerItemIOS[T](style: js.UndefOr[js.Any] = js.undefined,
 
   def apply() = {
     val props = JSMacroAny[PickerItemIOS[T]](this)
-    ReactNative.createElement(ReactNative.PickerIOS.asInstanceOf[js.Dynamic].Item,props)
+    React.createElement(ReactNative.PickerIOS.asInstanceOf[js.Dynamic].Item,props)
   }
 
 }

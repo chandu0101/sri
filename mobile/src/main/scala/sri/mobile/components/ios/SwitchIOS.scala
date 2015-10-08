@@ -1,6 +1,7 @@
 package sri.mobile.components.ios
 
 import chandu0101.macros.tojs.JSMacro
+import sri.core.React
 import sri.mobile.ReactNative
 
 import scala.scalajs.js
@@ -18,7 +19,7 @@ case class SwitchIOS(style: js.UndefOr[js.Any] = js.undefined,
 
   def apply() = {
     val props = JSMacro[SwitchIOS](this)
-    ReactNative.createElement(ReactNative.SwitchIOS,props)
+    React.createElement(ReactNative.SwitchIOS,props)
   }
 
 }

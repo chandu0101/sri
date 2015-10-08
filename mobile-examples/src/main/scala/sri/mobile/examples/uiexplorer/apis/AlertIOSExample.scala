@@ -1,12 +1,11 @@
 package sri.mobile.examples.uiexplorer.apis
 
-import sri.core.ElementFactory._
 import sri.core.ReactComponent
-import sri.mobile._
+import sri.mobile.ReactNative
+import sri.mobile.all._
 import sri.mobile.apis.AlertButton
+import sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
 import sri.universal.components._
-import sri.mobile.examples.uiexplorer.UIExplorerPage
-import sri.mobile.examples.uiexplorer.{UIExplorerPage, UIExample, UIExplorerBlock}
 import sri.universal.styles.SriStyleSheet
 
 import scala.scalajs.js
@@ -71,7 +70,7 @@ object AlertIOSExample extends UIExample {
     }
   }
 
-  val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
+  val factory = getComponentFactory(js.constructorOf[Component], classOf[Component])
 
   val component = createElementNoProps(factory)
 

@@ -2,10 +2,9 @@ package sri.mobile.examples.uiexplorer.components.ios
 
 import sri.core.ElementFactory._
 import sri.core.ReactComponent
+import sri.mobile.components.ios.{PickerIOS, PickerItemIOS}
+import sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
 import sri.universal.components._
-import sri.mobile.components.ios.{PickerItemIOS, PickerIOS}
-import sri.mobile.examples.uiexplorer.UIExplorerPage
-import sri.mobile.examples.uiexplorer.{UIExplorerPage, UIExample, UIExplorerBlock}
 import sri.universal.styles.SriStyleSheet
 
 import scala.scalajs.js

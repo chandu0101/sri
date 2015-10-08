@@ -1,12 +1,11 @@
 package sri.mobile.examples.uiexplorer.components.ios
 
+import org.scalajs.dom
 import sri.core.ElementFactory._
 import sri.core.ReactComponent
-import sri.universal.components._
 import sri.mobile.components.ios.{ActivityIndicatorIOS, ActivityIndicatorIOSSize}
-import sri.mobile.examples.uiexplorer.UIExplorerPage
-import org.scalajs.dom
-import sri.mobile.examples.uiexplorer.{UIExplorerPage, UIExample, UIExplorerBlock}
+import sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
+import sri.universal.components._
 import sri.universal.styles.SriStyleSheet
 
 import scala.scalajs.js

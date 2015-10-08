@@ -1,7 +1,7 @@
 package sri.web
 
-import sri.core.ReactJSComponent
 import org.scalatest.FunSuite
+import sri.core.ReactJSComponent
 
 import scala.scalajs.js.annotation.ScalaJSDefined
 

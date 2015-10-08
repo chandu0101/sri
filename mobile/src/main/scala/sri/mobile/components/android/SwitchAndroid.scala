@@ -1,6 +1,7 @@
 package sri.mobile.components.android
 
 import chandu0101.macros.tojs.JSMacro
+import sri.core.React
 import sri.mobile._
 
 import scala.scalajs.js
@@ -17,7 +18,7 @@ case class SwitchAndroid(key: U[String] = undefined,
 
   def apply() = {
     val props = JSMacro[SwitchAndroid](this)
-    ReactNative.createElement(ReactNative.SwitchAndroid,props)
+    React.createElement(ReactNative.SwitchAndroid,props)
   }
 
 }

@@ -15,7 +15,7 @@ object Dependencies {
   val scalaJSDOMVersion = "0.8.2"
 
 
-  val chandu0101MacrosVersion = "0.5"
+  val chandu0101MacrosVersion = "0.5.1"
 
 
   val utestJS = libraryDependencies += "com.lihaoyi" %%% "utest" % "0.3.0" % Test

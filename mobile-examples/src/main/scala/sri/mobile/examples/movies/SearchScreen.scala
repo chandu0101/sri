@@ -2,14 +2,13 @@ package sri.mobile.examples.movies
 
 import org.scalajs.dom
 import org.scalajs.dom.ext.{Ajax, AjaxException}
-import sri.core.ElementFactory._
 import sri.core.{ReactComponent, ReactElement}
-import sri.mobile._
-import sri.universal
-import sri.universal.components._
+import sri.mobile.all._
 import sri.mobile.components.ios.ActivityIndicatorIOS
 import sri.mobile.examples.movies.android.SearchBarAndroid
 import sri.mobile.examples.movies.ios.SearchBarIOS
+import sri.universal.ReactEvent
+import sri.universal.components._
 import sri.universal.styles.SriStyleSheet
 
 import scala.async.Async._
@@ -73,7 +72,7 @@ object SearchScreen {
         automaticallyAdjustContentInsets = false
       )()
       View(style = styles.container)(
-        if (universal.isIOSPlatform)
+        if (isIOSPlatform)
           SearchBarIOS(onSearchChange, onSearchInputFocus, state.isLoading)
         else SearchBarAndroid(onSearchChange, onSearchInputFocus, state.isLoading),
         View(style = styles.separator)(),
@@ -185,7 +184,7 @@ object SearchScreen {
       else ActivityIndicatorIOS(style = styles.scrollSpinner)()
     }
 
-    def onSearchChange(event: NEvent) = {
+    def onSearchChange(event: ReactEvent) = {
       val filterLocal = event.nativeEvent.text.toString.toLowerCase()
       dom.window.clearTimeout(timeoutID)
       timeoutID = dom.window.setTimeout(() => searchMovies(filterLocal), 100)
@@ -193,7 +192,7 @@ object SearchScreen {
 
     def dude[T <: js.Object](name: String) = "dude".asInstanceOf[T]
 
-    def onSearchInputFocus(e: NEvent) = {
+    def onSearchInputFocus(e: ReactEvent) = {
       if (listViewMounted != null) listViewMounted.getScrollResponder().scrollTo(0, 0)
     }
   }

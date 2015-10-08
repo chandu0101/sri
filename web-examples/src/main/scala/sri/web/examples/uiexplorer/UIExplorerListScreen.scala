@@ -1,10 +1,9 @@
 package sri.web.examples.uiexplorer
 
 import sri.core.ElementFactory._
-import sri.universal.components.{TouchableOpacity, Text, View}
+import sri.universal.components.{Text, TouchableOpacity, View}
 import sri.universal.router
 import sri.universal.router.SriRouterComponent
-import sri.web.NEvent
 import sri.web.examples.uiexplorer.UIExplorerApp.UIExplorerDetails
 import sri.web.examples.uiexplorer.components.{TextInputExample, ViewExample}
 import sri.web.styles.WebStyleSheet

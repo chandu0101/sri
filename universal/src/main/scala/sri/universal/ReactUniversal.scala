@@ -1,15 +1,14 @@
 package sri.universal
 
-import sri.core.{React, ReactClass}
-import sri.universal.apis.{PixelRatio, ReactPlatForm, AsyncStorageJS}
+import sri.core.ReactClass
+import sri.universal.apis.{AsyncStorageJS, PixelRatio, ReactPlatForm}
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSName
 
 
 @js.native
-trait ReactUniversal extends React {
-
+trait ReactUniversal extends js.Object {
   //components
   val Text: ReactClass = js.native
   val View: ReactClass = js.native
@@ -31,13 +30,13 @@ trait ReactUniversal extends React {
   //  val AppRegistry: AppRegistry = js.native
   //  val StyleSheet: StyleSheet = js.native
   //  val AppStateIOS: AppStateIOS = js.native
-    val AsyncStorage: AsyncStorageJS = js.native
+  val AsyncStorage: AsyncStorageJS = js.native
   //  val CameraRoll: CameraRoll = js.native
   //  val InteractionManager: InteractionManager = js.native
   //  val LinkingIOS: LinkingIOS = js.native
   //  val NetInfo: NetInfo = js.native
   //  val LayoutAnimation: js.Dynamic = js.native
-    val PixelRatio: PixelRatio = js.native
+  val PixelRatio: PixelRatio = js.native
   //  val PushNotificationIOS: PushNotificationIOS = js.native
   //  val PanResponder: PanResponder = js.native
   //  val StatusBarIOS: js.Dynamic = js.native
@@ -47,9 +46,9 @@ trait ReactUniversal extends React {
   //misc
   val Platform: ReactPlatForm = js.native
 
-
 }
 
 @js.native
 @JSName("React")
 object ReactUniversal extends ReactUniversal
+

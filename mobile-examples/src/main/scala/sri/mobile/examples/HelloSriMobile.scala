@@ -15,7 +15,7 @@ object HelloSriMobile {
   object styles extends SriStyleSheet {
 
     val container = style(flexOne,
-      backgroundColor := "rgb(76, 73, 75)",
+      backgroundColor := "rgb(185, 34, 55)",
       justifyContent.center,
       alignItems.center)
 

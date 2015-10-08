@@ -1,9 +1,9 @@
 package sri.mobile.examples.movies.ios
 
-import sri.core.ElementFactory._
 import sri.core._
-import sri.mobile._
+import sri.mobile.all._
 import sri.mobile.components.ios.ActivityIndicatorIOS
+import sri.universal.ReactEvent
 import sri.universal.components.{AutoCapitalize, TextInput, View}
 import sri.universal.styles.SriStyleSheet
 
@@ -45,10 +45,10 @@ object SearchBarIOS {
     )
   }
 
-  case class Props(onChange: NEvent => Unit, onFocus: NEvent => Unit, isLoading: Boolean)
+  case class Props(onChange: ReactEvent => Unit, onFocus: ReactEvent => Unit, isLoading: Boolean)
 
-  val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
+  val factory = getComponentFactory(js.constructorOf[Component], classOf[Component])
 
-  def apply(onChange: NEvent => Unit, onFocus: NEvent => Unit, isLoading: Boolean, key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElement(factory, Props(onChange, onFocus, isLoading), key = key, ref = ref)
+  def apply(onChange: ReactEvent => Unit, onFocus: ReactEvent => Unit, isLoading: Boolean, key: UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElement(factory, Props(onChange, onFocus, isLoading), key = key, ref = ref)
 
 }

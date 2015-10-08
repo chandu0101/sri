@@ -1,6 +1,6 @@
 package sri.relay
 
-import sri.core.{ReactComponent, ReactClass, ReactComponentConstructor}
+import sri.core.{ReactClass, ReactComponentConstructor}
 import sri.relay.container.{RelayContainer, RelayContainerSpec, RelayPropTypes}
 import sri.relay.mutation.RelayMutation
 import sri.relay.network.NetworkLayer

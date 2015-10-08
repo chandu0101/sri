@@ -1,13 +1,12 @@
 package sri.mobile.components
 
-import sri.core.ElementFactory._
 import sri.core.ReactElement
 import sri.mobile._
-import sri.universal
-import sri.universal.components._
 import sri.universal._
+import sri.universal.all._
+import sri.universal.components._
 import sri.universal.router.{NavigatorRoute, SriRouterComponent}
-import sri.universal.styles.{SriStyleSheet}
+import sri.universal.styles.SriStyleSheet
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.ScalaJSDefined

@@ -1,0 +1,12 @@
+{
+  "name": "sri-relay-mobile",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node_modules/react-native/packager/packager.sh"
+  },
+  "dependencies": {
+    "react-native": "^0.11.0",
+    "react-relay": "/Users/chandrasekharkode/Desktop/Kode/Programming/relay/react-native"
+  }
+}

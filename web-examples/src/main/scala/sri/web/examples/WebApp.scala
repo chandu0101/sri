@@ -1,11 +1,7 @@
 package sri.web.examples
 
 import org.scalajs.dom
-import sri.relay.container.RelayContainer.Fragments
-import sri.relay.container.RelayContainer.Fragments
-import sri.relay.container.{Fragments, RelayContainerSpec}
 import sri.web.ReactDOM
-import sri.web.examples.uiexplorer.UIExplorerApp
 
 import scala.scalajs.js.Dynamic.{literal => json}
 import scala.scalajs.js.JSApp
@@ -16,9 +12,8 @@ object WebApp extends JSApp {
 
   @JSExport
   override def main(): Unit = {
-
-//        ReactDOM.render(HelloWeb(), dom.document.getElementById("app"))
-    ReactDOM.render(UIExplorerApp.router, dom.document.getElementById("app"))
+    ReactDOM.render(HelloWeb(), dom.document.getElementById("app"))
+    //    ReactDOM.render(UIExplorerApp.router, dom.document.getElementById("app"))
   }
 
 

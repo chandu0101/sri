@@ -2,7 +2,7 @@ package sri.core
 
 import scala.scalajs.js
 
-object ElementFactory {
+trait ElementFactory {
 
   /**
    * creates and returns factory for given component constructor
@@ -92,3 +92,5 @@ object ElementFactory {
 
 
 }
+
+object ElementFactory extends ElementFactory

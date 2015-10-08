@@ -2,8 +2,9 @@ package sri.web.examples.uiexplorer.components
 
 import sri.core.ElementFactory._
 import sri.core.{ReactComponent, ReactNode}
-import sri.web.NEvent
+import sri.universal.ReactEvent
 import sri.universal.components.{Text, TextInput, View}
+import sri.web.NEvent
 import sri.web.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
 import sri.web.styles.WebStyleSheet
 
@@ -51,9 +52,9 @@ object TextInputExample extends UIExample {
       def render() = View()(
         TextInput(
           placeholder = "Enter text to see events",
-          onFocus = (e: NEvent) => upDateTex("onFocus"),
-          onBlur = (e: NEvent) => upDateTex("onBlur"),
-          onChange = (e: NEvent) => upDateTex(s"onChange text ${e.nativeEvent.text}"),
+          onFocus = (e: ReactEvent) => upDateTex("onFocus"),
+          onBlur = (e: ReactEvent) => upDateTex("onBlur"),
+          onChange = (e: ReactEvent) => upDateTex(s"onChange text ${e.nativeEvent.text}"),
           style = styles.default
         )(),
         Text(style = styles.eventLabel)(

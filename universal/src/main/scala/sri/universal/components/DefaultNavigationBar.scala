@@ -1,14 +1,13 @@
 package sri.universal.components
 
-import sri.core.ElementFactory._
 import sri.core.ReactElement
 import sri.universal._
+import sri.universal.all._
 import sri.universal.router.{NavigatorRoute, SriRouterComponent}
 import sri.universal.styles.SriStyleSheet
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.ScalaJSDefined
-
 
 object DefaultNavigationBar {
 

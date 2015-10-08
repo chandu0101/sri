@@ -1,6 +1,6 @@
 # SriRouter
 
-This is a universal router , works on both platform web and ios.
+This is a universal router , works on both platforms(web and ios)
 
 ##### Defining Pages
   Eventhough  router gives feel like switching between different pages but at the core they are just react components mounting and unmounting, a component can be Static(which doesn't take any props from parent)/Dynamic(which takes props from parent), we'll use same idea to define our pages 

@@ -3,8 +3,8 @@ package sri.universal
 package router
 
 import chandu0101.macros.tojs.JSMacroAny
-import sri.core.ElementFactory._
 import sri.core._
+import sri.universal.all._
 import sri.universal.components._
 
 import scala.scalajs.js

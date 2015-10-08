@@ -1,7 +1,9 @@
 package sri.mobile.components
 
 import chandu0101.macros.tojs.JSMacro
-import sri.mobile.{NEvent, ReactNative}
+import sri.core.React
+import sri.mobile.ReactNative
+import sri.universal.ReactEvent
 import sri.universal.components.EdgeInsets
 
 import scala.scalajs.js
@@ -25,7 +27,7 @@ case class WebView(contentInset: js.UndefOr[EdgeInsets] = js.undefined,
 
   def apply() = {
     val props = JSMacro[WebView](this)
-    ReactNative.createElement(ReactNative.WebView, props)
+    React.createElement(ReactNative.WebView, props)
   }
 
 }
@@ -50,7 +52,7 @@ trait WebViewM extends js.Object {
 
   def reload(): Unit = js.native
 
-  def updateNavigationState(event: NEvent): NavigationState = js.native
+  def updateNavigationState(event: ReactEvent): NavigationState = js.native
 
   def getWebWiewHandle(): js.Dynamic = js.native
 
@@ -58,10 +60,10 @@ trait WebViewM extends js.Object {
 
   def goBack(): Unit = js.native
 
-  def onLoadingStart(event: NEvent): Unit = js.native
+  def onLoadingStart(event: ReactEvent): Unit = js.native
 
-  def onLoadingError(event: NEvent): Unit = js.native
+  def onLoadingError(event: ReactEvent): Unit = js.native
 
-  def onLoadingFinish(event: NEvent): Unit = js.native
+  def onLoadingFinish(event: ReactEvent): Unit = js.native
 
 }

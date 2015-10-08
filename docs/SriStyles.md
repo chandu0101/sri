@@ -1,6 +1,6 @@
 #Sri Styles
 
-SriStyleSheet contains styles that work both on web and mobile
+SriStyleSheet contains styles common to web and mobile
 
 ###### TypeSafe Way :
 

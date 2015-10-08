@@ -3,12 +3,11 @@ package components
 
 import chandu0101.macros.tojs.JSMacro
 import sri.core.{React, ReactClass, ReactElement}
-import sri.universal.ReactUniversal
+import sri.universal.all._
 import sri.universal.components.NavigatorNavigationBarS.RouteMapperType
 
 import scala.scalajs.js
 import scala.scalajs.js.Dynamic.{literal => json}
-
 
 case class Navigator(navigator: js.UndefOr[js.Object] = js.undefined,
                      onItemRef: js.UndefOr[(String, Int, js.Dynamic) => Unit] = js.undefined,
@@ -24,7 +23,7 @@ case class Navigator(navigator: js.UndefOr[js.Object] = js.undefined,
 
   def apply() = {
     val props = JSMacro[Navigator](this)
-    val navClass = if(isWebPlatform) js.Dynamic.global.Navigator else ReactUniversal.Navigator
+    val navClass = if (isWebPlatform) js.Dynamic.global.Navigator else ReactUniversal.Navigator
     React.createElement(navClass, props)
   }
 

@@ -2,7 +2,8 @@ package sri.mobile.components.android
 
 import chandu0101.macros.tojs.JSMacro
 import sri.core.{React, ReactElement, ReactNode}
-import sri.mobile.{NEvent, ReactNative}
+import sri.mobile.ReactNative
+import sri.universal.ReactEvent
 
 import scala.scalajs.js
 import scala.scalajs.js.{UndefOr => U, undefined}
@@ -12,18 +13,18 @@ case class DrawerLayoutAndroid(key: U[String] = undefined,
                                style: U[js.Any] = undefined,
                                ref: U[DrawerLayoutAndroidM => _] = undefined,
                                drawerPosition: U[DrawerPosition] = undefined,
-                               drawerWidth:U[Double] = undefined,
-                               onDrawerSlide:U[NEvent => _] = undefined,
-                               onDrawerStateChanged:U[String => _] = undefined,
-                               onDrawerOpen:U[() => _] = undefined,
-                               onDrawerClose:U[() => _] = undefined,
-                               renderNavigationView:U[() => ReactElement]
+                               drawerWidth: U[Double] = undefined,
+                               onDrawerSlide: U[ReactEvent => _] = undefined,
+                               onDrawerStateChanged: U[String => _] = undefined,
+                               onDrawerOpen: U[() => _] = undefined,
+                               onDrawerClose: U[() => _] = undefined,
+                               renderNavigationView: U[() => ReactElement]
                                 ) {
 
-  def apply(children : ReactNode*) = {
-     val props = JSMacro[DrawerLayoutAndroid](this)
-     val f = React.createFactory(ReactNative.DrawerLayoutAndroid)
-     f(props,children: _*)
+  def apply(children: ReactNode*) = {
+    val props = JSMacro[DrawerLayoutAndroid](this)
+    val f = React.createFactory(ReactNative.DrawerLayoutAndroid)
+    f(props, children: _*)
   }
 
 }

@@ -1,12 +1,11 @@
 package sri.mobile.examples.uiexplorer.components.ios
 
-import sri.core.ElementFactory._
 import sri.core.{ReactComponent, ReactElement}
-import sri.mobile.NEvent
-import sri.universal.components._
+import sri.mobile.all._
 import sri.mobile.components.ios.{DatePickerIOS, DatePickerIOSMode, MinuteInterval}
-import sri.mobile.examples.uiexplorer.UIExplorerPage
-import sri.mobile.examples.uiexplorer.{UIExplorerPage, UIExample, UIExplorerBlock}
+import sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
+import sri.universal.ReactEvent
+import sri.universal.components._
 import sri.universal.styles.SriStyleSheet
 
 import scala.scalajs.js
@@ -97,7 +96,7 @@ object DatePickerIOSExample extends UIExample {
         setState(state.copy(date = date))
       }
 
-      def onTimezoneChange(event: NEvent) = {
+      def onTimezoneChange(event: ReactEvent) = {
         val offset = Try(event.nativeEvent.text.toString.toInt).toOption
         if (offset.isDefined) setState(state.copy(timeZoneOffsetInHours = offset.get))
       }

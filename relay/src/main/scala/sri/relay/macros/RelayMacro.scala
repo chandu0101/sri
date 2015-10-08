@@ -1,6 +1,6 @@
 package sri.relay.macros
 
-import java.io.{FileWriter, BufferedWriter, PrintWriter, File}
+import java.io.{BufferedWriter, File, FileWriter, PrintWriter}
 import java.nio.charset.StandardCharsets
 import java.nio.file.{Files, Paths}
 import java.util.Properties

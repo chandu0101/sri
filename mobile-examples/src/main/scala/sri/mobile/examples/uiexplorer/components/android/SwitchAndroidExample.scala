@@ -3,8 +3,7 @@ package sri.mobile.examples.uiexplorer.components.android
 import sri.core.ElementFactory._
 import sri.core._
 import sri.mobile.components.android.SwitchAndroid
-import sri.mobile.examples.uiexplorer.UIExplorerPage
-import sri.mobile.examples.uiexplorer.{UIExplorerPage, UIExample, UIExplorerBlock}
+import sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
 import sri.universal.styles.SriStyleSheet
 
 import scala.scalajs.js

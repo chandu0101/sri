@@ -1,11 +1,10 @@
 package sri.mobile.examples.uiexplorer.components
 
-import sri.core.ElementFactory._
 import sri.core.{ReactComponent, ReactNode}
-import sri.mobile._
+import sri.mobile.all._
+import sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
+import sri.universal.ReactEvent
 import sri.universal.components._
-import sri.mobile.examples.uiexplorer.UIExplorerPage
-import sri.mobile.examples.uiexplorer.{UIExplorerPage, UIExample, UIExplorerBlock}
 import sri.universal.styles.SriStyleSheet
 
 import scala.scalajs.js
@@ -32,9 +31,9 @@ object TextInputExample extends UIExample {
       )
     }
 
-    val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
+    val factory = getComponentFactory(js.constructorOf[Component], classOf[Component])
 
-    def apply(label: String, key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null)(children: ReactNode*) = createElementWithChildren(factory, label, key = key, ref = ref)(children: _*)
+    def apply(label: String, key: UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null)(children: ReactNode*) = createElementWithChildren(factory, label, key = key, ref = ref)(children: _*)
 
 
   }
@@ -53,11 +52,11 @@ object TextInputExample extends UIExample {
         TextInput(autoCapitalize = AutoCapitalize.NONE,
           placeholder = "Enter text to see events",
           autoCorrect = false,
-          onFocus = (e: NEvent) => upDateTex("onFocus"),
-          onBlur = (e: NEvent) => upDateTex("onBlur"),
-          onChange = (e: NEvent) => upDateTex(s"onChange text ${e.nativeEvent.text}"),
-          onEndEditing = (e: NEvent) => upDateTex(s"onEndEditing text ${e.nativeEvent.text}"),
-          onSubmitEditing = (e: NEvent) => upDateTex(s"onSubmitEditing text ${e.nativeEvent.text}"),
+          onFocus = (e: ReactEvent) => upDateTex("onFocus"),
+          onBlur = (e: ReactEvent) => upDateTex("onBlur"),
+          onChange = (e: ReactEvent) => upDateTex(s"onChange text ${e.nativeEvent.text}"),
+          onEndEditing = (e: ReactEvent) => upDateTex(s"onEndEditing text ${e.nativeEvent.text}"),
+          onSubmitEditing = (e: ReactEvent) => upDateTex(s"onSubmitEditing text ${e.nativeEvent.text}"),
           style = styles.default
         )(),
         Text(style = styles.eventLabel)(
@@ -70,14 +69,14 @@ object TextInputExample extends UIExample {
         setState(state.copy(text, state.curText))
       }
 
-      def handleInputEvent(e: NEvent) = {
+      def handleInputEvent(e: ReactEvent) = {
 
       }
     }
 
-    val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
+    val factory = getComponentFactory(js.constructorOf[Component], classOf[Component])
 
-    def apply(key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElementNoProps(factory, key = key, ref = ref)
+    def apply(key: UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElementNoProps(factory, key = key, ref = ref)
 
 
   }
@@ -118,7 +117,7 @@ object TextInputExample extends UIExample {
     )
   }
 
-  val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
+  val factory = getComponentFactory(js.constructorOf[Component], classOf[Component])
 
   val component = createElementNoProps(factory)
 

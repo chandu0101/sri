@@ -7,7 +7,7 @@ import sri.relay.tools.RelayInternalTypes.DataID
 import sri.relay.tools.RelayTypes._
 
 import scala.scalajs.js
-import scala.scalajs.js.annotation.{ScalaJSDefined, JSName}
+import scala.scalajs.js.annotation.{JSName, ScalaJSDefined}
 
 object RelayTypes {
   type RelayMutationTransactionCommitSuccessCallback = js.Function1[js.Dictionary[js.Any], Unit]

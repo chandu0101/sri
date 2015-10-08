@@ -1,6 +1,7 @@
 package sri.mobile.components.ios
 
 import chandu0101.macros.tojs.JSMacro
+import sri.core.React
 import sri.mobile.ReactNative
 
 import scala.scalajs.js
@@ -17,7 +18,7 @@ case class ActivityIndicatorIOS(size: js.UndefOr[ActivityIndicatorIOSSize] = js.
 
   def apply() = {
     val props = JSMacro[ActivityIndicatorIOS](this)
-    ReactNative.createElement(ReactNative.ActivityIndicatorIOS,props)
+    React.createElement(ReactNative.ActivityIndicatorIOS,props)
   }
 
 }

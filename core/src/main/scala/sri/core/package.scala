@@ -7,7 +7,10 @@ import scala.scalajs.js.`|`
 
 package object core {
 
-  type RefType =  js.Function
+
+  //  implicit def seqElementToSeqNode(elm: Seq[ReactElement]): Seq[ReactNode] = elm.asInstanceOf[Seq[ReactNode]]
+
+  type RefType = js.Function
 
   type PropsChildrenType = ReactElement | js.Array[ReactChildren]
 
@@ -17,9 +20,14 @@ package object core {
 
   type ReactNode = ReactElement | ReactText | js.Array[ReactElement] | js.Array[String] | js.Array[Double] | js.Array[ReactElementU[_, _]]
 
-  //  implicit def seqElementToSeqNode(elm: Seq[ReactElement]): Seq[ReactNode] = elm.asInstanceOf[Seq[ReactNode]]
-
   implicit def genTravarsableToJSArrayReactElement(elm: GenTraversableOnce[ReactElement]): ReactNode = elm.toJSArray.asInstanceOf[ReactNode]
 
+  implicit class Boolean_Ext_Methods(val value: Boolean) extends AnyVal {
+    def ?=(elm: => ReactNode): ReactNode = if (value) elm else null
+  }
+
+  trait CoreAll extends ElementFactory
+
+  object all extends CoreAll
 
 }

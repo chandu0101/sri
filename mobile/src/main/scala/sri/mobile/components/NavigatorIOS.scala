@@ -1,6 +1,7 @@
 package sri.mobile.components
 
 import chandu0101.macros.tojs.JSMacro
+import sri.core.React
 import sri.mobile.ReactNative
 import sri.universal.components.ImageSource
 
@@ -41,7 +42,7 @@ case class NavigatorIOS(barTintColor: js.UndefOr[String] = js.undefined,
 
   def apply() = {
     val props = JSMacro[NavigatorIOS](this)
-    ReactNative.createElement(ReactNative.NavigatorIOS, props)
+    React.createElement(ReactNative.NavigatorIOS, props)
   }
 
 }

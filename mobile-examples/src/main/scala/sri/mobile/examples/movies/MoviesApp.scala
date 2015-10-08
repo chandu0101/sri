@@ -1,9 +1,9 @@
 package sri.mobile.examples.movies
 
 import sri.core.ReactElement
+import sri.mobile.all._
 import sri.mobile.components.DefaultNavigationBar
 import sri.mobile.examples.movies.android.DefaultAndroidNavigationBar
-import sri.universal
 import sri.universal.components.View
 import sri.universal.router._
 import sri.universal.styles.SriStyleSheet
@@ -24,7 +24,7 @@ object MoviesApp {
 
     override def renderScene(route: NavigatorRoute): ReactElement = {
       View(style = styles.c)(
-        if (universal.isIOSPlatform) DefaultNavigationBar(route)
+        if (isIOSPlatform) DefaultNavigationBar(route)
         else {
           if (route.page != Home)
             DefaultAndroidNavigationBar(route)

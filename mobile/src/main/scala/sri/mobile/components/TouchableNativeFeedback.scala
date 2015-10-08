@@ -1,6 +1,6 @@
 package sri.mobile.components
 
-import sri.core.ReactNode
+import sri.core.{React, ReactNode}
 import sri.mobile._
 
 import scala.scalajs.js
@@ -21,7 +21,7 @@ case class TouchableNativeFeedback(key: U[String] = undefined,
 
   def apply(children: ReactNode) = {
     val props = JSMacro[TouchableNativeFeedback](this)
-    ReactNative.createElement(ReactNative.TouchableNativeFeedback,props,children)
+    React.createElement(ReactNative.TouchableNativeFeedback,props,children)
   }
 
 

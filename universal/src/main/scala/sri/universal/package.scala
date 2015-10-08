@@ -1,18 +1,26 @@
 package sri
 
+import sri.core.CoreAll
+
 import scala.scalajs.js
 
 package object universal {
 
-  type NEvent = js.Dynamic
+  trait UniversalAll extends CoreAll{
 
-  val IOS_OS = "ios"
+    val IOS_OS = "ios"
 
-  val ANDROID_OS = "android"
+    val ANDROID_OS = "android"
 
-  val isIOSPlatform: Boolean = ReactUniversal.Platform.OS == IOS_OS
+    val isIOSPlatform: Boolean = !js.isUndefined(ReactUniversal.Platform) && ReactUniversal.Platform.OS == IOS_OS
 
-  val isAndroidPlatform: Boolean = ReactUniversal.Platform.OS == ANDROID_OS
+    val isAndroidPlatform: Boolean = !js.isUndefined(ReactUniversal.Platform) && ReactUniversal.Platform.OS == ANDROID_OS
 
-  val isWebPlatform: Boolean = js.isUndefined(ReactUniversal.Platform)
+    val isWebPlatform: Boolean = js.isUndefined(ReactUniversal.Platform)
+
+  }
+
+  object all extends UniversalAll
+
+
 }

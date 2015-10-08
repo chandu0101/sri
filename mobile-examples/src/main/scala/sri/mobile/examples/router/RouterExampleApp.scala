@@ -2,10 +2,10 @@ package sri.mobile.examples.router
 
 import sri.core.ReactElement
 import sri.mobile.components.DefaultNavigationBar
-import sri.universal.components.View
+import sri.mobile.components.DefaultNavigationBar.Style
 import sri.mobile.examples.router.components.{FourthScreen, HomeScreen, Person, SecondScreen}
 import sri.mobile.examples.router.routes.ThirdModule
-import sri.mobile.components.DefaultNavigationBar.Style
+import sri.universal.components.View
 import sri.universal.router._
 import sri.universal.styles.SriStyleSheet
 

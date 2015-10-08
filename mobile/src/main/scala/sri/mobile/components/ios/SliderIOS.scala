@@ -1,6 +1,7 @@
 package sri.mobile.components.ios
 
 import chandu0101.macros.tojs.JSMacro
+import sri.core.React
 import sri.mobile.ReactNative
 
 import scala.scalajs.js
@@ -19,7 +20,7 @@ case class SliderIOS(style: js.UndefOr[js.Any] = js.undefined,
 
   def apply() = {
     val props = JSMacro[SliderIOS](this)
-    ReactNative.createElement(ReactNative.SliderIOS,props)
+    React.createElement(ReactNative.SliderIOS,props)
   }
 
 }

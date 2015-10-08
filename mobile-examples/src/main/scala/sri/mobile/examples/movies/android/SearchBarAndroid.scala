@@ -1,10 +1,11 @@
 package sri.mobile.examples.movies.android
 
-import sri.core.ElementFactory._
 import sri.core._
-import sri.mobile._
-import sri.mobile.components.{TouchableNativeFeedbackS, TouchableNativeFeedback}
+import sri.mobile.ReactNative
+import sri.mobile.all._
 import sri.mobile.components.android.{ProgressBarAndroid, ProgressBarAndroidStyle}
+import sri.mobile.components.{TouchableNativeFeedback, TouchableNativeFeedbackS}
+import sri.universal.ReactEvent
 import sri.universal.components._
 import sri.universal.styles.SriStyleSheet
 
@@ -86,10 +87,10 @@ object SearchBarAndroid {
       marginHorizontal := 8)
   }
 
-  case class Props(onChange: NEvent => Unit, onFocus: NEvent => Unit, isLoading: Boolean)
+  case class Props(onChange: ReactEvent => Unit, onFocus: ReactEvent => Unit, isLoading: Boolean)
 
   val factory = getComponentFactory(js.constructorOf[Component], classOf[Component])
 
-  def apply(onChange: NEvent => Unit, onFocus: NEvent => Unit, isLoading: Boolean, key: UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElement(factory, Props(onChange, onFocus, isLoading), key = key, ref = ref)
+  def apply(onChange: ReactEvent => Unit, onFocus: ReactEvent => Unit, isLoading: Boolean, key: UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElement(factory, Props(onChange, onFocus, isLoading), key = key, ref = ref)
 
 }

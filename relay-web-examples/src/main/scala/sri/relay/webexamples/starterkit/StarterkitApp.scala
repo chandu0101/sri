@@ -1,16 +1,7 @@
 package sri.relay.webexamples.starterkit
 
-import sri.core.ElementFactory._
-import sri.core.{React, ReactComponent}
-import sri.relay.Relay
-import sri.relay.container.RelayContainer.Fragment
-import sri.relay.container.{Fragments, RelayContainerSpec}
-import sri.relay.query.RelayQL
-
-import scala.scalajs.js
 import scala.scalajs.js.Dynamic.{literal => json}
-import scala.scalajs.js.annotation.ScalaJSDefined
-import scala.scalajs.js.{Dictionary, JSON, UndefOr => U}
+import scala.scalajs.js.{UndefOr => U}
 
 
 //object StarterkitApp {

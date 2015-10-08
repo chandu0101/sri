@@ -1,10 +1,10 @@
 package sri.mobile.examples.uiexplorer.components.ios
 
-import sri.core.ElementFactory._
 import sri.core._
-import sri.mobile._
+import sri.mobile.all._
 import sri.mobile.components.{MapView, MapViewAnnotation, MapViewRegion}
 import sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
+import sri.universal.ReactEvent
 import sri.universal.components._
 import sri.universal.styles.SriStyleSheet
 
@@ -74,19 +74,19 @@ object MapViewExample extends UIExample {
         doubleOption.getOrElse(0.0)
       }
 
-      def onChangeLatitude(e: NEvent) = {
+      def onChangeLatitude(e: ReactEvent) = {
         region = region.copy(latitude = getDouble(e.nativeEvent.text.toString))
       }
 
-      def onChangeLongitude(e: NEvent) = {
+      def onChangeLongitude(e: ReactEvent) = {
         region = region.copy(longitude = getDouble(e.nativeEvent.text.toString))
       }
 
-      def onChangeLatitudeDelta(e: NEvent) = {
+      def onChangeLatitudeDelta(e: ReactEvent) = {
         region = region.copy(latitudeDelta = getDouble(e.nativeEvent.text.toString))
       }
 
-      def onChangeLongitudeDelta(e: NEvent) = {
+      def onChangeLongitudeDelta(e: ReactEvent) = {
         region = region.copy(longitudeDelta = getDouble(e.nativeEvent.text.toString))
       }
 

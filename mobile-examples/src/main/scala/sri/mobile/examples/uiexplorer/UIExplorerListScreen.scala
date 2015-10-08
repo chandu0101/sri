@@ -1,7 +1,7 @@
 package sri.mobile.examples.uiexplorer
 
-import sri.core.ElementFactory._
-import sri.mobile._
+import sri.mobile.ReactNative
+import sri.mobile.all._
 import sri.mobile.examples.uiexplorer.UIExplorerApp.UIExplorerDetails
 import sri.mobile.examples.uiexplorer.apis.android.ToastAndroidExample
 import sri.mobile.examples.uiexplorer.apis.{AlertIOSExample, AppStateIOSExample, AsyncStorageExample}
@@ -9,9 +9,9 @@ import sri.mobile.examples.uiexplorer.components._
 import sri.mobile.examples.uiexplorer.components.android.{SwitchAndroidExample, ToolbarAndroidExample}
 import sri.mobile.examples.uiexplorer.components.ios._
 import sri.universal.components._
+import sri.universal.router
 import sri.universal.router.SriRouterComponent
 import sri.universal.styles.SriStyleSheet
-import sri.universal.{isIOSPlatform, router}
 
 import scala.scalajs.js
 import scala.scalajs.js.Dynamic.{literal => json}

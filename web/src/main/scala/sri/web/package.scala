@@ -1,5 +1,7 @@
 package sri
 
+import sri.universal.UniversalAll
+
 import scala.scalajs.js
 
 package object web {
@@ -8,4 +10,8 @@ package object web {
   private[web] val undefined = js.undefined
 
   type NEvent = js.Dynamic
+
+  trait WebAll extends UniversalAll
+
+  object all extends WebAll
 }

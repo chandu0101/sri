@@ -1,6 +1,7 @@
 package sri.mobile.components
 
 import chandu0101.macros.tojs.JSMacro
+import sri.core.React
 import sri.mobile.ReactNative
 import sri.universal.components.EdgeInsets
 
@@ -29,7 +30,7 @@ case class MapView(maxDelta: js.UndefOr[Int] = js.undefined,
 
   def apply() = {
     val props = JSMacro[MapView](this)
-    ReactNative.createElement(ReactNative.MapView, props)
+    React.createElement(ReactNative.MapView, props)
   }
 
 }

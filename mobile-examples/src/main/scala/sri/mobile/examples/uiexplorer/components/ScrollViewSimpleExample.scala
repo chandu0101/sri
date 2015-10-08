@@ -1,9 +1,9 @@
 package sri.mobile.examples.uiexplorer.components
 
 import sri.core.ElementFactory._
-import sri.core.{ReactComponent, ReactNode}
-import sri.universal.components._
+import sri.core.ReactComponent
 import sri.mobile.examples.uiexplorer.{UIExample, UIExplorerPage}
+import sri.universal.components._
 import sri.universal.styles.SriStyleSheet
 
 import scala.scalajs.js

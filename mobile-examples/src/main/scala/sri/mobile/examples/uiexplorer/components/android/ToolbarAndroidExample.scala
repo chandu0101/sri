@@ -1,12 +1,10 @@
 package sri.mobile.examples.uiexplorer.components.android
 
-import sri.core.ElementFactory._
 import sri.core._
-import sri.mobile._
+import sri.mobile.all._
 import sri.mobile.components.android.{SwitchAndroid, ToolbarAndroid, ToolbarAndroidAction, ToolbarAndroidActionShow}
+import sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
 import sri.universal.components.{ImageSource, Text, View}
-import sri.mobile.examples.uiexplorer.UIExplorerPage
-import sri.mobile.examples.uiexplorer.{UIExplorerPage, UIExample, UIExplorerBlock}
 import sri.universal.styles.SriStyleSheet
 
 import scala.scalajs.js

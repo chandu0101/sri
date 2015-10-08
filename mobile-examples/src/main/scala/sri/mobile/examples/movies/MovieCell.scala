@@ -1,7 +1,7 @@
 package sri.mobile.examples.movies
 
-import sri.core.ElementFactory._
-import sri.mobile._
+import sri.mobile.ReactNative
+import sri.mobile.all._
 import sri.mobile.examples.movies.MoviesApp.DetailsPage
 import sri.mobile.examples.movies.MoviesUtil._
 import sri.universal.components._
@@ -10,7 +10,6 @@ import sri.universal.router.SriRouterComponent
 import sri.universal.styles.SriStyleSheet
 
 import scala.scalajs.js
-import scala.scalajs.js.Dynamic.{literal => json}
 import scala.scalajs.js.UndefOr
 import scala.scalajs.js.annotation.ScalaJSDefined
 

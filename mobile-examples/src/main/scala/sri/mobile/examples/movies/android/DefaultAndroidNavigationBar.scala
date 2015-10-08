@@ -1,7 +1,6 @@
 package sri.mobile.examples.movies.android
 
-import sri.core.ElementFactory._
-import sri.mobile._
+import sri.mobile.all._
 import sri.mobile.apis.android.BackAndroid
 import sri.mobile.components.android.ToolbarAndroid
 import sri.universal.components._
@@ -65,6 +64,6 @@ object DefaultAndroidNavigationBar {
 
   val factory = getComponentFactory(js.constructorOf[Component], classOf[Component])
 
-  def apply(route: NavigatorRoute, style: Style = DefaultTheme, key: U[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElement(factory, props = Props(route, style), key = key, ref = ref)
+  def apply(route: NavigatorRoute, style: Style = DefaultTheme, key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElement(factory, props = Props(route, style), key = key, ref = ref)
 
 }

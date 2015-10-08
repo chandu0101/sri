@@ -1,7 +1,7 @@
 package sri.mobile.components
 
 import chandu0101.macros.tojs.JSMacro
-import sri.core.ReactNode
+import sri.core.{React, ReactNode}
 import sri.mobile._
 
 import scala.scalajs.js
@@ -16,7 +16,7 @@ case class Modal(visible: js.UndefOr[Boolean] = js.undefined,
 
   def apply(children: ReactNode*) = {
     val props = JSMacro[Modal](this)
-    ReactNative.createElement(ReactNative.Modal,props,children: _*)
+    React.createElement(ReactNative.Modal,props,children: _*)
   }
 }
 
