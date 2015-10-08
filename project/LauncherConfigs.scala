@@ -41,7 +41,7 @@ object LauncherConfigs {
       artifactPath in Compile in fullOptMobile :=
         baseDirectory.value / "index.ios.js",
       fullOptMobile in Compile := {
-        val outFile = (artifactPath in Compile in fullOptIOS).value
+        val outFile = (artifactPath in Compile in fullOptMobile).value
 
         val loaderFile = (resourceDirectory in Compile).value / "loader.js"
 

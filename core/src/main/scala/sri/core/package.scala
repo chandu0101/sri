@@ -7,9 +7,6 @@ import scala.scalajs.js.`|`
 
 package object core {
 
-
-  //  implicit def seqElementToSeqNode(elm: Seq[ReactElement]): Seq[ReactNode] = elm.asInstanceOf[Seq[ReactNode]]
-
   type RefType = js.Function
 
   type PropsChildrenType = ReactElement | js.Array[ReactChildren]

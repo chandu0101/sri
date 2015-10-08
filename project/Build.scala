@@ -97,14 +97,12 @@ object Sri extends Build {
 
   lazy val mobileExamples = DefProject("mobile-examples")
     .dependsOn(mobile)
-    .settings(iosLauncher)
     .settings(mobilelauncher)
     .settings(mobileExamplesModuleDeps)
     .settings(preventPublication)
 
   lazy val relayMobileExamples = DefProject("relay-mobile-examples")
     .dependsOn(mobile,relay)
-    .settings(iosLauncher)
     .settings(mobilelauncher)
     .settings(preventPublication)
 
