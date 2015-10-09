@@ -94,8 +94,8 @@ object DefaultNavigationBar {
 
   js.constructorOf[Component].contextTypes = router.routerContextTypes
 
-  val factory = getComponentFactory(js.constructorOf[Component], classOf[Component])
+  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
 
-  def apply(route: NavigatorRoute, style: Style = defaultTheme, key: U[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElement(factory, props = Props(route, style), key = key, ref = ref)
+  def apply(route: NavigatorRoute, style: Style = defaultTheme, key: U[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElement(ctor, props = Props(route, style), key = key, ref = ref)
 
 }

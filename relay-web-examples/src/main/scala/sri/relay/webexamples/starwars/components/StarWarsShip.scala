@@ -26,7 +26,7 @@ object StarWarsShip {
 
   case class Props()
 
-  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
+  val ctor = getComponentConstructor(js.constructorOf[Component], classOf[Component])
 
   val container = Relay.createContainer(ctor, new RelayContainerSpec {
     override val fragments = Fragments("ship" -> (() => js.eval(RelayQL( """fragment on Ship { name }"""))))

@@ -53,8 +53,8 @@ object UIExplorerBlock {
     val displayName = "UIExplorerBlock"
   }
 
-  val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
+  val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
 
-  def apply(title: String)(children: ReactNode*) = createElementWithChildren(factory, title)(children :_*)
+  def apply(title: String)(children: ReactNode*) = createElementWithChildren(ctor, title)(children :_*)
 
 }

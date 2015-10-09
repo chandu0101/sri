@@ -41,11 +41,11 @@ object MovieCell {
   }
 
 
-  val factory = getComponentFactory(js.constructorOf[Component], classOf[Component])
+  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
 
   js.constructorOf[Component].contextTypes = router.routerContextTypes
 
-  def apply(movie: js.Dynamic, key: UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElement(factory, movie, key = key, ref = ref)
+  def apply(movie: js.Dynamic, key: UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElement(ctor, movie, key = key, ref = ref)
 
 
   object styles extends SriStyleSheet {

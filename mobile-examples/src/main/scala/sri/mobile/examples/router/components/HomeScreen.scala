@@ -54,9 +54,9 @@ object HomeScreen {
 
   js.constructorOf[Component].contextTypes = router.routerContextTypes
 
-  val factory = getComponentFactory(js.constructorOf[Component], classOf[Component])
+  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
 
-  def apply() = createElementNoProps(factory)
+  def apply() = createElementNoProps(ctor)
 }
 
 object styles extends SriStyleSheet {

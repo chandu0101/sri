@@ -40,9 +40,9 @@ object SwitchIOSExample extends UIExample {
       }
     }
 
-    val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
+    val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
 
-    def apply(key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElementNoProps(factory, key = key, ref = ref)
+    def apply(key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElementNoProps(ctor, key = key, ref = ref)
 
   }
 
@@ -58,9 +58,9 @@ object SwitchIOSExample extends UIExample {
       )
     }
 
-    val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
+    val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
 
-    def apply(key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElementNoProps(factory, key = key, ref = ref)
+    def apply(key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElementNoProps(ctor, key = key, ref = ref)
   }
 
 
@@ -93,9 +93,9 @@ object SwitchIOSExample extends UIExample {
       }
     }
 
-    val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
+    val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
 
-    def apply(key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElementNoProps(factory, key = key, ref = ref)
+    def apply(key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElementNoProps(ctor, key = key, ref = ref)
 
   }
 
@@ -140,9 +140,9 @@ object SwitchIOSExample extends UIExample {
       }
     }
 
-    val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
+    val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
 
-    def apply(key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElementNoProps(factory, key = key, ref = ref)
+    def apply(key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElementNoProps(ctor, key = key, ref = ref)
 
   }
 
@@ -166,9 +166,9 @@ object SwitchIOSExample extends UIExample {
     )
   }
 
-  val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
+  val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
 
-  val component = createElementNoProps(factory)
+  val component = createElementNoProps(ctor)
 
 
   object styles extends SriStyleSheet {

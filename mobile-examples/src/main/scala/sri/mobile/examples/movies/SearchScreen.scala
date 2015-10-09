@@ -40,9 +40,9 @@ object SearchScreen {
 
     case class Props(filter: String, isLoading: Boolean)
 
-    val factory = getComponentFactory(js.constructorOf[Component], classOf[Component])
+    val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
 
-    def apply(filter: String, isLoading: Boolean, key: UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElement(factory, Props(filter, isLoading), key = key, ref = ref)
+    def apply(filter: String, isLoading: Boolean, key: UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElement(ctor, Props(filter, isLoading), key = key, ref = ref)
 
   }
 
@@ -198,9 +198,9 @@ object SearchScreen {
   }
 
 
-  val factory = getComponentFactory(js.constructorOf[Component], classOf[Component])
+  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
 
-  def apply(key: UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElementNoProps(factory, key = key, ref = ref)
+  def apply(key: UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElementNoProps(ctor, key = key, ref = ref)
 
 
   object styles extends SriStyleSheet {

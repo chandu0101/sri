@@ -25,9 +25,9 @@ object DatePickerIOSExample extends UIExample {
         ))
     }
 
-    val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
+    val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
 
-    def apply(props: String) = createElement(factory, props)
+    def apply(props: String) = createElement(ctor, props)
 
   }
 
@@ -46,9 +46,9 @@ object DatePickerIOSExample extends UIExample {
       )
     }
 
-    val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
+    val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
 
-    def apply(props: String, key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null)(children: ReactElement) = createElementWithChildren(factory, props)(children)
+    def apply(props: String, key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null)(children: ReactElement) = createElementWithChildren(ctor, props)(children)
   }
 
 
@@ -102,9 +102,9 @@ object DatePickerIOSExample extends UIExample {
       }
     }
 
-    val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
+    val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
 
-    def apply(props: js.Date, key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElement(factory, props)
+    def apply(props: js.Date, key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElement(ctor, props)
   }
 
 
@@ -117,9 +117,9 @@ object DatePickerIOSExample extends UIExample {
     )
   }
 
-  val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
+  val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
 
-  val component = createElementNoProps(factory)
+  val component = createElementNoProps(ctor)
 
 
   object styles extends SriStyleSheet {

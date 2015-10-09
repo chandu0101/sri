@@ -42,9 +42,9 @@ object ModalExample extends UIExample {
 
     case class Props(onPress: () => Unit, style: js.Dictionary[Any])
 
-    val factory = getComponentFactory(js.constructorOf[Component], classOf[Component])
+    val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
 
-    def apply(onPress: () => Unit, style: js.Dictionary[Any] = js.Dictionary(), key: UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null)(children: ReactNode) = createElementWithChildren(factory, Props(onPress, style), key = key, ref = ref)(children)
+    def apply(onPress: () => Unit, style: js.Dictionary[Any] = js.Dictionary(), key: UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null)(children: ReactNode) = createElementWithChildren(ctor, Props(onPress, style), key = key, ref = ref)(children)
 
   }
 
@@ -96,9 +96,9 @@ object ModalExample extends UIExample {
 
   }
 
-  val factory = getComponentFactory(js.constructorOf[Component], classOf[Component])
+  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
 
-  val component = createElementNoProps(factory)
+  val component = createElementNoProps(ctor)
 
 
   object styles extends SriStyleSheet {

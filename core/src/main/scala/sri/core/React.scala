@@ -197,3 +197,11 @@ trait ReactComponentFactory[P, S] extends ReactComponent[P, S] {
 
 @js.native
 trait ReactComponentConstructor[C <: ReactComponent[_,_]] extends js.Object
+
+/**
+ *  typed version of js.concstructorOf[ C <: ReactJSComponent]
+ * @tparam P
+ * @tparam S
+ */
+@js.native
+trait ReactTypedConstructor[P,S] extends js.Object

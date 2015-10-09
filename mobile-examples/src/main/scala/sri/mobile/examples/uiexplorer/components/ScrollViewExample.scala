@@ -23,9 +23,9 @@ object ScrollViewExample extends UIExample {
         )
       }
 
-    val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
+    val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
 
-    def apply(url : String, key : UndefOr[String] = js.undefined,ref : js.Function = null) = createElement(factory,url,key = key)
+    def apply(url : String, key : UndefOr[String] = js.undefined,ref : js.Function = null) = createElement(ctor,url,key = key)
 
   }
 
@@ -57,9 +57,9 @@ object ScrollViewExample extends UIExample {
        )
      }
 
-  val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
+  val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
 
-  val component = createElementNoProps(factory)
+  val component = createElementNoProps(ctor)
 
   object styles extends SriStyleSheet {
 

@@ -36,9 +36,9 @@ object MovieDetails {
       }
     }
 
-    val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
+    val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
 
-    def apply(rating: js.Dynamic, key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElement(factory, rating, key = key, ref = ref)
+    def apply(rating: js.Dynamic, key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElement(ctor, rating, key = key, ref = ref)
 
   }
 
@@ -57,9 +57,9 @@ object MovieDetails {
     }
 
 
-    val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
+    val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
 
-    def apply(cast: js.Array[js.Dynamic], key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElement(factory, cast, key = key, ref = ref)
+    def apply(cast: js.Array[js.Dynamic], key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElement(ctor, cast, key = key, ref = ref)
 
   }
 
@@ -91,9 +91,9 @@ object MovieDetails {
 
   }
 
-  val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
+  val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
 
-  def apply(movie: js.Dynamic, key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElement(factory, movie, key = key, ref = ref)
+  def apply(movie: js.Dynamic, key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElement(ctor, movie, key = key, ref = ref)
 
   object styles extends SriStyleSheet {
 

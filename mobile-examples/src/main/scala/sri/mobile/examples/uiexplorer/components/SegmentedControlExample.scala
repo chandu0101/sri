@@ -24,9 +24,9 @@ object SegmentedControlExample extends UIExample {
       )
     }
 
-    val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
+    val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
 
-    def apply(key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElementNoProps(factory, key = key, ref = ref)
+    def apply(key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElementNoProps(ctor, key = key, ref = ref)
   }
 
   object PreSelectedSegmentedControlExample {
@@ -38,9 +38,9 @@ object SegmentedControlExample extends UIExample {
       )
     }
 
-    val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
+    val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
 
-    def apply(key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElementNoProps(factory, key = key, ref = ref)
+    def apply(key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElementNoProps(ctor, key = key, ref = ref)
   }
 
   object MomentarySegmentedControlExample {
@@ -52,9 +52,9 @@ object SegmentedControlExample extends UIExample {
       )
     }
 
-    val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
+    val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
 
-    def apply(key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElementNoProps(factory, key = key, ref = ref)
+    def apply(key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElementNoProps(ctor, key = key, ref = ref)
   }
 
   object DisabledSegmentedControlExample {
@@ -66,9 +66,9 @@ object SegmentedControlExample extends UIExample {
       )
     }
 
-    val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
+    val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
 
-    def apply(key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElementNoProps(factory, key = key, ref = ref)
+    def apply(key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElementNoProps(ctor, key = key, ref = ref)
   }
 
   object ColorSegmentedControlExample {
@@ -80,9 +80,9 @@ object SegmentedControlExample extends UIExample {
       )
     }
 
-    val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
+    val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
 
-    def apply(key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElementNoProps(factory, key = key, ref = ref)
+    def apply(key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElementNoProps(ctor, key = key, ref = ref)
   }
 
   object EventSegmentedControlExample {
@@ -111,9 +111,9 @@ object SegmentedControlExample extends UIExample {
       def onValueChange(value: String) = setState(state.copy(value = value))
     }
 
-    val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
+    val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
 
-    def apply(key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElementNoProps(factory, key = key, ref = ref)
+    def apply(key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElementNoProps(ctor, key = key, ref = ref)
 
   }
 
@@ -144,9 +144,9 @@ object SegmentedControlExample extends UIExample {
     )
   }
 
-  val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
+  val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
 
-  val component = createElementNoProps(factory)
+  val component = createElementNoProps(ctor)
 
 
   object styles extends SriStyleSheet {

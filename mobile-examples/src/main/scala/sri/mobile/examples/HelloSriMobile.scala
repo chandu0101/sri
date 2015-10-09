@@ -39,9 +39,9 @@ object HelloSriMobile {
     }
   }
 
-  val factory = getComponentFactory(js.constructorOf[Component], classOf[Component])
+  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
 
-  def apply() = createElementNoProps(factory)
+  def apply() = createElementNoProps(ctor)
 
 }
 

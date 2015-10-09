@@ -70,9 +70,9 @@ object AlertIOSExample extends UIExample {
     }
   }
 
-  val factory = getComponentFactory(js.constructorOf[Component], classOf[Component])
+  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
 
-  val component = createElementNoProps(factory)
+  val component = createElementNoProps(ctor)
 
   object styles extends SriStyleSheet {
     val alertsContainer = style(backgroundColor := "white",

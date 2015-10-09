@@ -50,11 +50,11 @@ object SriRouter {
 
     case class Props(ctrl: SriRouterCtrl)
 
-    val factory = getComponentFactory(js.constructorOf[Component], classOf[Component])
+    val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
 
     js.constructorOf[Component].childContextTypes = routerContextTypes
 
-    def apply(ctrl: SriRouterCtrl, key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null)(children: ReactNode*) = createElementWithChildren(factory, Props(ctrl), key = key, ref = ref)(children: _*)
+    def apply(ctrl: SriRouterCtrl, key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null)(children: ReactNode*) = createElementWithChildren(ctor, Props(ctrl), key = key, ref = ref)(children: _*)
 
   }
 
@@ -87,9 +87,9 @@ object SriRouter {
 
   case class Props(config: SriRouterConfig)
 
-  val factory = getComponentFactory(js.constructorOf[Component], classOf[Component])
+  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
 
-  def apply(routerConfig: SriRouterConfig) = createElement(factory, Props(routerConfig))
+  def apply(routerConfig: SriRouterConfig) = createElement(ctor, Props(routerConfig))
 
 }
 

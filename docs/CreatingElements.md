@@ -22,10 +22,10 @@ class HelloMessage extends ReactComponent[Unit,Unit] {
    View(...view_props)("Hello Sri")
   }
 }
-// create factory 
-val factory = getComponentFactory(js.constructor[HelloMessage],classOf[HelloMessage])
-val element = createElementNoProps(factory)
+// get typed constructor
+val ctor = getTypedConstructor(js.constructor[HelloMessage],classOf[HelloMessage])
+val element = createElementNoProps(ctor)
 ```
 
-please check the source code of [ElementFactory](https://github.com/chandu0101/sri/blob/master/core/src/main/scala/sri/core/ElementFactory.scala)  for all helper methods documentations
+please check the source code of [ElementFactory](core/src/main/scala/sri/core/ElementFactory.scala)  for all helper methods documentations
 

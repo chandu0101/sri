@@ -32,7 +32,7 @@ object StarWarsApp {
 
   case class Props()
 
-  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
+  val ctor = getComponentConstructor(js.constructorOf[Component], classOf[Component])
 
   val container = Relay.createContainer(ctor, new RelayContainerSpec {
 

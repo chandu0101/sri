@@ -27,8 +27,8 @@ object UIExplorerPage {
     val displayName = "UIExplorerPage"
   }
 
-  val factory = getComponentFactory(js.constructorOf[Component],classOf[Component])
+  val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
 
-  def apply(children: ReactNode*) = createElementNoPropsWithChildren(factory)(children: _*)
+  def apply(children: ReactNode*) = createElementNoPropsWithChildren(ctor)(children: _*)
 
 }
