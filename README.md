@@ -35,8 +35,9 @@ libraryDependencies += "com.github.chandu0101.sri" %%% "relay" % "0.1.0"
  - [Defining Components](/docs/DefiningComponents.md)
  - [Creating Elements](/docs/CreatingElements.md)
  - [Refs To Components](/docs/RefsToComponents.md)
- - [Sri Styles](/docs/SriStyles.md)
+ - [Universal Styles](/docs/UniversalStyles.md)
  - [Universal Router](/docs/UniversalRouter.md)
+ - [Known Issues](/docs/KnownIssues.md)
  
 #Examples
   - [Mobile Examples](/mobile-examples)
