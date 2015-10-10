@@ -35,6 +35,31 @@ object config extends UniversalRouterConfig {
 
 please check source code of [UniversalRouterConfig](universal/src/main/scala/sri/universal/router/UniversalRouterConfig.scala) for documentation of methods.
 
+#### Accessing RouterControl
+
+If you closely observe renderScene method there is no control available to pass down to children, yeah its tedious task to pass down to each children which is constant for a router. router control is stored in [react context](http://facebook.github.io/react/docs/context.html) ,all children component can access router control instance from context.Universal Router comes wit hlper class `UniversalRouterComponent` if you want router features in any react component just extend `UniversalRouterComponent` instead of `ReactComponent`
+
+Example :
+
+```scala
+
+  @ScalaJSDefined
+  class Component extends UniversalRouterComponent[js.Dynamic, Unit] {
+    def render() = {
+      View()(
+        TouchableHighlight(key = "th", onPress = () => navigateToStatic(AboutPage))(Text()("Go to About Page")),
+        TouchableHighlight(key = "th", onPress = () => navigateToDynamic(UserDetailsPage,props.user,props.user.name))(Text()(s"Go to User ${props.user.name} "))
+      )
+    }
+  }
+
+  // please note that you must define contextTypes on component , Once scalajs support [static fields](https://github.com/scala-js/scala-js/issues/1902)  we can move this logic to `UniversalRouterComponent`
+  js.constructorOf[Component].contextTypes = router.routerContextTypes
+
+```
+
+
+
 ## Examples 
 [RouterExampleApp.scala](https://github.com/chandu0101/sri/blob/master/mobile-examples/src/main/scala/sri/mobile/examples/router/RouterExampleApp.scala)
 
