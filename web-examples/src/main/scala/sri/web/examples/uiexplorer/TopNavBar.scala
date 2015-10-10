@@ -4,7 +4,7 @@ package sri.web.examples.uiexplorer
 import sri.core.ElementFactory._
 import sri.universal.components.{Text, TouchableOpacity, View}
 import sri.universal.router
-import sri.universal.router.SriRouterComponent
+import sri.universal.router.UniversalRouterComponent
 import sri.web.styles.WebStyleSheet
 
 import scala.scalajs.js
@@ -38,7 +38,7 @@ object TopNavBar {
   }
 
   @ScalaJSDefined
-  class Component extends SriRouterComponent[Unit, Unit] {
+  class Component extends UniversalRouterComponent[Unit, Unit] {
     def render() = View(style = styles.nav)(
       View(style = styles.back)(
         if (showBackButton()) TouchableOpacity(onPress = () => navigateBack())(

@@ -4,7 +4,7 @@ import sri.core.ElementFactory._
 import sri.core.ReactElement
 import sri.universal.components._
 import sri.universal.router
-import sri.universal.router.SriRouterComponent
+import sri.universal.router.UniversalRouterComponent
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.ScalaJSDefined
@@ -12,7 +12,7 @@ import scala.scalajs.js.annotation.ScalaJSDefined
 object FourthScreen {
 
   @ScalaJSDefined
-  class Component extends SriRouterComponent[Person, Unit] {
+  class Component extends UniversalRouterComponent[Person, Unit] {
     override def render(): ReactElement = View(style = styles.container)(
       Text(onPress = onTextClick _)(s"Fourth Screen : Person name is : ${props.name}")
     )

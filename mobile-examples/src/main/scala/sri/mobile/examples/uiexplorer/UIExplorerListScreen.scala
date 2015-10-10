@@ -10,7 +10,7 @@ import sri.mobile.examples.uiexplorer.components.android.{SwitchAndroidExample, 
 import sri.mobile.examples.uiexplorer.components.ios._
 import sri.universal.components._
 import sri.universal.router
-import sri.universal.router.SriRouterComponent
+import sri.universal.router.UniversalRouterComponent
 import sri.universal.styles.SriStyleSheet
 
 import scala.scalajs.js
@@ -83,7 +83,7 @@ object UIExplorerListScreen {
 
 
   @ScalaJSDefined
-  class Component extends SriRouterComponent[Unit, State] {
+  class Component extends UniversalRouterComponent[Unit, State] {
 
     initialState(State())
 

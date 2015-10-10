@@ -16,7 +16,7 @@ object MoviesApp {
 
   object DetailsPage extends DynamicPage[js.Dynamic]
 
-  object Config extends SriRouterConfig {
+  object Config extends UniversalRouterConfig {
 
     val initialRoute = defineInitialRoute(Home, "Movies", SearchScreen())
 
@@ -37,7 +37,7 @@ object MoviesApp {
     override val notFound: (StaticPage, NavigatorRoute) = initialRoute
   }
 
-  val router = SriRouter(Config)
+  val router = UniversalRouter(Config)
 
 
 }

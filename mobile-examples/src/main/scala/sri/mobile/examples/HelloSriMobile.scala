@@ -12,21 +12,6 @@ import scala.scalajs.js.annotation.ScalaJSDefined
 
 object HelloSriMobile {
 
-  object styles extends SriStyleSheet {
-
-    val container = style(flexOne,
-      backgroundColor := "rgb(185, 34, 55)",
-      justifyContent.center,
-      alignItems.center)
-
-    val image = style(width := 256, height := 256, margin := 20)
-
-    val text = style(fontWeight._500,
-      fontSize := 18,
-      color := "white")
-
-  }
-
   @ScalaJSDefined
   class Component extends ReactComponent[Unit, Unit] {
 
@@ -37,6 +22,21 @@ object HelloSriMobile {
         Text(style = styles.text)("Scala.js - Future of app development!")
       )
     }
+  }
+
+  object styles extends SriStyleSheet {
+
+    val container = style(flexOne,
+      backgroundColor := "rgb(175, 9, 119)",
+      justifyContent.center,
+      alignItems.center)
+
+    val image = style(width := 256, height := 256, margin := 20)
+
+    val text = style(fontWeight._500,
+      fontSize := 18,
+      color := "white")
+
   }
 
   val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])

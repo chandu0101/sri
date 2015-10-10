@@ -18,7 +18,7 @@ object RouterExampleApp {
 
   object Fourth extends DynamicPage[Person]
 
-  object Config extends SriRouterConfig {
+  object Config extends UniversalRouterConfig {
 
     override val initialRoute = defineInitialRoute(Home, "Home", HomeScreen())
 
@@ -38,7 +38,7 @@ object RouterExampleApp {
     }
   }
 
-  val router = SriRouter(Config)
+  val router = UniversalRouter(Config)
 
 }
 

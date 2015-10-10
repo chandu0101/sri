@@ -20,4 +20,4 @@
           android:alpha="@dimen/highlight_alpha_material_colored"
           android:color="?android:attr/colorControlActivated" />
     <item android:color="?android:attr/colorControlHighlight" />
-</selector><!-- From: file:/usr/local/google/buildbot/repo_clients/https___googleplex-android.googlesource.com_a_platform_manifest.git/mnc-release/frameworks/support/v7/appcompat/res/color-v23/abc_color_highlight_material.xml --><!-- From: file:/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.0/res/color-v23/abc_color_highlight_material.xml -->
+</selector><!-- From: file:/usr/local/google/buildbot/repo_clients/https___googleplex-android.googlesource.com_a_platform_manifest.git/mnc-sdk-release/frameworks/support/v7/appcompat/res/color-v23/abc_color_highlight_material.xml --><!-- From: file:/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/color-v23/abc_color_highlight_material.xml -->

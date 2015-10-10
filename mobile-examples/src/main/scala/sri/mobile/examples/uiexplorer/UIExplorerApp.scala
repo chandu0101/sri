@@ -14,7 +14,7 @@ object UIExplorerApp {
   object UIExplorerDetails extends DynamicPage[ReactElement]
 
 
-  object Config extends SriRouterConfig {
+  object Config extends UniversalRouterConfig {
     override val initialRoute = defineInitialRoute(UIExplorerList, title = "Scala.js - UIExplorer", component = UIExplorerListScreen())
 
     dynamicRoute(UIExplorerDetails, component = (c: ReactElement) => c)
@@ -30,6 +30,6 @@ object UIExplorerApp {
   }
 
 
-  val router = SriRouter(Config)
+  val router = UniversalRouter(Config)
 
 }

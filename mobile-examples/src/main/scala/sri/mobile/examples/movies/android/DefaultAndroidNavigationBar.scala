@@ -5,7 +5,7 @@ import sri.mobile.apis.android.BackAndroid
 import sri.mobile.components.android.ToolbarAndroid
 import sri.universal.components._
 import sri.universal.router
-import sri.universal.router.{NavigatorRoute, SriRouterComponent, SriRouterCtrl}
+import sri.universal.router.{NavigatorRoute, UniversalRouterComponent, UniversalRouterCtrl}
 import sri.universal.styles.SriStyleSheet
 
 import scala.scalajs.js
@@ -13,7 +13,7 @@ import scala.scalajs.js.annotation.ScalaJSDefined
 
 object DefaultAndroidNavigationBar {
 
-  var rctrl: SriRouterCtrl = _
+  var rctrl: UniversalRouterCtrl = _
 
   BackAndroid.addEventListener("hardwareBackPress", () => {
     if (rctrl != null && rctrl.navigator.getCurrentRoutes().length > 1) {
@@ -23,7 +23,7 @@ object DefaultAndroidNavigationBar {
   })
 
   @ScalaJSDefined
-  class Component extends SriRouterComponent[Props, Unit] {
+  class Component extends UniversalRouterComponent[Props, Unit] {
     def render() = {
       val androidback: js.UndefOr[ImageSource] = if (showBackButton()) ImageSource.fromJson(js.Dynamic.global.require("image!android_back_white")) else js.undefined
       ToolbarAndroid(

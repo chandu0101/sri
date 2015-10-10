@@ -2,11 +2,25 @@
 <items version="2" >
 
     <item
-        jar="/Users/chandrasekharkode/.gradle/caches/modules-2/files-2.1/com.squareup.okio/okio/1.5.0/bb7d4d96e780e8ef4f275c7d8dd3ef2883ddf99a/okio-1.5.0.jar"
+        jar="/Users/chandrasekharkode/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp/okhttp/2.4.0/40340c0748190fe897baf7bffbc1b282734294e5/okhttp-2.4.0.jar"
         jumboMode="false"
         revision="23.0.1"
-        sha1="bb7d4d96e780e8ef4f275c7d8dd3ef2883ddf99a">
-        <dex dex="/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/pre-dexed/debug/okio-1.5.0-18a35545d2cad9591c66100953128f418c22349e.jar" />
+        sha1="40340c0748190fe897baf7bffbc1b282734294e5">
+        <dex dex="/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/pre-dexed/debug/okhttp-2.4.0-83c5d0ae264c6bcc79080e65dbb78c0b353947ff.jar" />
+    </item>
+    <item
+        jar="/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/exploded-aar/com.facebook.fresco/fresco/0.6.1/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="dd4c42401d36342901ac4280fb92a831f8007f3d">
+        <dex dex="/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/pre-dexed/debug/classes-321bfe4cf865d52a012d1bf689d8bbbebeb691d9.jar" />
+    </item>
+    <item
+        jar="/Users/chandrasekharkode/.gradle/caches/modules-2/files-2.1/com.nineoldandroids/library/2.4.0/e9b63380f3a242dbdbf103a2355ad7e43bad17cb/library-2.4.0.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="e9b63380f3a242dbdbf103a2355ad7e43bad17cb">
+        <dex dex="/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/pre-dexed/debug/library-2.4.0-7f6d4a2b40d4ea8bfadbba8c7a0d2e0a7d16ae4a.jar" />
     </item>
     <item
         jar="/Users/chandrasekharkode/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp/okhttp-ws/2.4.0/69206d28966656052a982ceded583abdeb41cf63/okhttp-ws-2.4.0.jar"
@@ -16,18 +30,25 @@
         <dex dex="/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/pre-dexed/debug/okhttp-ws-2.4.0-f12ae69ce6d2672596b884df7a0cfef71c7c4852.jar" />
     </item>
     <item
-        jar="/usr/local/opt/android-sdk/extras/android/m2repository/com/android/support/support-annotations/23.0.0/support-annotations-23.0.0.jar"
+        jar="/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/jars/classes.jar"
         jumboMode="false"
         revision="23.0.1"
-        sha1="990e7f98a7bad86a40b1f0bcfeb039023afd0839">
-        <dex dex="/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/pre-dexed/debug/support-annotations-23.0.0-4f343f0345feb8db756d1d4ab841cc8ebc96c76c.jar" />
+        sha1="d86429b0f0b3f3cafbeb78dda1b9d89119ccb05d">
+        <dex dex="/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/pre-dexed/debug/classes-8e90e7b128bb3889e898880e4aeb61c86fe17dc7.jar" />
     </item>
     <item
-        jar="/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/exploded-aar/com.facebook.fresco/fbcore/0.6.1/jars/classes.jar"
+        jar="/Users/chandrasekharkode/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-core/2.2.3/1a0113da2cab5f4c216b4e5e7c1dbfaa67087e14/jackson-core-2.2.3.jar"
         jumboMode="false"
         revision="23.0.1"
-        sha1="c10091a128e47ed4ef804bd753c0f45745699756">
-        <dex dex="/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/pre-dexed/debug/classes-0e49fe4f73f7e3a63140cc89e65ed0e6be75a97e.jar" />
+        sha1="1a0113da2cab5f4c216b4e5e7c1dbfaa67087e14">
+        <dex dex="/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/pre-dexed/debug/jackson-core-2.2.3-ea51cb022e471a67748a6a0412694eb6522481d7.jar" />
+    </item>
+    <item
+        jar="/usr/local/opt/android-sdk/extras/android/m2repository/com/android/support/support-annotations/23.0.1/support-annotations-23.0.1.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="1fce89a6428c51467090d7f424e4c9c3dbd55f7e">
+        <dex dex="/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/pre-dexed/debug/support-annotations-23.0.1-83cbd8867bbfafb64844edcdc4bcc0a8099d3359.jar" />
     </item>
     <item
         jar="/Users/chandrasekharkode/.gradle/caches/modules-2/files-2.1/com.parse.bolts/bolts-android/1.1.4/129874135e6081269ace2312092031558865de12/bolts-android-1.1.4.jar"
@@ -37,11 +58,11 @@
         <dex dex="/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/pre-dexed/debug/bolts-android-1.1.4-f19407d3c61b7b04d70a3f8d0375955d793842dc.jar" />
     </item>
     <item
-        jar="/Users/chandrasekharkode/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp/okhttp/2.4.0/40340c0748190fe897baf7bffbc1b282734294e5/okhttp-2.4.0.jar"
+        jar="/Users/chandrasekharkode/.gradle/caches/modules-2/files-2.1/com.google.code.findbugs/jsr305/3.0.0/5871fb60dc68d67da54a663c3fd636a10a532948/jsr305-3.0.0.jar"
         jumboMode="false"
         revision="23.0.1"
-        sha1="40340c0748190fe897baf7bffbc1b282734294e5">
-        <dex dex="/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/pre-dexed/debug/okhttp-2.4.0-83c5d0ae264c6bcc79080e65dbb78c0b353947ff.jar" />
+        sha1="5871fb60dc68d67da54a663c3fd636a10a532948">
+        <dex dex="/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/pre-dexed/debug/jsr305-3.0.0-fe1e3b163b7ea593f09826cb4f274095ad378d99.jar" />
     </item>
     <item
         jar="/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/exploded-aar/com.facebook.fresco/imagepipeline-okhttp/0.6.1/jars/classes.jar"
@@ -51,39 +72,46 @@
         <dex dex="/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/pre-dexed/debug/classes-05f881369e77d05acd2a54ef2f86edad7f21a888.jar" />
     </item>
     <item
-        jar="/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/exploded-aar/com.facebook.react/react-native/0.11.0/jars/libs/infer-annotations-1.5.jar"
+        jar="/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/exploded-aar/com.facebook.react/react-native/0.12.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="5890aba13830ee1b1af1e70a504131d402a109b4">
+        <dex dex="/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/pre-dexed/debug/classes-bc6de9df90918fa62e58815af161da497bbbf368.jar" />
+    </item>
+    <item
+        jar="/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/exploded-aar/com.facebook.fresco/fbcore/0.6.1/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="c10091a128e47ed4ef804bd753c0f45745699756">
+        <dex dex="/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/pre-dexed/debug/classes-0e49fe4f73f7e3a63140cc89e65ed0e6be75a97e.jar" />
+    </item>
+    <item
+        jar="/Users/chandrasekharkode/.gradle/caches/modules-2/files-2.1/com.squareup.okio/okio/1.5.0/bb7d4d96e780e8ef4f275c7d8dd3ef2883ddf99a/okio-1.5.0.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="bb7d4d96e780e8ef4f275c7d8dd3ef2883ddf99a">
+        <dex dex="/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/pre-dexed/debug/okio-1.5.0-18a35545d2cad9591c66100953128f418c22349e.jar" />
+    </item>
+    <item
+        jar="/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/exploded-aar/com.facebook.react/react-native/0.12.0/jars/libs/infer-annotations-1.5.jar"
         jumboMode="false"
         revision="23.0.1"
         sha1="0b5e946b76cdb1f00b18f2981e7d997141a66c9f">
-        <dex dex="/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/pre-dexed/debug/infer-annotations-1.5-44e1f8d5479b3b1c7578510b20ac4c948f45b0ea.jar" />
+        <dex dex="/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/pre-dexed/debug/infer-annotations-1.5-9f190cae86d32c04e2a1226768b0e22451f2b12d.jar" />
     </item>
     <item
-        jar="/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/exploded-aar/com.facebook.react/react-native/0.11.0/jars/classes.jar"
+        jar="/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.0.1/jars/classes.jar"
         jumboMode="false"
         revision="23.0.1"
-        sha1="99c854e791067a69667c57c7ef1b596810c94ab2">
-        <dex dex="/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/pre-dexed/debug/classes-18a644c0c9d1d9fbe906038ddef1d317911376f4.jar" />
+        sha1="c31e21b53ff2f74664e498248d01453a32e32d48">
+        <dex dex="/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/pre-dexed/debug/classes-7e2e7f4846d24388198bc770bf37c26f228f5ea9.jar" />
     </item>
     <item
-        jar="/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.0.0/jars/classes.jar"
+        jar="/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.0.1/jars/libs/internal_impl-23.0.1.jar"
         jumboMode="false"
         revision="23.0.1"
-        sha1="8413c27b45b7fe61dca4a98159f65e2cee215f5a">
-        <dex dex="/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/pre-dexed/debug/classes-d0d34800b8bab13ae4bee389c5213e220d39f1b7.jar" />
-    </item>
-    <item
-        jar="/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.0/jars/classes.jar"
-        jumboMode="false"
-        revision="23.0.1"
-        sha1="4fcf0b1879f8caf497c073e1432d398e9e2988c1">
-        <dex dex="/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/pre-dexed/debug/classes-f1cd6ef98d87c27202fa232d8c3586e179216fc9.jar" />
-    </item>
-    <item
-        jar="/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.0.0/jars/libs/internal_impl-23.0.0.jar"
-        jumboMode="false"
-        revision="23.0.1"
-        sha1="8bd336eeae661e8311330284897ee07f8ebaa297">
-        <dex dex="/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/pre-dexed/debug/internal_impl-23.0.0-9477db80d3083b51e4c8314d4bfeb743e2a0e34f.jar" />
+        sha1="aa92916125166649d8ad4ba3940c3dd7515596d3">
+        <dex dex="/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/pre-dexed/debug/internal_impl-23.0.1-fb944c3169241c7a5f70d3e5ad16bdd884419a07.jar" />
     </item>
     <item
         jar="/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/exploded-aar/com.facebook.fresco/drawee/0.6.1/jars/classes.jar"
@@ -98,34 +126,6 @@
         revision="23.0.1"
         sha1="eb9817e26186e1a267cdd14211742ecc793de32e">
         <dex dex="/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/pre-dexed/debug/classes-8ee54d7f5ea9a3325227ed4a0370518db17d6656.jar" />
-    </item>
-    <item
-        jar="/Users/chandrasekharkode/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-core/2.2.3/1a0113da2cab5f4c216b4e5e7c1dbfaa67087e14/jackson-core-2.2.3.jar"
-        jumboMode="false"
-        revision="23.0.1"
-        sha1="1a0113da2cab5f4c216b4e5e7c1dbfaa67087e14">
-        <dex dex="/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/pre-dexed/debug/jackson-core-2.2.3-ea51cb022e471a67748a6a0412694eb6522481d7.jar" />
-    </item>
-    <item
-        jar="/Users/chandrasekharkode/.gradle/caches/modules-2/files-2.1/com.nineoldandroids/library/2.4.0/e9b63380f3a242dbdbf103a2355ad7e43bad17cb/library-2.4.0.jar"
-        jumboMode="false"
-        revision="23.0.1"
-        sha1="e9b63380f3a242dbdbf103a2355ad7e43bad17cb">
-        <dex dex="/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/pre-dexed/debug/library-2.4.0-7f6d4a2b40d4ea8bfadbba8c7a0d2e0a7d16ae4a.jar" />
-    </item>
-    <item
-        jar="/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/exploded-aar/com.facebook.fresco/fresco/0.6.1/jars/classes.jar"
-        jumboMode="false"
-        revision="23.0.1"
-        sha1="dd4c42401d36342901ac4280fb92a831f8007f3d">
-        <dex dex="/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/pre-dexed/debug/classes-321bfe4cf865d52a012d1bf689d8bbbebeb691d9.jar" />
-    </item>
-    <item
-        jar="/Users/chandrasekharkode/.gradle/caches/modules-2/files-2.1/com.google.code.findbugs/jsr305/3.0.0/5871fb60dc68d67da54a663c3fd636a10a532948/jsr305-3.0.0.jar"
-        jumboMode="false"
-        revision="23.0.1"
-        sha1="5871fb60dc68d67da54a663c3fd636a10a532948">
-        <dex dex="/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/pre-dexed/debug/jsr305-3.0.0-fe1e3b163b7ea593f09826cb4f274095ad378d99.jar" />
     </item>
 
 </items>

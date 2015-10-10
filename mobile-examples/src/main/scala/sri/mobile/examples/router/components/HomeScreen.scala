@@ -6,7 +6,7 @@ import sri.mobile.examples.router.RouterExampleApp.{Fourth, Second}
 import sri.mobile.examples.router.routes.ThirdModule
 import sri.universal.components._
 import sri.universal.router
-import sri.universal.router.{SriRouterComponent, _}
+import sri.universal.router.{UniversalRouterComponent, _}
 import sri.universal.styles.SriStyleSheet
 
 import scala.scalajs.js
@@ -16,7 +16,7 @@ import scala.scalajs.js.annotation.ScalaJSDefined
 object HomeScreen {
 
   @ScalaJSDefined
-  class Component extends SriRouterComponent[Unit, Unit] {
+  class Component extends UniversalRouterComponent[Unit, Unit] {
     override def render(): ReactElement = View(style = styles.container)(
       View(style = styles.row)(
         getStaticBlock("Static Second Screen", Second),

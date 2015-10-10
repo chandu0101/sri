@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/exploded-aar/com.facebook.react/react-native/0.11.0/res/values-fb/values-fb.xml -->
+    <!-- From: file:/Users/chandrasekharkode/Desktop/Kode/Programming/scalaprojects/sri/mobile-examples/android/app/build/intermediates/exploded-aar/com.facebook.react/react-native/0.12.0/res/values-fb/values-fb.xml -->
     <eat-comment/>
     <string name="catalyst_debugjs">[Debug JS#2010fa256bd28603b686da2713bb843a:1]</string>
     <string name="catalyst_inspect_element">[Inspect Element#c1b106c92869437ebd88f326d632b973:1]</string>

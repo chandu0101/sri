@@ -5,7 +5,7 @@ import sri.mobile._
 import sri.universal._
 import sri.universal.all._
 import sri.universal.components._
-import sri.universal.router.{NavigatorRoute, SriRouterComponent}
+import sri.universal.router.{NavigatorRoute, UniversalRouterComponent}
 import sri.universal.styles.SriStyleSheet
 
 import scala.scalajs.js
@@ -16,7 +16,7 @@ object DefaultNavigationBar {
 
 
   @ScalaJSDefined
-  class Component extends SriRouterComponent[Props, Unit] {
+  class Component extends UniversalRouterComponent[Props, Unit] {
     def render() = {
       val backbutton: ReactElement = if (showBackButton()) TouchableOpacity(onPress = () => navigateBack())(View(style = props.style.navBarLeftButton)(Text(style = props.style.navBarButtonText)("Back"))) else View(style = props.style.navBarLeftButton)()
       View(style = props.style.navBar)(

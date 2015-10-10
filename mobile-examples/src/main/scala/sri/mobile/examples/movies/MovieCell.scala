@@ -6,7 +6,7 @@ import sri.mobile.examples.movies.MoviesApp.DetailsPage
 import sri.mobile.examples.movies.MoviesUtil._
 import sri.universal.components._
 import sri.universal.router
-import sri.universal.router.SriRouterComponent
+import sri.universal.router.UniversalRouterComponent
 import sri.universal.styles.SriStyleSheet
 
 import scala.scalajs.js
@@ -17,7 +17,7 @@ object MovieCell {
 
 
   @ScalaJSDefined
-  class Component extends SriRouterComponent[js.Dynamic, Unit] {
+  class Component extends UniversalRouterComponent[js.Dynamic, Unit] {
     def render() = {
       val criticScore = props.ratings.critics_score.asInstanceOf[Int]
       View()(

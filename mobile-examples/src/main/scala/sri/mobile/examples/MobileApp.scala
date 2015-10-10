@@ -14,9 +14,9 @@ object MobileApp extends JSApp {
   def main() = {
 
     val root = createMobileRoot(
-      //                  HelloSriMobile()
+                        HelloSriMobile()
 //      RouterExampleApp.router
-            UIExplorerApp.router
+//            UIExplorerApp.router
 //            MoviesApp.router
     )
     ReactNative.AppRegistry.registerComponent("SriMobile", () => root)

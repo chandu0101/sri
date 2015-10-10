@@ -4,7 +4,7 @@ import sri.mobile.examples.router.components.{ThirdModuleHomeScreen, ThirdModule
 import sri.universal.router._
 
 
-object ThirdModule extends SriRouterModuleConfig {
+object ThirdModule extends UniversalRouterModuleConfig {
 
   object Home extends StaticPage
 

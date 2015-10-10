@@ -17,7 +17,7 @@ object HelloWeb {
   class Component extends ReactComponent[Unit, Unit] {
     def render() = {
       View(style = styles.container)(
-        !isWebPlatform ?= Text(style = styles.text)(s"Welcome to Sri Web"),
+        Text(style = styles.text)(s"Welcome to Sri Web"),
         Image(style = styles.image, source = ImageSource(uri = "http://www.scala-js.org/images/scala-js-logo-256.png"))(),
         Text(style = styles.text)("Scala.js - Future of app development!")
       )
@@ -28,7 +28,7 @@ object HelloWeb {
   object styles extends SriStyleSheet {
 
     val container = style(flexOne,
-      backgroundColor := "rgb(76, 73, 75)",
+      backgroundColor := "rgb(175, 9, 119)",
       justifyContent.center,
       alignItems.center)
 

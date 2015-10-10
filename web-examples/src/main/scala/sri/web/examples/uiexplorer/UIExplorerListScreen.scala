@@ -3,7 +3,7 @@ package sri.web.examples.uiexplorer
 import sri.core.ElementFactory._
 import sri.universal.components.{Text, TouchableOpacity, View}
 import sri.universal.router
-import sri.universal.router.SriRouterComponent
+import sri.universal.router.UniversalRouterComponent
 import sri.web.examples.uiexplorer.UIExplorerApp.UIExplorerDetails
 import sri.web.examples.uiexplorer.components.{TextInputExample, ViewExample}
 import sri.web.styles.WebStyleSheet
@@ -24,7 +24,7 @@ object UIExplorerListScreen {
 
 
   @ScalaJSDefined
-  class Component extends SriRouterComponent[Unit, Unit] {
+  class Component extends UniversalRouterComponent[Unit, Unit] {
 
 
     def render() = View()(
