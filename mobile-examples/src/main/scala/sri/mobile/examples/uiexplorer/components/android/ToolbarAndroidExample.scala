@@ -5,7 +5,7 @@ import sri.mobile.all._
 import sri.mobile.components.android.{SwitchAndroid, ToolbarAndroid, ToolbarAndroidAction, ToolbarAndroidActionShow}
 import sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
 import sri.universal.components.{ImageSource, Text, View}
-import sri.universal.styles.SriStyleSheet
+import sri.universal.styles.UniversalStyleSheet
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.ScalaJSDefined
@@ -92,7 +92,7 @@ object ToolbarAndroidExample extends UIExample {
   val component = createElementNoProps(ctor)
 
 
-  object styles extends SriStyleSheet {
+  object styles extends UniversalStyleSheet {
 
     val toolbar = style(backgroundColor := "#e9eaed", height := 56)
 

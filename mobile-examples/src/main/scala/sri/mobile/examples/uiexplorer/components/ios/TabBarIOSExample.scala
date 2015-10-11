@@ -5,7 +5,7 @@ import sri.core.ReactComponent
 import sri.mobile.components.ios.{SystemIcon, TabBarIOS, TabBarIOSItem}
 import sri.mobile.examples.uiexplorer.UIExample
 import sri.universal.components._
-import sri.universal.styles.SriStyleSheet
+import sri.universal.styles.UniversalStyleSheet
 
 import scala.scalajs.js
 import scala.scalajs.js.Dynamic.{literal => json}
@@ -64,7 +64,7 @@ object TabBarIOSExample extends UIExample {
   val component = createElementNoProps(ctor)
 
 
-  object styles extends SriStyleSheet {
+  object styles extends UniversalStyleSheet {
 
     val tabContent = style(flex := 1, alignItems.center)
 

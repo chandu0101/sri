@@ -3,14 +3,14 @@ package sri.mobile.examples.uiexplorer
 import sri.core.ElementFactory._
 import sri.core.{ReactComponent, _}
 import sri.universal.components._
-import sri.universal.styles.SriStyleSheet
+import sri.universal.styles.UniversalStyleSheet
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.ScalaJSDefined
 
 object UIExplorerPage {
 
-  object styles extends SriStyleSheet {
+  object styles extends UniversalStyleSheet {
 
     val wrapper = style(
       flex := 1)

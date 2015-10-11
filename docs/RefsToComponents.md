@@ -24,8 +24,8 @@ object Parent {
       childRef.hideMe() // invoke actions
     }
   }
-  val factory = getComponentFactory(js.constructorOf[Component], classOf[Component])
-  def apply(key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElementNoProps(factory, key = key, ref = ref)
+  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
+  def apply(key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElementNoProps(ctor, key = key, ref = ref)
 }
 
 object Child {
@@ -36,8 +36,8 @@ object Child {
       println(s"Ok done!.")
     }
   }
-  val factory = getComponentFactory(js.constructorOf[Component], classOf[Component])
-  def apply(key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElementNoProps(factory, key = key, ref = ref)
+  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
+  def apply(key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElementNoProps(ctor, key = key, ref = ref)
 }
 
 

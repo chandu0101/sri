@@ -7,7 +7,7 @@ import sri.mobile.examples.router.routes.ThirdModule
 import sri.universal.components._
 import sri.universal.router
 import sri.universal.router.{UniversalRouterComponent, _}
-import sri.universal.styles.SriStyleSheet
+import sri.universal.styles.UniversalStyleSheet
 
 import scala.scalajs.js
 import scala.scalajs.js.Dynamic.{literal => json}
@@ -59,7 +59,7 @@ object HomeScreen {
   def apply() = createElementNoProps(ctor)
 }
 
-object styles extends SriStyleSheet {
+object styles extends UniversalStyleSheet {
 
   val container = style(flexOne,
     //        alignItems.center,

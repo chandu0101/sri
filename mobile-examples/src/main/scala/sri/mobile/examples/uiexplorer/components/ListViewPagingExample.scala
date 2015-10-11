@@ -5,7 +5,7 @@ import sri.mobile.ReactNative
 import sri.mobile.all._
 import sri.mobile.examples.uiexplorer.UIExample
 import sri.universal.components._
-import sri.universal.styles.SriStyleSheet
+import sri.universal.styles.UniversalStyleSheet
 
 import scala.scalajs.js
 import scala.scalajs.js.Dynamic.{literal => json}
@@ -151,7 +151,7 @@ object ListViewPagingExample extends UIExample {
 
   val component = createElementNoProps(ctor)
 
-  object styles extends SriStyleSheet {
+  object styles extends UniversalStyleSheet {
 
     val listView = style(backgroundColor := "#B0C4DE")
 

@@ -7,7 +7,7 @@ import sri.mobile.examples.movies.MoviesUtil._
 import sri.universal.components._
 import sri.universal.router
 import sri.universal.router.UniversalRouterComponent
-import sri.universal.styles.SriStyleSheet
+import sri.universal.styles.UniversalStyleSheet
 
 import scala.scalajs.js
 import scala.scalajs.js.UndefOr
@@ -48,7 +48,7 @@ object MovieCell {
   def apply(movie: js.Dynamic, key: UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElement(ctor, movie, key = key, ref = ref)
 
 
-  object styles extends SriStyleSheet {
+  object styles extends UniversalStyleSheet {
     val textContainer = style(
       flex := 1
     )

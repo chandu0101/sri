@@ -9,7 +9,7 @@ import sri.mobile.examples.movies.android.SearchBarAndroid
 import sri.mobile.examples.movies.ios.SearchBarIOS
 import sri.universal.ReactEvent
 import sri.universal.components._
-import sri.universal.styles.SriStyleSheet
+import sri.universal.styles.UniversalStyleSheet
 
 import scala.async.Async._
 import scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
@@ -203,7 +203,7 @@ object SearchScreen {
   def apply(key: UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElementNoProps(ctor, key = key, ref = ref)
 
 
-  object styles extends SriStyleSheet {
+  object styles extends UniversalStyleSheet {
 
     val container = style(
       flex := 1,

@@ -5,7 +5,7 @@ import sri.core.ReactComponent
 import sri.mobile.components.ios.SliderIOS
 import sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
 import sri.universal.components._
-import sri.universal.styles.SriStyleSheet
+import sri.universal.styles.UniversalStyleSheet
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.ScalaJSDefined
@@ -43,7 +43,7 @@ object SliderIOSExample extends UIExample {
   val component = createElementNoProps(ctor)
 
 
-  object styles extends SriStyleSheet {
+  object styles extends UniversalStyleSheet {
     val slider = style(height := 10, margin := 10)
 
     val text = style(

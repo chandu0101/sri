@@ -11,7 +11,7 @@ import sri.mobile.examples.uiexplorer.components.ios._
 import sri.universal.components._
 import sri.universal.router
 import sri.universal.router.UniversalRouterComponent
-import sri.universal.styles.SriStyleSheet
+import sri.universal.styles.UniversalStyleSheet
 
 import scala.scalajs.js
 import scala.scalajs.js.Dynamic.{literal => json}
@@ -141,7 +141,7 @@ object UIExplorerListScreen {
 
   }
 
-  object styles extends SriStyleSheet {
+  object styles extends UniversalStyleSheet {
     val listContainer = style(
       flex := 1
     )

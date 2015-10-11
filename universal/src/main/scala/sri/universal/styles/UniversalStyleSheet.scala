@@ -4,7 +4,7 @@ import scala.scalajs.js
 import scala.scalajs.js.JSConverters.JSRichGenMap
 
 
-trait SriStyleSheet extends NativeAttrs {
+trait UniversalStyleSheet extends NativeAttrs {
   /** if duplicate attrs found then last one wins */
   @inline def styleE(maps: js.Dictionary[Any]*)(v: NativeStylePair[_]*) = {
     maps.fold(js.Dictionary.empty[Any])((d1, d2) => d1.++(d2).toJSDictionary)
@@ -19,7 +19,7 @@ trait SriStyleSheet extends NativeAttrs {
   }
 }
 
-object SriStyleSheet extends SriStyleSheet {
+object UniversalStyleSheet extends UniversalStyleSheet {
 
   val wholeContainer = style(flexOne)
 }

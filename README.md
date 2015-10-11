@@ -1,6 +1,6 @@
 # sri
 
-Sri(scala react interface) is a scalajs library to build truly native cross platform(mobile and web) applications ,its based on [reactjs](http://facebook.github.io/react/) and [react-native](https://facebook.github.io/react-native/) so you must be familiar with them inorder to use this library.
+Sri(scala react interface) is a scalajs library to build truly native cross platform(mobile(ios and android) and web) applications ,its based on [reactjs](http://facebook.github.io/react/) and [react-native](https://facebook.github.io/react-native/) so you must be familiar with them inorder to use this library.
 
 
 ![sri](/docs/sri.png)
@@ -13,6 +13,7 @@ Sri(scala react interface) is a scalajs library to build truly native cross plat
 - [Relay](#relay)
 - [Documentation](#documentation)
 - [Examples](#examples)
+- [Templates](#templates)
 
 #Mobile
 Use this module to build iOS/Android mobile applications
@@ -47,3 +48,8 @@ libraryDependencies += "com.github.chandu0101.sri" %%% "relay" % "0.1.0"
   - [Mobile Examples](/mobile-examples)
   - [Web Examples](/web-examples)
   - [Relay Web Examples](/relay-web-examples)
+  
+#Templates
+  - [Mobile App(iOS and Android) Template](https://github.com/chandu0101/sri-mobile-template)
+  - [Web App Template](https://github.com/chandu0101/sri-web-template)
+  - [Cross Platform App(mobile(ios and android) and web) Template](https://github.com/chandu0101/sri-cross-platform-template)

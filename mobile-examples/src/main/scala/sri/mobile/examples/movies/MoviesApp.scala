@@ -2,11 +2,10 @@ package sri.mobile.examples.movies
 
 import sri.core.ReactElement
 import sri.mobile.all._
-import sri.mobile.components.DefaultNavigationBar
 import sri.mobile.examples.movies.android.DefaultAndroidNavigationBar
-import sri.universal.components.View
+import sri.universal.components.{DefaultNavigationBar, View}
 import sri.universal.router._
-import sri.universal.styles.SriStyleSheet
+import sri.universal.styles.UniversalStyleSheet
 
 import scala.scalajs.js
 
@@ -42,6 +41,6 @@ object MoviesApp {
 
 }
 
-object styles extends SriStyleSheet {
+object styles extends UniversalStyleSheet {
   val c = style(flexOne)
 }

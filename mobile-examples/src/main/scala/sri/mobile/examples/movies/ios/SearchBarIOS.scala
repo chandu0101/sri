@@ -5,7 +5,7 @@ import sri.mobile.all._
 import sri.mobile.components.ios.ActivityIndicatorIOS
 import sri.universal.ReactEvent
 import sri.universal.components.{AutoCapitalize, TextInput, View}
-import sri.universal.styles.SriStyleSheet
+import sri.universal.styles.UniversalStyleSheet
 
 import scala.scalajs.js
 import scala.scalajs.js.UndefOr
@@ -25,7 +25,7 @@ object SearchBarIOS {
     )
   }
 
-  object styles extends SriStyleSheet {
+  object styles extends UniversalStyleSheet {
 
     val searchBar = style(
       padding := 3,

@@ -4,7 +4,7 @@ import sri.core.ElementFactory._
 import sri.core.ReactComponent
 import sri.mobile.examples.uiexplorer.{UIExample, UIExplorerPage}
 import sri.universal.components._
-import sri.universal.styles.SriStyleSheet
+import sri.universal.styles.UniversalStyleSheet
 
 import scala.scalajs.js
 import scala.scalajs.js.JSConverters.JSRichGenTraversableOnce
@@ -33,7 +33,7 @@ object ScrollViewSimpleExample extends UIExample {
 
   val component = createElementNoProps(ctor)
 
-  object styles extends SriStyleSheet {
+  object styles extends UniversalStyleSheet {
 
     val verticalScrollView = style(margin := 10)
 

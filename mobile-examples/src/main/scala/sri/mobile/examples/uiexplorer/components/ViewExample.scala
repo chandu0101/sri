@@ -4,7 +4,7 @@ import sri.core.ElementFactory._
 import sri.core.ReactComponent
 import sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
 import sri.universal.components.{View, _}
-import sri.universal.styles.SriStyleSheet
+import sri.universal.styles.UniversalStyleSheet
 
 import scala.scalajs.js
 import scala.scalajs.js.Dynamic.{literal => json}
@@ -40,7 +40,7 @@ object ViewExample extends UIExample {
 
   val component = createElementNoProps(ctor)
 
-  object styles extends SriStyleSheet {
+  object styles extends UniversalStyleSheet {
     val container = style(flex := 1,
       backgroundColor := "#F5FCFF")
 

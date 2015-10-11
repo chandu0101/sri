@@ -1,11 +1,11 @@
-package sri.mobile.examples.uiexplorer.components
+package sri.mobile.examples.uiexplorer.components.ios
 
 import sri.core.ElementFactory._
 import sri.core.ReactComponent
 import sri.mobile.components.ios.SegmentedControlIOS
 import sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
 import sri.universal.components._
-import sri.universal.styles.SriStyleSheet
+import sri.universal.styles.UniversalStyleSheet
 
 import scala.scalajs.js
 import scala.scalajs.js.Dynamic.{literal => json}
@@ -149,7 +149,7 @@ object SegmentedControlExample extends UIExample {
   val component = createElementNoProps(ctor)
 
 
-  object styles extends SriStyleSheet {
+  object styles extends UniversalStyleSheet {
 
     val text = style(fontSize := 14,
       textAlign.center,

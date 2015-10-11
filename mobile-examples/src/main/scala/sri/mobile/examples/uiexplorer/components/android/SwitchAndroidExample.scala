@@ -4,7 +4,7 @@ import sri.core.ElementFactory._
 import sri.core._
 import sri.mobile.components.android.SwitchAndroid
 import sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
-import sri.universal.styles.SriStyleSheet
+import sri.universal.styles.UniversalStyleSheet
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.ScalaJSDefined
@@ -38,7 +38,7 @@ object SwitchAndroidExample extends UIExample {
   val component = createElementNoProps(ctor)
 
 
-  object styles extends SriStyleSheet {
+  object styles extends UniversalStyleSheet {
 
     val bottom10 = style(marginBottom := 10)
   }

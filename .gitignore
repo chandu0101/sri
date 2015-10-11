@@ -33,14 +33,15 @@ npm-debug.log
 
 
 #mobile
-index.ios.js
-index.android.js
+mobile-examples/index.ios.js
+mobile-examples/index.android.js
+mobile-examples/android/.gradle
+mobile-examples/android/build
+mobile-examples/android/app/build
 
 #web-examples
 web-examples/assets/
 web-examples/node_modules/
 
 
-#relay-web-examples
-relay-web-examples/assets/
-relay-web-examples/node_modules/
+

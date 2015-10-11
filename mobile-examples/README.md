@@ -1,5 +1,23 @@
 # Mobile Examples
 
+# React Native Playground
+
+```scala
+
+// in root(sri)
+ sbt ~fullOptMobile
+ 
+ // this will generate index.ios.js and index.android.js files
+ 
+```
+
+1) go to https://rnplay.org/ ->  Signin  -> NewApp -> name it as `SriMobile`
+
+2) Replace content of index.io.js and index.android.js files with content from files that are generated using sbt ~fullOptMobile
+
+
+# Simulator/Device 
+
 -> Install Node.js 4.0 or greater using [nvm](https://github.com/creationix/nvm#installation)
 
 ```

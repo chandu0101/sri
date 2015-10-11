@@ -4,7 +4,7 @@ import sri.core.ReactElement
 import sri.universal._
 import sri.universal.all._
 import sri.universal.router.{NavigatorRoute, UniversalRouterComponent}
-import sri.universal.styles.SriStyleSheet
+import sri.universal.styles.UniversalStyleSheet
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.ScalaJSDefined
@@ -27,7 +27,7 @@ object DefaultNavigationBar {
   /**
    * style for navigation bar
    */
-  trait Style extends SriStyleSheet {
+  trait Style extends UniversalStyleSheet {
 
     def navBar = style(
       flexDirection.row,

@@ -1,11 +1,11 @@
-package sri.mobile.examples.uiexplorer.components
+package sri.web.examples.uiexplorer.components
 
 import sri.core.ElementFactory._
 import sri.core.ReactComponent
-import sri.mobile.ReactNative
-import sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
+import sri.universal.ReactUniversal
 import sri.universal.components.{ImageSource, _}
 import sri.universal.styles.UniversalStyleSheet
+import sri.web.examples.uiexplorer.{UIExplorerPage, UIExplorerBlock, UIExample}
 
 import scala.scalajs.js
 import scala.scalajs.js.UndefOr
@@ -109,7 +109,7 @@ object TouchableExample extends UIExample {
     val logBox = style(
       padding := 20,
       margin := 10,
-      borderWidth := 1.0 / ReactNative.PixelRatio.get(),
+      borderWidth := 1.0 / ReactUniversal.PixelRatio.get(),
       borderColor := "#f0f0f0",
       backgroundColor := "#f9f9f9"
     )
@@ -117,7 +117,7 @@ object TouchableExample extends UIExample {
       padding := 10,
       margin := 10,
       height := 120,
-      borderWidth := 1.0 / ReactNative.PixelRatio.get(),
+      borderWidth := 1.0 / ReactUniversal.PixelRatio.get(),
       borderColor := "#f0f0f0",
       backgroundColor := "#f9f9f9"
     )

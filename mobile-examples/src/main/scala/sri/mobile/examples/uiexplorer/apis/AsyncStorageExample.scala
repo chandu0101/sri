@@ -6,7 +6,7 @@ import sri.mobile.components.ios.{PickerIOS, PickerItemIOS}
 import sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
 import sri.universal.apis.{AsyncStorage, AsyncStorageException}
 import sri.universal.components._
-import sri.universal.styles.SriStyleSheet
+import sri.universal.styles.UniversalStyleSheet
 
 import scala.async.Async.{async, await}
 import scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
@@ -90,7 +90,7 @@ object AsyncStorageExample extends UIExample {
   val component = createElementNoProps(ctor)
 
 
-  object styles extends SriStyleSheet {
+  object styles extends UniversalStyleSheet {
 
     def getColorStyle(c: String) = style(color := c)
   }

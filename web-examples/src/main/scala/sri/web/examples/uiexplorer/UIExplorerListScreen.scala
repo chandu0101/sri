@@ -5,7 +5,7 @@ import sri.universal.components.{Text, TouchableOpacity, View}
 import sri.universal.router
 import sri.universal.router.UniversalRouterComponent
 import sri.web.examples.uiexplorer.UIExplorerApp.UIExplorerDetails
-import sri.web.examples.uiexplorer.components.{TextInputExample, ViewExample}
+import sri.web.examples.uiexplorer.components.{ScrollViewExample, TextInputExample, TouchableExample, ViewExample}
 import sri.web.styles.WebStyleSheet
 
 import scala.scalajs.js
@@ -18,7 +18,9 @@ object UIExplorerListScreen {
 
   val COMPONENTS: List[UIExample] = List(
     ViewExample,
-    TextInputExample
+    TextInputExample,
+    TouchableExample,
+    ScrollViewExample
     //    NavigatorExample
   )
 
@@ -40,7 +42,7 @@ object UIExplorerListScreen {
 
     def renderRow(example: UIExample) = {
       View(key = example.title)(
-        TouchableOpacity(onPress = () => onPressRow(example), style = styles.rowButton,  activeOpacity = 0.8)(
+        TouchableOpacity(onPress = () => onPressRow(example), style = styles.rowButton, activeOpacity = 0.8)(
           View(style = styles.row)(
             Text(style = styles.rowTitleText)(
               example.title

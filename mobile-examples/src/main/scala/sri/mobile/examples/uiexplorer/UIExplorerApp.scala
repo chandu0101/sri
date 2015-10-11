@@ -1,10 +1,9 @@
 package sri.mobile.examples.uiexplorer
 
 import sri.core.ReactElement
-import sri.mobile.components.DefaultNavigationBar
-import sri.universal.components.View
+import sri.universal.components.{DefaultNavigationBar, View}
 import sri.universal.router._
-import sri.universal.styles.SriStyleSheet
+import sri.universal.styles.UniversalStyleSheet
 
 object UIExplorerApp {
 
@@ -20,7 +19,7 @@ object UIExplorerApp {
     dynamicRoute(UIExplorerDetails, component = (c: ReactElement) => c)
 
     override def renderScene(route: NavigatorRoute): ReactElement = {
-      View(style = SriStyleSheet.wholeContainer)(
+      View(style = UniversalStyleSheet.wholeContainer)(
         DefaultNavigationBar(route),
         super.renderScene(route)
       )

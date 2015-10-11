@@ -6,7 +6,7 @@ import sri.core.ReactComponent
 import sri.mobile.components.ios.{ActivityIndicatorIOS, ActivityIndicatorIOSSize}
 import sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
 import sri.universal.components._
-import sri.universal.styles.SriStyleSheet
+import sri.universal.styles.UniversalStyleSheet
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.ScalaJSDefined
@@ -86,7 +86,7 @@ object ActivityIndicatorIOSExample extends UIExample {
   val component = createElementNoProps(ctor)
 
 
-  object styles extends SriStyleSheet {
+  object styles extends UniversalStyleSheet {
 
     val centering = style(
       alignItems.center,

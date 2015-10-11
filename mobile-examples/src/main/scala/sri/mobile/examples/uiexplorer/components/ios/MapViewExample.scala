@@ -6,7 +6,7 @@ import sri.mobile.components.{MapView, MapViewAnnotation, MapViewRegion}
 import sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
 import sri.universal.ReactEvent
 import sri.universal.components._
-import sri.universal.styles.SriStyleSheet
+import sri.universal.styles.UniversalStyleSheet
 
 import scala.scalajs.js
 import scala.scalajs.js.UndefOr
@@ -177,7 +177,7 @@ object MapViewExample extends UIExample {
   val component = createElementNoProps(ctor)
 
 
-  object styles extends SriStyleSheet {
+  object styles extends UniversalStyleSheet {
 
     val map = style(height := 150,
       margin := 10,

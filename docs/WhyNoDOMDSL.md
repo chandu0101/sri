@@ -17,7 +17,7 @@ To make this more clear and to make it easier to build more environments that Re
 
 >Can someone explain why semantic markup is important? I don't buy the screen reader and search engine arguments anymore. #divallthethings ,In other words, React Native can fix a11y in other ways and hence doesn't need semantic markup.
 
-[Initial web implementation od react-native-animated](https://github.com/facebook/react-native/commit/a50b4ea7b9ecc4c95a38b58f12a71b93ff3a3131)
+[Initial web implementation of react-native-animated](https://github.com/facebook/react-native/commit/a50b4ea7b9ecc4c95a38b58f12a71b93ff3a3131)
 
 [react-native-for-web](https://github.com/KodersLab/react-native-for-web)
 

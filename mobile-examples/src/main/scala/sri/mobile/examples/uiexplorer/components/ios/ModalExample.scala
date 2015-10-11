@@ -6,7 +6,7 @@ import sri.mobile.components.Modal
 import sri.mobile.components.ios.SwitchIOS
 import sri.mobile.examples.uiexplorer.{UIExample, UIExplorerPage}
 import sri.universal.components._
-import sri.universal.styles.SriStyleSheet
+import sri.universal.styles.UniversalStyleSheet
 
 import scala.scalajs.js
 import scala.scalajs.js.UndefOr
@@ -101,7 +101,7 @@ object ModalExample extends UIExample {
   val component = createElementNoProps(ctor)
 
 
-  object styles extends SriStyleSheet {
+  object styles extends UniversalStyleSheet {
     val container = style(flexOne,
       justifyContent.center,
       padding := 20)

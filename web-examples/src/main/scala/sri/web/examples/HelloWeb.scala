@@ -2,7 +2,7 @@ package sri.web.examples
 
 import sri.core._
 import sri.universal.components._
-import sri.universal.styles.SriStyleSheet
+import sri.universal.styles.UniversalStyleSheet
 import sri.web.all._
 
 import scala.scalajs.js
@@ -25,7 +25,7 @@ object HelloWeb {
 
   }
 
-  object styles extends SriStyleSheet {
+  object styles extends UniversalStyleSheet {
 
     val container = style(flexOne,
       backgroundColor := "rgb(175, 9, 119)",

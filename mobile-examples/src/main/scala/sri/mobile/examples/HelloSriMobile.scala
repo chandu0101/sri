@@ -4,7 +4,7 @@ import sri.core.ElementFactory._
 import sri.core.ReactComponent
 import sri.mobile.ReactNative
 import sri.universal.components._
-import sri.universal.styles.SriStyleSheet
+import sri.universal.styles.UniversalStyleSheet
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.ScalaJSDefined
@@ -24,7 +24,7 @@ object HelloSriMobile {
     }
   }
 
-  object styles extends SriStyleSheet {
+  object styles extends UniversalStyleSheet {
 
     val container = style(flexOne,
       backgroundColor := "rgb(175, 9, 119)",

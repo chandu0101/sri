@@ -6,7 +6,7 @@ import sri.mobile.all._
 import sri.mobile.apis.AlertButton
 import sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
 import sri.universal.components._
-import sri.universal.styles.SriStyleSheet
+import sri.universal.styles.UniversalStyleSheet
 
 import scala.scalajs.js
 import scala.scalajs.js.Dynamic.{literal => json}
@@ -74,7 +74,7 @@ object AlertIOSExample extends UIExample {
 
   val component = createElementNoProps(ctor)
 
-  object styles extends SriStyleSheet {
+  object styles extends UniversalStyleSheet {
     val alertsContainer = style(backgroundColor := "white",
       padding := 20)
     val wrapper = style(borderRadius := 5, marginBottom := 5)

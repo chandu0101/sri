@@ -7,7 +7,7 @@ import sri.mobile.components.android.{ProgressBarAndroid, ProgressBarAndroidStyl
 import sri.mobile.components.{TouchableNativeFeedback, TouchableNativeFeedbackS}
 import sri.universal.ReactEvent
 import sri.universal.components._
-import sri.universal.styles.SriStyleSheet
+import sri.universal.styles.UniversalStyleSheet
 
 import scala.scalajs.js
 import scala.scalajs.js.UndefOr
@@ -58,7 +58,7 @@ object SearchBarAndroid {
     }
   }
 
-  object styles extends SriStyleSheet {
+  object styles extends UniversalStyleSheet {
 
     val searchBar = style(
       height := 56,

@@ -6,7 +6,7 @@ import sri.mobile.components.android.ToolbarAndroid
 import sri.universal.components._
 import sri.universal.router
 import sri.universal.router.{NavigatorRoute, UniversalRouterComponent, UniversalRouterCtrl}
-import sri.universal.styles.SriStyleSheet
+import sri.universal.styles.UniversalStyleSheet
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.ScalaJSDefined
@@ -43,7 +43,7 @@ object DefaultAndroidNavigationBar {
   /**
    * style for navigation bar
    */
-  trait Style extends SriStyleSheet {
+  trait Style extends UniversalStyleSheet {
 
     def toolbar = style(
       height := 56,

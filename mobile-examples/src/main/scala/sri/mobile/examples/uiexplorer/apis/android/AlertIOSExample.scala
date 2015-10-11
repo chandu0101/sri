@@ -5,7 +5,7 @@ import sri.core.ReactComponent
 import sri.mobile.apis.android.ToastAndroid
 import sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
 import sri.universal.components._
-import sri.universal.styles.SriStyleSheet
+import sri.universal.styles.UniversalStyleSheet
 
 import scala.scalajs.js
 import scala.scalajs.js.Dynamic.{literal => json}
@@ -40,7 +40,7 @@ object ToastAndroidExample extends UIExample {
 
   val component = createElementNoProps(ctor)
 
-  object styles extends SriStyleSheet {
+  object styles extends UniversalStyleSheet {
     val text = style(color := "black")
   }
 
