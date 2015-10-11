@@ -1,9 +1,9 @@
 # UniversalRouter
 
-This is a universal router , works on both platforms(web and ios)
+Universal router works on both platforms (web and ios).
 
 ##### Defining Pages
-  Eventhough  router gives feel like switching between different pages but at the core they are just react components mounting and unmounting, a component can be Static(which doesn't take any props from parent)/Dynamic(which takes props from parent), we'll use same idea to define our pages 
+  Even though the router gives a feel of switching between different pages, at the core they are just react components mounting and unmounting. A component can be Static (which doesn't take any props from the parent) or Dynamic (which takes props from the parent). We'll use same idea to define our pages.
   
 ```scala
 object HomePage extends StaticPage
@@ -12,7 +12,7 @@ object UserDetailsPage extends DynamicPage[User]
 ```
 
 ##### Defining Routes
-Now lets define routes/configs for pages that defined above, use  `MobileRouterConfig` trait for this.
+Now let's define routes/configs for pages defined above. We will use  `UniversalRouterConfig` trait for this.
 
 ```scala
 object config extends UniversalRouterConfig {
@@ -33,11 +33,11 @@ object config extends UniversalRouterConfig {
 }
 ```
 
-please check source code of [UniversalRouterConfig](universal/src/main/scala/sri/universal/router/UniversalRouterConfig.scala) for documentation of methods.
+please check source code of [UniversalRouterConfig](universal/src/main/scala/sri/universal/router/UniversalRouterConfig.scala) for more information.
 
-#### Accessing RouterControl
+#### Accessing `RouterControl`
 
-If you closely observe renderScene method there is no control available to pass down to children, yeah its tedious task to pass down to each children which is constant for a router. router control is stored in [react context](http://facebook.github.io/react/docs/context.html) ,all children component can access router control instance from context.Universal Router comes wit hlper class `UniversalRouterComponent` if you want router features in any react component just extend `UniversalRouterComponent` instead of `ReactComponent`
+If you closely observe the `renderScene` method, there is no control available to pass down to children. Yeah, its tedious task to pass down to each children which is a constant for a router. Therefore, the `RouterControl` object is stored in [react context](http://facebook.github.io/react/docs/context.html). Now, all children component can access the router control instance from the context. Universal Router comes with a helper class `UniversalRouterComponent`. If you want the router features in any react component, just extend `UniversalRouterComponent` instead of `ReactComponent`
 
 Example :
 
@@ -53,7 +53,7 @@ Example :
     }
   }
 
-  // please note that you must define contextTypes on component , Once scalajs support [static fields](https://github.com/scala-js/scala-js/issues/1902)  we can move this logic to `UniversalRouterComponent`
+  // please note that you must define contextTypes on component. Once scalajs support [static fields](https://github.com/scala-js/scala-js/issues/1902),  we can move this logic to `UniversalRouterComponent`
   js.constructorOf[Component].contextTypes = router.routerContextTypes
 
 ```
