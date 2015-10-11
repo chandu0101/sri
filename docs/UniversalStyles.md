@@ -1,8 +1,6 @@
 #Universal Styles
 
-UniversalStyleSheet contains styles common to web and mobile
-
-extend ``trait SriStyleSheet`` to define style sheets . SriStyleSheet comes with two methods ``style`` (which takes attr value pairs)and ``styleE`` (this is used to extend already defined styles).
+`UniversalStyleSheet` contains styles common to web and mobile. Extend ``trait SriStyleSheet`` to define style sheets. `SriStyleSheet` comes with two methods: ``style`` (which takes attr value pairs) and ``styleE`` (which is used to extend already defined styles).
 
  Example :
 
