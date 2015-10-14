@@ -35,7 +35,7 @@ Use this module to add relay support to your applications:
 libraryDependencies += "com.github.chandu0101.sri" %%% "relay" % "0.1.0"
 ```
 #Documentation
-
+ - [Sri Internals](/docs/SriInternals.md)
  - [Defining Components](/docs/DefiningComponents.md)
  - [Creating Elements](/docs/CreatingElements.md)
  - [Refs To Components](/docs/RefsToComponents.md)
