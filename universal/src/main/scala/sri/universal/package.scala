@@ -16,7 +16,7 @@ package object universal {
 
     val isAndroidPlatform: Boolean = !js.isUndefined(ReactUniversal.Platform) && ReactUniversal.Platform.OS == ANDROID_OS
 
-    val isWebPlatform: Boolean = js.isUndefined(ReactUniversal.Platform)
+    val isWebPlatform: Boolean = !js.isUndefined(ReactUniversal.Platform) && ReactUniversal.Platform.OS == "browser"
 
   }
 
