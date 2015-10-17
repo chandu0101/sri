@@ -1,0 +1,32 @@
+{
+  "name": "sr-web-test",
+  "version": "0.1.0",
+  "description": "sri web test",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "scripts": {
+    "start": "webpack --watch & webpack-dev-server --progress --colors --port 8090",
+    "build": "webpack --watch"
+  },
+  "devDependencies": {
+    "compression-webpack-plugin": "^0.2.0",
+    "css-loader": "^0.14.5",
+    "file-loader": "^0.8.4",
+    "image-webpack-loader": "^1.6.1",
+    "imagemin": "^3.2.0",
+    "lodash": "^3.9.3",
+    "node-libs-browser": "^0.5.2",
+    "style-loader": "^0.12.3",
+    "url-loader": "^0.5.6",
+    "webpack": "^1.9.10",
+    "webpack-dev-server": "^1.9.0"
+  },
+  "dependencies": {
+    "react": "^0.14.0",
+    "react-addons-test-utils": "^0.14.0",
+    "react-dom": "^0.14.0",
+    "react-native-for-web": "^0.1.6"
+  }
+}

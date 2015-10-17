@@ -38,7 +38,7 @@ object Dependencies {
   )
 
   val webModuleDeps = Seq(
-  jsDependencies += ProvidedJS / "webtest-bundle.js" % Test
+
   )
 
   val mobileModuleDeps = Seq(

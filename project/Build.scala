@@ -35,6 +35,7 @@ object Sri extends Build {
   val scalatestJSSettings = Seq(scalatestJS,
     scalaJSStage in Global := FastOptStage,
     jsDependencies += RuntimeDOM,
+    jsDependencies += ProvidedJS / "test-bundle.js" % Test,
     jsEnv in Test := new PhantomJS2Env(scalaJSPhantomJSClassLoader.value, addArgs = Seq("--web-security=no"))
     //    jsEnv in Test := new NodeJSEnv()
   )
@@ -50,11 +51,11 @@ object Sri extends Build {
 
   // ================================ Module definitions  ================================ //
   lazy val Sri = DefProject(".", "root")
-    .aggregate(core, universal, web, mobile,relay, mobileExamples, webExamples,relayWebExamples,relayMobileExamples)
+    .aggregate(core, universal, web, mobile, relay, mobileExamples, webExamples, relayWebExamples, relayMobileExamples)
     .configure(addCommandAliases(
     "ct" -> "; test:compile ; core/test",
     "wt" -> "; test:compile ; web/test",
-    "tt" -> ";+test:compile ;+test/test",
+    "tt" -> "; test:compile ; test/test",
     "T" -> "; clean ;t",
     "TT" -> ";+clean ;tt"))
     .settings(preventPublication)
@@ -80,13 +81,13 @@ object Sri extends Build {
     .settings(publicationSettings)
 
   lazy val webExamples = DefProject("web-examples")
-    .dependsOn(web,relay)
+    .dependsOn(web, relay)
     .settings(webExamplesLauncher)
     .settings(preventPublication)
 
 
   lazy val relayWebExamples = DefProject("relay-web-examples")
-    .dependsOn(web,relay)
+    .dependsOn(web, relay)
     .settings(relayWebExamplesLauncher)
     .settings(preventPublication)
 
@@ -102,9 +103,12 @@ object Sri extends Build {
     .settings(preventPublication)
 
   lazy val relayMobileExamples = DefProject("relay-mobile-examples")
-    .dependsOn(mobile,relay)
+    .dependsOn(mobile, relay)
     .settings(mobilelauncher)
     .settings(preventPublication)
 
+  lazy val test = DefProject("test")
+    .dependsOn(universal)
+    .settings(scalatestJSSettings)
 
 }
