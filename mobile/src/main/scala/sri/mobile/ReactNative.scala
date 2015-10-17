@@ -28,6 +28,7 @@ trait ReactNative extends ReactUniversal {
   val SwitchAndroid: ReactClass = js.native
   val ToolbarAndroid: ReactClass = js.native
   val TouchableNativeFeedback: ReactClass = js.native
+  val ViewPagerAndroid: ReactClass = js.native
 
 
   // apis

@@ -14,7 +14,7 @@ object Sri extends Build {
   lazy val commonSettings =
     Seq(
       organization := "com.github.chandu0101.sri",
-      version := "0.1.0",
+      version := "0.2.0-SNAPSHOT",
       homepage := Some(url("https://github.com/chandu0101/sri")),
       licenses +=("Apache-2.0", url("http://opensource.org/licenses/Apache-2.0")),
       scalaVersion := Scala211,
