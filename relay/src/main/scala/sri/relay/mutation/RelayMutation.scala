@@ -56,7 +56,7 @@ abstract class RelayMutationJS(var props : js.Dynamic) extends js.Object {
 }
 
 @ScalaJSDefined
-abstract class RelayMutation(props : js.Dynamic) extends RelayMutationJS(props) {
+abstract class RelayMutation(initialProps : js.Dynamic) extends RelayMutationJS(initialProps) {
   /**
    * Each mutation has a server name which is used by clients to communicate the
    * type of mutation that should be executed on the server.

@@ -5,7 +5,6 @@ var path = require('path');
 var CommonsChunkPlugin = webpack.optimize.CommonsChunkPlugin;
 
 var introspectionQuery = require('graphql/utilities').introspectionQuery;
-var request            = require('sync-request');
 
 
 module.exports = {

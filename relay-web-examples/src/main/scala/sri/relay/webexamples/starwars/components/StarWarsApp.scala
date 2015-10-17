@@ -27,10 +27,10 @@ object StarWarsApp {
         ))
       )
     }
-
   }
 
   case class Props()
+
 
   val ctor = getComponentConstructor(js.constructorOf[Component], classOf[Component])
 

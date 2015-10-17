@@ -15,7 +15,7 @@
   "devDependencies": {
     "babel": "5.8.21",
     "babel-loader": "5.3.2",
-    "babel-relay-plugin": "^0.2.2",
+    "babel-relay-plugin": "^0.3.0",
     "compression-webpack-plugin": "^0.2.0",
     "css-loader": "^0.14.5",
     "file-loader": "^0.8.4",
@@ -30,17 +30,14 @@
     "express-graphql": "^0.3.0",
     "graphql": "^0.4.2",
     "graphql-relay": "^0.3.1",
+    "cors": "^2.7.1",
     "webpack-dev-server": "^1.9.0"
   },
   "dependencies": {
     "bh-react-navigator": "^0.1.1",
-    "cors": "^2.7.1",
-    "history": "^1.9.0",
-    "react": "0.14.0-rc1",
-    "react-dom": "0.14.0-rc1",
-    "react-native-web": "0.0.6",
-    "react-relay": "^0.3.2",
-    "relay-local-schema": "^0.2.1",
-    "sync-request": "^2.0.1"
+    "react": "0.14.0",
+    "react-dom": "0.14.0",
+    "react-native-for-web": "^0.1.6",
+    "react-relay": "^0.4.0"
   }
 }
