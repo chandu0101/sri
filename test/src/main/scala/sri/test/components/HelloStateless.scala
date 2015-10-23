@@ -18,3 +18,17 @@ object HelloStatelessChildren {
 
   def apply(props: String)(children: ReactNode*) = createStatelessFunctionElementWithChildren(component, props)(children: _*)
 }
+
+object HelloStatelessNoProps {
+
+  val component = () => Text(testID = "st-test")("no props")
+
+  def apply() = createStatelessFunctionElementNoProps(component)
+}
+
+object HelloStatelessNoPropsWithChildren {
+
+  val component = (children: ReactElement) => Text(testID = "st-test")("no props", children)
+
+  def apply()(children: ReactNode*) = createStatelessFunctionElementNoPropsWithChildren(component)(children: _*)
+}

@@ -90,8 +90,16 @@ trait ElementFactory {
     React.createElement((jsp: JSProps[P]) => func(jsp.sprops), JSProps(key = key, sprops = props))
   }
 
+  def createStatelessFunctionElementNoProps(func: () => ReactElement, key: js.UndefOr[String] = js.undefined) = {
+    React.createElement((jsp: JSProps[_]) => func(), JSProps(key = key, sprops = null))
+  }
+
   def createStatelessFunctionElementWithChildren[P](func: (P, ReactElement) => ReactElement, props: P, key: js.UndefOr[String] = js.undefined)(children: ReactNode*) = {
     React.createElement((jsp: JSProps[P]) => func(jsp.sprops, jsp.children), JSProps(key = key, sprops = props), children: _*)
+  }
+
+  def createStatelessFunctionElementNoPropsWithChildren(func: ReactElement => ReactElement, key: js.UndefOr[String] = js.undefined)(children: ReactNode*) = {
+    React.createElement((jsp: JSProps[_]) => func(jsp.children), JSProps(key = key, sprops = null), children: _*)
   }
 
 }

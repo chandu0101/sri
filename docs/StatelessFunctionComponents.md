@@ -6,7 +6,7 @@ React 0.14 introduced [stateless functional components](https://facebook.github.
 
 
 
-#### Stateless Component
+#### Stateless Component with props
 
 ```scala
 
@@ -20,7 +20,7 @@ React 0.14 introduced [stateless functional components](https://facebook.github.
 
 ```
 
-##### Stateless Component With Children
+##### Stateless Component With props & Children
 
 ```scala
 
@@ -34,3 +34,32 @@ React 0.14 introduced [stateless functional components](https://facebook.github.
 
 ```
 
+
+#### Stateless Component No Props
+
+```scala
+
+ object StatelessComponent {
+  
+  val component = () => Text()(s"Hello Stateless No Props")
+ 
+  def apply() = createStatelessFunctionElementNoProps(component)
+  
+ }
+
+```
+
+
+#### Stateless Component No Props with Children
+
+```scala
+
+ object StatelessComponent {
+
+  val component = (children : ReactElement) => Text()(s"Hello Stateless No Props",children)
+
+  def apply()(children: ReactNode*) = createStatelessFunctionElementNoPropsWithChildren(component)(children: _*)
+
+ }
+
+```
