@@ -14,7 +14,7 @@ React 0.14 introduced [stateless functional components](https://facebook.github.
   
   val component = (props: String) => Text()(s"Hello Stateless ${props}")
  
-  def apply(props : String) = createStatelessElement(component,props)
+  def apply(props : String) = createStatelessFunctionElement(component,props)
   
  }
 
@@ -28,7 +28,7 @@ React 0.14 introduced [stateless functional components](https://facebook.github.
 
   val component = (props: String,children : ReactElement) => Text()(s"Hello Stateless ${props}",children)
 
-  def apply(props : String)(children : ReactNode*) = createStatelessElementWithChildren(component,props)(children: _*)
+  def apply(props : String)(children : ReactNode*) = createStatelessFunctionElementWithChildren(component,props)(children: _*)
 
  }
 

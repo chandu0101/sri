@@ -9,12 +9,12 @@ object HelloStateless {
 
   val component = (props: String) => Text(testID = "st-test")(props)
 
-  def apply(props: String) = createStatelessElement(component, props)
+  def apply(props: String) = createStatelessFunctionElement(component, props)
 }
 
 object HelloStatelessChildren {
 
   val component = (props: String, children: ReactElement) => Text(testID = "st-test")(props, children)
 
-  def apply(props: String)(children: ReactNode*) = createStatelessElementWithChildren(component, props)(children: _*)
+  def apply(props: String)(children: ReactNode*) = createStatelessFunctionElementWithChildren(component, props)(children: _*)
 }
