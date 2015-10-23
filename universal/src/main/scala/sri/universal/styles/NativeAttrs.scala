@@ -143,6 +143,13 @@ trait ViewStyles {
   val borderRightColor = new NativeStyle[String]("borderRightColor")
   val borderTopColor = new NativeStyle[String]("borderTopColor")
 
+  object borderStyle extends NativeStyle[String]("borderStyle") {
+    val solid = this := "solid"
+    val dotted = this := "dotted"
+    val dashed = this := "dashed"
+  }
+
+
   object overflow extends NativeStyle[String]("overflow") {
     val visible = this := "visible"
     val hidden = this := "hidden"

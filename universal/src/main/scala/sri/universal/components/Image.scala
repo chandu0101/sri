@@ -1,7 +1,7 @@
 package sri.universal.components
 
 import chandu0101.macros.tojs.JSMacro
-import sri.core.React
+import sri.core.{ReactNode, React}
 import sri.universal.ReactUniversal
 
 import scala.scalajs.js
@@ -24,9 +24,9 @@ case class Image(onLoaded: js.UndefOr[Boolean] = js.undefined,
                  onLoadProgress: js.UndefOr[js.Dynamic => Unit] = js.undefined,
                  accessible: js.UndefOr[Boolean] = js.undefined) {
 
-  def apply() = {
+  def apply(children : ReactNode*) = {
     val props = JSMacro[Image](this)
-    React.createElement(ReactUniversal.Image,props)
+    React.createElement(ReactUniversal.Image,props,children: _*)
   }
 
 }

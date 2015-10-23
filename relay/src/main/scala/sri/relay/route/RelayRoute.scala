@@ -26,7 +26,7 @@ object RelayQueryConfig {
 @ScalaJSDefined
 trait RelayQueryConfig extends js.Object {
   val name: String
-  val params: Params
+  val params: js.Object
   val queries: RootQueries
 }
 

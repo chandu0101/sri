@@ -47,6 +47,7 @@ trait ReactNative extends ReactUniversal {
   val StatusBarIOS: js.Dynamic = js.native
   val VibrationIOS: VibrationIOS = js.native
   val Dimensions: js.Dynamic = js.native
+  val Animated: js.Dynamic = js.native
 
   // native stuff
   val NativeModules: NativeModules = js.native

@@ -14,7 +14,7 @@ trait UniversalStyleSheet extends NativeAttrs {
 
   @inline def style(v: NativeStylePair[_]*): js.Dictionary[Any] = {
     val p = js.Dictionary.empty[Any]
-    v.foreach(t => p.update(t.key, t.value))
+    v.foreach(t => if(t != null) p.update(t.key, t.value))
     p
   }
 }

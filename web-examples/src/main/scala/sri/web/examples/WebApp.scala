@@ -13,8 +13,8 @@ object WebApp extends JSApp {
 
   @JSExport
   override def main(): Unit = {
-  //    ReactDOM.render(HelloWeb(), dom.document.getElementById("app"))
-        ReactDOM.render(UIExplorerApp.router, dom.document.getElementById("app"))
+      ReactDOM.render(HelloWeb(), dom.document.getElementById("app"))
+//        ReactDOM.render(UIExplorerApp.router, dom.document.getElementById("app"))
   }
 
 
