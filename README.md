@@ -37,7 +37,7 @@ libraryDependencies += "com.github.chandu0101.sri" %%% "relay" % "0.1.0"
 #Documentation
  - [Sri Internals](/docs/SriInternals.md)
  - [Defining Components](/docs/DefiningComponents.md)
- _ [Functions as Stateless Components](/docs/StatelessFunctionComponents.md)
+ - [Functions as Stateless Components](/docs/StatelessFunctionComponents.md)
  - [Creating Elements](/docs/CreatingElements.md)
  - [Refs To Components](/docs/RefsToComponents.md)
  - [Universal Styles](/docs/UniversalStyles.md)
