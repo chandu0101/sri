@@ -1,5 +1,9 @@
 # ChangeLog 0.2.0
 
+# Core 
+
+[Functions as Components](../docs/StatelessFunctionComponents.md)
+
 # Mobile 
 
 Upgrade to react-native [0.13](https://github.com/facebook/react-native/releases/tag/v0.13.0-rc)
