@@ -86,6 +86,14 @@ trait ElementFactory {
     React.createElement(ctor, JSProps(key, if (ref != null) ref else js.undefined, ()), children: _*).asInstanceOf[ReactElementU[P, S]]
 
 
+  def createStatelessElement[P](func: P => ReactElement, props: P, key: js.UndefOr[String] = js.undefined) = {
+    React.createElement((jsp: JSProps[P]) => func(jsp.sprops), JSProps(key = key, sprops = props))
+  }
+
+  def createStatelessElementWithChildren[P](func: (P, ReactElement) => ReactElement, props: P, key: js.UndefOr[String] = js.undefined)(children: ReactNode*) = {
+    React.createElement((jsp: JSProps[P]) => func(jsp.sprops, jsp.children), JSProps(key = key, sprops = props), children: _*)
+  }
+
 }
 
 object ElementFactory extends ElementFactory

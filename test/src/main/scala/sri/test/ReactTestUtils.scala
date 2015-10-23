@@ -1,8 +1,9 @@
 package sri.test
 
-import sri.core.ReactElement
+import sri.core.{JSProps, ReactElement}
 
 import scala.scalajs.js
+import scala.scalajs.js.annotation.JSName
 
 @js.native
 object ReactTestUtils  extends js.Object{
@@ -22,5 +23,21 @@ trait ReactShallowRenderer extends js.Object {
 
   def render(element : ReactElement) : js.Dynamic = js.native
 
-  def getRenderOutput() : js.Dynamic = js.native
+  def getRenderOutput() : ShallowRenderOutput = js.native
+}
+
+@js.native
+trait ShallowRenderOutput extends js.Object {
+
+  val props : ShallowProps = js.native
+
+  @JSName("props") val propsDynamic : js.Dynamic = js.native
+
+}
+
+@js.native
+trait ShallowProps extends js.Object {
+
+  def children : js.Array[ShallowRenderOutput] = js.native
+
 }

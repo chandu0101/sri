@@ -43,23 +43,5 @@ object HelloWeb {
 
   val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
 
-//  val tctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
-
   def apply(key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElementNoProps(ctor, key = key, ref = ref)
-}
-
-
-@ScalaJSDefined
-trait Test extends js.Object {
-
-  val x: Int
-
-  val y: js.UndefOr[js.Function]
-
-}
-
-@ScalaJSDefined
-abstract class TestA extends Test {
-  override val x: Int
-  override val y: U[js.Function] = js.undefined
 }
