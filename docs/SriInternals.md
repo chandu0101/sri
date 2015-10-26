@@ -1,6 +1,6 @@
 # Sri Internals
 
-The main goal of Sri is in line with React as much as possible. Currently Sri contains 5 main modules: core, universal, web, mobile, and relay.
+The main goal of Sri is in line with React as much as possible. Currently Sri contains 7 main modules: core, addons, universal, web, mobile, desktop, and relay.
 
 
 # Core
@@ -30,3 +30,14 @@ This module is scala.js wrapper for `react-native`. Use this module to develop m
 # Relay
 
 This module is scala.js wrapper for `react-relay`. Use this module if you want to add relay magic to your react (web/mobile) app.
+
+
+# Desktop
+
+This module is scala.js wrapper for [Electron](http://electron.atom.io/). Use this module to develop desktop apps.Check [examples](https://github.com/chandu0101/sri-desktop-examples) for more information
+
+
+# Addons
+
+Scala.js wrappers for react-addons-*
+

@@ -24,7 +24,7 @@ object ActivityIndicatorIOSExample extends UIExample {
 
       initialState(State())
 
-      var timers : Seq[Int] = List()
+      var timers: Seq[Int] = List()
 
       def render() = ActivityIndicatorIOS(animating = state.animating,
         style = styles.animating,
@@ -39,7 +39,7 @@ object ActivityIndicatorIOSExample extends UIExample {
       }
 
       def setToggleTimeout: Unit = {
-        val id =   dom.window.setTimeout(() => {
+        val id = dom.window.setTimeout(() => {
           setState(state.copy(animating = !state.animating))
           setToggleTimeout
         }, 1200)
@@ -47,9 +47,9 @@ object ActivityIndicatorIOSExample extends UIExample {
       }
     }
 
-    val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
+    val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
 
-    def apply(key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElementNoProps(ctor)
+    def apply(key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElementNoProps(ctor)
   }
 
 
@@ -79,9 +79,10 @@ object ActivityIndicatorIOSExample extends UIExample {
         ToggleAnimatingActivityIndicator()
       )
     )
+
   }
 
-  val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
+  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
 
   val component = createElementNoProps(ctor)
 

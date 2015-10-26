@@ -16,48 +16,49 @@ object ScrollViewExample extends UIExample {
 
   object THUMB {
 
-     @ScalaJSDefined
-     class Component extends ReactComponent[String,Unit] {
-        def render() =  View(style = styles.button)(
-          Image(style = styles.img, source = ImageSource(uri = props))()
-        )
-      }
+    @ScalaJSDefined
+    class Component extends ReactComponent[String, Unit] {
+      def render() = View(style = styles.button)(
+        Image(style = styles.img, source = ImageSource(uri = props))()
+      )
+    }
 
-    val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
+    val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
 
-    def apply(url : String, key : UndefOr[String] = js.undefined,ref : js.Function = null) = createElement(ctor,url,key = key)
+    def apply(url: String, key: UndefOr[String] = js.undefined, ref: js.Function = null) = createElement(ctor, url, key = key)
 
   }
 
 
-    @ScalaJSDefined
-    class Component extends ReactComponent[Unit,Unit] {
-       def render() =  UIExplorerPage(
-         UIExplorerBlock("ScrollView Vertical")(
-           ScrollView(style = styles.scrollView,
-             contentInset = EdgeInsets(top = -50.0),
-             scrollEventThrottle = 16,
-             onScroll = () => println(s"on Scroll!"))(
-               THUMBS.++(THUMBS).zipWithIndex.map {
-                 case (u, i) => THUMB(u,key = i.toString)
-               }
-             )
-         ),
-         UIExplorerBlock("ScrollView horizontal")(
-           ScrollView(style = styles.horizontalScrollView,
-             horizontal = true,
-             scrollEventThrottle = 16,
-             contentInset = EdgeInsets(top = -50.0),
-             onScroll = () => println(s"on Scroll!"))(
-                 THUMBS.++(THUMBS).zipWithIndex.map {
-                   case (u, i) => THUMB(u,key = i.toString)
-                 }
-             )
-         )
-       )
-     }
+  @ScalaJSDefined
+  class Component extends ReactComponent[Unit, Unit] {
+    def render() = UIExplorerPage(
+      UIExplorerBlock("ScrollView Vertical")(
+        ScrollView(style = styles.scrollView,
+          contentInset = EdgeInsets(top = -50.0),
+          scrollEventThrottle = 16,
+          onScroll = () => println(s"on Scroll!"))(
+            THUMBS.++(THUMBS).zipWithIndex.map {
+              case (u, i) => THUMB(u, key = i.toString)
+            }
+          )
+      ),
+      UIExplorerBlock("ScrollView horizontal")(
+        ScrollView(style = styles.horizontalScrollView,
+          horizontal = true,
+          scrollEventThrottle = 16,
+          contentInset = EdgeInsets(top = -50.0),
+          onScroll = () => println(s"on Scroll!"))(
+            THUMBS.++(THUMBS).zipWithIndex.map {
+              case (u, i) => THUMB(u, key = i.toString)
+            }
+          )
+      )
+    )
 
-  val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
+  }
+
+  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
 
   val component = createElementNoProps(ctor)
 

@@ -45,6 +45,10 @@ object Dependencies {
 
   )
 
+  val desktopModuleDeps = Seq(
+
+  )
+
   val mobileExamplesModuleDeps = Seq(scalaAsync)
 
   val relayModuleDeps = Seq(scalaReflect)

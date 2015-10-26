@@ -170,6 +170,7 @@ object MapViewExample extends UIExample {
         MapView(style = styles.map, showsUserLocation = true)()
       )
     )
+
   }
 
   val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])

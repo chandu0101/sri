@@ -1,19 +1,27 @@
 package sri.web.examples.uiexplorer
 
 import sri.core.ElementFactory._
-import sri.core.{ReactComponent, ReactNode}
+import sri.core.{ReactElement, ReactNode}
 import sri.universal.components.{Text, View}
-import sri.web.styles.WebStyleSheet
-
-import scala.scalajs.js
-import scala.scalajs.js.annotation.ScalaJSDefined
+import sri.universal.styles.UniversalStyleSheet
 
 
 object UIExplorerBlock {
 
-  object styles extends WebStyleSheet {
+  val Component = (props: String, children: ReactElement) => {
+    View(style = styles.container)(
+      View(style = styles.titleContainer)(
+        Text(style = styles.titleText)(props)
+      ),
+      View(style = styles.children)(
+        children
+      )
+    )
+  }
 
-    val container = styleM(
+  object styles extends UniversalStyleSheet {
+
+    val container = style(
       borderRadius := 3,
       borderWidth := 0.5,
       borderColor := "#d6d7da",
@@ -22,36 +30,17 @@ object UIExplorerBlock {
       overflow.hidden
     )
 
-    val titleContainer = styleM(
+    val titleContainer = style(
       borderWidth := 0.5,
       borderColor := "#d6d7da",
       backgroundColor := "#f6f7f8"
     )
 
-    val titleText = styleM(fontSize := 14, fontWeight.bold)
+    val titleText = style(fontSize := 14, fontWeight.bold)
 
-    val children = styleM(padding := 10)
+    val children = style(padding := 10)
   }
 
-
-  @ScalaJSDefined
-  class Component extends ReactComponent[String, Unit] {
-    def render() = {
-      View(style = styles.container)(
-        View(style = styles.titleContainer)(
-          Text(style = styles.titleText)(props)
-        ),
-        View(style = styles.children)(
-          children
-        )
-      )
-    }
-
-    val displayName = "UIExplorerBlock"
-  }
-
-  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
-
-  def apply(title: String)(children: ReactNode*) = createElementWithChildren(ctor, title)(children: _*)
+  def apply(title: String)(children: ReactNode*) = createStatelessFunctionElementWithChildren(Component, title)(children: _*)
 
 }

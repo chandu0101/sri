@@ -36,7 +36,7 @@ object ViewExample extends UIExample {
 
   }
 
-  val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
+  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
 
   val component = createElementNoProps(ctor)
 

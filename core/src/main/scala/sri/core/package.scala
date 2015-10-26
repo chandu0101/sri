@@ -2,6 +2,7 @@ package sri
 
 import scala.collection.GenTraversableOnce
 import scala.scalajs.js
+import scala.scalajs.js.Dynamic.{global => g}
 import scala.scalajs.js.JSConverters.JSRichGenTraversableOnce
 import scala.scalajs.js.`|`
 
@@ -23,7 +24,10 @@ package object core {
     def ?=(elm: => ReactNode): ReactNode = if (value) elm else null
   }
 
-  trait CoreAll extends ElementFactory
+  trait CoreAll extends ElementFactory {
+    @inline def load[T](lib: String): T = g.require(lib).asInstanceOf[T]
+
+  }
 
   object all extends CoreAll
 

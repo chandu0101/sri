@@ -17,15 +17,10 @@ object LauncherConfigs {
         val loaderFile = (resourceDirectory in Compile).value / "loader.js"
 
         IO.copyFile(loaderFile, outFile)
-        //        val loaders = IO.read((resourceDirectory in Compile).value / "loader.js")
-        //
-        //        IO.append(outFile, loaders)
 
         val fullOutputCode = IO.read((fullOptJS in Compile).value.data)
 
         IO.append(outFile, fullOutputCode)
-
-        //        IO.copyFile((fullOptJS in Compile).value.data, outFile)
 
         val launcher = (scalaJSLauncher in Compile).value.data.content
         IO.append(outFile, launcher)
@@ -54,14 +49,13 @@ object LauncherConfigs {
         val launcher = (scalaJSLauncher in Compile).value.data.content
         IO.append(outFile, launcher)
 
-        IO.copyFile(outFile,baseDirectory.value / "index.android.js")
+        IO.copyFile(outFile, baseDirectory.value / "index.android.js")
         outFile
       }
     )
 
 
-
-
+  //=============================== Web =========================================/
 
   val webExamplesAssets = "web-examples/assets"
 
@@ -83,9 +77,45 @@ object LauncherConfigs {
   )
 
 
-
   def addCommandAliases(m: (String, String)*) = {
     val s = m.map(p => addCommandAlias(p._1, p._2)).reduce(_ ++ _)
     (_: Project).settings(s: _*)
   }
+
+
+  //================================================= Desktop =================================//
+
+  val fastOptDesktop = Def.taskKey[File]("Generate desktop app bundles")
+
+  lazy val desktopLauncher =
+    Seq(
+      artifactPath in Compile in fastOptDesktop :=
+        baseDirectory.value / "main.js",
+      fastOptDesktop in Compile := {
+        val mainOutFile = (artifactPath in Compile in fastOptDesktop).value
+
+        val renderOutFile = (baseDirectory.value / "render-bundle.js")
+
+        val mainLoaderFile = (resourceDirectory in Compile).value / "mainLoader.js"
+
+        val renderLoaderFile = (resourceDirectory in Compile).value / "renderLoader.js"
+
+        IO.copyFile(mainLoaderFile, mainOutFile)
+
+        val fastOptCode = IO.read((fastOptJS in Compile).value.data)
+
+        IO.append(mainOutFile, fastOptCode)
+
+        IO.copyFile((fastOptJS in Compile).value.data, renderOutFile)
+
+        IO.append(renderOutFile, IO.read(renderLoaderFile))
+
+        val launcher = (scalaJSLauncher in Compile).value.data.content
+        IO.append(mainOutFile, launcher)
+
+        mainOutFile
+      }
+    )
+
+
 }

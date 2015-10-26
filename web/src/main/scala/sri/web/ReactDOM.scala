@@ -10,10 +10,7 @@ import scala.scalajs.js.annotation.JSName
 @js.native
 object ReactDOM extends js.Object {
 
-  // i know what i am doing! okay go a head ..
-  @JSName("render") def renderJS(elm: js.Any, dom: js.Any, callback: js.Function = ???): js.Any = js.native
-
-  def render[P,S](elm: ReactElementU[P,S], dom: Element, callback: js.Function = ???): ReactElementM[P,S] = js.native
+  def render(elm: ReactElement, dom: Element, callback: js.Function = ???): ReactElementM[_, _] = js.native
 
   def unmountComponentAtNode(container: js.Any): Boolean = js.native
 

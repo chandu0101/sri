@@ -9,9 +9,12 @@ Sri (Scala React interface) is a scalajs library to build truly native cross pla
 
 ![moviesapp](/docs/moviesapp.gif)
 
+![desktopapp](/docs/sri-desktop.png)
+
 # Index 
 - [Mobile](#mobile)
 - [Web](#web)
+- [Desktop](#desktop)
 - [Relay](#relay)
 - [Documentation](#documentation)
 - [Examples](#examples)
@@ -21,20 +24,27 @@ Sri (Scala React interface) is a scalajs library to build truly native cross pla
 Use this module to build iOS/Android mobile applications:
 
 ```scala
-libraryDependencies += "com.github.chandu0101.sri" %%% "mobile" % "0.1.0"
+libraryDependencies += "com.github.chandu0101.sri" %%% "mobile" % "0.2.0"
 ```
 
 #Web
 Use this module to build browser based applications:
 
 ```scala
-libraryDependencies += "com.github.chandu0101.sri" %%% "web" % "0.1.0"
+libraryDependencies += "com.github.chandu0101.sri" %%% "web" % "0.2.0"
+```
+
+#Desktop
+Use this module to build desktop applications:
+
+```scala
+libraryDependencies += "com.github.chandu0101.sri" %%% "desktop" % "0.2.0"
 ```
 
 #Relay
 Use this module to add relay support to your applications:
 ```scala
-libraryDependencies += "com.github.chandu0101.sri" %%% "relay" % "0.1.0"
+libraryDependencies += "com.github.chandu0101.sri" %%% "relay" % "0.2.0"
 ```
 #Documentation
  - [Sri Internals](/docs/SriInternals.md)
@@ -50,9 +60,11 @@ libraryDependencies += "com.github.chandu0101.sri" %%% "relay" % "0.1.0"
 #Examples
   - [Mobile Examples](/mobile-examples)
   - [Web Examples](/web-examples)
+  - [Desktop Examples](https://github.com/chandu0101/sri-desktop-examples)
   - [Relay Web Examples](/relay-web-examples)
   
 #Templates
   - [Mobile App(iOS and Android) Template](https://github.com/chandu0101/sri-mobile-template)
   - [Web App Template](https://github.com/chandu0101/sri-web-template)
+  - [Desktop App Template](https://github.com/chandu0101/sri-desktop-template)
   - [Cross Platform App(mobile(ios and android) and web) Template](https://github.com/chandu0101/sri-cross-platform-template)

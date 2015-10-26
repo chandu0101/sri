@@ -1,4 +1,3 @@
-import org.scalajs.jsenv.nodejs.NodeJSEnv
 import org.scalajs.sbtplugin.ScalaJSPlugin
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 import sbt.Keys._
@@ -15,7 +14,7 @@ object Sri extends Build {
   lazy val commonSettings =
     Seq(
       organization := "com.github.chandu0101.sri",
-      version := "0.2.0-SNAPSHOT",
+      version := "0.2.0",
       homepage := Some(url("https://github.com/chandu0101/sri")),
       licenses +=("Apache-2.0", url("http://opensource.org/licenses/Apache-2.0")),
       scalaVersion := Scala211,
@@ -38,7 +37,7 @@ object Sri extends Build {
     jsDependencies += RuntimeDOM,
     jsDependencies += ProvidedJS / "test-bundle.js" % Test
     //    jsEnv in Test := new PhantomJS2Env(scalaJSPhantomJSClassLoader.value, addArgs = Seq("--web-security=no"))
-//    jsEnv in Test := new NodeJSEnv()
+    //    jsEnv in Test := new NodeJSEnv()
   )
 
 
@@ -52,7 +51,7 @@ object Sri extends Build {
 
   // ================================ Module definitions  ================================ //
   lazy val Sri = DefProject(".", "root")
-    .aggregate(core, universal, web, mobile, relay, mobileExamples, webExamples, relayWebExamples, relayMobileExamples)
+    .aggregate(core,addons, universal, web, mobile, desktop, relay, mobileExamples, webExamples, relayWebExamples, relayMobileExamples)
     .configure(addCommandAliases(
     "ct" -> "; test:compile ; core/test",
     "wt" -> "; test:compile ; web/test",
@@ -64,6 +63,10 @@ object Sri extends Build {
   lazy val core = DefProject("core")
     .settings(coreModuleDeps)
     .settings(scalatestJSSettings)
+    .settings(publicationSettings)
+
+  lazy val addons = DefProject("addons")
+    .dependsOn(core)
     .settings(publicationSettings)
 
   lazy val universal = DefProject("universal")
@@ -81,6 +84,17 @@ object Sri extends Build {
     .settings(scalatestJSSettings)
     .settings(publicationSettings)
 
+
+  lazy val mobile = DefProject("mobile")
+    .dependsOn(universal)
+    .settings(mobileModuleDeps)
+    .settings(publicationSettings)
+
+  lazy val desktop = DefProject("desktop")
+    .dependsOn(web)
+    .settings(desktopModuleDeps)
+    .settings(publicationSettings)
+
   lazy val webExamples = DefProject("web-examples")
     .dependsOn(web, relay)
     .settings(webExamplesLauncher)
@@ -91,11 +105,6 @@ object Sri extends Build {
     .dependsOn(web, relay)
     .settings(relayWebExamplesLauncher)
     .settings(preventPublication)
-
-  lazy val mobile = DefProject("mobile")
-    .dependsOn(universal)
-    .settings(mobileModuleDeps)
-    .settings(publicationSettings)
 
   lazy val mobileExamples = DefProject("mobile-examples")
     .dependsOn(mobile)

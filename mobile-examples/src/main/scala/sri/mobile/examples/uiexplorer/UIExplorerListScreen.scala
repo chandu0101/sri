@@ -106,6 +106,7 @@ object UIExplorerListScreen {
 
     def onPressRow(example: UIExample): Unit = {
       navigateToDynamic(UIExplorerDetails, example.component, example.title)
+
     }
 
     def handleSearchTextChange(text: String): Unit = {

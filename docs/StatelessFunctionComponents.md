@@ -20,7 +20,7 @@ React 0.14 introduced [stateless functional components](https://facebook.github.
 
 ```
 
-##### Stateless Component With props & Children
+#### Stateless Component With props & Children
 
 ```scala
 

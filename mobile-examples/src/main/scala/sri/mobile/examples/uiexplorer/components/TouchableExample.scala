@@ -48,9 +48,9 @@ object TouchableExample extends UIExample {
       }
     }
 
-    val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
+    val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
 
-    def apply(key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElementNoProps(ctor, key = key, ref = ref)
+    def apply(key: UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElementNoProps(ctor, key = key, ref = ref)
 
 
   }
@@ -78,9 +78,10 @@ object TouchableExample extends UIExample {
         TouchableFeedbackEvents()
       )
     )
+
   }
 
-  val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
+  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
 
   val component = createElementNoProps(ctor)
 

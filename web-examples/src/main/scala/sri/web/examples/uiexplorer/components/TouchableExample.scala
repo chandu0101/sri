@@ -48,17 +48,16 @@ object TouchableExample extends UIExample {
       }
     }
 
-    val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
+    val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
 
-    def apply(key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElementNoProps(ctor, key = key, ref = ref)
+    def apply(key: UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElementNoProps(ctor, key = key, ref = ref)
 
 
   }
 
 
-  @ScalaJSDefined
-  class Component extends ReactComponent[Unit, Unit] {
-    def render() = UIExplorerPage(
+  val Component = () => {
+    UIExplorerPage(
       UIExplorerBlock(title = "TouchableHighlight")(
         View(style = styles.row)(
           TouchableHighlight(style = styles.wrapper, onPress = () => println("stock THW image - highlight"))(
@@ -80,9 +79,7 @@ object TouchableExample extends UIExample {
     )
   }
 
-  val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
-
-  val component = createElementNoProps(ctor)
+  val element = createStatelessFunctionElementNoProps(Component)
 
 
   object styles extends UniversalStyleSheet {

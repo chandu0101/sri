@@ -13,7 +13,6 @@ package object mobile {
 
   trait MobileAll extends UniversalAll {
 
-    @inline def load[T](lib: String): T = g.require(lib).asInstanceOf[T]
 
     lazy val Dimensions = load[js.Dynamic]("Dimensions")
 

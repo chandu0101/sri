@@ -1,7 +1,7 @@
 package sri.web.examples.uiexplorer.components
 
 import sri.core.ElementFactory._
-import sri.core.{ReactComponent, ReactNode}
+import sri.core.ReactComponent
 import sri.universal.ReactEvent
 import sri.universal.components.{Text, TextInput, View}
 import sri.web.NEvent
@@ -12,32 +12,8 @@ import scala.scalajs.js
 import scala.scalajs.js.UndefOr
 import scala.scalajs.js.annotation.ScalaJSDefined
 
-
 object TextInputExample extends UIExample {
 
-
-  object WithLabel {
-
-    @ScalaJSDefined
-    class Component extends ReactComponent[String, Unit] {
-      //        initialState(State())
-
-      def render() = View(style = styles.labelContainer, key = props)(
-        View(style = styles.label, key = "lab")(
-          Text(key = "tex")(
-            props
-          )
-        ),
-        children
-      )
-    }
-
-    val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
-
-    def apply(label: String, key: UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null)(children: ReactNode*) = createElementWithChildren(ctor, label, key = key, ref = ref)(children: _*)
-
-
-  }
 
   object TextEventsExample {
 
@@ -80,10 +56,8 @@ object TextInputExample extends UIExample {
   }
 
 
-  @ScalaJSDefined
-  class Component extends ReactComponent[Unit, Unit] {
-
-    def render() = UIExplorerPage(
+  val Component = () => {
+    UIExplorerPage(
       UIExplorerBlock("Auto-focus")(
         TextInput(autoFocus = true, style = styles.default)()
       ),
@@ -93,9 +67,8 @@ object TextInputExample extends UIExample {
     )
   }
 
-  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
 
-  val component = createElementNoProps(ctor)
+  val element = createStatelessFunctionElementNoProps(Component)
 
   object styles extends WebStyleSheet {
 

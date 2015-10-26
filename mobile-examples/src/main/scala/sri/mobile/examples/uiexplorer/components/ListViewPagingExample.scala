@@ -53,9 +53,9 @@ object ListViewPagingExample extends UIExample {
       }
     }
 
-    val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
+    val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
 
-    def apply(key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElementNoProps(ctor)
+    def apply(key: UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElementNoProps(ctor)
   }
 
 
@@ -88,7 +88,7 @@ object ListViewPagingExample extends UIExample {
     dataSource.cloneWithRowsAndSections(dataBlob, sectionIDs, rowIDs)
   }
 
-  case class State(datasource: ListViewDataSource[String,String] = getDataSource, headerPressCount: Int = 0)
+  case class State(datasource: ListViewDataSource[String, String] = getDataSource, headerPressCount: Int = 0)
 
 
   @ScalaJSDefined
@@ -147,7 +147,7 @@ object ListViewPagingExample extends UIExample {
 
   }
 
-  val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
+  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
 
   val component = createElementNoProps(ctor)
 

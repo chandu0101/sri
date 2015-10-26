@@ -36,7 +36,7 @@ object UIExplorerListScreen {
 
 
     def onPressRow(example: UIExample): Unit = {
-      navigateToDynamic(UIExplorerDetails, example.component, example.title)
+      navigateToDynamic(UIExplorerDetails, example.element, example.title)
     }
 
 
