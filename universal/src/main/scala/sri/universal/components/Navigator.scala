@@ -69,6 +69,13 @@ trait NavigatorM extends js.Object {
 
   def popToTop(): Unit = js.native
 
+  val navigationContext: NavigationContext = js.native
+
+}
+
+@js.native
+trait NavigationContext extends js.Object {
+  def addListener(eventType : String,listener : js.Function,context : js.Object = ???,useCapture : Boolean = ???) : js.Dynamic = js.native
 }
 
 @js.native

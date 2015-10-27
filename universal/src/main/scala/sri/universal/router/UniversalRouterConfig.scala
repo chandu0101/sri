@@ -62,6 +62,9 @@ trait UniversalRouterConfig {
    */
   val notFound: (StaticPage, NavigatorRoute)
 
+  val onWillFocus: NavigatorRoute => _ = null
+
+  val onDidFocus: NavigatorRoute => _ = null
 
   /**
    * this method is responsible for rendering components ,

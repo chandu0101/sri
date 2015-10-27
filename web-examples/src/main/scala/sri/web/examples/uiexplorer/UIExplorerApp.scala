@@ -15,13 +15,14 @@ object UIExplorerApp {
 
 
   object Config extends UniversalRouterConfig {
+
     override val initialRoute = defineInitialRoute(UIExplorerList, title = "UIExplorer", component = UIExplorerListScreen())
 
     dynamicRoute(UIExplorerDetails, component = (c: ReactElement) => c)
 
     override def renderScene(route: NavigatorRoute): ReactElement = {
       View(style = WebStyleSheet.wholeContainer)(
-                DefaultNavigationBar(route,CustomNavigationBarTheme),
+        DefaultNavigationBar(route, CustomNavigationBarTheme),
         View(style = UIExplorerListScreen.styles.content)(
           super.renderScene(route)
         )
@@ -29,6 +30,13 @@ object UIExplorerApp {
 
     }
 
+    override val onWillFocus = (route: NavigatorRoute) => {
+      println(s"will focus route ${route.title}")
+    }
+
+    override val onDidFocus = (route: NavigatorRoute) => {
+      println(s"did focus route ${route.title}")
+    }
     override val notFound: (StaticPage, NavigatorRoute) = initialRoute
   }
 

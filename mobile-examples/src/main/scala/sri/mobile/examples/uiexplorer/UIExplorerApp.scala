@@ -25,8 +25,17 @@ object UIExplorerApp {
       )
     }
 
+    override val onWillFocus = (route: NavigatorRoute) => {
+      println(s"will focus route ${route.title}")
+    }
+
+    override val onDidFocus = (route: NavigatorRoute) => {
+      println(s"did focus route ${route.title}")
+    }
+
     override val notFound: (StaticPage, NavigatorRoute) = initialRoute
   }
+
 
 
   val router = UniversalRouter(Config)

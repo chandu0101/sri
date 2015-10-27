@@ -35,9 +35,7 @@ object NavigatorRoute {
 
 object UniversalRouter {
 
-
   object MobileRouterContext {
-
 
     @ScalaJSDefined
     class Component extends ReactComponent[Props, Unit] {
@@ -65,11 +63,37 @@ object UniversalRouter {
     override def render(): ReactElement = {
       Navigator(renderScene = renderScene _,
         //        sceneStyle = props.sceneStyle,
+        ref = storeNavRef _,
         initialRoute = props.config.initialRoute._2.toJS,
         configureScene = configureScene _)()
     }
 
     var ctrl: UniversalRouterCtrl = _
+
+    var willFocusSubscription: js.Dynamic = null
+
+    var didFocusSubscription: js.Dynamic = null
+
+    def storeNavRef(navigator: NavigatorM) = {
+      if (navigator == null) { // when unmounting
+        unSubscribeFocusEvents()
+      }
+    }
+
+    def subscribeFocusEvents(navigator: NavigatorM) = {
+      val navContext = navigator.navigationContext
+      willFocusSubscription = navContext.addListener("willfocus", (event: js.Dynamic) => {
+        if (props.config.onWillFocus != null) props.config.onWillFocus(NavigatorRoute.fromJson(event.data.route))
+      })
+      didFocusSubscription = navContext.addListener("didfocus", (event: js.Dynamic) => {
+        if (props.config.onDidFocus != null) props.config.onDidFocus(NavigatorRoute.fromJson(event.data.route))
+      })
+    }
+
+    def unSubscribeFocusEvents() = {
+      if (willFocusSubscription != null) willFocusSubscription.remove()
+      if (didFocusSubscription != null) didFocusSubscription.remove()
+    }
 
     def configureScene(route: js.Dynamic) = {
       if (!js.isUndefined(route.sceneConfig)) route.sceneConfig.asInstanceOf[NavigatorSceneConfig]
@@ -77,8 +101,11 @@ object UniversalRouter {
       else NavigatorS.SceneConfigs.FloatFromRight
     }
 
-    def renderScene(route: js.Dynamic, nav: NavigatorM) = {
-      if (ctrl == null) ctrl = new UniversalRouterCtrl(nav, props.config)
+    def renderScene(route: js.Dynamic, navigator: NavigatorM) = {
+      if (ctrl == null) {
+        ctrl = new UniversalRouterCtrl(navigator, props.config)
+        subscribeFocusEvents(navigator)
+      }
       MobileRouterContext(ctrl)(props.config.renderScene(NavigatorRoute.fromJson(route))
       )
     }
