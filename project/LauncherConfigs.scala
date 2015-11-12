@@ -56,7 +56,7 @@ object LauncherConfigs {
 
   val fullOptRelayMobile = Def.taskKey[File]("Generate the file given to react native relay")
 
-  lazy val mobilelauncher =
+  lazy val mobileRelayLauncher =
     Seq(
       artifactPath in Compile in fullOptRelayMobile :=
         baseDirectory.value / "index.ios.js",
