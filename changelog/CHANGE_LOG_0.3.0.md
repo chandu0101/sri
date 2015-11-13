@@ -15,5 +15,5 @@ Upgrade to react-native [0.14](https://github.com/facebook/react-native/releases
 
 # Relay
 
-Upgrade to relay [0.5.0](https://github.com/facebook/relay/blob/master/CHANGELOG.md#040-october-13-2015)
+Upgrade to relay [0.5.0](https://github.com/facebook/relay/blob/master/CHANGELOG.md#050-november-11-2015)
 

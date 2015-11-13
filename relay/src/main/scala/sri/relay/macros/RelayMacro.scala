@@ -74,12 +74,17 @@ object RelayMacro {
     if (!Files.exists(rootPath)) {
       c.abort(c.enclosingPosition, s"rootPath in ${config.getAbsolutePath}/${config.getName} is not valid ")
     }
-//    if (!Files.exists(inputFilePath)) {
-      createFile(inputFilePath.toFile)
-//    }
-//    if (!Files.exists(outputFilePath)) {
-      createFile(outputFilePath.toFile)
-//    }
+
+    //make sure we create fresh empty input/output files
+    if (Files.exists(inputFilePath)) {
+      inputFilePath.toFile.delete()
+    }
+    createFile(inputFilePath.toFile)
+
+    if (Files.exists(outputFilePath)) {
+      outputFilePath.toFile.delete()
+    }
+    createFile(outputFilePath.toFile)
 
     val str1 = code match {
       case Expr(Literal(Constant(str: String))) => str
@@ -99,22 +104,6 @@ object RelayMacro {
     Files.write(inputFilePath, inputCode.getBytes(StandardCharsets.UTF_8))
 
     val result = Process("npm run relayquery", rootPath.toFile).!!
-
-//    if (debug) {
-//      val inputCopyPath = Paths.get(props.get("inputFilePath").map(s => copyPath(counter, s)).getOrElse(INVALID_PATH))
-//      val outputCopyPath = Paths.get(props.get("outputFilePath").map(s => copyPath(counter, s)).getOrElse(INVALID_PATH))
-//      counter = counter + 1
-//
-//      val inputSource = Source.fromFile(inputFilePath.toFile)
-//      val inputBw = new BufferedWriter(new FileWriter(inputCopyPath.toFile))
-//      inputBw.write(inputSource.mkString)
-//      inputBw.close()
-//
-//      val outputSource = Source.fromFile(outputFilePath.toFile)
-//      val outputBw = new BufferedWriter(new FileWriter(outputCopyPath.toFile))
-//      outputBw.write(outputSource.mkString)
-//      outputBw.close()
-//    }
 
     val out = Source.fromFile(outputFilePath.toFile).getLines().toList.filter(_.nonEmpty)
 
