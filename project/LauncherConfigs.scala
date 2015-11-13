@@ -54,6 +54,30 @@ object LauncherConfigs {
       }
     )
 
+  val fullOptRelayMobile = Def.taskKey[File]("Generate the file given to react native relay")
+
+  lazy val mobileRelayLauncher =
+    Seq(
+      artifactPath in Compile in fullOptRelayMobile :=
+        baseDirectory.value / "index.ios.js",
+      fullOptRelayMobile in Compile := {
+        val outFile = (artifactPath in Compile in fullOptRelayMobile).value
+
+        val loaderFile = (resourceDirectory in Compile).value / "loader.js"
+
+        IO.copyFile(loaderFile, outFile)
+
+        val fullOutputCode = IO.read((fullOptJS in Compile).value.data)
+
+        IO.append(outFile, fullOutputCode)
+
+        val launcher = (scalaJSLauncher in Compile).value.data.content
+        IO.append(outFile, launcher)
+
+        IO.copyFile(outFile, baseDirectory.value / "index.android.js")
+        outFile
+      }
+    )
 
   //=============================== Web =========================================/
 
