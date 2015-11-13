@@ -1,6 +1,6 @@
 package sri.relay
 
-import sri.core.{ReactClass, ReactComponentConstructor}
+import sri.core.{ReactClass, ReactComponent, ReactComponentConstructor}
 import sri.relay.container.{RelayContainer, RelayContainerSpec, RelayPropTypes}
 import sri.relay.mutation.RelayMutation
 import sri.relay.network.NetworkLayer
@@ -10,6 +10,7 @@ import sri.relay.tools.RelayInternalTypes.RelayQuerySet
 import sri.relay.tools.RelayTaskScheduler.TaskExecutor
 
 import scala.scalajs.js
+import scala.scalajs.js.annotation.JSName
 
 @js.native
 object Relay extends js.Object {
@@ -27,9 +28,11 @@ object Relay extends js.Object {
   val Route: RelayQueryConfig = js.native
   val Store: RelayStore = js.native
 
-  def createContainer[C <: RelayComponent[_,_]](component: ReactComponentConstructor[C], spec: RelayContainerSpec): RelayContainer[C] = js.native
+  def createContainer[C <: ReactComponent[_, _]](component: ReactComponentConstructor[C], spec: RelayContainerSpec): RelayContainer = js.native
 
-  def getQueries[C <: RelayComponent[_,_]](component: RelayContainer[C], route: RelayQueryConfig): RelayQuerySet = js.native
+  @JSName("createContainer") def createStatelessFunctionContainer(component: js.Function, spec: RelayContainerSpec): RelayContainer = js.native
+
+  def getQueries(component: RelayContainer, route: RelayQueryConfig): RelayQuerySet = js.native
 
   def injectNetworkLayer(layer: NetworkLayer): Unit = js.native
 

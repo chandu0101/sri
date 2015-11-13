@@ -1,9 +1,9 @@
 package sri.relay.container
 
 import sri.core.{React, ReactElement, ReactElementU}
+import sri.relay.Relay
 import sri.relay.route.RelayQueryConfig
 import sri.relay.tools.{ComponentFetchState, ReadyState}
-import sri.relay.{Relay, RelayComponent}
 
 import scala.scalajs.js
 import scala.scalajs.js.Dynamic.{literal => json}
@@ -12,11 +12,11 @@ import scala.scalajs.js.{UndefOr => U}
 object RelayRootContainer {
   type GraphQLFragmentPointers = js.Dictionary[js.UndefOr[js.Dynamic]]
 
-  def apply(Component: RelayContainer[_ <: RelayComponent[_, _]],
+  def apply(Component: RelayContainer,
             query: RelayQueryConfig,
             forceFetch: U[Boolean] = js.undefined,
             renderLoading: U[() => ReactElement] = js.undefined,
-            renderFetched: U[(GraphQLFragmentPointers, ComponentFetchState) => ReactElement] = js.undefined,
+            renderFetched: U[(js.Dynamic, ComponentFetchState) => ReactElement] = js.undefined,
             renderFailure: U[(js.Error, () => _) => ReactElement] = js.undefined,
             onReadyStateChange: U[ReadyState => _] = js.undefined) = {
 

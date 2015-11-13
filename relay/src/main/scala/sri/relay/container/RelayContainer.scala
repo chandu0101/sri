@@ -61,7 +61,7 @@ abstract class RelayContainerSpec extends AbstractRelayContainerSpec {
  */
 
 @js.native
-trait RelayContainer[C <: RelayComponent[_, _]] extends js.Object {
+trait RelayContainer extends js.Object {
 
   var route: RelayQueryConfig = js.native
 

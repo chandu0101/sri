@@ -74,12 +74,12 @@ object RelayMacro {
     if (!Files.exists(rootPath)) {
       c.abort(c.enclosingPosition, s"rootPath in ${config.getAbsolutePath}/${config.getName} is not valid ")
     }
-    if (!Files.exists(inputFilePath)) {
+//    if (!Files.exists(inputFilePath)) {
       createFile(inputFilePath.toFile)
-    }
-    if (!Files.exists(outputFilePath)) {
+//    }
+//    if (!Files.exists(outputFilePath)) {
       createFile(outputFilePath.toFile)
-    }
+//    }
 
     val str1 = code match {
       case Expr(Literal(Constant(str: String))) => str
@@ -100,23 +100,28 @@ object RelayMacro {
 
     val result = Process("npm run relayquery", rootPath.toFile).!!
 
-    if (debug) {
-      val inputCopyPath = Paths.get(props.get("inputFilePath").map(s => copyPath(counter, s)).getOrElse(INVALID_PATH))
-      val outputCopyPath = Paths.get(props.get("outputFilePath").map(s => copyPath(counter, s)).getOrElse(INVALID_PATH))
-      counter = counter + 1
-
-      val inputSource = Source.fromFile(inputFilePath.toFile)
-      val inputBw = new BufferedWriter(new FileWriter(inputCopyPath.toFile))
-      inputBw.write(inputSource.mkString)
-      inputBw.close()
-
-      val outputSource = Source.fromFile(outputFilePath.toFile)
-      val outputBw = new BufferedWriter(new FileWriter(outputCopyPath.toFile))
-      outputBw.write(outputSource.mkString)
-      outputBw.close()
-    }
+//    if (debug) {
+//      val inputCopyPath = Paths.get(props.get("inputFilePath").map(s => copyPath(counter, s)).getOrElse(INVALID_PATH))
+//      val outputCopyPath = Paths.get(props.get("outputFilePath").map(s => copyPath(counter, s)).getOrElse(INVALID_PATH))
+//      counter = counter + 1
+//
+//      val inputSource = Source.fromFile(inputFilePath.toFile)
+//      val inputBw = new BufferedWriter(new FileWriter(inputCopyPath.toFile))
+//      inputBw.write(inputSource.mkString)
+//      inputBw.close()
+//
+//      val outputSource = Source.fromFile(outputFilePath.toFile)
+//      val outputBw = new BufferedWriter(new FileWriter(outputCopyPath.toFile))
+//      outputBw.write(outputSource.mkString)
+//      outputBw.close()
+//    }
 
     val out = Source.fromFile(outputFilePath.toFile).getLines().toList.filter(_.nonEmpty)
+
+    if(!out.mkString("").contains(START_OF_QUERY)) {
+      println(s"Command Output :  $result")
+      c.abort(c.enclosingPosition, "GraphQL Validation Error please check the console for detailed message.")
+    }
 
     val start = out.zipWithIndex.find { case (s, i) => s.contains(START_OF_QUERY)}.get._2
     val end = out.zipWithIndex.find { case (s, i) => s.contains(END_OF_QUERY)}.get._2

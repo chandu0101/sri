@@ -18,14 +18,14 @@ object RelayElementFactory {
   }
 
 
-  def createRelayElement[C <: RelayComponent[_,_]](container: RelayContainer[C],
+  def createRelayElement[C <: RelayComponent[_,_]](container: RelayContainer,
                                props: js.Any,
                                key: js.UndefOr[String] = js.undefined,
                                ref: js.Function1[C, _] = null
                                 ) = createRelayElementWithChildren(container, props, key, ref)()
 
 
-  def createRelayElementWithChildren[C <: RelayComponent[_,_]](container: => RelayContainer[_],
+  def createRelayElementWithChildren[C <: RelayComponent[_,_]](container: => RelayContainer,
                                            props: js.Any,
                                            key: js.UndefOr[String] = js.undefined,
                                            ref: js.Function1[_ <: C, _] = null

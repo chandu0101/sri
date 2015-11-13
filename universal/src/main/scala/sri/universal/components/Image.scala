@@ -1,6 +1,6 @@
 package sri.universal.components
 
-import chandu0101.macros.tojs.JSMacro
+import chandu0101.macros.tojs.{rename, JSMacro}
 import sri.core.{ReactNode, React}
 import sri.universal.ReactUniversal
 
@@ -8,6 +8,7 @@ import scala.scalajs.js
 
 case class Image(onLoaded: js.UndefOr[Boolean] = js.undefined,
                  source: js.UndefOr[ImageSource] = js.undefined,
+                 @rename("source") sourceDynamic: js.UndefOr[js.Any] = js.undefined,
                  style: js.UndefOr[js.Any] = js.undefined,
                  onLayout: js.UndefOr[js.Function] = js.undefined,
                  accessibilityLabel: js.UndefOr[String] = js.undefined,
