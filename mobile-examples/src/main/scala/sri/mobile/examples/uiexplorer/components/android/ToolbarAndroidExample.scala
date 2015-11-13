@@ -16,13 +16,13 @@ object ToolbarAndroidExample extends UIExample {
 
   override val description: String = "Examples of using the Android toolbar"
 
-  val createImage = ImageSource.fromJson(load[js.Dynamic]("image!ic_create_black_48dp"))
+  val createImage = load[js.Dynamic]("./images/ic_create_black_48dp.png")
 
-  val settingsImage = ImageSource.fromJson(load[js.Dynamic]("image!ic_settings_black_48dp"))
+  val settingsImage = load[js.Dynamic]("./images/ic_settings_black_48dp.png")
 
-  val blackMenuImage = ImageSource.fromJson(load[js.Dynamic]("image!ic_menu_black_24dp"))
+  val blackMenuImage = load[js.Dynamic]("./images/ic_menu_black_24dp.png")
 
-  val launcherImage = ImageSource.fromJson(load[js.Dynamic]("image!launcher_icon"))
+  val launcherImage = load[js.Dynamic]("./images/launcher_icon.png")
 
 
   val toolbarActions = List(
@@ -44,13 +44,13 @@ object ToolbarAndroidExample extends UIExample {
           ToolbarAndroid(actions = toolbarActions,
             style = styles.toolbar,
             title = "Toolbar",
-            navIcon = blackMenuImage,
+            navIconDynamic = blackMenuImage,
             onActionSelected = onActionSelected _,
             subtitle = state.actionText)(),
           Text()(state.actionText)
         ),
         UIExplorerBlock("Toolbar with logo & custom title view (a View with Switch+Text)")(
-          ToolbarAndroid(logo = launcherImage, style = styles.toolbar)(
+          ToolbarAndroid(logoDynamic = launcherImage, style = styles.toolbar)(
             View(style = styles.view1)(
               SwitchAndroid(value = state.toolbarSwitch, onValueChange = handleSwitchChange _)(),
               Text()(s"a switch")
@@ -61,12 +61,12 @@ object ToolbarAndroidExample extends UIExample {
           ToolbarAndroid(actions = toolbarActions, style = styles.toolbar, subtitle = "there is no icon here")()
         ),
         UIExplorerBlock("Toolbar with navIcon & logo, no title")(
-          ToolbarAndroid(actions = toolbarActions, style = styles.toolbar, logo = launcherImage, navIcon = blackMenuImage)()
+          ToolbarAndroid(actions = toolbarActions, style = styles.toolbar, logoDynamic = launcherImage, navIconDynamic = blackMenuImage)()
         ),
         UIExplorerBlock("Toolbar with custom title colors")(
           ToolbarAndroid(
             style = styles.toolbar,
-            navIcon = blackMenuImage,
+            navIconDynamic = blackMenuImage,
             title = "Wow such a toolbar",
             subtitle = "Much Native",
             subtitleColor = state.subtitleColor,

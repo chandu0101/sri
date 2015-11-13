@@ -1,11 +1,11 @@
 {
-  "name": "sri_mobile",
-  "version": "0.2.0",
+  "name": "SriMobile",
+  "version": "0.3.0",
   "private": true,
   "scripts": {
     "start": "node_modules/react-native/packager/packager.sh"
   },
   "dependencies": {
-    "react-native": "^0.14.0-rc"
+    "react-native": "^0.14.2"
   }
 }

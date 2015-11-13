@@ -29,7 +29,7 @@ object SearchBarAndroid {
       View(style = styles.searchBar)(
         TouchableNativeFeedback(background = background, onPress = focusInput _)(
           View()(
-            Image(source = ImageSource.fromJson(androidSearchWhite), style = styles.icon)()
+            Image(sourceDynamic = androidSearchWhite, style = styles.icon)()
           )
         ),
         TextInput(ref = storeTextInputRef _, autoCapitalize = AutoCapitalize.NONE, autoCorrect = false,
@@ -43,7 +43,7 @@ object SearchBarAndroid {
 
     var textInputRef: TextInputM = null
 
-    val androidSearchWhite = js.Dynamic.global.require("image!android_search_white")
+    val androidSearchWhite = load[js.Dynamic]("./images/android_search_white.png")
 
     def storeTextInputRef(tref: TextInputM) = {
       textInputRef = tref

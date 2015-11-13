@@ -25,11 +25,11 @@ object DefaultAndroidNavigationBar {
   @ScalaJSDefined
   class Component extends UniversalRouterComponent[Props, Unit] {
     def render() = {
-      val androidback: js.UndefOr[ImageSource] = if (showBackButton()) ImageSource.fromJson(js.Dynamic.global.require("image!android_back_white")) else js.undefined
+      val androidback :js.UndefOr[js.Dynamic] = if (showBackButton()) load[js.Dynamic]("./images/android_back_white.png") else js.undefined
       ToolbarAndroid(
         style = props.style.toolbar,
         actions = Seq(),
-        navIcon = androidback,
+        navIconDynamic = androidback,
         onIconClicked = () => navigateBack(),
         titleColor = "white",
         title = props.route.title.toString)()
