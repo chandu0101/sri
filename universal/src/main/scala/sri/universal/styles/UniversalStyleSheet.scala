@@ -7,7 +7,7 @@ import scala.scalajs.js.JSConverters.JSRichGenMap
 trait UniversalStyleSheet extends NativeAttrs {
   /** if duplicate attrs found then last one wins */
   @inline def styleE(maps: js.Dictionary[Any]*)(v: NativeStylePair[_]*) = {
-    maps.fold(js.Dictionary.empty[Any])((d1, d2) => d1.++(d2).toJSDictionary)
+    maps.filter(_ != null).fold(js.Dictionary.empty[Any])((d1, d2) => d1.++(d2).toJSDictionary)
       .++(style(v: _*))
       .toJSDictionary
   }
