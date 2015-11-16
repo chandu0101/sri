@@ -17,7 +17,7 @@ object RouterExampleApp {
 
   object Fourth extends DynamicPage[Person]
 
-  val sampleRightButton = (ctrl: UniversalRouterCtrl, route: NavigatorRoute) => RightButton(ctrl, route)
+  val sampleRightButton = (route: NavigatorRoute) => RightButton(route)
 
   object Config extends UniversalRouterConfig {
 

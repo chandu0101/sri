@@ -17,9 +17,9 @@ object DefaultNavigationBar {
     def render() = {
       val backButton: ReactElement = if (showBackButton()) TouchableOpacity(onPress = () => navigateBack())(View(style = props.style.navBarLeftButton)(Text(style = props.style.navBarButtonText)("Back"))) else View(style = props.style.navBarLeftButton)()
       View(style = props.style.navBar)(
-        if (props.route.leftButton.isDefined) props.route.leftButton.get(getRouterCtrl(), props.route) else backButton,
+        if (props.route.leftButton.isDefined) props.route.leftButton.get(props.route) else backButton,
         Text(style = props.style.navBarTitleText)(props.route.title),
-        if (props.route.rightButton.isDefined) props.route.rightButton.get(getRouterCtrl(), props.route) else View(style = props.style.navBarLeftButton)()
+        if (props.route.rightButton.isDefined) props.route.rightButton.get(props.route) else View(style = props.style.navBarLeftButton)()
       )
     }
   }

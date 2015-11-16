@@ -34,10 +34,10 @@ object RightButton {
     val text = style(color := "white")
   }
 
-  case class Props(ctrl: UniversalRouterCtrl, route: NavigatorRoute)
+  case class Props(route: NavigatorRoute)
 
   val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
 
-  def apply(ctrl: UniversalRouterCtrl, route: NavigatorRoute, key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElement(ctor, Props(ctrl, route), key = key, ref = ref)
+  def apply(route: NavigatorRoute, key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElement(ctor, Props(route), key = key, ref = ref)
 
 }
