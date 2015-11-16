@@ -1,6 +1,5 @@
 package sri.core
 
-import org.scalajs.dom
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.{JSName, ScalaJSDefined}
@@ -11,17 +10,17 @@ trait React extends js.Object {
 
   def createClass(specification: js.Object): ReactClass = js.native
 
-  def createElement(tpe: js.Any, props: js.Any, children: ReactNode *): ReactElement = js.native
+  def createElement(tpe: js.Any, props: js.Any, children: ReactNode*): ReactElement = js.native
 
   def cloneElement(element: ReactElement, props: js.Any = ???, children: js.Any = ???): ReactElement = js.native
 
-  def createFactory(tpe: js.Any): ReactComponentFactory[Any,Any] = js.native
+  def createFactory(tpe: js.Any): ReactComponentFactory[Any, Any] = js.native
 
   def render(elm: ReactElement, dom: js.Any, callback: js.Function = ???): js.Any = js.native
 
   def Children: ReactChildren = js.native
 
-  val PropTypes : js.Dynamic = js.native
+  val PropTypes: js.Dynamic = js.native
 }
 
 
@@ -182,6 +181,22 @@ abstract class ReactComponent[P, S] extends ReactJSComponent[P, S] {
     componentWillUpdate(nextProps.sprops, nextState.sstate)
   }
 
+  @JSName("sShouldComponentUpdate")
+  def shouldComponentUpdate(nextProps: => P, nextState: => S): Boolean = true
+
+  @JSName("shouldComponentUpdate")
+  override def jsShouldComponentUpdate(nextProps: JSProps[P], nextState: JSState[S]): Boolean = {
+    shouldComponentUpdate(nextProps.sprops, nextState.sstate)
+  }
+
+  @JSName("sComponentDidUpdate")
+  def componentDidUpdate(prevProps: => P, prevState: => S): Unit = ()
+
+  @JSName("componentDidUpdate")
+  override def jsComponentDidUpdate(prevProps: JSProps[P], prevState: JSState[S]): Unit = {
+    componentDidUpdate(prevProps.sprops, prevState.sstate)
+  }
+
   @JSName("sComponentWillReceiveProps")
   def componentWillReceiveProps(nextProps: => P): Unit = ()
 
@@ -198,12 +213,12 @@ trait ReactComponentFactory[P, S] extends ReactComponent[P, S] {
 }
 
 @js.native
-trait ReactComponentConstructor[C <: ReactComponent[_,_]] extends js.Object
+trait ReactComponentConstructor[C <: ReactComponent[_, _]] extends js.Object
 
 /**
- *  typed version of js.concstructorOf[ C <: ReactJSComponent]
+ * typed version of js.concstructorOf[ C <: ReactJSComponent]
  * @tparam P
  * @tparam S
  */
 @js.native
-trait ReactTypedConstructor[P,S] extends js.Object
+trait ReactTypedConstructor[P, S] extends js.Object

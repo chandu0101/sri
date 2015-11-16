@@ -1,10 +1,10 @@
 package sri.mobile.examples.router
 
 import sri.core.ReactElement
-import sri.mobile.examples.router.components.{FourthScreen, HomeScreen, Person, SecondScreen}
+import sri.mobile.examples.router.components._
 import sri.mobile.examples.router.routes.ThirdModule
 import sri.universal.components.DefaultNavigationBar.Style
-import sri.universal.components.{DefaultNavigationBar, View}
+import sri.universal.components.{Text, DefaultNavigationBar, View}
 import sri.universal.router._
 import sri.universal.styles.UniversalStyleSheet
 
@@ -17,15 +17,25 @@ object RouterExampleApp {
 
   object Fourth extends DynamicPage[Person]
 
+  val sampleRightButton = (ctrl: UniversalRouterCtrl, route: NavigatorRoute) => RightButton(ctrl, route)
+
   object Config extends UniversalRouterConfig {
 
     override val initialRoute = defineInitialRoute(Home, "Home", HomeScreen())
 
-    staticRoute(Second, "Second", SecondScreen())
+    staticRoute(Second, "Second", SecondScreen(), rightButton = sampleRightButton)
 
-    dynamicRoute(Fourth, (p: Person) => FourthScreen(p))
+    dynamicRoute(Fourth, (p: Person) => FourthScreen(p), rightButton = sampleRightButton)
 
     moduleRoutes(ThirdModule)
+
+    override val onWillFocus: Function[NavigatorRoute, _] = (route: NavigatorRoute) => {
+      println(s"will focus ${route.title}")
+    }
+
+    override val onDidFocus: Function[NavigatorRoute, _] = (route: NavigatorRoute) => {
+      println(s"did focus ${route.title}")
+    }
 
     override val notFound: (StaticPage, NavigatorRoute) = initialRoute
 
@@ -37,7 +47,16 @@ object RouterExampleApp {
     }
   }
 
-  val router = UniversalRouter(Config)
+
+  val router = UniversalRouter(Config, style = styles.rootStyle)
+
+}
+
+
+object styles extends UniversalStyleSheet {
+
+  val rootStyle = style(backgroundColor := "#343536")
+
 
 }
 

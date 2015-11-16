@@ -128,7 +128,7 @@ case class NavigatorNavigationBar(navigator: js.UndefOr[NavigatorM] = js.undefin
                                   style: js.UndefOr[js.Any] = js.undefined,
                                   ref: js.UndefOr[String] = js.undefined,
                                   key: js.UndefOr[String] = js.undefined,
-                                  routeMapper: js.UndefOr[NavigationBarRouteMapper] = js.undefined,
+                                  routeMapper: js.UndefOr[js.Any] = js.undefined,
                                   navState: js.UndefOr[NavigationBarNavState] = js.undefined) {
   def apply() = {
     val props = JSMacro[NavigatorNavigationBar](this)
@@ -140,7 +140,7 @@ case class NavigatorNavigationBar(navigator: js.UndefOr[NavigatorM] = js.undefin
 }
 
 object NavigatorNavigationBarS {
-  type RouteMapperType = (js.Dynamic, NavigatorM, Int, js.Dynamic) => ReactElement
+  type RouteMapperType = js.Function4[js.Dynamic, NavigatorM, Int, js.Dynamic,ReactElement]
 
 }
 

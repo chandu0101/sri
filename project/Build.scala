@@ -62,7 +62,6 @@ object Sri extends Build {
 
   lazy val core = DefProject("core")
     .settings(coreModuleDeps)
-    .settings(scalatestJSSettings)
     .settings(publicationSettings)
 
   lazy val addons = DefProject("addons")
@@ -81,7 +80,6 @@ object Sri extends Build {
   lazy val web = DefProject("web")
     .dependsOn(universal)
     .settings(webModuleDeps)
-    .settings(scalatestJSSettings)
     .settings(publicationSettings)
 
 

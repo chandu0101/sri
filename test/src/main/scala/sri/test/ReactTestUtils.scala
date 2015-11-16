@@ -1,6 +1,6 @@
 package sri.test
 
-import sri.core.{JSProps, ReactElement}
+import sri.core.{ReactComponent, JSProps, ReactElement}
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSName
@@ -24,6 +24,8 @@ trait ReactShallowRenderer extends js.Object {
   def render(element : ReactElement) : js.Dynamic = js.native
 
   def getRenderOutput() : ShallowRenderOutput = js.native
+
+  def getMountedInstance[T <: ReactComponent[_,_]]() : T = js.native
 }
 
 @js.native

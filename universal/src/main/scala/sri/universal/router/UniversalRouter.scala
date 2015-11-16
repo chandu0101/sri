@@ -5,7 +5,9 @@ package router
 import chandu0101.macros.tojs.JSMacroAny
 import sri.core._
 import sri.universal.all._
+import sri.universal.components.NavigatorNavigationBarS.RouteMapperType
 import sri.universal.components._
+import sri.universal.styles.UniversalStyleSheet
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.ScalaJSDefined
@@ -22,13 +24,25 @@ sealed trait Route {
 }
 
 
-case class NavigatorRoute(title: String, component: js.Any, props: js.UndefOr[Any] = js.undefined, page: Page, sceneConfig: js.UndefOr[NavigatorSceneConfig] = js.undefined) {
+case class NavigatorRoute(title: String,
+                          component: js.Any,
+                          props: js.UndefOr[Any] = js.undefined,
+                          page: Page,
+                          leftButton: js.UndefOr[NavBarElementFunction] = js.undefined,
+                          rightButton: js.UndefOr[NavBarElementFunction] = js.undefined,
+                          sceneConfig: js.UndefOr[NavigatorSceneConfig] = js.undefined) {
   val toJS = JSMacroAny[NavigatorRoute](this)
 }
 
 object NavigatorRoute {
   def fromJson(obj: js.Dynamic) = {
-    NavigatorRoute(title = obj.title.toString, component = obj.component, props = obj.props, page = obj.page.asInstanceOf[Page], sceneConfig = obj.sceneConfig.asInstanceOf[NavigatorSceneConfig])
+    NavigatorRoute(title = obj.title.toString,
+      component = obj.component,
+      props = obj.props,
+      page = obj.page.asInstanceOf[Page],
+      leftButton = obj.leftButton.asInstanceOf[NavBarElementFunction],
+      rightButton = obj.rightButton.asInstanceOf[NavBarElementFunction],
+      sceneConfig = obj.sceneConfig.asInstanceOf[NavigatorSceneConfig])
   }
 
 }
@@ -62,8 +76,9 @@ object UniversalRouter {
 
     override def render(): ReactElement = {
       Navigator(renderScene = renderScene _,
-        //        sceneStyle = props.sceneStyle,
         ref = storeNavRef _,
+        style = props.style,
+        sceneStyle = props.sceneStyle,
         initialRoute = props.config.initialRoute._2.toJS,
         configureScene = configureScene _)()
     }
@@ -75,7 +90,8 @@ object UniversalRouter {
     var didFocusSubscription: js.Dynamic = null
 
     def storeNavRef(navigator: NavigatorM) = {
-      if (navigator == null) { // when unmounting
+      if (navigator == null) {
+        // when unmounting
         unSubscribeFocusEvents()
       }
     }
@@ -97,6 +113,7 @@ object UniversalRouter {
 
     def configureScene(route: js.Dynamic) = {
       if (!js.isUndefined(route.sceneConfig)) route.sceneConfig.asInstanceOf[NavigatorSceneConfig]
+      else if(props.sceneConfig.isDefined) props.sceneConfig.get
       else if (isAndroidPlatform) NavigatorS.SceneConfigs.FadeAndroid
       else NavigatorS.SceneConfigs.FloatFromRight
     }
@@ -104,19 +121,19 @@ object UniversalRouter {
     def renderScene(route: js.Dynamic, navigator: NavigatorM) = {
       if (ctrl == null) {
         ctrl = new UniversalRouterCtrl(navigator, props.config)
-        subscribeFocusEvents(navigator)
+        subscribeFocusEvents(navigator) // we must subscribe before initial render
       }
       MobileRouterContext(ctrl)(props.config.renderScene(NavigatorRoute.fromJson(route))
       )
     }
-
   }
 
-  case class Props(config: UniversalRouterConfig)
+
+  case class Props(config: UniversalRouterConfig,sceneConfig : js.UndefOr[NavigatorSceneConfig], style: js.UndefOr[js.Dictionary[Any]], sceneStyle: js.UndefOr[js.Dictionary[Any]])
 
   val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
 
-  def apply(routerConfig: UniversalRouterConfig) = createElement(ctor, Props(routerConfig))
+  def apply(routerConfig: UniversalRouterConfig,sceneConfig : js.UndefOr[NavigatorSceneConfig] = js.undefined, style: js.UndefOr[js.Dictionary[Any]] = js.undefined, sceneStyle: js.UndefOr[js.Dictionary[Any]] = js.undefined) = createElement(ctor, Props(routerConfig,sceneConfig, style, sceneStyle))
 
 }
 

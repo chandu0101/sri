@@ -15,11 +15,11 @@ object DefaultNavigationBar {
   @ScalaJSDefined
   class Component extends UniversalRouterComponent[Props, Unit] {
     def render() = {
-      val backbutton: ReactElement = if (showBackButton()) TouchableOpacity(onPress = () => navigateBack())(View(style = props.style.navBarLeftButton)(Text(style = props.style.navBarButtonText)("Back"))) else View(style = props.style.navBarLeftButton)()
+      val backButton: ReactElement = if (showBackButton()) TouchableOpacity(onPress = () => navigateBack())(View(style = props.style.navBarLeftButton)(Text(style = props.style.navBarButtonText)("Back"))) else View(style = props.style.navBarLeftButton)()
       View(style = props.style.navBar)(
-        backbutton,
+        if (props.route.leftButton.isDefined) props.route.leftButton.get(getRouterCtrl(), props.route) else backButton,
         Text(style = props.style.navBarTitleText)(props.route.title),
-        View(style = props.style.navBarLeftButton)()
+        if (props.route.rightButton.isDefined) props.route.rightButton.get(getRouterCtrl(), props.route) else View(style = props.style.navBarLeftButton)()
       )
     }
   }
@@ -45,6 +45,7 @@ object DefaultNavigationBar {
       textAlign.center,
       flex := 2,
       fontSize := 16)
+
 
     def navBarLeftButton = style(
       paddingLeft := 10,
