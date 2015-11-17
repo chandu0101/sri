@@ -38,6 +38,7 @@ object HelloLifeCycle {
     }
 
     override def componentDidMount(): Unit = {
+      println(s"component did mount")
       didMount = true
     }
 
@@ -79,5 +80,5 @@ object HelloLifeCycle {
 
   val factory = getTypedConstructor(js.constructorOf[Component], classOf[Component])
 
-  def apply(key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElement(factory, "hi", key = "hkey", ref = ref)
+  def apply(props : String = "hi",key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElement(factory, props, key = "hkey", ref = ref)
 }

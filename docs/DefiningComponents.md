@@ -19,6 +19,7 @@ class HelloMessage extends ReactComponent[Unit,Unit] {
   }
 }
 ```
+***If your component don't need lifecycle methods/refs(true for many cases) then use [stateless functions](StatelessFunctionComponents.md)***
 
 ## Component with Props and No State
 
@@ -43,6 +44,7 @@ class HelloMessage extends ReactComponent[Props,Unit] {
 }
 case class Props(name : String)
 ```
+***If your component don't need lifecycle methods/refs(true for many cases) then use [stateless functions](StatelessFunctionComponents.md)***
 
 ## Component with Props and State
 

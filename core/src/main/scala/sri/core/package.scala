@@ -26,7 +26,7 @@ package object core {
 
   trait CoreAll extends ElementFactory {
     @inline def load[T](lib: String): T = g.require(lib).asInstanceOf[T]
-
+    @inline def loadDynamic(lib: String): js.Dynamic = load[js.Dynamic](lib)
   }
 
   object all extends CoreAll

@@ -3,9 +3,6 @@ package sri.test
 import sri.test.components.HelloLifeCycle
 import sri.test.components.HelloLifeCycle._
 
-import scala.scalajs.js.JSON
-import scala.scalajs.js
-
 class ComponentLifeCycleTest extends BaseTest {
 
   before {
@@ -30,8 +27,9 @@ class ComponentLifeCycleTest extends BaseTest {
     instance.updateState()
     assert(willUpdate)
     assert(didUpdate)
+    assert(!willReceiveProps)
     assert(shouldUpdate)
-    
+
   }
 
 
