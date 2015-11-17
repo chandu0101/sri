@@ -36,7 +36,7 @@ npm start
 -> `npm install -g react-native-cli`
 
 #####  iOS
-Open  `mobile-examples/ios/SriMobile.xcodeproj` in xcode(> 6.3) and hir run button
+Open  `mobile-examples/ios/SriMobile.xcodeproj` in xcode(> 6.3) and hit the run button
 
 ##### Android
 Follow this guide : https://facebook.github.io/react-native/docs/android-setup.html
