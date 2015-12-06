@@ -17,72 +17,57 @@ object SegmentedControlExample extends UIExample {
 
   object BasicSegmentedControlExample {
 
-    @ScalaJSDefined
-    class Component extends ReactComponent[Unit, Unit] {
-      def render() = View()(
+    val Component = () => {
+      View()(
         SegmentedControlIOS(values = Seq("One", "Two"))()
       )
     }
 
-    val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
-
-    def apply(key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElementNoProps(ctor, key = key, ref = ref)
+    def apply(key: UndefOr[String] = js.undefined) = createStatelessFunctionElementNoProps(Component)
   }
 
   object PreSelectedSegmentedControlExample {
 
-    @ScalaJSDefined
-    class Component extends ReactComponent[Unit, Unit] {
-      def render() = View()(
+    val Component = () => {
+      View()(
         SegmentedControlIOS(values = Seq("One", "Two"), selectedIndex = 0)()
       )
     }
 
-    val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
-
-    def apply(key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElementNoProps(ctor, key = key, ref = ref)
+    def apply(key: UndefOr[String] = js.undefined) = createStatelessFunctionElementNoProps(Component)
   }
 
   object MomentarySegmentedControlExample {
 
-    @ScalaJSDefined
-    class Component extends ReactComponent[Unit, Unit] {
-      def render() = View()(
+    val Component = () => {
+      View()(
         SegmentedControlIOS(values = Seq("One", "Two"), momentary = true)()
       )
     }
 
-    val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
-
-    def apply(key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElementNoProps(ctor, key = key, ref = ref)
+    def apply(key: UndefOr[String] = js.undefined) = createStatelessFunctionElementNoProps(Component)
   }
 
   object DisabledSegmentedControlExample {
 
-    @ScalaJSDefined
-    class Component extends ReactComponent[Unit, Unit] {
-      def render() = View()(
+    val Component = () => {
+      View()(
         SegmentedControlIOS(values = Seq("One", "Two"), enabled = false, selectedIndex = 0)()
       )
     }
 
-    val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
-
-    def apply(key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElementNoProps(ctor, key = key, ref = ref)
+    def apply(key: UndefOr[String] = js.undefined) = createStatelessFunctionElementNoProps(Component)
   }
 
   object ColorSegmentedControlExample {
 
-    @ScalaJSDefined
-    class Component extends ReactComponent[Unit, Unit] {
-      def render() = View()(
+    val Component = () => {
+      View()(
         SegmentedControlIOS(values = Seq("One", "Two"), selectedIndex = 0, tintColor = "#ff0000")()
       )
     }
 
-    val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
-
-    def apply(key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElementNoProps(ctor, key = key, ref = ref)
+    def apply(key: UndefOr[String] = js.undefined) = createStatelessFunctionElementNoProps(Component)
   }
 
   object EventSegmentedControlExample {
@@ -111,16 +96,15 @@ object SegmentedControlExample extends UIExample {
       def onValueChange(value: String) = setState(state.copy(value = value))
     }
 
-    val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
+    val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
 
-    def apply(key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElementNoProps(ctor, key = key, ref = ref)
+    def apply(key: UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElementNoProps(ctor, key = key, ref = ref)
 
   }
 
 
-  @ScalaJSDefined
-  class Component extends ReactComponent[Unit, Unit] {
-    def render() = UIExplorerPage(
+  val Component = () => {
+    UIExplorerPage(
       View()(
         UIExplorerBlock("Segmented controls can have values")(
           BasicSegmentedControlExample()
@@ -144,10 +128,7 @@ object SegmentedControlExample extends UIExample {
     )
   }
 
-  val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
-
-  val component = createElementNoProps(ctor)
-
+  val component = createStatelessFunctionElementNoProps(Component)
 
   object styles extends UniversalStyleSheet {
 
@@ -155,7 +136,6 @@ object SegmentedControlExample extends UIExample {
       textAlign.center,
       fontWeight._500,
       margin := 10)
-
 
   }
 

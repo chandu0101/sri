@@ -2,6 +2,7 @@ package sri.mobile.examples.uiexplorer.apis.android
 
 import sri.core.ElementFactory._
 import sri.core.ReactComponent
+import sri.mobile.ReactNative
 import sri.mobile.apis.android.ToastAndroid
 import sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
 import sri.universal.components._
@@ -18,27 +19,23 @@ object ToastAndroidExample extends UIExample {
   override val description: String = "Example that demonstrates the use of an Android Toast to provide feedback."
 
 
-  @ScalaJSDefined
-  class Component extends ReactComponent[Unit, Unit] {
-    def render() = {
-      UIExplorerPage(
-        UIExplorerBlock("Simple toast")(
-          TouchableWithoutFeedback(onPress = () => ToastAndroid.show("This is a toast with short duration", ToastAndroid.SHORT))(
-            Text(style = styles.text)("Click me.")
-          )
-        ),
-        UIExplorerBlock("Toast with long duration")(
-          TouchableWithoutFeedback(onPress = () => ToastAndroid.show("This is a toast with long duration", ToastAndroid.LONG))(
-            Text(style = styles.text)("Click me too.")
-          )
+  val Component = () => {
+    UIExplorerPage(
+      UIExplorerBlock("Simple toast")(
+        TouchableWithoutFeedback(onPress = () => ReactNative.ToastAndroid.show("This is a toast with short duration", ReactNative.ToastAndroid.SHORT))(
+          Text(style = styles.text)("Click me.")
+        )
+      ),
+      UIExplorerBlock("Toast with long duration")(
+        TouchableWithoutFeedback(onPress = () => ReactNative.ToastAndroid.show("This is a toast with long duration", ReactNative.ToastAndroid.LONG))(
+          Text(style = styles.text)("Click me too.")
         )
       )
-    }
+    )
   }
 
-  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
 
-  val component = createElementNoProps(ctor)
+  val component = createStatelessFunctionElementNoProps(Component)
 
   object styles extends UniversalStyleSheet {
     val text = style(color := "black")

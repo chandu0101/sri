@@ -7,27 +7,14 @@ trait ElementFactory {
 
   /**
    * add types to js constructor
-   * @param ctor
-   * @param clz
-   * @tparam P
-   * @tparam S
-   * @return
    */
-  def getTypedConstructor[P, S](ctor: js.Dynamic, clz: Class[_ <: ReactJSComponent[P, S]]) = {
+  def getTypedConstructor[P, S](ctor: js.Dynamic, clz: Class[_ <: ReactComponent[P, S]]) = {
     ctor.asInstanceOf[ReactTypedConstructor[P, S]]
   }
 
-  def getStatelessFactory[P](fn: js.Function1[P, ReactElement]) = React.createFactory((props: JSProps[P]) => fn(props.sprops)).asInstanceOf[ReactComponentFactory[P, _]]
 
   /**
    * helper method to create ReactElements for components with props
-   * @param ctor typed constructor
-   * @param props props of react component
-   * @param key
-   * @param ref
-   * @tparam P
-   * @tparam S
-   * @return
    */
   def createElement[P, S](ctor: ReactTypedConstructor[P, S],
                           props: P,
@@ -38,12 +25,6 @@ trait ElementFactory {
 
   /**
    * helper method to create ReactElements for components with no props
-   * @param ctor typed constructor
-   * @param key
-   * @param ref
-   * @tparam P
-   * @tparam S
-   * @return
    */
   def createElementNoProps[P, S](ctor: ReactTypedConstructor[P, S],
                                  key: js.UndefOr[String] = js.undefined,
@@ -52,14 +33,6 @@ trait ElementFactory {
 
   /**
    * helper method to create ReactElements for components with props  and children
-   * @param ctor typed constructor
-   * @param props
-   * @param key
-   * @param ref
-   * @param children
-   * @tparam P
-   * @tparam S
-   * @return
    */
   def createElementWithChildren[P, S](ctor: ReactTypedConstructor[P, S],
                                       props: P,
@@ -71,13 +44,6 @@ trait ElementFactory {
 
   /**
    * helper method to create ReactElements for components with no props and children
-   * @param ctor typed constructor
-   * @param key
-   * @param ref
-   * @param children
-   * @tparam P
-   * @tparam S
-   * @return
    */
   def createElementNoPropsWithChildren[P, S](ctor: ReactTypedConstructor[P, S],
                                              key: js.UndefOr[String] = js.undefined,
@@ -101,6 +67,21 @@ trait ElementFactory {
   def createStatelessFunctionElementNoPropsWithChildren(func: ReactElement => ReactElement, key: js.UndefOr[String] = js.undefined)(children: ReactNode*) = {
     React.createElement((jsp: JSProps[_]) => func(jsp.children), JSProps(key = key, sprops = null), children: _*)
   }
+
+  /**
+   * use this method when you want  js.Object as props
+   */
+  def createStatelessFunctionElementJS[P <: ReactJSProps](func: P => ReactElement, props: P) = {
+    React.createElement(func, props)
+  }
+
+  /**
+   * use this method when you want  js.Object as props
+   */
+  def createStatelessFunctionElementJSWithChildren[P <: ReactJSProps](func: P => ReactElement, props: P)(children: ReactNode*) = {
+    React.createElement(func, props, children: _*)
+  }
+
 
 }
 

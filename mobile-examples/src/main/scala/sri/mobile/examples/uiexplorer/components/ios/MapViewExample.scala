@@ -160,9 +160,8 @@ object MapViewExample extends UIExample {
 
   }
 
-  @ScalaJSDefined
-  class Component extends ReactComponent[Unit, Unit] {
-    def render() = UIExplorerPage(
+  val Component = () => {
+    UIExplorerPage(
       UIExplorerBlock("Map")(
         MapExample()
       ),
@@ -173,9 +172,8 @@ object MapViewExample extends UIExample {
 
   }
 
-  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
 
-  val component = createElementNoProps(ctor)
+  val component = createStatelessFunctionElementNoProps(Component)
 
 
   object styles extends UniversalStyleSheet {

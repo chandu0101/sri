@@ -39,16 +39,14 @@ object AppStateIOSExample extends UIExample {
     }
 
 
-    val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
+    val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
 
-    def apply(state: Boolean, key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElement(ctor, state, key = key, ref = ref)
+    def apply(state: Boolean, key: UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElement(ctor, state, key = key, ref = ref)
 
   }
 
-
-  @ScalaJSDefined
-  class Component extends ReactComponent[Unit, Unit] {
-    def render() = UIExplorerPage(
+  val Component = () => {
+    UIExplorerPage(
       UIExplorerBlock("AppStateIOS.currentState")(
         Text()(AppSateIOS.currentState.get)
       ),
@@ -61,9 +59,7 @@ object AppStateIOSExample extends UIExample {
     )
   }
 
-  val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
-
-  val component = createElementNoProps(ctor)
+  val component = createStatelessFunctionElementNoProps(Component)
 
 
   override def title: String = "AppStateIOS"

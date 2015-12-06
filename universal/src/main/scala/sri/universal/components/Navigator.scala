@@ -63,6 +63,8 @@ trait NavigatorM extends js.Object {
 
   def replacePrevious(route: js.Object): Unit = js.native
 
+  def replacePreviousAndPop(route: js.Object): Unit = js.native
+
   def immediatelyResetRouteStack(routeStack: js.Array[js.Dynamic]): Unit = js.native
 
   def popToRoute(route: js.Object): Unit = js.native

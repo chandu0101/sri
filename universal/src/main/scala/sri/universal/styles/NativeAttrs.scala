@@ -162,6 +162,7 @@ trait ViewStyles {
   val shadowRadius = new NativeStyle[Double]("shadowRadius")
   val translateX = new NativeStyle[Double]("translateX")
   val translateY = new NativeStyle[Double]("translateY")
+  val elevation = new NativeStyle[Double]("elevation")
   val shadowColor = new NativeStyle[String]("shadowColor")
 
   case class ShadowOffset(height: Double, width: Double) {

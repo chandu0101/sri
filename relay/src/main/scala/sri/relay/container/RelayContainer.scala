@@ -1,7 +1,7 @@
 package sri.relay.container
 
 import sri.core.ReactElement
-import sri.relay.RelayComponent
+import sri.relay.{RelayComponentProps, RelayComponent}
 import sri.relay.container.RelayContainer.{Fragment, Fragments, RootQueries}
 import sri.relay.mutation.RelayMutationTransaction
 import sri.relay.query.{RelayFragmentReference, RelayQueryFragment}
@@ -61,7 +61,7 @@ abstract class RelayContainerSpec extends AbstractRelayContainerSpec {
  */
 
 @js.native
-trait RelayContainer extends js.Object {
+trait RelayContainer[P <: RelayComponentProps,S] extends js.Object {
 
   var route: RelayQueryConfig = js.native
 

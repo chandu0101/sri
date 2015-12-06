@@ -14,9 +14,8 @@ import scala.scalajs.js.annotation.ScalaJSDefined
 object ViewExample extends UIExample {
 
 
-  @ScalaJSDefined
-  class Component extends ReactComponent[Unit, Unit] {
-    def render() = UIExplorerPage(View(style = styles.container)(
+  val Component = () => {
+    UIExplorerPage(View(style = styles.container)(
       UIExplorerBlock("Background Color")(
         View(style = styles.bgColorView)(
           Text(style = styles.text)("Blue background")
@@ -36,9 +35,7 @@ object ViewExample extends UIExample {
 
   }
 
-  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
-
-  val component = createElementNoProps(ctor)
+  val component = createStatelessFunctionElementNoProps(Component)
 
   object styles extends UniversalStyleSheet {
     val container = style(flex := 1,

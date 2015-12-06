@@ -1,5 +1,6 @@
 package sri.mobile.examples
 
+import sri.core.ReactClass
 import sri.mobile.ReactNative
 import sri.mobile.all._
 import sri.mobile.examples.movies.MoviesApp
@@ -19,6 +20,7 @@ object MobileApp extends JSApp {
 //      UIExplorerApp.router
 //                  MoviesApp.router
     )
+
     ReactNative.AppRegistry.registerComponent("SriMobile", () => root)
   }
 }

@@ -36,7 +36,7 @@ object UIExplorerListScreen {
 
 
     def onPressRow(example: UIExample): Unit = {
-      navigateToDynamic(UIExplorerDetails, example.element, example.title)
+      navigateTo(UIExplorerDetails, example.element, example.title)
     }
 
 
@@ -94,10 +94,8 @@ object UIExplorerListScreen {
 
   }
 
-
-  js.constructorOf[Component].contextTypes = router.routerContextTypes
-
   val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
+  ctor.contextTypes = router.routerContextTypes
 
   def apply(key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElementNoProps(ctor)
 }

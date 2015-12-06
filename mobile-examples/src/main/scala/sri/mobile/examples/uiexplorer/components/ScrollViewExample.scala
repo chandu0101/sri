@@ -16,23 +16,18 @@ object ScrollViewExample extends UIExample {
 
   object THUMB {
 
-    @ScalaJSDefined
-    class Component extends ReactComponent[String, Unit] {
-      def render() = View(style = styles.button)(
+    val Component = (props: String) => {
+      View(style = styles.button)(
         Image(style = styles.img, source = ImageSource(uri = props))()
       )
     }
 
-    val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
-
-    def apply(url: String, key: UndefOr[String] = js.undefined, ref: js.Function = null) = createElement(ctor, url, key = key)
+    def apply(url: String, key: UndefOr[String] = js.undefined, ref: js.Function = null) = createStatelessFunctionElement(Component, url, key = key)
 
   }
 
-
-  @ScalaJSDefined
-  class Component extends ReactComponent[Unit, Unit] {
-    def render() = UIExplorerPage(
+  val Component = () => {
+    UIExplorerPage(
       UIExplorerBlock("ScrollView Vertical")(
         ScrollView(style = styles.scrollView,
           contentInset = EdgeInsets(top = -50.0),
@@ -58,9 +53,7 @@ object ScrollViewExample extends UIExample {
 
   }
 
-  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
-
-  val component = createElementNoProps(ctor)
+  val component = createStatelessFunctionElementNoProps(Component)
 
   object styles extends UniversalStyleSheet {
 

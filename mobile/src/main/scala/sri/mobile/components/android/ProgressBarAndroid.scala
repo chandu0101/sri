@@ -12,6 +12,9 @@ case class ProgressBarAndroid(key: U[String] = undefined,
                               style: U[js.Any] = undefined,
                               ref: U[ProgressBarAndroidM => _] = undefined,
                               styleAttr: U[ProgressBarAndroidStyle] = undefined,
+                              color: U[String] = undefined,
+                              progress: U[Double] = undefined,
+                              indeterminate: U[Boolean] = undefined,
                               testID: U[String] = undefined) {
 
   def apply() = {

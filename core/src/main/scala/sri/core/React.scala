@@ -93,7 +93,7 @@ trait ReactElementM[P, S] extends ReactComponent[P, S] with ReactElement
 
 @js.native
 @JSName("React.Component")
-class ReactJSComponent[P, S] extends js.Object {
+private[core] class InternalReactJSComponent[P, S] extends js.Object {
 
 
   @JSName("props") private[core] var jsProps: JSProps[P] = js.native
@@ -128,7 +128,7 @@ class ReactJSComponent[P, S] extends js.Object {
 
 
 @ScalaJSDefined
-abstract class ReactComponent[P, S] extends ReactJSComponent[P, S] {
+abstract class ReactComponent[P, S] extends InternalReactJSComponent[P, S] {
 
   if (js.isUndefined(jsState) || jsState == null) {
     jsState = js.Dictionary[Any]("sstate" -> null).asInstanceOf[JSState[S]]
@@ -207,6 +207,87 @@ abstract class ReactComponent[P, S] extends ReactJSComponent[P, S] {
 
 }
 
+/**
+ *  it depends on scala equals of objects
+ * @tparam P
+ * @tparam S
+ */
+@ScalaJSDefined
+abstract class PureReactComponent[P, S] extends ReactComponent[P, S] {
+  @JSName("sShouldComponentUpdate")
+  override def shouldComponentUpdate(nextProps: => P, nextState: => S): Boolean = {
+    props != nextProps || state != nextState
+  }
+}
+
+
+@ScalaJSDefined
+abstract class ReactComponentJS[P <: ReactJSProps, S] extends InternalReactJSComponent[P, S] {
+
+  def render(): ReactElement
+
+  @JSName("sprops")
+  @inline
+  def props: P = jsProps.asInstanceOf[P]
+
+  @JSName("sState")
+  @inline
+  def state: S = jsState.sstate
+
+
+  @inline
+  def children: PropsChildren = jsProps.children
+
+
+  @inline
+  def initialState(s: S): Unit = {
+    jsState = JSState(s)
+  }
+
+  @JSName("sSetState")
+  @inline
+  def setState(newState: S, callback: UndefOr[() => _] = js.undefined): Unit = {
+    jsSetState(JSState(newState), callback)
+  }
+
+  @JSName("sSetStateFunc")
+  @inline
+  def setState(func: js.Function2[S, P, S]): Unit = {
+    jsSetState((s: JSState[S], p: JSProps[P]) => JSState[S](func(s.sstate, p.sprops)))
+  }
+
+  @JSName("sComponentWillUpdate")
+  def componentWillUpdate(nextProps: => P, nextState: => S): Unit = ()
+
+  @JSName("componentWillUpdate")
+  override def jsComponentWillUpdate(nextProps: JSProps[P], nextState: JSState[S]): Unit = {
+    componentWillUpdate(nextProps.asInstanceOf[P], nextState.sstate)
+  }
+
+  @JSName("sShouldComponentUpdate")
+  def shouldComponentUpdate(nextProps: => P, nextState: => S): Boolean = true
+
+  @JSName("shouldComponentUpdate")
+  override def jsShouldComponentUpdate(nextProps: JSProps[P], nextState: JSState[S]): Boolean = {
+    shouldComponentUpdate(nextProps.asInstanceOf[P], nextState.sstate)
+  }
+
+  @JSName("sComponentDidUpdate")
+  def componentDidUpdate(prevProps: => P, prevState: => S): Unit = ()
+
+  @JSName("componentDidUpdate")
+  override def jsComponentDidUpdate(prevProps: JSProps[P], prevState: JSState[S]): Unit = {
+    componentDidUpdate(prevProps.asInstanceOf[P], prevState.sstate)
+  }
+}
+
+@ScalaJSDefined
+abstract class ReactJSProps extends js.Object {
+  val key: js.UndefOr[String] = js.undefined
+  val ref: js.UndefOr[_ <: ReactComponentJS[_, _] => _] = js.undefined
+}
+
+
 @js.native
 trait ReactComponentFactory[P, S] extends ReactComponent[P, S] {
   def apply(props: js.Any, children: ReactNode*): ReactElementU[P, S] = js.native
@@ -221,4 +302,7 @@ trait ReactComponentConstructor[C <: ReactComponent[_, _]] extends js.Object
  * @tparam S
  */
 @js.native
-trait ReactTypedConstructor[P, S] extends js.Object
+trait ReactTypedConstructor[P, S] extends js.Object {
+  var contextTypes: js.UndefOr[js.Any] = js.native
+  var childContextTypes: js.UndefOr[js.Any] = js.native
+}

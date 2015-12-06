@@ -15,7 +15,7 @@ object RelayTypes {
   type ReadyStateChangeCallback = (ReadyState) => Unit
   type ComponentReadyStateChangeCallback = js.Function1[ComponentReadyState, Unit]
   type StoreReaderData = js.Object
-  type Variables = js.Dictionary[js.Any]
+  type Variables = js.Object
   type FileMap = js.Dictionary[js.Any]
   type MutationFragment = js.Any
 }
@@ -126,7 +126,7 @@ trait RelayProp extends js.Object {
 
   var route: RelayQueryConfig = js.native
 
-  var variables: Variables = js.native
+  var variables: js.Dynamic = js.native
 
   /**
    * Requests an update to variables. This primes the cache for the new

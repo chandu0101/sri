@@ -28,11 +28,9 @@ object Relay extends js.Object {
   val Route: RelayQueryConfig = js.native
   val Store: RelayStore = js.native
 
-  def createContainer[C <: ReactComponent[_, _]](component: ReactComponentConstructor[C], spec: RelayContainerSpec): RelayContainer = js.native
+  def createContainer[P <: RelayComponentProps, S](component: RelayTypedConstructor[P, S], spec: RelayContainerSpec): RelayContainer[P, S] = js.native
 
-  @JSName("createContainer") def createStatelessFunctionContainer(component: js.Function, spec: RelayContainerSpec): RelayContainer = js.native
-
-  def getQueries(component: RelayContainer, route: RelayQueryConfig): RelayQuerySet = js.native
+  def getQueries[P <: RelayComponentProps, S](component: RelayContainer[P, S], route: RelayQueryConfig): RelayQuerySet = js.native
 
   def injectNetworkLayer(layer: NetworkLayer): Unit = js.native
 

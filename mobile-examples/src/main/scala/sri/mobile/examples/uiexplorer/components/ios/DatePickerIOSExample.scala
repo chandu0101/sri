@@ -17,25 +17,21 @@ object DatePickerIOSExample extends UIExample {
 
   object Heading {
 
-    @ScalaJSDefined
-    class Component extends ReactComponent[String, Unit] {
-      def render() = View(style = styles.headingContainer)(
+    val Component = (props: String) => {
+      View(style = styles.headingContainer)(
         Text(style = styles.heading)(
           props
         ))
     }
 
-    val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
-
-    def apply(props: String) = createElement(ctor, props)
+    def apply(props: String) = createStatelessFunctionElement(Component, props)
 
   }
 
   object WithLabel {
 
-    @ScalaJSDefined
-    class Component extends ReactComponent[String, Unit] {
-      def render() = View(style = styles.headingContainer)(
+    val Component = (props: String, children: ReactElement) => {
+      View(style = styles.headingContainer)(
         View(style = styles.labelView)(
           Text(style = styles.heading)(
             props
@@ -46,9 +42,7 @@ object DatePickerIOSExample extends UIExample {
       )
     }
 
-    val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
-
-    def apply(props: String, key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null)(children: ReactElement) = createElementWithChildren(ctor, props)(children)
+    def apply(props: String, key: UndefOr[String] = js.undefined)(children: ReactElement) = createStatelessFunctionElementWithChildren(Component, props)(children)
   }
 
 
@@ -102,24 +96,21 @@ object DatePickerIOSExample extends UIExample {
       }
     }
 
-    val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
+    val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
 
-    def apply(props: js.Date, key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElement(ctor, props)
+    def apply(props: js.Date, key: UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElement(ctor, props)
   }
 
 
-  @ScalaJSDefined
-  class Component extends ReactComponent[Unit, Unit] {
-    def render() = UIExplorerPage(
+  val Component = () => {
+    UIExplorerPage(
       UIExplorerBlock("DatePickerIOS")(
-      DatePickerExample(new Date())
-    )
+        DatePickerExample(new Date())
+      )
     )
   }
 
-  val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
-
-  val component = createElementNoProps(ctor)
+  val component = createStatelessFunctionElementNoProps(Component)
 
 
   object styles extends UniversalStyleSheet {

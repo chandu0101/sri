@@ -33,7 +33,7 @@ object HomeScreen {
       TouchableHighlight(style = styles.block,
         underlayColor = "grey",
         key = text,
-        onPress = () => navigateToStatic(page))(
+        onPress = () => navigateTo(page))(
           Text(style = styles.text)(text)
         )
     }
@@ -42,19 +42,19 @@ object HomeScreen {
       TouchableHighlight(style = styles.block,
         underlayColor = "grey",
         key = text,
-        onPress = () => navigateToDynamic(Fourth, Person("Sri"), "Sri"))(
+        onPress = () => navigateTo(Fourth, Person("Sri"), "Sri"))(
           Text(style = styles.text)(text)
         )
     }
 
     def onTextClick() = {
-      navigateToStatic(Second)
+      navigateTo(Second)
     }
   }
 
-  js.constructorOf[Component].contextTypes = router.routerContextTypes
 
   val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
+  ctor.contextTypes = router.routerContextTypes
 
   def apply() = createElementNoProps(ctor)
 }

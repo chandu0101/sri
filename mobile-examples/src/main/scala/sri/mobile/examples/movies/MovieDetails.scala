@@ -18,35 +18,28 @@ object MovieDetails {
 
   object Ratings {
 
-    @ScalaJSDefined
-    class Component extends ReactComponent[js.Dynamic, Unit] {
-      def render() = {
-        val criticsScore = props.critics_score.asInstanceOf[Int]
-        val audienceScore = props.audience_score.asInstanceOf[Int]
-        View()(
-          View(style = styles.rating)(
-            Text(style = styles.ratingTitle)("Critics:"),
-            Text(style = styles.ratingValue)(getTextFromScore(criticsScore))
-          ),
-          View(style = styles.rating)(
-            Text(style = styles.ratingTitle)("Audience:"),
-            Text(style = styles.ratingValue)(getTextFromScore(audienceScore))
-          )
+    val Component = (props: js.Dynamic) => {
+      val criticsScore = props.critics_score.asInstanceOf[Int]
+      val audienceScore = props.audience_score.asInstanceOf[Int]
+      View()(
+        View(style = styles.rating)(
+          Text(style = styles.ratingTitle)("Critics:"),
+          Text(style = styles.ratingValue)(getTextFromScore(criticsScore))
+        ),
+        View(style = styles.rating)(
+          Text(style = styles.ratingTitle)("Audience:"),
+          Text(style = styles.ratingValue)(getTextFromScore(audienceScore))
         )
-      }
+      )
     }
 
-    val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
-
-    def apply(rating: js.Dynamic, key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElement(ctor, rating, key = key, ref = ref)
+    def apply(rating: js.Dynamic, key: UndefOr[String] = js.undefined) = createStatelessFunctionElement(Component, rating, key = key)
 
   }
 
   object Cast {
 
-    @ScalaJSDefined
-    class Component extends ReactComponent[js.Array[js.Dynamic], Unit] {
-      def render() = {
+    val Component  = (props : js.Array[js.Dynamic]) => {
         View()(
           Text(style = styles.castTitle)("Actors"),
           View()(
@@ -54,20 +47,13 @@ object MovieDetails {
           )
         )
       }
-    }
 
-
-    val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
-
-    def apply(cast: js.Array[js.Dynamic], key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElement(ctor, cast, key = key, ref = ref)
+    def apply(cast: js.Array[js.Dynamic], key: UndefOr[String] = js.undefined) = createStatelessFunctionElement(Component, cast, key = key)
 
   }
 
 
-  @ScalaJSDefined
-  class Component extends ReactComponent[js.Dynamic, Unit] {
-
-    def render() = {
+  val Component = (props: js.Dynamic) => {
       ScrollView(contentContainerStyle = styles.contentContainer)(
         View()(
           View(style = styles.mainSection)(
@@ -89,11 +75,7 @@ object MovieDetails {
       )
     }
 
-  }
-
-  val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
-
-  def apply(movie: js.Dynamic, key: UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElement(ctor, movie, key = key, ref = ref)
+  def apply(movie: js.Dynamic, key: UndefOr[String] = js.undefined) = createStatelessFunctionElement(Component, movie, key = key)
 
   object styles extends UniversalStyleSheet {
 

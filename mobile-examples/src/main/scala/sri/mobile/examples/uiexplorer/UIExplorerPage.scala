@@ -10,25 +10,13 @@ import scala.scalajs.js.annotation.ScalaJSDefined
 
 object UIExplorerPage {
 
-  object styles extends UniversalStyleSheet {
-
-    val wrapper = style(
-      flex := 1)
+  val Component = (children: ReactElement) => {
+    ScrollView(style = UniversalStyleSheet.wholeContainer, keyboardShouldPersistTaps = true,
+      keyboardDismissMode = keyboardDismissMode.INTERACTIVE)(
+        children
+      )
   }
 
-  @ScalaJSDefined
-  class Component extends ReactComponent[Unit, Unit] {
-    def render() =
-      ScrollView(style = styles.wrapper, keyboardShouldPersistTaps = true,
-        keyboardDismissMode = keyboardDismissMode.INTERACTIVE)(
-          children
-        )
-
-    val displayName = "UIExplorerPage"
-  }
-
-  val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
-
-  def apply(children: ReactNode*) = createElementNoPropsWithChildren(ctor)(children: _*)
+  def apply(children: ReactNode*) = createStatelessFunctionElementNoPropsWithChildren(Component)(children: _*)
 
 }

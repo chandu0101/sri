@@ -2,6 +2,7 @@ package sri.mobile
 
 import sri.core._
 import sri.mobile.apis._
+import sri.mobile.apis.android.{BackAndroid, ToastAndroid, IntentAndroid}
 import sri.mobile.modules.NativeModules
 import sri.universal.ReactUniversal
 
@@ -25,6 +26,7 @@ trait ReactNative extends ReactUniversal {
   val SegmentedControlIOS: ReactClass = js.native
   val DrawerLayoutAndroid: ReactClass = js.native
   val ProgressBarAndroid: ReactClass = js.native
+  val ProgressViewIOS: ReactClass = js.native
   val SwitchAndroid: ReactClass = js.native
   val ToolbarAndroid: ReactClass = js.native
   val TouchableNativeFeedback: ReactClass = js.native
@@ -48,6 +50,9 @@ trait ReactNative extends ReactUniversal {
   val VibrationIOS: VibrationIOS = js.native
   val Dimensions: js.Dynamic = js.native
   val Animated: js.Dynamic = js.native
+  val IntentAndroid: IntentAndroid = js.native
+  val ToastAndroid: ToastAndroid = js.native
+  val BackAndroid: BackAndroid = js.native
 
   // native stuff
   val NativeModules: NativeModules = js.native

@@ -40,9 +40,9 @@ object NavigatorRoute {
       component = obj.component,
       props = obj.props,
       page = obj.page.asInstanceOf[Page],
-      leftButton = obj.leftButton.asInstanceOf[NavBarElementFunction],
-      rightButton = obj.rightButton.asInstanceOf[NavBarElementFunction],
-      sceneConfig = obj.sceneConfig.asInstanceOf[NavigatorSceneConfig])
+      leftButton = if(js.isUndefined(obj.leftButton)) js.undefined else obj.leftButton.asInstanceOf[NavBarElementFunction],
+      rightButton = if(js.isUndefined(obj.rightButton)) js.undefined else obj.rightButton.asInstanceOf[NavBarElementFunction],
+      sceneConfig = if(js.isUndefined(obj.sceneConfig)) js.undefined else obj.sceneConfig.asInstanceOf[NavigatorSceneConfig])
   }
 
 }
@@ -64,7 +64,7 @@ object UniversalRouter {
 
     val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
 
-    js.constructorOf[Component].childContextTypes = routerContextTypes
+    ctor.childContextTypes = routerContextTypes
 
     def apply(ctrl: UniversalRouterCtrl, key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null)(children: ReactNode*) = createElementWithChildren(ctor, Props(ctrl), key = key, ref = ref)(children: _*)
 

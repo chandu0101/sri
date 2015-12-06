@@ -1,5 +1,6 @@
 package sri.mobile.examples.movies.android
 
+import sri.mobile.ReactNative
 import sri.mobile.all._
 import sri.mobile.apis.android.BackAndroid
 import sri.mobile.components.android.ToolbarAndroid
@@ -15,7 +16,7 @@ object DefaultAndroidNavigationBar {
 
   var rctrl: UniversalRouterCtrl = _
 
-  BackAndroid.addEventListener("hardwareBackPress", () => {
+  ReactNative.BackAndroid.addEventListener("hardwareBackPress", () => {
     if (rctrl != null && rctrl.navigator.getCurrentRoutes().length > 1) {
       rctrl.navigator.pop()
       true
@@ -25,7 +26,7 @@ object DefaultAndroidNavigationBar {
   @ScalaJSDefined
   class Component extends UniversalRouterComponent[Props, Unit] {
     def render() = {
-      val androidback :js.UndefOr[js.Dynamic] = if (showBackButton()) load[js.Dynamic]("./images/android_back_white.png") else js.undefined
+      val androidback: js.UndefOr[js.Dynamic] = if (previousRoute.isDefined) load[js.Dynamic]("./images/android_back_white.png") else js.undefined
       ToolbarAndroid(
         style = props.style.toolbar,
         actions = Seq(),
@@ -53,16 +54,14 @@ object DefaultAndroidNavigationBar {
   }
 
   object DefaultTheme extends Style {
-
     override val toolbar = super.toolbar
-
   }
 
   case class Props(route: NavigatorRoute, style: Style)
 
-  js.constructorOf[Component].contextTypes = router.routerContextTypes
-
   val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
+
+  ctor.contextTypes = router.routerContextTypes
 
   def apply(route: NavigatorRoute, style: Style = DefaultTheme, key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElement(ctor, props = Props(route, style), key = key, ref = ref)
 

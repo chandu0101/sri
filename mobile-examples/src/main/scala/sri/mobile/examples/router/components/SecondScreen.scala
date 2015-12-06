@@ -9,16 +9,10 @@ import scala.scalajs.js.annotation.ScalaJSDefined
 
 object SecondScreen {
 
-  @ScalaJSDefined
-  class Component extends ReactComponent[Unit, Unit] {
-    override def render(): ReactElement = View(style = styles.container)(
+  val Component  = () => { View(style = styles.container)(
       Text()("Second screen ")
     )
-
   }
-
-  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
-
-  def apply() = createElementNoProps(ctor)
+  def apply() = createStatelessFunctionElementNoProps(Component)
 }
 

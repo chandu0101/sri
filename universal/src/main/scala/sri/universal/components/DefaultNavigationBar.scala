@@ -1,6 +1,6 @@
 package sri.universal.components
 
-import sri.core.ReactElement
+import sri.core._
 import sri.universal._
 import sri.universal.all._
 import sri.universal.router.{NavigatorRoute, UniversalRouterComponent}
@@ -11,15 +11,21 @@ import scala.scalajs.js.annotation.ScalaJSDefined
 
 object DefaultNavigationBar {
 
-
   @ScalaJSDefined
   class Component extends UniversalRouterComponent[Props, Unit] {
     def render() = {
-      val backButton: ReactElement = if (showBackButton()) TouchableOpacity(onPress = () => navigateBack())(View(style = props.style.navBarLeftButton)(Text(style = props.style.navBarButtonText)("Back"))) else View(style = props.style.navBarLeftButton)()
       View(style = props.style.navBar)(
-        if (props.route.leftButton.isDefined) props.route.leftButton.get(props.route) else backButton,
+        if (props.route.leftButton.isDefined) props.route.leftButton.get()
+        else if (props.leftButton != null) props.leftButton
+        else {
+          View(style = props.style.navBarLeftButton)(
+            previousRoute.isDefined ?= TouchableOpacity(onPress = () => navigateBack())(Text(style = props.style.navBarButtonText)("Back"))
+          )
+        },
         Text(style = props.style.navBarTitleText)(props.route.title),
-        if (props.route.rightButton.isDefined) props.route.rightButton.get(props.route) else View(style = props.style.navBarLeftButton)()
+        if (props.route.rightButton.isDefined) props.route.rightButton.get()
+        else if (props.rightButton != null) props.rightButton
+        else View(style = props.style.navBarRightButton)()
       )
     }
   }
@@ -41,22 +47,32 @@ object DefaultNavigationBar {
 
     def navBarTitleText = style(
       color := "black",
-      fontWeight.bold,
+      fontWeight._500,
       textAlign.center,
-      flex := 2,
+      flex := 1,
       fontSize := 16)
 
-
     def navBarLeftButton = style(
-      paddingLeft := 10,
-      width := 50,
-      overflow.hidden
+      width := 70,
+      overflow.hidden,
+      flexDirection.row,
+      alignItems.center,
+      marginLeft := 10,
+      justifyContent.flexStart
+    )
+
+    def navBarRightButton = style(
+      width := 70,
+      overflow.hidden,
+      flexDirection.row,
+      alignItems.center,
+      marginRight := 10,
+      justifyContent.flexEnd
     )
 
     def navBarButtonText = style(
       fontSize := 16,
       textAlign.center,
-      flex := 2,
       color := "rgb(21, 125, 251)")
 
   }
@@ -69,31 +85,38 @@ object DefaultNavigationBar {
 
     override val navBarLeftButton = super.navBarLeftButton
 
+    override val navBarRightButton = super.navBarRightButton
+
     override val navBarButtonText = super.navBarButtonText
 
   }
 
   object AndroidTheme extends Style {
 
-    override val navBar = styleE(super.navBar)(height := 54, backgroundColor := "#a9a9a9", paddingTop := 15)
+    override val navBar = styleE(super.navBar)(height := 54,
+      backgroundColor := "#a9a9a9",
+      paddingTop := 15)
 
     override val navBarTitleText = styleE(super.navBarTitleText)(color := "white")
 
     override val navBarLeftButton = super.navBarLeftButton
 
-    override val navBarButtonText = styleE(super.navBarButtonText)(color := "white")
+    override val navBarRightButton = super.navBarRightButton
 
+    override val navBarButtonText = styleE(super.navBarButtonText)(color := "white")
 
   }
 
   val defaultTheme = if (isIOSPlatform) IOSTheme else AndroidTheme
 
-  case class Props(route: NavigatorRoute, style: Style)
+  case class Props(route: NavigatorRoute, style: Style, leftButton: ReactElement = null, rightButton: ReactElement = null)
 
-  js.constructorOf[Component].contextTypes = router.routerContextTypes
 
   val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
+  ctor.contextTypes = router.routerContextTypes
 
-  def apply(route: NavigatorRoute, style: Style = defaultTheme, key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElement(ctor, props = Props(route, style), key = key, ref = ref)
+
+
+  def apply(route: NavigatorRoute, style: Style = defaultTheme, leftButton: ReactElement = null, rightButton: ReactElement = null, key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElement(ctor, props = Props(route, style, leftButton, rightButton), key = key, ref = ref)
 
 }

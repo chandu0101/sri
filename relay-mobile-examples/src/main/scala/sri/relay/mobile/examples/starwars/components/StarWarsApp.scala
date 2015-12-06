@@ -3,7 +3,7 @@ package sri.relay.mobile.examples.starwars.components
 import sri.relay.RelayElementFactory._
 import sri.relay.container.{Fragments, RelayContainerSpec}
 import sri.relay.query.RelayQL
-import sri.relay.{Relay, RelayComponent}
+import sri.relay.{RelayComponentProps, Relay, RelayComponent}
 import sri.universal.components.{Text, View}
 
 import scala.scalajs.js
@@ -17,7 +17,7 @@ object StarWarsApp {
   @ScalaJSDefined
   class Component extends RelayComponent[Props, Unit] {
     def render() = {
-      val factions = propsDynamic.factions.asInstanceOf[js.Array[js.Dynamic]]
+      val factions = props.factions.asInstanceOf[js.Array[js.Dynamic]]
       View()(
         factions.map(faction => View()(
           View()(Text()(s"${faction.name}")),
@@ -30,9 +30,13 @@ object StarWarsApp {
 
   }
 
-  case class Props()
+  @ScalaJSDefined
+  trait  Props extends RelayComponentProps {
+    val factions : js.Dynamic
+  }
 
-  val ctor = getComponentConstructor(js.constructorOf[Component], classOf[Component])
+
+  val ctor = getRelayTypedConstructor(js.constructorOf[Component], classOf[Component])
 
   val container = Relay.createContainer(ctor, new RelayContainerSpec {
 

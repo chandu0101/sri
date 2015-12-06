@@ -13,29 +13,23 @@ object RelayElementFactory {
    * @param clz
    * @return
    */
-  def getComponentConstructor[C <: ReactComponent[_, _]](ctor: js.Dynamic, clz: Class[C]) = {
-    ctor.asInstanceOf[ReactComponentConstructor[C]]
+  def getRelayTypedConstructor[P <: RelayComponentProps,S](ctor: js.Dynamic, clz: Class[_ <: RelayComponent[P,S]]) = {
+    ctor.asInstanceOf[RelayTypedConstructor[P,S]]
   }
 
 
-  def createRelayElement[C <: RelayComponent[_,_]](container: RelayContainer,
-                               props: js.Any,
-                               key: js.UndefOr[String] = js.undefined,
-                               ref: js.Function1[C, _] = null
-                                ) = createRelayElementWithChildren(container, props, key, ref)()
+  def createRelayElement[P <: RelayComponentProps,S](container: RelayContainer[P,S],
+                               props: P
+                                ) = createRelayElementWithChildren(container, props)()
 
 
-  def createRelayElementWithChildren[C <: RelayComponent[_,_]](container: => RelayContainer,
-                                           props: js.Any,
-                                           key: js.UndefOr[String] = js.undefined,
-                                           ref: js.Function1[_ <: C, _] = null
+  def createRelayElementWithChildren[P <: RelayComponentProps,S](container: => RelayContainer[P,S],
+                                           props: P
                                             )(children: ReactNode*): ReactElementU[_, _] = {
-    val finalProps  = props.asInstanceOf[js.Dynamic]
-     key.foreach(v => finalProps.updateDynamic("key")(v))
-    if(ref != null ) finalProps.updateDynamic("ref")(ref)
     React.createElement(
-      container, finalProps,
+      container, props,
       children: _*).asInstanceOf[ReactElementU[_, _]]
   }
+
 
 }

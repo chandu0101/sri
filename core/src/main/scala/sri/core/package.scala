@@ -21,7 +21,7 @@ package object core {
   implicit def genTravarsableToJSArrayReactElement(elm: GenTraversableOnce[ReactElement]): ReactNode = elm.toJSArray.asInstanceOf[ReactNode]
 
   implicit class Boolean_Ext_Methods(val value: Boolean) extends AnyVal {
-    def ?=(elm: => ReactNode): ReactNode = if (value) elm else null
+    def ?=(elm: => ReactNode): ReactElement = if (value) elm.asInstanceOf[ReactElement] else null
   }
 
   trait CoreAll extends ElementFactory {

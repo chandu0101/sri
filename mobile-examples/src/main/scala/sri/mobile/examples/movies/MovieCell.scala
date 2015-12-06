@@ -21,7 +21,7 @@ object MovieCell {
     def render() = {
       val criticScore = props.ratings.critics_score.asInstanceOf[Int]
       View()(
-        TouchableHighlight(key = "th", onPress = () => navigateToDynamic(DetailsPage, props, props.title.toString))(
+        TouchableHighlight(key = "th", onPress = () => navigateTo(DetailsPage, props, props.title.toString))(
           View(key = "pap", style = styles.row)(
             Image(key = "is", source = getImageSource(props, "det"), style = styles.cellImage)(),
             View(key = "sv", style = styles.textContainer)(
@@ -43,7 +43,7 @@ object MovieCell {
 
   val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
 
-  js.constructorOf[Component].contextTypes = router.routerContextTypes
+  ctor.contextTypes = router.routerContextTypes
 
   def apply(movie: js.Dynamic, key: UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElement(ctor, movie, key = key, ref = ref)
 

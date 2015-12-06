@@ -4,7 +4,7 @@ import sri.core.ReactElement
 import sri.mobile.examples.router.components._
 import sri.mobile.examples.router.routes.ThirdModule
 import sri.universal.components.DefaultNavigationBar.Style
-import sri.universal.components.{Text, DefaultNavigationBar, View}
+import sri.universal.components.{DefaultNavigationBar, View}
 import sri.universal.router._
 import sri.universal.styles.UniversalStyleSheet
 
@@ -17,7 +17,7 @@ object RouterExampleApp {
 
   object Fourth extends DynamicPage[Person]
 
-  val sampleRightButton = (route: NavigatorRoute) => RightButton(route)
+  val sampleRightButton = () => RightButton()
 
   object Config extends UniversalRouterConfig {
 

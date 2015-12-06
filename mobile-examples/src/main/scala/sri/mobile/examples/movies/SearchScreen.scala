@@ -26,23 +26,18 @@ object SearchScreen {
 
   object NoMovies {
 
-    @ScalaJSDefined
-    class Component extends ReactComponent[Props, Unit] {
-      def render() = {
-        var text = ""
-        if (props.filter.nonEmpty) text = s"No results for ${props.filter}"
-        else if (!props.isLoading) text = "No movies found"
-        View(style = styles.container)(
-          Text(style = styles.noMoviesText)(text)
-        )
-      }
+    val Component = (props: Props) => {
+      var text = ""
+      if (props.filter.nonEmpty) text = s"No results for ${props.filter}"
+      else if (!props.isLoading) text = "No movies found"
+      View(style = styles.container)(
+        Text(style = styles.noMoviesText)(text)
+      )
     }
 
     case class Props(filter: String, isLoading: Boolean)
 
-    val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
-
-    def apply(filter: String, isLoading: Boolean, key: UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElement(ctor, Props(filter, isLoading), key = key, ref = ref)
+    def apply(filter: String, isLoading: Boolean, key: UndefOr[String] = js.undefined) = createStatelessFunctionElement(Component, Props(filter, isLoading), key = key)
 
   }
 

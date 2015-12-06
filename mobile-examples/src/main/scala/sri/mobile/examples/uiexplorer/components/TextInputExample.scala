@@ -1,6 +1,6 @@
 package sri.mobile.examples.uiexplorer.components
 
-import sri.core.{ReactComponent, ReactNode}
+import sri.core.{ReactElement, ReactComponent, ReactNode}
 import sri.mobile.all._
 import sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
 import sri.universal.ReactEvent
@@ -17,11 +17,8 @@ object TextInputExample extends UIExample {
 
   object WithLabel {
 
-    @ScalaJSDefined
-    class Component extends ReactComponent[String, Unit] {
-      //        initialState(State())
-
-      def render() = View(style = styles.labelContainer, key = props)(
+    val Component = (props: String, children: ReactElement) => {
+      View(style = styles.labelContainer, key = props)(
         View(style = styles.label, key = "lab")(
           Text(key = "tex")(
             props
@@ -31,11 +28,7 @@ object TextInputExample extends UIExample {
       )
     }
 
-    val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
-
-    def apply(label: String, key: UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null)(children: ReactNode*) = createElementWithChildren(ctor, label, key = key, ref = ref)(children: _*)
-
-
+    def apply(label: String, key: UndefOr[String] = js.undefined)(children: ReactNode*) = createStatelessFunctionElementWithChildren(Component, label, key = key)(children: _*)
   }
 
   object TextEventsExample {
@@ -82,10 +75,8 @@ object TextInputExample extends UIExample {
   }
 
 
-  @ScalaJSDefined
-  class Component extends ReactComponent[Unit, Unit] {
-
-    def render() = UIExplorerPage(
+  val Component = () => {
+    UIExplorerPage(
       UIExplorerBlock("Auto-focus")(
         TextInput(autoFocus = true, style = styles.default)()
       ),
@@ -117,9 +108,7 @@ object TextInputExample extends UIExample {
     )
   }
 
-  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
-
-  val component = createElementNoProps(ctor)
+  val component = createStatelessFunctionElementNoProps(Component)
 
   object styles extends UniversalStyleSheet {
 

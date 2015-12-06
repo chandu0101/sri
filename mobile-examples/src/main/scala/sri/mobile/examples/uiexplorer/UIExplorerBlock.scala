@@ -1,15 +1,23 @@
 package sri.mobile.examples.uiexplorer
 
 import sri.core.ElementFactory._
-import sri.core.{ReactComponent, ReactNode}
+import sri.core.{ReactElement, ReactNode}
 import sri.universal.components._
 import sri.universal.styles.UniversalStyleSheet
 
-import scala.scalajs.js
-import scala.scalajs.js.annotation.ScalaJSDefined
-
 
 object UIExplorerBlock {
+
+  val Component = (props: String, children: ReactElement) => {
+    View(style = styles.container)(
+      View(style = styles.titleContainer)(
+        Text(style = styles.titleText)(props)
+      ),
+      View(style = styles.children)(
+        children
+      )
+    )
+  }
 
   object styles extends UniversalStyleSheet {
 
@@ -36,25 +44,6 @@ object UIExplorerBlock {
     val children = style(padding := 10)
   }
 
-
-  @ScalaJSDefined
-  class Component extends ReactComponent[String, Unit] {
-    def render() = {
-      View(style = styles.container)(
-        View(style = styles.titleContainer)(
-          Text(style = styles.titleText)(props)
-        ),
-        View(style = styles.children)(
-          children
-        )
-      )
-    }
-
-    val displayName = "UIExplorerBlock"
-  }
-
-  val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
-
-  def apply(title: String)(children: ReactNode*) = createElementWithChildren(ctor, title)(children :_*)
+  def apply(title: String)(children: ReactNode*) = createStatelessFunctionElementWithChildren(Component, title)(children: _*)
 
 }
