@@ -12,6 +12,6 @@ trait AlertIOS extends js.Object {
 }
 
 
-case class AlertIOSButton(text: String, onPress: js.UndefOr[js.Function] = js.undefined) {
+case class AlertIOSButton(text: String, onPress: js.Function) {
   def toJson = json(text = text, onPress = onPress)
 }

@@ -1,6 +1,6 @@
 package sri.relay.store
 
-import sri.relay.mutation.RelayMutation
+import sri.relay.mutation.{RelayMutationTransaction, RelayMutation}
 import sri.relay.query.{RelayQueryNode, RelayQueryRoot}
 import sri.relay.tools.RelayInternalTypes.{DataID, RelayQuerySet}
 import sri.relay.tools.RelayTypes.{ReadyStateChangeCallback, StoreReaderData}
@@ -53,4 +53,6 @@ trait RelayStore extends js.Object {
   def observeAll(node: RelayQueryNode, dataIDs: Seq[DataID], options: js.UndefOr[StoreReaderOptions]): MultiObservable[js.UndefOr[StoreReaderData]] = js.native
 
   def update(mutation: RelayMutation, callbacks: js.UndefOr[RelayMutationTransactionCommitCallbacks] = js.undefined): Unit = js.native
+
+  def applyUpdate(mutation: RelayMutation, callbacks: js.UndefOr[RelayMutationTransactionCommitCallbacks] = js.undefined): RelayMutationTransaction = js.native
 }
