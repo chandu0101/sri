@@ -43,7 +43,7 @@ trait ReactNative extends ReactUniversal {
   val InteractionManager: InteractionManager = js.native
   val LinkingIOS: LinkingIOS = js.native
   val NetInfo: NetInfo = js.native
-  val LayoutAnimation: js.Dynamic = js.native
+  val LayoutAnimation: LayoutAnimation = js.native
   val PushNotificationIOS: PushNotificationIOS = js.native
   val PanResponder: PanResponder = js.native
   val StatusBarIOS: js.Dynamic = js.native

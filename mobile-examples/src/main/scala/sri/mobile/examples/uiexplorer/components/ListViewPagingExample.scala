@@ -3,6 +3,7 @@ package sri.mobile.examples.uiexplorer.components
 import sri.core.ReactComponent
 import sri.mobile.ReactNative
 import sri.mobile.all._
+import sri.mobile.apis.LayoutConfig
 import sri.mobile.examples.uiexplorer.UIExample
 import sri.universal.components._
 import sri.universal.styles.UniversalStyleSheet
@@ -48,7 +49,7 @@ object ListViewPagingExample extends UIExample {
 
       def onPressThumb = {
         val config = layoutAnimationConfigs(state.thumbIndex % layoutAnimationConfigs.length)
-        LayoutAnimation.configureNext(config)
+        LayoutAnimation.configureNext(config.asInstanceOf[LayoutConfig])
         setState(state.copy(thumbIndex = getThumbIdx, dir = if (state.dir == "row") "column" else "row"))
       }
     }
@@ -121,7 +122,7 @@ object ListViewPagingExample extends UIExample {
 
     def onPressHeader = {
       val config = layoutAnimationConfigs(Math.floor(state.headerPressCount / 2).toInt % layoutAnimationConfigs.length)
-      LayoutAnimation.configureNext(config)
+      LayoutAnimation.configureNext(config.asInstanceOf[LayoutConfig])
       setState(state.copy(headerPressCount = state.headerPressCount))
     }
 
