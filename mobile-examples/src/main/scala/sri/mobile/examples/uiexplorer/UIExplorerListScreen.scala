@@ -3,7 +3,7 @@ package sri.mobile.examples.uiexplorer
 import sri.mobile.ReactNative
 import sri.mobile.all._
 import sri.mobile.examples.uiexplorer.UIExplorerApp.UIExplorerDetails
-import sri.mobile.examples.uiexplorer.apis.android.ToastAndroidExample
+import sri.mobile.examples.uiexplorer.apis.android.{IntentAndroidExample, ToastAndroidExample}
 import sri.mobile.examples.uiexplorer.apis.{AlertIOSExample, AppStateIOSExample, AsyncStorageExample}
 import sri.mobile.examples.uiexplorer.components._
 import sri.mobile.examples.uiexplorer.components.android.{SwitchAndroidExample, ToolbarAndroidExample}
@@ -58,7 +58,8 @@ object UIExplorerListScreen {
   )
 
   val ANDROID_APIS: List[UIExample] = List(
-    ToastAndroidExample)
+    ToastAndroidExample,
+    IntentAndroidExample)
 
 
   def getComponents() = {

@@ -16,8 +16,8 @@ object MobileApp extends JSApp {
   def main() = {
     val root = createMobileRoot(
 //                              HelloSriMobile()
-            RouterExampleApp.router
-//      UIExplorerApp.router
+//            RouterExampleApp.router
+      UIExplorerApp.router
 //                  MoviesApp.router
     )
 

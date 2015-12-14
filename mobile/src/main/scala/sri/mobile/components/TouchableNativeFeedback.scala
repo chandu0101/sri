@@ -17,7 +17,7 @@ case class TouchableNativeFeedback(key: U[String] = undefined,
                                    delayPressOut: U[Int] = undefined,
                                    delayLongPress: U[Int] = undefined,
                                    accessible: U[Boolean] = undefined,
-                                   background: U[NativeFeedbackBackgroundType]) {
+                                   background: U[NativeFeedbackBackgroundType] = undefined) {
 
   def apply(children: ReactNode) = {
     val props = JSMacro[TouchableNativeFeedback](this)
