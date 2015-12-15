@@ -111,7 +111,6 @@ abstract class UniversalRouterComponent[P, S] extends ReactComponent[P, S] {
 @ScalaJSDefined
 abstract class UniversalRouterComponentJS[P <: ReactJSProps, S] extends ReactComponentJS[P, S] {
 
-
   private var ctrl: UniversalRouterCtrl = _
 
   /**
@@ -191,7 +190,7 @@ abstract class UniversalRouterComponentJS[P <: ReactJSProps, S] extends ReactCom
     case None => handleNotFound()
   }
 
-  def getCurrentRoutes() = ctrl.navigator.getCurrentRoutes().toList.map(_.asInstanceOf[NavigatorRoute])
+  def getCurrentRoutes() = ctrl.navigator.getCurrentRoutes().toList.asInstanceOf[List[NavigatorRoute]]
 
   @inline def currentRoute = ctrl.navigator.getCurrentRoutes().last.asInstanceOf[NavigatorRoute]
 

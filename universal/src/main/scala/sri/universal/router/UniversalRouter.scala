@@ -2,12 +2,9 @@ package sri.universal
 
 package router
 
-import chandu0101.macros.tojs.JSMacroAny
 import sri.core._
 import sri.universal.all._
-import sri.universal.components.NavigatorNavigationBarS.RouteMapperType
 import sri.universal.components._
-import sri.universal.styles.UniversalStyleSheet
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.ScalaJSDefined
@@ -18,21 +15,6 @@ sealed trait Page
 trait StaticPage extends Page
 
 trait DynamicPage[T] extends Page
-
-sealed trait Route {
-  def toJson: js.Dynamic
-}
-
-
-//case class NavigatorRoute(title: String,
-//                          component: js.Any,
-//                          props: js.UndefOr[Any] = js.undefined,
-//                          page: Page,
-//                          leftButton: js.UndefOr[NavBarElementFunction] = js.undefined,
-//                          rightButton: js.UndefOr[NavBarElementFunction] = js.undefined,
-//                          sceneConfig: js.UndefOr[NavigatorSceneConfig] = js.undefined) {
-//  val toJS = JSMacroAny[NavigatorRoute](this)
-//}
 
 @ScalaJSDefined
 abstract class NavigatorRoute extends js.Object {
