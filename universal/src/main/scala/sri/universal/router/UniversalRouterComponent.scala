@@ -29,7 +29,7 @@ abstract class UniversalRouterComponent[P, S] extends ReactComponent[P, S] {
   def navigateTo(page: StaticPage) = {
     ctrl.config.routes.get(page) match {
       case Some(route) => {
-        ctrl.navigator.push(route.toJS)
+        ctrl.navigator.push(route)
       }
       case None => handleNotFound()
     }
@@ -37,7 +37,7 @@ abstract class UniversalRouterComponent[P, S] extends ReactComponent[P, S] {
 
   def navigateTo[T](page: DynamicPage[T], props: T, title: String) = ctrl.config.routes.get(page) match {
     case Some(route) => {
-      val obj = route.toJS.asInstanceOf[js.Dynamic]
+      val obj = route.asInstanceOf[js.Dynamic]
       obj.updateDynamic("props")(props.asInstanceOf[js.Any])
       obj.updateDynamic("title")(title)
       ctrl.navigator.push(obj.asInstanceOf[js.Object])
@@ -60,7 +60,7 @@ abstract class UniversalRouterComponent[P, S] extends ReactComponent[P, S] {
   /**
    * it reloads the previous scene and pop current scene
    */
-  def navigateBackAndReloadPrevious() = ctrl.navigator.replacePreviousAndPop(previousRoute.get.toJS)
+  def navigateBackAndReloadPrevious() = ctrl.navigator.replacePreviousAndPop(previousRoute.get)
 
   /**
    * use this method to replace previous route with static route and go back
@@ -68,7 +68,7 @@ abstract class UniversalRouterComponent[P, S] extends ReactComponent[P, S] {
   def navigateBackAndReplacePrevious(page: StaticPage) = {
     ctrl.config.routes.get(page) match {
       case Some(route) => {
-        ctrl.navigator.replacePreviousAndPop(route.toJS)
+        ctrl.navigator.replacePreviousAndPop(route)
       }
       case None => handleNotFound()
     }
@@ -79,7 +79,7 @@ abstract class UniversalRouterComponent[P, S] extends ReactComponent[P, S] {
    */
   def navigateBackAndReplacePrevious[T](page: DynamicPage[T], props: T, title: String) = ctrl.config.routes.get(page) match {
     case Some(route) => {
-      val obj = route.toJS.asInstanceOf[js.Dynamic]
+      val obj = route.asInstanceOf[js.Dynamic]
       obj.updateDynamic("props")(props.asInstanceOf[js.Any])
       obj.updateDynamic("title")(title)
       ctrl.navigator.replacePreviousAndPop(obj.asInstanceOf[js.Object])
@@ -87,16 +87,16 @@ abstract class UniversalRouterComponent[P, S] extends ReactComponent[P, S] {
     case None => handleNotFound()
   }
 
-  def getCurrentRoutes() = ctrl.navigator.getCurrentRoutes().toList.map(NavigatorRoute.fromJson)
+  def getCurrentRoutes() = ctrl.navigator.getCurrentRoutes().toList.asInstanceOf[List[NavigatorRoute]]
 
-  @inline def currentRoute = NavigatorRoute.fromJson(ctrl.navigator.getCurrentRoutes().last)
+  @inline def currentRoute = ctrl.navigator.getCurrentRoutes().last.asInstanceOf[NavigatorRoute]
 
-  @inline def previousRoute: js.UndefOr[NavigatorRoute] = if (ctrl.navigator.getCurrentRoutes().length > 1) NavigatorRoute.fromJson(ctrl.navigator.getCurrentRoutes().init.last) else js.undefined
+  @inline def previousRoute: js.UndefOr[NavigatorRoute] = if (ctrl.navigator.getCurrentRoutes().length > 1) ctrl.navigator.getCurrentRoutes().init.last.asInstanceOf[NavigatorRoute] else js.undefined
 
 
   //TODO may be add strategy flag ? (replace/push)
   private def handleNotFound() = {
-    ctrl.navigator.push(ctrl.config.notFound._2.toJS)
+    ctrl.navigator.push(ctrl.config.notFound._2)
   }
 
 
@@ -133,7 +133,7 @@ abstract class UniversalRouterComponentJS[P <: ReactJSProps, S] extends ReactCom
   def navigateTo(page: StaticPage) = {
     ctrl.config.routes.get(page) match {
       case Some(route) => {
-        ctrl.navigator.push(route.toJS)
+        ctrl.navigator.push(route)
       }
       case None => handleNotFound()
     }
@@ -141,7 +141,7 @@ abstract class UniversalRouterComponentJS[P <: ReactJSProps, S] extends ReactCom
 
   def navigateTo[T](page: DynamicPage[T], props: T, title: String) = ctrl.config.routes.get(page) match {
     case Some(route) => {
-      val obj = route.toJS.asInstanceOf[js.Dynamic]
+      val obj = route.asInstanceOf[js.Dynamic]
       obj.updateDynamic("props")(props.asInstanceOf[js.Any])
       obj.updateDynamic("title")(title)
       ctrl.navigator.push(obj.asInstanceOf[js.Object])
@@ -164,7 +164,7 @@ abstract class UniversalRouterComponentJS[P <: ReactJSProps, S] extends ReactCom
   /**
    * it reloads the previous scene and pop current scene
    */
-  def navigateBackAndReloadPrevious() = ctrl.navigator.replacePreviousAndPop(previousRoute.get.toJS)
+  def navigateBackAndReloadPrevious() = ctrl.navigator.replacePreviousAndPop(previousRoute.get)
 
   /**
    * use this method to replace previous route with static route and go back
@@ -172,7 +172,7 @@ abstract class UniversalRouterComponentJS[P <: ReactJSProps, S] extends ReactCom
   def navigateBackAndReplacePrevious(page: StaticPage) = {
     ctrl.config.routes.get(page) match {
       case Some(route) => {
-        ctrl.navigator.replacePreviousAndPop(route.toJS)
+        ctrl.navigator.replacePreviousAndPop(route)
       }
       case None => handleNotFound()
     }
@@ -183,7 +183,7 @@ abstract class UniversalRouterComponentJS[P <: ReactJSProps, S] extends ReactCom
    */
   def navigateBackAndReplacePrevious[T](page: DynamicPage[T], props: T, title: String) = ctrl.config.routes.get(page) match {
     case Some(route) => {
-      val obj = route.toJS.asInstanceOf[js.Dynamic]
+      val obj = route.asInstanceOf[js.Dynamic]
       obj.updateDynamic("props")(props.asInstanceOf[js.Any])
       obj.updateDynamic("title")(title)
       ctrl.navigator.replacePreviousAndPop(obj.asInstanceOf[js.Object])
@@ -191,16 +191,16 @@ abstract class UniversalRouterComponentJS[P <: ReactJSProps, S] extends ReactCom
     case None => handleNotFound()
   }
 
-  def getCurrentRoutes() = ctrl.navigator.getCurrentRoutes().toList.map(NavigatorRoute.fromJson)
+  def getCurrentRoutes() = ctrl.navigator.getCurrentRoutes().toList.map(_.asInstanceOf[NavigatorRoute])
 
-  @inline def currentRoute = NavigatorRoute.fromJson(ctrl.navigator.getCurrentRoutes().last)
+  @inline def currentRoute = ctrl.navigator.getCurrentRoutes().last.asInstanceOf[NavigatorRoute]
 
-  @inline def previousRoute: js.UndefOr[NavigatorRoute] = if (ctrl.navigator.getCurrentRoutes().length > 1) NavigatorRoute.fromJson(ctrl.navigator.getCurrentRoutes().init.last) else js.undefined
+  @inline def previousRoute: js.UndefOr[NavigatorRoute] = if (ctrl.navigator.getCurrentRoutes().length > 1) ctrl.navigator.getCurrentRoutes().init.last.asInstanceOf[NavigatorRoute] else js.undefined
 
 
   //TODO may be add strategy flag ? (replace/push)
   private def handleNotFound() = {
-    ctrl.navigator.push(ctrl.config.notFound._2.toJS)
+    ctrl.navigator.push(ctrl.config.notFound._2)
   }
 
 }
