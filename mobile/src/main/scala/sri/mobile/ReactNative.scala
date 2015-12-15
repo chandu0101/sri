@@ -2,9 +2,10 @@ package sri.mobile
 
 import sri.core._
 import sri.mobile.apis._
-import sri.mobile.apis.android.{BackAndroid, ToastAndroid, IntentAndroid}
+import sri.mobile.apis.android.{BackAndroid, IntentAndroid, ToastAndroid}
 import sri.mobile.modules.NativeModules
 import sri.universal.ReactUniversal
+import sri.universal.apis.LayoutAnimation
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSName

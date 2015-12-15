@@ -1,4 +1,4 @@
-package sri.mobile.apis
+package sri.universal.apis
 
 import scala.scalajs.js
 

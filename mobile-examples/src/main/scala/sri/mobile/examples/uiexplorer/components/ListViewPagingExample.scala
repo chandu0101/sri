@@ -3,8 +3,8 @@ package sri.mobile.examples.uiexplorer.components
 import sri.core.ReactComponent
 import sri.mobile.ReactNative
 import sri.mobile.all._
-import sri.mobile.apis.LayoutConfig
 import sri.mobile.examples.uiexplorer.UIExample
+import sri.universal.apis.LayoutConfig
 import sri.universal.components._
 import sri.universal.styles.UniversalStyleSheet
 

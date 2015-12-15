@@ -2,6 +2,7 @@ package sri.universal.components
 
 import chandu0101.macros.tojs.JSMacro
 import sri.core.{React, ReactNode}
+import sri.universal.apis.LayoutEvent
 import sri.universal.ReactUniversal
 
 import scala.scalajs.js
@@ -17,7 +18,7 @@ case class View(onResponderReject: js.UndefOr[js.Function] = js.undefined,
                 style: js.UndefOr[js.Any] = js.undefined,
                 collapsable: js.UndefOr[Boolean] = js.undefined,
                 shouldRasterizeIOS: js.UndefOr[Boolean] = js.undefined,
-                onLayout: js.UndefOr[js.Function] = js.undefined,
+                onLayout: js.UndefOr[LayoutEvent => _] = js.undefined,
                 onAccessibilityTap: js.UndefOr[() => _] = js.undefined,
                 accessibilityLabel: js.UndefOr[String] = js.undefined,
                 AccessibilityComponentType: js.UndefOr[js.Any] = js.undefined,
