@@ -61,7 +61,23 @@ object MapViewRegion {
 }
 
 @ScalaJSDefined
-class MapViewAnnotation(latitude: Double,
+class MapViewAnnotationJS(val latitude: Double,
+                        val longitude: Double,
+                        val title: UndefOr[String] = undefined,
+                        val subTitle: UndefOr[String] = undefined,
+                        val tintColor: js.UndefOr[String] = js.undefined,
+                        val animateDrop: js.UndefOr[Boolean] = js.undefined,
+                        val leftCalloutView: js.UndefOr[ReactElement] = js.undefined,
+                        val rightCalloutView: js.UndefOr[ReactElement] = js.undefined,
+                        val detailCalloutView: js.UndefOr[ReactElement] = js.undefined,
+                        val view: js.UndefOr[ReactElement] = js.undefined,
+                        val draggable: js.UndefOr[Boolean] = js.undefined,
+                        val onDragStateChange: js.UndefOr[js.Function1[js.Dynamic, _]] = js.undefined,
+                        val image: js.UndefOr[js.Dynamic] = undefined
+                         ) extends js.Object
+
+
+case class MapViewAnnotation(latitude: Double,
                         longitude: Double,
                         title: UndefOr[String] = undefined,
                         subTitle: UndefOr[String] = undefined,
@@ -75,9 +91,9 @@ class MapViewAnnotation(latitude: Double,
                         onDragStateChange: js.UndefOr[js.Function1[js.Dynamic,_]] = js.undefined,
                         image: js.UndefOr[ImageSource] = undefined,
                         @rename("image") imageDynamic: js.UndefOr[js.Dynamic] = undefined
-                         ) extends js.Object
-
-
+                         )  {
+  val toJS = JSMacro[MapViewAnnotation](this)
+}
 
 
 case class MapViewOverlay(coordinates: Seq[MapViewCoordinate], lineWidth: Double, strokeColor: String, fillColor: String, id: String) {
