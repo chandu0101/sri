@@ -14,27 +14,21 @@
   "devDependencies": {
     "babel": "5.8.21",
     "babel-loader": "5.3.2",
-    "babel-relay-plugin": "^0.2.2",
     "compression-webpack-plugin": "^0.2.0",
     "css-loader": "^0.14.5",
     "file-loader": "^0.8.4",
     "image-webpack-loader": "^1.6.1",
-    "imagemin": "^3.2.0",
     "lodash": "^3.9.3",
     "node-libs-browser": "^0.5.2",
     "style-loader": "^0.12.3",
+    "haste-resolver-webpack-plugin": "~0.1.2",
     "url-loader": "^0.5.6",
     "webpack": "^1.9.10",
-    "express": "^4.13.1",
-    "express-graphql": "^0.3.0",
-    "graphql": "^0.4.2",
-    "graphql-relay": "^0.3.1",
     "webpack-dev-server": "^1.9.0"
   },
   "dependencies": {
-    "bh-react-navigator": "^0.1.1",
-    "react": "^0.14.0",
-    "react-dom": "^0.14.0",
-    "react-native-for-web": "^0.1.6"
+    "react": "^0.14.6",
+    "react-dom": "^0.14.6",
+    "react-web": "^0.1.3"
   }
 }

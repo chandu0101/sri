@@ -23,6 +23,7 @@ case class Image(onLoaded: js.UndefOr[Boolean] = js.undefined,
                  testID: js.UndefOr[String] = js.undefined,
                  onLoadStart: js.UndefOr[js.Dynamic => Unit] = js.undefined,
                  defaultSource: js.UndefOr[ImageSource] = js.undefined,
+                 loadingIndicatorSrc: js.UndefOr[ImageSource] = js.undefined,
                  onLoadProgress: js.UndefOr[js.Dynamic => Unit] = js.undefined,
                  accessible: js.UndefOr[Boolean] = js.undefined) {
 
@@ -30,6 +31,12 @@ case class Image(onLoaded: js.UndefOr[Boolean] = js.undefined,
     val props = JSMacro[Image](this)
     React.createElement(ReactUniversal.Image,props,children: _*)
   }
+
+}
+
+object Image {
+
+  def getSize(uri : String,success : (Double,Double) => _,failure : js.Dynamic => _) = ReactUniversal.Image.asInstanceOf[js.Dynamic].getSize(uri,success,failure)
 
 }
 

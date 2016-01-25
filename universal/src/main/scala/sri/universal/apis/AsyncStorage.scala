@@ -10,6 +10,7 @@ import scala.scalajs.js.UndefOr
 case class AsyncStorageException(err: js.Dynamic) extends Exception
 
 object AsyncStorage {
+
   val SUCCESS: String = ""
 
   type CALLBACK = js.Function2[UndefOr[js.Dynamic], UndefOr[js.Dynamic], _]

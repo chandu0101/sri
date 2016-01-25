@@ -5,26 +5,28 @@ import sbt._
 object LauncherConfigs {
 
   /** ================ React_native task   ================ */
-  val fullOptIOS = Def.taskKey[File]("Generate the file given to react native")
 
-  lazy val iosLauncher =
+  val fastOptMobile = Def.taskKey[File]("Generate mobile output file for fastOptJS")
+
+  lazy val mobileLauncherFast =
     Seq(
-      artifactPath in Compile in fullOptIOS :=
+      artifactPath in Compile in fastOptMobile :=
         baseDirectory.value / "index.ios.js",
-      fullOptIOS in Compile := {
-        val outFile = (artifactPath in Compile in fullOptIOS).value
+      fastOptMobile in Compile := {
+        val outFile = (artifactPath in Compile in fastOptMobile).value
 
         val loaderFile = (resourceDirectory in Compile).value / "loader.js"
 
         IO.copyFile(loaderFile, outFile)
 
-        val fullOutputCode = IO.read((fullOptJS in Compile).value.data)
+        val fastOutputCode = IO.read((fastOptJS in Compile).value.data)
 
-        IO.append(outFile, fullOutputCode)
+        IO.append(outFile, fastOutputCode)
 
         val launcher = (scalaJSLauncher in Compile).value.data.content
         IO.append(outFile, launcher)
 
+        IO.copyFile(outFile, baseDirectory.value / "index.android.js")
         outFile
       }
     )

@@ -24,21 +24,19 @@ object UIExplorerListScreen {
     //    NavigatorExample
   )
 
-
   @ScalaJSDefined
   class Component extends UniversalRouterComponent[Unit, Unit] {
 
-
-    def render() = View()(
-
-      COMPONENTS.map(renderRow _)
-    )
-
+    def render() = {
+     println(s"rendering man ")
+      View()(
+        COMPONENTS.map(renderRow _)
+      )
+    }
 
     def onPressRow(example: UIExample): Unit = {
       navigateTo(UIExplorerDetails, example.element, example.title)
     }
-
 
     def renderRow(example: UIExample) = {
       View(key = example.title)(

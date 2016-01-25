@@ -19,14 +19,47 @@
             background:#ECEBEB;
         }
 
+        .react-root {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+
+            box-sizing: border-box;
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-orient: vertical;
+            -webkit-box-direction: normal;
+            -webkit-flex-direction: column;
+            -ms-flex-direction: column;
+            flex-direction: column;
+
+        }
+        .react-root .react-view {
+            position: relative;
+
+            box-sizing: border-box;
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-orient: vertical;
+            -webkit-box-direction: normal;
+            -webkit-flex-direction: column;
+            -ms-flex-direction: column;
+            flex-direction: column;
+
+        }
+
     </style>
 <link rel="stylesheet" href="node_modules/react-native-for-web/style.css" />
 </head>
 <body>
 
-<div id="app"></div>
-
-
+<div id="app"  class="react-root"></div>
 
  <!--all js dependencies-->
 <script type="text/javascript" src="assets/mainpage-bundle.js"></script>

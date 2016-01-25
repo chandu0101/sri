@@ -39,6 +39,7 @@ case class TextInput(onBlur: js.UndefOr[(ReactEvent) => Unit] = js.undefined,
                      defaultValue: js.UndefOr[String] = js.undefined,
                      selectTextOnFocus: js.UndefOr[Boolean] = js.undefined,
                      editable: js.UndefOr[Boolean] = js.undefined,
+                     blurOnSubmit: js.UndefOr[Boolean] = js.undefined,
                      password: js.UndefOr[Boolean] = js.undefined) {
 
   def apply(children: ReactNode*) = {

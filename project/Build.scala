@@ -107,6 +107,7 @@ object Sri extends Build {
   lazy val mobileExamples = DefProject("mobile-examples")
     .dependsOn(mobile)
     .settings(mobilelauncher)
+    .settings(mobileLauncherFast)
     .settings(mobileExamplesModuleDeps)
     .settings(preventPublication)
 

@@ -23,7 +23,7 @@ case class Navigator(navigator: js.UndefOr[js.Object] = js.undefined,
 
   def apply() = {
     val props = JSMacro[Navigator](this)
-    val navClass = if (isWebPlatform) js.Dynamic.global.ReactNavigator else ReactUniversal.Navigator
+    val navClass = ReactUniversal.Navigator
     React.createElement(navClass, props)
   }
 

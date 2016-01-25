@@ -23,6 +23,8 @@ trait ReactUniversal extends js.Object {
   val PickerIOS: ReactClass = js.native
   val Modal: ReactClass = js.native
   val Switch: ReactClass = js.native
+  val RefreshControl: ReactClass = js.native
+
 
 
   // apis

@@ -126,7 +126,7 @@ object MapViewExample extends UIExample {
       )
 
       def getAnnotations(region: MapViewRegion) = {
-        Seq(MapViewAnnotation(latitude = region.latitude, longitude = region.longitude, title = "You Are Here"))
+        Seq(new MapViewAnnotation(latitude = region.latitude, longitude = region.longitude, title = "You Are Here"))
       }
 
       def onRegionChange(region: js.Dynamic) = {

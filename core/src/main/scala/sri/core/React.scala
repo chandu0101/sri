@@ -93,7 +93,7 @@ trait ReactElementM[P, S] extends ReactComponent[P, S] with ReactElement
 
 @js.native
 @JSName("React.Component")
-private[core] class InternalReactJSComponent[P, S] extends js.Object {
+private[core] class InternalReactComponent[P, S] extends js.Object {
 
 
   @JSName("props") private[core] var jsProps: JSProps[P] = js.native
@@ -127,8 +127,44 @@ private[core] class InternalReactJSComponent[P, S] extends js.Object {
 }
 
 
+@js.native
+@JSName("React.Component")
+private[core] class InternalReactJSComponent[P <: ReactJSProps, S] extends js.Object {
+
+
+  @JSName("props") private[core] var jsProps: P = js.native
+
+  @JSName("state") private[core] var jsState: JSState[S] = js.native
+
+  var refs: js.Dynamic = js.native
+
+  var context: js.Dynamic = js.native
+
+  @JSName("setState") def jsSetState(newState: JSState[S], callback: UndefOr[() => _] = js.undefined): Unit = js.native
+
+  @JSName("setState") def jsSetState(func: js.Function2[JSState[S], JSProps[P], JSState[S]]): Unit = js.native
+
+  def forceUpdate(callback: js.Function = ???): Unit = js.native
+
+  def componentWillMount(): Unit = js.native
+
+  def componentDidMount(): Unit = js.native
+
+  def componentWillUnmount(): Unit = js.native
+
+  def componentWillReceiveProps(nextProps: P): Unit = js.native
+
+  @JSName("shouldComponentUpdate") def jsShouldComponentUpdate(nextProps: P, nextState: JSState[S]): Boolean = js.native
+
+  @JSName("componentWillUpdate") def jsComponentWillUpdate(nextProps: P, nextState: JSState[S]): Unit = js.native
+
+  @JSName("componentDidUpdate") def jsComponentDidUpdate(prevProps: P, prevState: JSState[S]): Unit = js.native
+
+}
+
+
 @ScalaJSDefined
-abstract class ReactComponent[P, S] extends InternalReactJSComponent[P, S] {
+abstract class ReactComponent[P, S] extends InternalReactComponent[P, S] {
 
   if (js.isUndefined(jsState) || jsState == null) {
     jsState = js.Dictionary[Any]("sstate" -> null).asInstanceOf[JSState[S]]
@@ -228,7 +264,7 @@ abstract class ReactComponentJS[P <: ReactJSProps, S] extends InternalReactJSCom
 
   @JSName("sprops")
   @inline
-  def props: P = jsProps.asInstanceOf[P]
+  def props: P = jsProps
 
   @JSName("sState")
   @inline
@@ -236,7 +272,7 @@ abstract class ReactComponentJS[P <: ReactJSProps, S] extends InternalReactJSCom
 
 
   @inline
-  def children: PropsChildren = jsProps.children
+  def children: PropsChildren = jsProps.children.get
 
 
   @inline
@@ -260,7 +296,7 @@ abstract class ReactComponentJS[P <: ReactJSProps, S] extends InternalReactJSCom
   def componentWillUpdate(nextProps: => P, nextState: => S): Unit = ()
 
   @JSName("componentWillUpdate")
-  override def jsComponentWillUpdate(nextProps: JSProps[P], nextState: JSState[S]): Unit = {
+  override def jsComponentWillUpdate(nextProps: P, nextState: JSState[S]): Unit = {
     componentWillUpdate(nextProps.asInstanceOf[P], nextState.sstate)
   }
 
@@ -268,7 +304,7 @@ abstract class ReactComponentJS[P <: ReactJSProps, S] extends InternalReactJSCom
   def shouldComponentUpdate(nextProps: => P, nextState: => S): Boolean = true
 
   @JSName("shouldComponentUpdate")
-  override def jsShouldComponentUpdate(nextProps: JSProps[P], nextState: JSState[S]): Boolean = {
+  override def jsShouldComponentUpdate(nextProps: P, nextState: JSState[S]): Boolean = {
     shouldComponentUpdate(nextProps.asInstanceOf[P], nextState.sstate)
   }
 
@@ -276,8 +312,8 @@ abstract class ReactComponentJS[P <: ReactJSProps, S] extends InternalReactJSCom
   def componentDidUpdate(prevProps: => P, prevState: => S): Unit = ()
 
   @JSName("componentDidUpdate")
-  override def jsComponentDidUpdate(prevProps: JSProps[P], prevState: JSState[S]): Unit = {
-    componentDidUpdate(prevProps.asInstanceOf[P], prevState.sstate)
+  override def jsComponentDidUpdate(prevProps: P, prevState: JSState[S]): Unit = {
+    componentDidUpdate(prevProps, prevState.sstate)
   }
 }
 
@@ -285,6 +321,7 @@ abstract class ReactComponentJS[P <: ReactJSProps, S] extends InternalReactJSCom
 abstract class ReactJSProps extends js.Object {
   val key: js.UndefOr[String] = js.undefined
   val ref: js.UndefOr[_ <: ReactComponentJS[_, _] => _] = js.undefined
+  val children : js.UndefOr[PropsChildren] = undefined
 }
 
 

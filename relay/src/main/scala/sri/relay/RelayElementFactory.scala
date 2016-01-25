@@ -13,7 +13,7 @@ object RelayElementFactory {
    * @param clz
    * @return
    */
-  def getRelayTypedConstructor[P <: RelayComponentProps,S](ctor: js.Dynamic, clz: Class[_ <: RelayComponent[P,S]]) = {
+  def getRelayTypedConstructor[P <: RelayComponentProps,S](ctor: js.Dynamic, clz: Class[_ <: ReactComponentJS[P,S]]) = {
     ctor.asInstanceOf[RelayTypedConstructor[P,S]]
   }
 

@@ -87,6 +87,20 @@ abstract class UniversalRouterComponent[P, S] extends ReactComponent[P, S] {
     case None => handleNotFound()
   }
 
+
+  /**
+   * use this method to replace the current scene with new scene
+   * @param page
+   */
+  def replace(page: StaticPage) = {
+    ctrl.config.routes.get(page) match {
+      case Some(route) => {
+        ctrl.navigator.replace(route)
+      }
+      case None => handleNotFound()
+    }
+  }
+
   def getCurrentRoutes() = ctrl.navigator.getCurrentRoutes().toList.asInstanceOf[List[NavigatorRoute]]
 
   @inline def currentRoute = ctrl.navigator.getCurrentRoutes().last.asInstanceOf[NavigatorRoute]

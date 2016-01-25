@@ -12,7 +12,7 @@ import sri.universal.components._
 import sri.universal.styles.UniversalStyleSheet
 
 import scala.async.Async._
-import scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 import scala.scalajs.js
 import scala.scalajs.js.annotation.ScalaJSDefined
 import scala.scalajs.js.{JSON, URIUtils, UndefOr}

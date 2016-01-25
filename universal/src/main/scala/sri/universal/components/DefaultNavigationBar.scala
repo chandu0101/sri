@@ -14,16 +14,17 @@ object DefaultNavigationBar {
   @ScalaJSDefined
   class Component extends UniversalRouterComponent[Props, Unit] {
     def render() = {
+       val route = currentRoute
       View(style = props.style.navBar)(
-        if (props.route.leftButton.isDefined) props.route.leftButton.get()
+        if (route.leftButton.isDefined) route.leftButton.get()
         else if (props.leftButton != null) props.leftButton
         else {
           View(style = props.style.navBarLeftButton)(
             previousRoute.isDefined ?= TouchableOpacity(onPress = () => navigateBack())(Text(style = props.style.navBarButtonText)("Back"))
           )
         },
-        Text(style = props.style.navBarTitleText)(props.route.title),
-        if (props.route.rightButton.isDefined) props.route.rightButton.get()
+        Text(style = props.style.navBarTitleText)(route.title),
+        if (route.rightButton.isDefined) route.rightButton.get()
         else if (props.rightButton != null) props.rightButton
         else View(style = props.style.navBarRightButton)()
       )
@@ -109,7 +110,7 @@ object DefaultNavigationBar {
 
   val defaultTheme = if (isIOSPlatform) IOSTheme else AndroidTheme
 
-  case class Props(route: NavigatorRoute, style: Style, leftButton: ReactElement = null, rightButton: ReactElement = null)
+  case class Props(style: Style, leftButton: ReactElement = null, rightButton: ReactElement = null)
 
 
   val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
@@ -117,6 +118,6 @@ object DefaultNavigationBar {
 
 
 
-  def apply(route: NavigatorRoute, style: Style = defaultTheme, leftButton: ReactElement = null, rightButton: ReactElement = null, key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElement(ctor, props = Props(route, style, leftButton, rightButton), key = key, ref = ref)
+  def apply(style: Style = defaultTheme, leftButton: ReactElement = null, rightButton: ReactElement = null, key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElement(ctor, props = Props(style, leftButton, rightButton), key = key, ref = ref)
 
 }

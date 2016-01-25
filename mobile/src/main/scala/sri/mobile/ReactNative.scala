@@ -5,7 +5,7 @@ import sri.mobile.apis._
 import sri.mobile.apis.android.{BackAndroid, IntentAndroid, ToastAndroid}
 import sri.mobile.modules.NativeModules
 import sri.universal.ReactUniversal
-import sri.universal.apis.LayoutAnimation
+import sri.universal.apis.{Alert, Clipboard, LayoutAnimation, NetInfo}
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSName
@@ -36,6 +36,8 @@ trait ReactNative extends ReactUniversal {
 
   // apis
 
+  val Alert: Alert = js.native
+  val Clipboard: Clipboard = js.native
   val AlertIOS: AlertIOS = js.native
   val AppRegistry: AppRegistry = js.native
   val StyleSheet: StyleSheet = js.native

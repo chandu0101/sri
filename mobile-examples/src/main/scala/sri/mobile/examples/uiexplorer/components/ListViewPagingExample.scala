@@ -207,18 +207,18 @@ object ListViewPagingExample extends UIExample {
           duration = 300,
           `type` = LayoutAnimation.Types.easeInEaseOut,
           property = LayoutAnimation.Properties.opacity
-        )
+        ),
           update = json(
           `type` = LayoutAnimation.Types.spring,
           springDamping = 0.4
         )
-      )
+      ),
         easeInEaseOut = json(
         duration = 300,
         create = json(
           `type` = LayoutAnimation.Types.easeInEaseOut,
           property = LayoutAnimation.Properties.scaleXY
-        )
+        ),
           update = json(
           delay = 100,
           `type` = LayoutAnimation.Types.easeInEaseOut

@@ -12,7 +12,6 @@ import scala.scalajs.js.JSApp
 
 object MobileApp extends JSApp {
 
-
   def main() = {
     val root = createMobileRoot(
 //                              HelloSriMobile()

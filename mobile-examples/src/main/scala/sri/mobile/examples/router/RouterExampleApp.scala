@@ -41,7 +41,7 @@ object RouterExampleApp {
 
     override def renderScene(route: NavigatorRoute): ReactElement = {
       View(style = UniversalStyleSheet.wholeContainer)(
-        DefaultNavigationBar(route, CustomNavigationBarTheme),
+        DefaultNavigationBar(CustomNavigationBarTheme),
         super.renderScene(route)
       )
     }

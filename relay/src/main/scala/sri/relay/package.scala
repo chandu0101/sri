@@ -1,5 +1,7 @@
 package sri
 
+import sri.core.ReactTypedConstructor
+
 import scala.scalajs.js
 
 package object relay {
@@ -10,5 +12,5 @@ package object relay {
    * @tparam S
    */
   @js.native
-  trait RelayTypedConstructor[P <: RelayComponentProps, S] extends js.Object
+  trait RelayTypedConstructor[P <: RelayComponentProps, S] extends ReactTypedConstructor[P,S]
 }

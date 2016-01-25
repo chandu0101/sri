@@ -1,12 +1,13 @@
 package sri.mobile.components
 
-import chandu0101.macros.tojs.JSMacro
-import sri.core.React
+import chandu0101.macros.tojs.{rename, JSMacro}
+import sri.core.{ReactElement, React}
 import sri.mobile.ReactNative
-import sri.universal.components.EdgeInsets
+import sri.universal.components.{ImageSource, EdgeInsets}
 
 import scala.scalajs.js
 import scala.scalajs.js.Dynamic.{literal => json}
+import scala.scalajs.js.annotation.ScalaJSDefined
 import scala.scalajs.js.{UndefOr, undefined}
 
 
@@ -21,12 +22,13 @@ case class MapView(maxDelta: js.UndefOr[Int] = js.undefined,
                    key: js.UndefOr[String] = js.undefined,
                    scrollEnabled: js.UndefOr[Boolean] = js.undefined,
                    annotations: js.UndefOr[Seq[MapViewAnnotation]] = js.undefined,
+                   overlays: js.UndefOr[Seq[MapViewOverlay]] = js.undefined,
                    rotateEnabled: js.UndefOr[Boolean] = js.undefined,
                    onRegionChangeComplete: js.UndefOr[js.Dynamic => _] = js.undefined,
                    region: js.UndefOr[MapViewRegion] = js.undefined,
                    zoomEnabled: js.UndefOr[Boolean] = js.undefined,
                    showsUserLocation: js.UndefOr[Boolean] = js.undefined,
-                   onAnnotationPress: js.UndefOr[js.Dynamic => Unit] = js.undefined) {
+                   onAnnotationPress: js.UndefOr[js.Dynamic => _] = js.undefined) {
 
   def apply() = {
     val props = JSMacro[MapView](this)
@@ -58,15 +60,32 @@ object MapViewRegion {
     longitude = obj.longitude.asInstanceOf[Double])
 }
 
-case class MapViewAnnotation(latitude: Double, longitude: Double, title: UndefOr[String] = undefined, subTitle: UndefOr[String] = undefined) {
-  val toJS = JSMacro[MapViewAnnotation](this)
+@ScalaJSDefined
+class MapViewAnnotation(latitude: Double,
+                        longitude: Double,
+                        title: UndefOr[String] = undefined,
+                        subTitle: UndefOr[String] = undefined,
+                        tintColor: js.UndefOr[String] = js.undefined,
+                        animateDrop: js.UndefOr[Boolean] = js.undefined,
+                        leftCalloutView: js.UndefOr[ReactElement] = js.undefined,
+                        rightCalloutView: js.UndefOr[ReactElement] = js.undefined,
+                        detailCalloutView: js.UndefOr[ReactElement] = js.undefined,
+                        view: js.UndefOr[ReactElement] = js.undefined,
+                        draggable: js.UndefOr[Boolean] = js.undefined,
+                        onDragStateChange: js.UndefOr[js.Function1[js.Dynamic,_]] = js.undefined,
+                        image: js.UndefOr[ImageSource] = undefined,
+                        @rename("image") imageDynamic: js.UndefOr[js.Dynamic] = undefined
+                         ) extends js.Object
+
+
+
+
+case class MapViewOverlay(coordinates: Seq[MapViewCoordinate], lineWidth: Double, strokeColor: String, fillColor: String, id: String) {
+  val toJS = JSMacro[MapViewOverlay](this)
 }
 
-object MapViewAnnotation {
-  def fromJson(obj: js.Dynamic) = MapViewAnnotation(subTitle = if (js.isUndefined(obj.subtitle)) js.undefined else obj.subtitle.asInstanceOf[String],
-    latitude = obj.latitude.asInstanceOf[Double],
-    title = if (js.isUndefined(obj.title)) js.undefined else obj.title.asInstanceOf[String],
-    longitude = obj.longitude.asInstanceOf[Double])
+case class MapViewCoordinate(latitude: Double, longitude: Double) {
+  val toJS = JSMacro[MapViewCoordinate](this)
 }
 
 @js.native

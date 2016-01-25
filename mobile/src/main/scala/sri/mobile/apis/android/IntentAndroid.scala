@@ -9,4 +9,5 @@ trait IntentAndroid extends js.Object {
 
   def canOpenURL(url: String, callback: js.Function): Unit = js.native
 
+  def getInitialURL(callback: js.Function1[String, _]): Unit = js.native
 }

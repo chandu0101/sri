@@ -1,5 +1,6 @@
 package sri.mobile.examples.uiexplorer
 
+import org.scalajs.dom
 import sri.mobile.ReactNative
 import sri.mobile.all._
 import sri.mobile.examples.uiexplorer.UIExplorerApp.UIExplorerDetails
@@ -31,7 +32,8 @@ object UIExplorerListScreen {
     //    NavigatorExample
   )
 
-  val IOS_COMPONENTS: List[UIExample] = List(TabBarIOSExample,
+  val IOS_COMPONENTS: List[UIExample] = List(
+    TabBarIOSExample,
     SegmentedControlExample,
     SwitchIOSExample,
     ScrollViewExample,
@@ -53,7 +55,8 @@ object UIExplorerListScreen {
     //    NetInfoExample
   )
 
-  val IOS_APIS: List[UIExample] = List(AlertIOSExample,
+  val IOS_APIS: List[UIExample] = List(
+    AlertIOSExample,
     AsyncStorageExample,
     AppStateIOSExample
   )
@@ -86,24 +89,27 @@ object UIExplorerListScreen {
 
   @ScalaJSDefined
   class Component extends UniversalRouterComponent[Unit, State] {
-
     initialState(State())
+    dom.window.console.log(s"hello" ,json(componenets = finalComponentsList, apis = finalAPIList) )
 
-    def render() = View(style = styles.listContainer)(
-      View(style = styles.searchRow)(
-        TextInput(autoCapitalize = AutoCapitalize.NONE,
-          autoCorrect = false,
-          clearButtonMode = "always",
-          onChangeText = handleSearchTextChange _,
-          placeholder = "Search ..",
-          style = styles.searchTextInput)()
-      ),
-      ListView(style = styles.list,
-        dataSource = state.datasource,
-        renderRow = renderRow,
-        renderSectionHeader = renderSectionHeader _,
-        automaticallyAdjustContentInsets = false)()
-    )
+    def render() = {
+      println(s"rendering rows : ")
+      View(style = styles.listContainer)(
+        View(style = styles.searchRow)(
+          TextInput(autoCapitalize = AutoCapitalize.NONE,
+            autoCorrect = false,
+            clearButtonMode = "always",
+            onChangeText = handleSearchTextChange _,
+            placeholder = "Search ..",
+            style = styles.searchTextInput)()
+        ),
+        ListView(style = styles.list,
+          dataSource = state.datasource,
+          renderRow = renderRow,
+          renderSectionHeader = renderSectionHeader _,
+          automaticallyAdjustContentInsets = false)()
+      )
+    }
 
 
     def onPressRow(example: UIExample): Unit = {
@@ -119,6 +125,7 @@ object UIExplorerListScreen {
     }
 
     def renderRow(example: UIExample, sectionID: String, rowId: String) = {
+      println(s"rendering row $example")
       View(key = example.title)(
         TouchableHighlight(onPress = () => onPressRow(example))(
           View(style = styles.row)(
@@ -134,7 +141,8 @@ object UIExplorerListScreen {
       )
     }
 
-    def renderSectionHeader(data: String, sectionID: String) = {
+    def renderSectionHeader(data: Any, sectionID: String) = {
+      println(s"rendering section header : $sectionID data $data")
       View(style = styles.sectionHeader)(
         Text(style = styles.sectionHeaderTitle)(
           sectionID.toString.toUpperCase

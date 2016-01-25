@@ -23,7 +23,7 @@ object MoviesApp {
 
     override def renderScene(route: NavigatorRoute): ReactElement = {
       View(style = styles.c)(
-        if (isIOSPlatform) DefaultNavigationBar(route)
+        if (isIOSPlatform) DefaultNavigationBar()
         else {
           if (route.page != Home)
             DefaultAndroidNavigationBar(route)

@@ -89,6 +89,9 @@ trait TextStyles {
   val fontFamily = new NativeStyle[String]("fontFamily")
   val fontSize = new NativeStyle[Double]("fontSize")
   val lineHeight = new NativeStyle[Double]("lineHeight")
+  val textShadowOffset = new NativeStyle[js.Dynamic]("textShadowOffset")
+  val textShadowRadius = new NativeStyle[Double]("textShadowRadius")
+  val textShadowColor = new NativeStyle[String]("textShadowColor")
 
   object fontStyle extends NativeStyle[String]("fontStyle") {
     val normal = this := "normal"
