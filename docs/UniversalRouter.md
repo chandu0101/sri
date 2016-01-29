@@ -47,8 +47,8 @@ Example :
   class Component extends UniversalRouterComponent[js.Dynamic, Unit] {
     def render() = {
       View()(
-        TouchableHighlight(key = "th", onPress = () => navigateToStatic(AboutPage))(Text()("Go to About Page")),
-        TouchableHighlight(key = "th", onPress = () => navigateToDynamic(UserDetailsPage,props.user,props.user.name))(Text()(s"Go to User ${props.user.name} "))
+        TouchableHighlight(key = "th", onPress = () => navigateTo(AboutPage))(Text()("Go to About Page")),
+        TouchableHighlight(key = "th", onPress = () => navigateTo(UserDetailsPage,props.user,props.user.name))(Text()(s"Go to User ${props.user.name} "))
       )
     }
   }

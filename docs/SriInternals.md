@@ -32,11 +32,6 @@ This module is scala.js wrapper for `react-native`. Use this module to develop m
 This module is scala.js wrapper for `react-relay`. Use this module if you want to add relay magic to your react (web/mobile) app.
 
 
-# Desktop
-
-This module is scala.js wrapper for [Electron](http://electron.atom.io/). Use this module to develop desktop apps.Check [examples](https://github.com/chandu0101/sri-desktop-examples) for more information
-
-
 # Addons
 
 Scala.js wrappers for react-addons-*
