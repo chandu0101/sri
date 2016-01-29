@@ -51,7 +51,7 @@ object Sri extends Build {
 
   // ================================ Module definitions  ================================ //
   lazy val Sri = DefProject(".", "root")
-    .aggregate(core, addons, universal, web, mobile, desktop, relay, mobileExamples, webExamples, relayWebExamples, relayMobileExamples)
+    .aggregate(core, addons, universal, web, mobile, relay, mobileExamples, webExamples, relayWebExamples, relayMobileExamples)
     .configure(addCommandAliases(
     "ct" -> "; test:compile ; core/test",
     "wt" -> "; test:compile ; web/test",
@@ -88,10 +88,6 @@ object Sri extends Build {
     .settings(mobileModuleDeps)
     .settings(publicationSettings)
 
-  lazy val desktop = DefProject("desktop")
-    .dependsOn(web)
-    .settings(desktopModuleDeps)
-    .settings(publicationSettings)
 
   lazy val webExamples = DefProject("web-examples")
     .dependsOn(web, relay)

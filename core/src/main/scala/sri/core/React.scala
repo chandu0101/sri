@@ -244,15 +244,15 @@ abstract class ReactComponent[P, S] extends InternalReactComponent[P, S] {
 }
 
 /**
- *  it depends on scala equals of objects
+ * it depends on scala equals of objects
  * @tparam P
  * @tparam S
  */
 @ScalaJSDefined
-abstract class PureReactComponent[P, S] extends ReactComponent[P, S] {
+abstract class PureReactComponent[P <: AnyRef, S <: AnyRef] extends ReactComponent[P, S] {
   @JSName("sShouldComponentUpdate")
   override def shouldComponentUpdate(nextProps: => P, nextState: => S): Boolean = {
-    props != nextProps || state != nextState
+    (props ne nextProps) || (state ne nextState)
   }
 }
 
@@ -321,7 +321,7 @@ abstract class ReactComponentJS[P <: ReactJSProps, S] extends InternalReactJSCom
 abstract class ReactJSProps extends js.Object {
   val key: js.UndefOr[String] = js.undefined
   val ref: js.UndefOr[_ <: ReactComponentJS[_, _] => _] = js.undefined
-  val children : js.UndefOr[PropsChildren] = undefined
+  val children: js.UndefOr[PropsChildren] = undefined
 }
 
 

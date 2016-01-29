@@ -17,3 +17,9 @@ Upgrade to react-native [0.14](https://github.com/facebook/react-native/releases
 
 Upgrade to relay [0.5.0](https://github.com/facebook/relay/blob/master/CHANGELOG.md#050-november-11-2015)
 
+
+# Desktop
+
+Moved to its own repo https://github.com/chandu0101/sri-desktop 
+
+
