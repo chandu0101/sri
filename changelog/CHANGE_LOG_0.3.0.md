@@ -1,8 +1,5 @@
 # ChangeLog 0.3.0(WIP)
 
-# Core 
-
-[Functions as Components](../docs/StatelessFunctionComponents.md)
 
 # Universal
 
@@ -10,12 +7,15 @@
 
 # Mobile 
 
-Upgrade to react-native [0.14](https://github.com/facebook/react-native/releases/tag/v0.14.2)
+Upgrade to react-native [0.19.0](https://github.com/facebook/react-native/releases/tag/v0.19.0)
 
+# Web
+
+Now web project depends on [react-web](https://github.com/taobaofed/react-web)
 
 # Relay
 
-Upgrade to relay [0.5.0](https://github.com/facebook/relay/blob/master/CHANGELOG.md#050-november-11-2015)
+Upgrade to relay [0.6.2](https://github.com/facebook/relay/blob/master/CHANGELOG.md#050-november-11-2015)
 
 
 # Desktop

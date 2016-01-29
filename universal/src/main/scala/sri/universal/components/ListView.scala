@@ -83,4 +83,5 @@ trait ListViewM extends js.Object {
 
   def getScrollResponder(): ScrollViewM = js.native
 
+  def scrollTo(destY : Double = 0,destX : Double = 0): Unit = js.native
 }
