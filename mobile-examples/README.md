@@ -6,7 +6,10 @@
 
 // in root(sri)
  sbt ~fullOptMobile
- 
+      or
+
+ sbt ~fastOptMobile ( make sure you have this one line fix : https://github.com/facebook/react-native/pull/4830/files )
+
  // this will generate index.ios.js and index.android.js files
  
 ```
@@ -36,6 +39,11 @@ npm start
 -> `npm install -g react-native-cli`
 
 #####  iOS
+
+`react-native run-ios`
+
+or
+
 Open  `mobile-examples/ios/SriMobile.xcodeproj` in xcode(> 6.3) and hit the run button
 
 ##### Android
