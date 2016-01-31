@@ -1,13 +1,8 @@
-//var React = require('react'),
-//var  ReactDOM = require('react-dom')
-var
-    React = require('react-native-for-web'),
+var React = require('react-web'),
     ReactDOM = require('react-dom'),
-    Relay = require('react-relay'),
-    ReactNavigator = require('bh-react-navigator');
+    Relay = require('react-relay');
 
 window.React = React;
-window.ReactNavigator = ReactNavigator;
 window.ReactDOM = ReactDOM;
 window.Relay = Relay;
 

@@ -15,7 +15,6 @@ import scala.scalajs.js.annotation.JSExport
 
 object RelayWebApp extends JSApp {
 
-
   @JSExport
   override def main(): Unit = {
 

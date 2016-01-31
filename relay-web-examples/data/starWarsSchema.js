@@ -1,37 +1,40 @@
 /**
- * Copyright 2013-2015, Facebook, Inc.
- * All rights reserved.
+ * This file provided by Facebook is for non-commercial testing and evaluation
+ * purposes only.  Facebook reserves all rights not expressly granted.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+ * FACEBOOK BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+ * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
 import {
-  GraphQLID,
-  GraphQLList,
-  GraphQLNonNull,
-  GraphQLObjectType,
-  GraphQLSchema,
-  GraphQLString,
-} from 'graphql';
+    GraphQLID,
+    GraphQLList,
+    GraphQLNonNull,
+    GraphQLObjectType,
+    GraphQLSchema,
+    GraphQLString,
+    } from 'graphql';
 
 import {
-  connectionArgs,
-  connectionDefinitions,
-  connectionFromArray,
-  fromGlobalId,
-  globalIdField,
-  mutationWithClientMutationId,
-  nodeDefinitions,
-} from 'graphql-relay';
+    connectionArgs,
+    connectionDefinitions,
+    connectionFromArray,
+    fromGlobalId,
+    globalIdField,
+    mutationWithClientMutationId,
+    nodeDefinitions,
+    } from 'graphql-relay';
 
 import {
-  getFaction,
-  getShip,
-  getFactions,
-  createShip,
-} from './starWarsDatabase';
+    getFaction,
+    getShip,
+    getFactions,
+    createShip,
+    } from './starWarsDatabase';
 
 /**
  * This is a basic end-to-end test, designed to demonstrate the various
@@ -115,19 +118,19 @@ import {
  * The second defines the way we resolve a node object to its GraphQL type.
  */
 var {nodeInterface, nodeField} = nodeDefinitions(
-  (globalId) => {
-    var {type, id} = fromGlobalId(globalId);
-    if (type === 'Faction') {
-      return getFaction(id);
-    } else if (type === 'Ship') {
-      return getShip(id);
-    } else {
-      return null;
+    (globalId) => {
+        var {type, id} = fromGlobalId(globalId);
+        if (type === 'Faction') {
+            return getFaction(id);
+        } else if (type === 'Ship') {
+            return getShip(id);
+        } else {
+            return null;
+        }
+    },
+    (obj) => {
+        return obj.ships ? factionType : shipType;
     }
-  },
-  (obj) => {
-    return obj.ships ? factionType : shipType;
-  }
 );
 
 /**
@@ -140,16 +143,16 @@ var {nodeInterface, nodeField} = nodeDefinitions(
  *   }
  */
 var shipType = new GraphQLObjectType({
-  name: 'Ship',
-  description: 'A ship in the Star Wars saga',
-  fields: () => ({
-    id: globalIdField('Ship'),
-    name: {
-      type: GraphQLString,
-      description: 'The name of the ship.',
-    },
-  }),
-  interfaces: [nodeInterface]
+    name: 'Ship',
+    description: 'A ship in the Star Wars saga',
+    fields: () => ({
+        id: globalIdField('Ship'),
+        name: {
+            type: GraphQLString,
+            description: 'The name of the ship.',
+        },
+    }),
+    interfaces: [nodeInterface],
 });
 
 /**
@@ -169,7 +172,7 @@ var shipType = new GraphQLObjectType({
  *   }
  */
 var {connectionType: shipConnection} =
-  connectionDefinitions({name: 'Ship', nodeType: shipType});
+    connectionDefinitions({name: 'Ship', nodeType: shipType});
 
 /**
  * We define our faction type, which implements the node interface.
@@ -182,25 +185,25 @@ var {connectionType: shipConnection} =
  *   }
  */
 var factionType = new GraphQLObjectType({
-  name: 'Faction',
-  description: 'A faction in the Star Wars saga',
-  fields: () => ({
-    id: globalIdField('Faction'),
-    name: {
-      type: GraphQLString,
-      description: 'The name of the faction.',
-    },
-    ships: {
-      type: shipConnection,
-      description: 'The ships used by the faction.',
-      args: connectionArgs,
-      resolve: (faction, args) => connectionFromArray(
-        faction.ships.map((id) => getShip(id)),
-        args
-      ),
-    }
-  }),
-  interfaces: [nodeInterface]
+    name: 'Faction',
+    description: 'A faction in the Star Wars saga',
+    fields: () => ({
+        id: globalIdField('Faction'),
+        name: {
+            type: GraphQLString,
+            description: 'The name of the faction.',
+        },
+        ships: {
+            type: shipConnection,
+            description: 'The ships used by the faction.',
+            args: connectionArgs,
+            resolve: (faction, args) => connectionFromArray(
+                faction.ships.map((id) => getShip(id)),
+                args
+            ),
+        },
+    }),
+    interfaces: [nodeInterface],
 });
 
 /**
@@ -210,23 +213,23 @@ var factionType = new GraphQLObjectType({
  * This implements the following type system shorthand:
  *   type Query {
  *     factions(names: [FactionName]): [Faction]
- *     node(id: String!): Node
+ *     node(id: ID!): Node
  *   }
  */
 var queryType = new GraphQLObjectType({
-  name: 'Query',
-  fields: () => ({
-    factions: {
-      type: new GraphQLList(factionType),
-      args: {
-        names: {
-          type: new GraphQLList(GraphQLString),
+    name: 'Query',
+    fields: () => ({
+        factions: {
+            type: new GraphQLList(factionType),
+            args: {
+                names: {
+                    type: new GraphQLList(GraphQLString),
+                },
+            },
+            resolve: (root, {names}) => getFactions(names),
         },
-      },
-      resolve: (root, {names}) => getFactions(names),
-    },
-    node: nodeField
-  })
+        node: nodeField,
+    }),
 });
 
 /**
@@ -246,32 +249,32 @@ var queryType = new GraphQLObjectType({
  *   }
  */
 var shipMutation = mutationWithClientMutationId({
-  name: 'IntroduceShip',
-  inputFields: {
-    shipName: {
-      type: new GraphQLNonNull(GraphQLString)
+    name: 'IntroduceShip',
+    inputFields: {
+        shipName: {
+            type: new GraphQLNonNull(GraphQLString),
+        },
+        factionId: {
+            type: new GraphQLNonNull(GraphQLID),
+        },
     },
-    factionId: {
-      type: new GraphQLNonNull(GraphQLID)
-    }
-  },
-  outputFields: {
-    ship: {
-      type: shipType,
-      resolve: (payload) => getShip(payload.shipId)
+    outputFields: {
+        ship: {
+            type: shipType,
+            resolve: (payload) => getShip(payload.shipId),
+        },
+        faction: {
+            type: factionType,
+            resolve: (payload) => getFaction(payload.factionId),
+        },
     },
-    faction: {
-      type: factionType,
-      resolve: (payload) => getFaction(payload.factionId)
-    }
-  },
-  mutateAndGetPayload: ({shipName, factionId}) => {
-    var newShip = createShip(shipName, factionId);
-    return {
-      shipId: newShip.id,
-      factionId: factionId,
-    };
-  }
+    mutateAndGetPayload: ({shipName, factionId}) => {
+        var newShip = createShip(shipName, factionId);
+        return {
+            shipId: newShip.id,
+            factionId: factionId,
+        };
+    },
 });
 
 /**
@@ -280,21 +283,21 @@ var shipMutation = mutationWithClientMutationId({
  *
  * This implements the following type system shorthand:
  *   type Mutation {
- *     introduceShip(input IntroduceShipInput!): IntroduceShipPayload
+ *     introduceShip(input: IntroduceShipInput!): IntroduceShipPayload
  *   }
  */
 var mutationType = new GraphQLObjectType({
-  name: 'Mutation',
-  fields: () => ({
-    introduceShip: shipMutation
-  })
+    name: 'Mutation',
+    fields: () => ({
+        introduceShip: shipMutation,
+    }),
 });
 
 /**
  * Finally, we construct our schema (whose starting query type is the query
  * type we defined above) and export it.
  */
-export var StarWarsSchema = new GraphQLSchema({
-  query: queryType,
-  mutation: mutationType
+export var schema = new GraphQLSchema({
+    query: queryType,
+    mutation: mutationType,
 });

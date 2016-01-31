@@ -1,8 +1,7 @@
-package sri.mobile.examples.uiexplorer.components.ios
+package sri.mobile.examples.uiexplorer.components
 
 import sri.core.ElementFactory._
 import sri.core.{ReactComponent, ReactNode}
-import sri.mobile.components.ios.SwitchIOS
 import sri.mobile.examples.uiexplorer.{UIExample, UIExplorerPage}
 import sri.universal.components._
 import sri.universal.styles.UniversalStyleSheet
@@ -71,11 +70,11 @@ object ModalExample extends UIExample {
           ),
         View(style = styles.row)(
           Text(style = styles.rowTitle)("Animated"),
-          SwitchIOS(value = state.animated, onValueChange = toggleAnimated _)()
+          Switch(value = state.animated, onValueChange = toggleAnimated _)()
         ),
         View(style = styles.row)(
           Text(style = styles.rowTitle)("Transparent"),
-          SwitchIOS(value = state.transparent, onValueChange = toggleTransparent _)()
+          Switch(value = state.transparent, onValueChange = toggleTransparent _)()
         ),
         Button(onPress = () => setModalVisible(true))("Present")
       )

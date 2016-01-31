@@ -34,7 +34,6 @@ object StarWarsApp {
     val factions : js.Dynamic
   }
 
-
   val ctor = getRelayTypedConstructor(js.constructorOf[Component], classOf[Component])
 
   val container = Relay.createContainer(ctor, new RelayContainerSpec {

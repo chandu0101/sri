@@ -14,7 +14,6 @@ import scala.scalajs.js.{UndefOr => U}
 
 object StarWarsShip {
 
-
   @ScalaJSDefined
   class Component extends RelayComponent[Props, Unit] {
     def render() = {

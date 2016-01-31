@@ -40,8 +40,8 @@ object UIExplorerListScreen {
     SliderIOSExample,
     ActivityIndicatorIOSExample,
     PickerIOSExample,
-    DatePickerIOSExample,
     ModalExample,
+    DatePickerIOSExample,
     MapViewExample,
     WebViewExample
   )
@@ -90,7 +90,7 @@ object UIExplorerListScreen {
   @ScalaJSDefined
   class Component extends UniversalRouterComponent[Unit, State] {
     initialState(State())
-    dom.window.console.log(s"hello" ,json(componenets = finalComponentsList, apis = finalAPIList) )
+    dom.window.console.log(s"hello", json(componenets = finalComponentsList, apis = finalAPIList))
 
     def render() = {
       println(s"rendering rows : ")
