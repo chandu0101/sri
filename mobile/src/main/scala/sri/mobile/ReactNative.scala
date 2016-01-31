@@ -28,6 +28,7 @@ trait ReactNative extends ReactUniversal {
   val DrawerLayoutAndroid: ReactClass = js.native
   val ProgressBarAndroid: ReactClass = js.native
   val ProgressViewIOS: ReactClass = js.native
+  val PickerIOS: ReactClass = js.native
   val SwitchAndroid: ReactClass = js.native
   val ToolbarAndroid: ReactClass = js.native
   val TouchableNativeFeedback: ReactClass = js.native
@@ -42,6 +43,7 @@ trait ReactNative extends ReactUniversal {
   val AppRegistry: AppRegistry = js.native
   val StyleSheet: StyleSheet = js.native
   val AppStateIOS: AppStateIOS = js.native
+  val AppState: AppState = js.native
   val CameraRoll: CameraRoll = js.native
   val InteractionManager: InteractionManager = js.native
   val LinkingIOS: LinkingIOS = js.native
@@ -51,7 +53,7 @@ trait ReactNative extends ReactUniversal {
   val PanResponder: PanResponder = js.native
   val StatusBarIOS: js.Dynamic = js.native
   val VibrationIOS: VibrationIOS = js.native
-  val Dimensions: js.Dynamic = js.native
+  val Dimensions: Dimensions = js.native
   val Animated: js.Dynamic = js.native
   val IntentAndroid: IntentAndroid = js.native
   val ToastAndroid: ToastAndroid = js.native

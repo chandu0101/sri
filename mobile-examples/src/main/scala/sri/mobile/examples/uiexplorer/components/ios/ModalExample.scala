@@ -2,7 +2,6 @@ package sri.mobile.examples.uiexplorer.components.ios
 
 import sri.core.ElementFactory._
 import sri.core.{ReactComponent, ReactNode}
-import sri.mobile.components.Modal
 import sri.mobile.components.ios.SwitchIOS
 import sri.mobile.examples.uiexplorer.{UIExample, UIExplorerPage}
 import sri.universal.components._

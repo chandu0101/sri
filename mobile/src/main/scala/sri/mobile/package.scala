@@ -2,6 +2,7 @@
 package sri
 
 import sri.core.{React, ReactElementU}
+import sri.mobile.apis.WindowDimensions
 import sri.universal.UniversalAll
 import sri.universal.components._
 
@@ -14,7 +15,7 @@ package object mobile {
   trait MobileAll extends UniversalAll {
 
 
-    lazy val Dimensions = load[js.Dynamic]("Dimensions")
+    lazy val windowDimensions = ReactNative.Dimensions.get("window").asInstanceOf[WindowDimensions]
 
 
     def createListViewDataSource[T, H](rowHasChanged: (T, T) => Boolean,

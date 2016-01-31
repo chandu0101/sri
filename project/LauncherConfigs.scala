@@ -33,7 +33,7 @@ object LauncherConfigs {
 
   val fullOptMobile = Def.taskKey[File]("Generate the file given to react native")
 
-  lazy val mobilelauncher =
+  lazy val mobilelauncherFull =
     Seq(
       artifactPath in Compile in fullOptMobile :=
         baseDirectory.value / "index.ios.js",

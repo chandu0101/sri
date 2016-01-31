@@ -20,8 +20,8 @@ trait ReactUniversal extends js.Object {
   val ScrollView: ReactClass = js.native
   val ListView: ReactClass = js.native
   val Navigator: ReactClass = js.native
-  val PickerIOS: ReactClass = js.native
-  val PickerAndroid: ReactClass = js.native
+//  val PickerIOS: ReactClass = js.native
+  val Picker: ReactClass = js.native
   val Modal: ReactClass = js.native
   val Switch: ReactClass = js.native
   val RefreshControl: ReactClass = js.native

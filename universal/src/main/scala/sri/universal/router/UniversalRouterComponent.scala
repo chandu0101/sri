@@ -101,6 +101,19 @@ abstract class UniversalRouterComponent[P, S] extends ReactComponent[P, S] {
     }
   }
 
+  /**
+   * This is kinda hacky , use this method when you want to replace entire routestack with a new route
+   * @param page
+   */
+  def resetStackWithNewRoute(page: StaticPage) = {
+    ctrl.config.routes.get(page) match {
+      case Some(route) => {
+        ctrl.navigator.immediatelyResetRouteStack(js.Array(route))
+      }
+      case None => handleNotFound()
+    }
+  }
+
   def getCurrentRoutes() = ctrl.navigator.getCurrentRoutes().toList.asInstanceOf[List[NavigatorRoute]]
 
   @inline def currentRoute = ctrl.navigator.getCurrentRoutes().last.asInstanceOf[NavigatorRoute]
