@@ -27,6 +27,7 @@ object UIExplorerListScreen {
     ViewExample,
     TouchableExample,
     TextInputExample,
+    RefreshControlExample,
     ListViewPagingExample,
     LayoutEventsExample
     //    NavigatorExample

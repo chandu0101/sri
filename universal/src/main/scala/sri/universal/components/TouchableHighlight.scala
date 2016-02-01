@@ -20,7 +20,7 @@ case class TouchableHighlight(onPressIn: js.UndefOr[() => Unit] = js.undefined,
                               delayPressOut: js.UndefOr[Int] = js.undefined,
                               delayLongPress: js.UndefOr[Int] = js.undefined,
                               onShowUnderlay: js.UndefOr[() => Unit] = js.undefined,
-                              activeOpacity: js.UndefOr[Int] = js.undefined,
+                              activeOpacity: js.UndefOr[Double] = js.undefined,
                               accessible: js.UndefOr[Boolean] = js.undefined) {
 
   def apply(children: ReactElement) = {
