@@ -8,3 +8,5 @@
 * [ ] update app templates
 
 * [ ] remove SNAPSHOT tags
+
+* [ ] update version numbers of modules in README
