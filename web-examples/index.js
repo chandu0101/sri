@@ -1,10 +1,11 @@
 var
-    //React = require('react'),
+    React = require('react-web'),
     ReactDOM = require('react-dom'),
-     React = require('react-web');
+    History = require('history');
 
 window.React = React;
 window.ReactDOM = ReactDOM;
+window.History = History;
 
 
 //js

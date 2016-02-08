@@ -24,8 +24,16 @@ package object core {
     def ?=(elm: => ReactNode): ReactElement = if (value) elm.asInstanceOf[ReactElement] else null
   }
 
+  implicit class String_Ext_Methods(val value: String) extends AnyVal {
+
+    def removeForwardSlashes = if (value != null) value.replaceAll("/", "") else value
+
+    def removeTrailingSlash = if (value != null) value.replaceAll("/$", "") else value
+  }
+
   trait CoreAll extends ElementFactory {
     @inline def load[T](lib: String): T = g.require(lib).asInstanceOf[T]
+
     @inline def loadDynamic(lib: String): js.Dynamic = load[js.Dynamic](lib)
   }
 

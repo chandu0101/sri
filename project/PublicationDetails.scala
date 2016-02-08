@@ -25,9 +25,9 @@ object PublicationDetails {
       },
       pomExtra :=
         <scm>
-          <connection>scm:git:github.com/chandu0101/scalajs-react-native</connection>
-          <developerConnection>scm:git:git@github.com:chandu0101/scalajs-react-native.git</developerConnection>
-          <url>github.com:chandu0101/scalajs-react-native.git</url>
+          <connection>scm:git:github.com/chandu0101/sri</connection>
+          <developerConnection>scm:git:git@github.com:chandu0101/sri.git</developerConnection>
+          <url>github.com:chandu0101/sri.git</url>
         </scm>
           <developers>
             <developer>
@@ -41,7 +41,7 @@ object PublicationDetails {
   //    Seq(
   //      scalacOptions ++= (if (isSnapshot.value) Seq.empty else Seq({
   //        val a = p.base.toURI.toString.replaceFirst("[^/]+/?$", "")
-  //        val g = "https://raw.githubusercontent.com/chandu0101/scalajs-react-native"
+  //        val g = "https://raw.githubusercontent.com/chandu0101/sri"
   //        s"-P:scalajs:mapSourceURI:$a->$g/v${version.value}/"
   //      }))
   //    )

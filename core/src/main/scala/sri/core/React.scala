@@ -244,15 +244,76 @@ abstract class ReactComponent[P, S] extends InternalReactComponent[P, S] {
 }
 
 /**
- * it depends on scala equals of objects
+ * it uses reference(eq,ne) equality for shouldComponentUpdate logic
  * @tparam P
  * @tparam S
  */
 @ScalaJSDefined
-abstract class PureReactComponent[P <: AnyRef, S <: AnyRef] extends ReactComponent[P, S] {
+abstract class ReactComponentPureRef[P <: AnyRef, S <: AnyRef] extends ReactComponent[P, S] {
   @JSName("sShouldComponentUpdate")
   override def shouldComponentUpdate(nextProps: => P, nextState: => S): Boolean = {
     (props ne nextProps) || (state ne nextState)
+  }
+}
+
+/**
+ * it uses reference(eq,ne) equality for shouldComponentUpdate logic
+ * @tparam P
+ */
+@ScalaJSDefined
+abstract class ReactComponentPureRefP[P <: AnyRef] extends ReactComponent[P, Unit] {
+  @JSName("sShouldComponentUpdate")
+  override def shouldComponentUpdate(nextProps: => P, nextState: => Unit): Boolean = {
+    props ne nextProps
+  }
+}
+
+/**
+ * it uses reference(eq,ne) equality for shouldComponentUpdate logic
+ * @tparam S
+ */
+@ScalaJSDefined
+abstract class ReactComponentPureRefS[S <: AnyRef] extends ReactComponent[Unit, S] {
+  @JSName("sShouldComponentUpdate")
+  override def shouldComponentUpdate(nextProps: => Unit, nextState: => S): Boolean = {
+    state ne nextState
+  }
+}
+
+/**
+ * it uses value(==/equals) equality for shouldComponentUpdate logic
+ * @tparam P
+ * @tparam S
+ */
+@ScalaJSDefined
+abstract class ReactComponentPureValue[P, S] extends ReactComponent[P, S] {
+  @JSName("sShouldComponentUpdate")
+  override def shouldComponentUpdate(nextProps: => P, nextState: => S): Boolean = {
+    (props != nextProps) || (state != nextState)
+  }
+}
+
+/**
+ * it uses value(==/equals) equality for shouldComponentUpdate logic
+ * @tparam P
+ */
+@ScalaJSDefined
+abstract class ReactComponentPureValueP[P] extends ReactComponent[P, Unit] {
+  @JSName("sShouldComponentUpdate")
+  override def shouldComponentUpdate(nextProps: => P, nextState: => Unit): Boolean = {
+    (props != nextProps)
+  }
+}
+
+/**
+ * it uses value(==/equals) equality for shouldComponentUpdate logic
+ * @tparam S
+ */
+@ScalaJSDefined
+abstract class ReactComponentPureValueS[S] extends ReactComponent[Unit, S] {
+  @JSName("sShouldComponentUpdate")
+  override def shouldComponentUpdate(nextProps: => Unit, nextState: => S): Boolean = {
+    (state != nextState)
   }
 }
 

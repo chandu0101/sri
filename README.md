@@ -40,10 +40,12 @@ libraryDependencies += "com.github.chandu0101.sri" %%% "relay" % "0.3.0"
  - [Sri Internals](/docs/SriInternals.md)
  - [Defining Components](/docs/DefiningComponents.md)
  - [Functions as Stateless Components](/docs/StatelessFunctionComponents.md)
+ - [Pure Components](/docs/PureComponents.md)
  - [Creating Elements](/docs/CreatingElements.md)
  - [Refs To Components](/docs/RefsToComponents.md)
  - [Universal Styles](/docs/UniversalStyles.md)
  - [Universal Router](/docs/UniversalRouter.md)
+ - [Web Router](/docs/WebRouter.md)
  - [Interop With Third Party Components](/docs/InteropWithThirdParty.md)
  - [Known Issues](/docs/KnownIssues.md)
  

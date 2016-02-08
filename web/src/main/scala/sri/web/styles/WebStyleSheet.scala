@@ -59,5 +59,6 @@ trait WebStyleSheet extends WebStyleAttrs {
 }
 
 object WebStyleSheet extends WebStyleSheet {
+  val flexOne = flex := 1
   val wholeContainer = style(flex := 1)
 }
