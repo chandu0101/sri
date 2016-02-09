@@ -4,18 +4,15 @@ import sri.universal.components._
 import sri.web.all._
 import sri.web.examples.styles.Theme
 
-import scala.scalajs.js.{UndefOr => U, undefined}
+import scala.scalajs.js.{UndefOr => U}
 import scala.util.Try
 
 
-object ItemDetailsScreen {
+object DynamicScreen {
 
   val Component = (id: Int) => {
-    View(style = Theme.flexOneAndDirectionRow)(
-      ItemsLeftNav(),
-      View(style = Theme.flexOneAndCenter)(
-        Text(style = Theme.bigText)(s"${if (id >= 0) s"Item details of :: $id" else "Item not found"}")
-      )
+    View(style = Theme.flexOneAndCenter)(
+      Text(style = Theme.bigText)(s"Dynamic id passed is  :: $id")
     )
   }
 

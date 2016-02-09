@@ -1,13 +1,8 @@
 package sri.web.examples.routerexample
 
-import sri.core._
 import sri.universal.components._
 import sri.web.all._
 import sri.web.styles.WebStyleSheet
-import scala.scalajs.js
-import scala.scalajs.js.annotation.ScalaJSDefined
-import scala.scalajs.js.{UndefOr => U, undefined => undefined}
-
 
 object HomeScreen {
 
