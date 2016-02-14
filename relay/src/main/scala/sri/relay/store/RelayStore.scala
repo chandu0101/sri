@@ -55,4 +55,6 @@ trait RelayStore extends js.Object {
   def update(mutation: RelayMutation, callbacks: js.UndefOr[RelayMutationTransactionCommitCallbacks] = js.undefined): Unit = js.native
 
   def applyUpdate(mutation: RelayMutation, callbacks: js.UndefOr[RelayMutationTransactionCommitCallbacks] = js.undefined): RelayMutationTransaction = js.native
+
+  def commitUpdate(mutation: RelayMutation, callbacks: js.UndefOr[RelayMutationTransactionCommitCallbacks] = js.undefined): RelayMutationTransaction = js.native
 }

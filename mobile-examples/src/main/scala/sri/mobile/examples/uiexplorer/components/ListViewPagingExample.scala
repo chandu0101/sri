@@ -65,7 +65,7 @@ object ListViewPagingExample extends UIExample {
 
     val getRowData = (dataBlob: js.Dictionary[String], sectionID: String, rowID: String) => dataBlob(rowID)
 
-    val dataSource = createListViewDataSource[String, String](rowHasChanged = (r1, r2) => r1 != r2,
+    val dataSource = createListViewDataSource[String, String](rowHasChanged = (r1: String, r2: String) => r1 != r2,
       getSectionHeaderData = getSectionData,
       getRowData = getRowData,
       sectionHeaderHasChanged = (s1: String, s2: String) => s1 != s2)

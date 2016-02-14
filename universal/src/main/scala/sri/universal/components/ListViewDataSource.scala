@@ -1,22 +1,28 @@
 package sri.universal.components
 
 import scala.scalajs.js
-import scala.scalajs.js.annotation.JSName
+import scala.scalajs.js.annotation.{ScalaJSDefined, JSName}
 import scala.scalajs.js.{Array => JArray, UndefOr}
+
+@ScalaJSDefined
+class ListViewDataSourceInput[R, H](val rowHasChanged: js.Function2[R, R, Boolean],
+                                    val sectionHeaderHasChanged: js.UndefOr[js.Function2[H, H, Boolean]] = js.undefined,
+                                    val getRowData: js.UndefOr[js.Function3[_, String, String, _]] = js.undefined,
+                                    val getSectionHeaderData: js.UndefOr[js.Function2[_, String, _]] = js.undefined) extends js.Object
 
 
 @js.native
 @JSName("React.ListView.DataSource")
-class ListViewDataSource[T, H] extends js.Object {
+class ListViewDataSource[R, H] extends js.Object {
 
-  def this(params: js.Object) = this()
+  def this(params: ListViewDataSourceInput[R, H]) = this()
 
-  def cloneWithRows(dataBlob: JArray[T], rowIdentities: JArray[String] = ???): ListViewDataSource[T, H] = js.native
+  def cloneWithRows(dataBlob: JArray[R], rowIdentities: JArray[String] = ???): ListViewDataSource[R, H] = js.native
 
   @JSName("cloneWithRows")
-  def cloneWithRowsWithObject(dataBlob: js.Dictionary[Any], rowIdentities: JArray[String] = ???): ListViewDataSource[T, _] = js.native
+  def cloneWithRowsWithObject(dataBlob: js.Dictionary[Any], rowIdentities: JArray[String] = ???): ListViewDataSource[R, _] = js.native
 
-  def cloneWithRowsAndSections(dataBlob: Any, sectionIdentities: JArray[String] = ???, rowIdentities: JArray[JArray[String]] = ???): ListViewDataSource[T, H] = js.native
+  def cloneWithRowsAndSections(dataBlob: Any, sectionIdentities: JArray[String] = ???, rowIdentities: JArray[JArray[String]] = ???): ListViewDataSource[R, H] = js.native
 
   def getRowCount(): Int = js.native
 
