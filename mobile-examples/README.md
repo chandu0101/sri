@@ -5,10 +5,12 @@
 ```scala
 
 // in root(sri)
- sbt ~fullOptMobile
-      or
 
- sbt ~fastOptMobile ( make sure you have this one line fix : https://github.com/facebook/react-native/pull/4830/files )
+ sbt ~fastOptMobile (DEV mode)
+   
+   or
+   
+ sbt ~fullOptMobile (Prod Mode)
 
  // this will generate index.ios.js and index.android.js files
  
