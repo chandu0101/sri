@@ -9,6 +9,7 @@ import scala.scalajs.js
 trait Call extends js.Object {
   val name: String = js.native
   val value: CallValue = js.native
+  val `type`: js.UndefOr[String] = js.native
 }
 
 object RelayInternalTypes {

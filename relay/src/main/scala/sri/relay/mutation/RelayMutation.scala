@@ -1,8 +1,9 @@
 package sri.relay.mutation
 
-import sri.relay.tools.RelayTypes.{FileMap, MutationFragment}
+import sri.relay.tools.RelayTypes.{RelayMutationConfig, FileMap, MutationFragment}
 
 import scala.scalajs.js
+import scala.scalajs.js.`|`
 import scala.scalajs.js.annotation.{JSName, ScalaJSDefined}
 
 
@@ -13,7 +14,7 @@ import scala.scalajs.js.annotation.{JSName, ScalaJSDefined}
  */
 @js.native
 @JSName("Relay.Mutation")
-abstract class RelayMutationJS(var props : js.Dynamic) extends js.Object {
+abstract class RelayMutationJS(var props: js.Dynamic) extends js.Object {
 
 
   val fragments: js.Any = js.native
@@ -56,7 +57,7 @@ abstract class RelayMutationJS(var props : js.Dynamic) extends js.Object {
 }
 
 @ScalaJSDefined
-abstract class RelayMutation(initialProps : js.Dynamic) extends RelayMutationJS(initialProps) {
+abstract class RelayMutation(initialProps: js.Dynamic) extends RelayMutationJS(initialProps) {
   /**
    * Each mutation has a server name which is used by clients to communicate the
    * type of mutation that should be executed on the server.
@@ -155,7 +156,7 @@ abstract class RelayMutation(initialProps : js.Dynamic) extends RelayMutationJS(
    * children: Array<RelayQuery.Node>;
    * }
    */
-  def getConfigs(): js.Array[js.Dictionary[js.Any]]
+  def getConfigs(): RelayMutationConfig
 
   /**
    * These variables form the "input" to the mutation query sent to the server.
@@ -164,3 +165,4 @@ abstract class RelayMutation(initialProps : js.Dynamic) extends RelayMutationJS(
 
 
 }
+

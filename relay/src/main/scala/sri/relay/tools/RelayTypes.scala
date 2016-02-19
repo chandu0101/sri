@@ -1,12 +1,15 @@
 package sri.relay.tools
 
+import org.scalajs.dom.raw.ParentNode
 import sri.relay.mutation.RelayMutationTransaction
 import sri.relay.query.RelayFragmentReference
+import sri.relay.query.RelayQL.RelayConcreteNode
 import sri.relay.route.RelayQueryConfig
 import sri.relay.tools.RelayInternalTypes.DataID
 import sri.relay.tools.RelayTypes._
 
 import scala.scalajs.js
+import scala.scalajs.js.`|`
 import scala.scalajs.js.annotation.{JSName, ScalaJSDefined}
 
 object RelayTypes {
@@ -18,7 +21,24 @@ object RelayTypes {
   type Variables = js.Object
   type FileMap = js.Dictionary[js.Any]
   type MutationFragment = js.Any
+  type RelayMutationConfig = js.Array[FieldsChangeMutationConfig | RangeAddMutationConfig | NodeDeleteMutationConfig | RangeDeleteMutationConfig | RequiredChildrenMutationConfig]
 }
+
+@ScalaJSDefined
+class FieldsChangeMutationConfig(val `type`: String = "FIELDS_CHANGE", val fieldIDs: js.Dictionary[DataID | js.Array[DataID]]) extends js.Object
+
+@ScalaJSDefined
+class RangeAddMutationConfig(val `type`: String = "RANGE_ADD", val parentName: String, val parentID: String, val connectionName: String, val edgeName: String, val rangeBehaviors: js.Dictionary[String]) extends js.Object
+
+@ScalaJSDefined
+class NodeDeleteMutationConfig(val `type`: String = "NODE_DELETE", val parentName: String, val parentID: String, val connectionName: String, val deletedIDFieldName: String) extends js.Object
+
+@ScalaJSDefined
+class RangeDeleteMutationConfig(val `type`: String = "RANGE_DELETE", val parentName: String, val parentID: String, val connectionName: String, val deletedIDFieldName: String, val pathToConnection: js.Array[String]) extends js.Object
+
+@ScalaJSDefined
+class RequiredChildrenMutationConfig(val `type`: String = "REQUIRED_CHILDREN", val children: js.Array[RelayConcreteNode]) extends js.Object
+
 
 @js.native
 trait ComponentReadyState extends js.Object {

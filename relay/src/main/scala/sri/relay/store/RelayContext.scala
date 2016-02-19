@@ -9,7 +9,10 @@ import sri.relay.tools._
 import scala.scalajs.js
 
 @js.native
-trait RelayStore extends js.Object {
+trait RelayContext extends js.Object {
+
+
+  def getStoreData(): RelayStoreData = js.native
 
   /**
    * Primes the store by sending requests for any missing data that would be
@@ -46,15 +49,17 @@ trait RelayStore extends js.Object {
    */
   def observe(node: RelayQueryNode, dataID: DataID, options: js.UndefOr[StoreReaderOptions]): Observable[StoreReaderData] = js.native
 
+
   /**
-   * Reads and subscribes to query data anchored at the supplied data IDs. The
-   * returned observable emits updates as the data changes over time.
+   * Adds an update to the store without committing it. The returned
+   * RelayMutationTransaction can be committed or rolled back at a later time.
    */
-  def observeAll(node: RelayQueryNode, dataIDs: Seq[DataID], options: js.UndefOr[StoreReaderOptions]): MultiObservable[js.UndefOr[StoreReaderData]] = js.native
-
-  def update(mutation: RelayMutation, callbacks: js.UndefOr[RelayMutationTransactionCommitCallbacks] = js.undefined): Unit = js.native
-
   def applyUpdate(mutation: RelayMutation, callbacks: js.UndefOr[RelayMutationTransactionCommitCallbacks] = js.undefined): RelayMutationTransaction = js.native
 
+
+  /**
+   * Adds an update to the store and commits it immediately. Returns
+   * the RelayMutationTransaction.
+   */
   def commitUpdate(mutation: RelayMutation, callbacks: js.UndefOr[RelayMutationTransactionCommitCallbacks] = js.undefined): RelayMutationTransaction = js.native
 }

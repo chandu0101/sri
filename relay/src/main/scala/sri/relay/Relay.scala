@@ -5,7 +5,7 @@ import sri.relay.container.{RelayContainer, RelayContainerSpec, RelayPropTypes}
 import sri.relay.mutation.RelayMutation
 import sri.relay.network.NetworkLayer
 import sri.relay.route.RelayQueryConfig
-import sri.relay.store.RelayStore
+import sri.relay.store.RelayContext
 import sri.relay.tools.RelayInternalTypes.RelayQuerySet
 import sri.relay.tools.RelayTaskScheduler.TaskExecutor
 
@@ -26,7 +26,7 @@ object Relay extends js.Object {
   val Mutation: RelayMutation = js.native
   val PropTypes: RelayPropTypes = js.native
   val Route: RelayQueryConfig = js.native
-  val Store: RelayStore = js.native
+  val Store: RelayContext = js.native
 
   def createContainer[P <: RelayComponentProps, S](component: RelayTypedConstructor[P, S], spec: RelayContainerSpec): RelayContainer[P, S] = js.native
 
