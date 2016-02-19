@@ -3,6 +3,7 @@ package sri.mobile.components
 import chandu0101.macros.tojs.{rename, JSMacro}
 import sri.core.{ReactElement, React}
 import sri.mobile.ReactNative
+import sri.universal.ReactEvent
 import sri.universal.components.{ImageSource, EdgeInsets}
 
 import scala.scalajs.js
@@ -73,6 +74,8 @@ class MapViewAnnotationJS(val latitude: Double,
                         val detailCalloutView: js.UndefOr[ReactElement] = js.undefined,
                         val view: js.UndefOr[ReactElement] = js.undefined,
                         val draggable: js.UndefOr[Boolean] = js.undefined,
+                        val onFocus: js.UndefOr[js.Function1[ReactEvent,_]] = js.undefined,
+                        val onBlur: js.UndefOr[js.Function1[ReactEvent,_]] = js.undefined,
                         val onDragStateChange: js.UndefOr[js.Function1[js.Dynamic, _]] = js.undefined,
                         val image: js.UndefOr[js.Dynamic] = undefined
                          ) extends js.Object

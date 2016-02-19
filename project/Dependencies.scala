@@ -12,7 +12,7 @@ object Dependencies {
 
   val utestVersion = "0.3.0"
 
-  val scalaJSDOMVersion = "0.8.2"
+  val scalaJSDOMVersion = "0.9.0"
 
 
   val chandu0101MacrosVersion = "0.5.1"

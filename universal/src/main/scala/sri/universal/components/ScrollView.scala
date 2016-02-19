@@ -11,7 +11,7 @@ case class ScrollView(zoomScale: js.UndefOr[Int] = js.undefined,
                       contentContainerStyle: js.UndefOr[js.Any] = js.undefined,
                       contentInset: js.UndefOr[EdgeInsets] = js.undefined,
                       alwaysBounceVertical: js.UndefOr[Boolean] = js.undefined,
-                      decelerationRate: js.UndefOr[Int] = js.undefined,
+                      decelerationRate: js.UndefOr[Double] = js.undefined,
                       minimumZoomScale: js.UndefOr[Double] = js.undefined,
                       scrollsToTop: js.UndefOr[Boolean] = js.undefined,
                       keyboardDismissMode: js.UndefOr[keyboardDismissMode] = js.undefined,
@@ -28,6 +28,7 @@ case class ScrollView(zoomScale: js.UndefOr[Int] = js.undefined,
                       key: js.UndefOr[String] = js.undefined,
                       refreshControl: js.UndefOr[ReactElement] = js.undefined,
                       scrollEnabled: js.UndefOr[Boolean] = js.undefined,
+                      indicatorStyle: js.UndefOr[ScrollViewIndicatorStyle] = js.undefined,
                       bouncesZoom: js.UndefOr[Boolean] = js.undefined,
                       alwaysBounceHorizontal: js.UndefOr[Boolean] = js.undefined,
                       bounces: js.UndefOr[Boolean] = js.undefined,
@@ -44,7 +45,7 @@ case class ScrollView(zoomScale: js.UndefOr[Int] = js.undefined,
 
   def apply(children: ReactNode*): ReactElement = {
     val props = JSMacro[ScrollView](this)
-    React.createElement(ReactUniversal.ScrollView,props,children :_*)
+    React.createElement(ReactUniversal.ScrollView, props, children: _*)
   }
 }
 
@@ -59,9 +60,19 @@ object keyboardDismissMode {
   def newMode(mode: String) = new keyboardDismissMode(mode)
 }
 
+class ScrollViewIndicatorStyle private(val value: String) extends AnyVal
+
+object ScrollViewIndicatorStyle {
+
+  val DEFAULT = new ScrollViewIndicatorStyle("default")
+  val BLACK = new ScrollViewIndicatorStyle("black")
+  val WHITE = new ScrollViewIndicatorStyle("white")
+}
+
+
 @js.native
 trait ScrollViewM extends js.Object {
 
-  def scrollTo(destY: Double = 0, destX: Double = 0): Unit = js.native
+  def scrollTo(x: Double = 0, y: Double = 0, animated: Boolean = false): Unit = js.native
 }
      

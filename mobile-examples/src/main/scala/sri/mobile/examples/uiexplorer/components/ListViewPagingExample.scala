@@ -108,7 +108,7 @@ object ListViewPagingExample extends UIExample {
       scrollRenderAheadDistance = 2000
     )()
 
-    def renderRow(rowData: String, sectionID: String, rowID: String) = {
+    def renderRow(rowData: String, sectionID: String, rowID: String, highlightRow: Boolean) = {
       THUMB()
     }
 
@@ -208,18 +208,18 @@ object ListViewPagingExample extends UIExample {
           `type` = LayoutAnimation.Types.easeInEaseOut,
           property = LayoutAnimation.Properties.opacity
         ),
-          update = json(
+        update = json(
           `type` = LayoutAnimation.Types.spring,
           springDamping = 0.4
         )
       ),
-        easeInEaseOut = json(
+      easeInEaseOut = json(
         duration = 300,
         create = json(
           `type` = LayoutAnimation.Types.easeInEaseOut,
           property = LayoutAnimation.Properties.scaleXY
         ),
-          update = json(
+        update = json(
           delay = 100,
           `type` = LayoutAnimation.Types.easeInEaseOut
         )

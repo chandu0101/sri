@@ -133,6 +133,7 @@ trait ImageStyles {
   val backgroundColor = new NativeStyle[String]("backgroundColor")
   val borderColor = new NativeStyle[String]("borderColor")
   val tintColor = new NativeStyle[String]("tintColor")
+  val overlayColor = new NativeStyle[String]("overlayColor")
   val borderRadius = new NativeStyle[Double]("borderRadius")
   val opacity = new NativeStyle[Double]("opacity")
   val resizeMode = new NativeStyle[String]("resizeMode")

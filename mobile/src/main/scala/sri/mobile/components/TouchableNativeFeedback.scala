@@ -17,6 +17,9 @@ case class TouchableNativeFeedback(key: U[String] = undefined,
                                    delayPressOut: U[Int] = undefined,
                                    delayLongPress: U[Int] = undefined,
                                    accessible: U[Boolean] = undefined,
+                                   accessibilityLabel: U[String] = undefined,
+                                   accessibilityTraits: U[String] = undefined,
+                                   accessibilityComponentType: U[String] = undefined,
                                    background: U[NativeFeedbackBackgroundType] = undefined) {
 
   def apply(children: ReactNode) = {

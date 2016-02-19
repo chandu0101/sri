@@ -15,6 +15,7 @@ case class ViewPagerAndroid(key: U[String] = undefined,
                             initialPage: U[Int] = undefined,
                             onPageScroll: U[ReactEvent => _] = undefined,
                             onPageSelected: U[ReactEvent => _] = undefined,
+                            onPageScrollStateChanged: U[ReactEvent => _] = undefined,
                             keyboardDismissMode: U[KeyboardDismissModeViewPager] = undefined
                              ) {
 
