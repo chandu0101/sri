@@ -108,7 +108,7 @@ object ListViewPagingExample extends UIExample {
       scrollRenderAheadDistance = 2000
     )()
 
-    def renderRow(rowData: String, sectionID: String, rowID: String, highlightRow: Boolean) = {
+    def renderRow(rowData: String, sectionID: String, rowID: String, highlightRow: js.Function2[String,String,_]) = {
       THUMB()
     }
 

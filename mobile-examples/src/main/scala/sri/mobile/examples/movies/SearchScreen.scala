@@ -170,7 +170,7 @@ object SearchScreen {
     }
 
 
-    def renderRow(movie: js.Dynamic, sectionID: String, rowID: String, highlightRow: Boolean): ReactElement = {
+    def renderRow(movie: js.Dynamic, sectionID: String, rowID: String, highlightRow: js.Function2[String,String,_]): ReactElement = {
       MovieCell(movie = movie, key = movie.title.toString)
     }
 

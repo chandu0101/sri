@@ -125,7 +125,7 @@ object UIExplorerListScreen {
       setState(state.copy(datasource = ds.cloneWithRowsAndSections(json(componenets = filteredComponents, apis = filteredAPIS))))
     }
 
-    def renderRow(example: UIExample, sectionID: String, rowId: String,highlightRow : Boolean) = {
+    def renderRow(example: UIExample, sectionID: String, rowId: String,highlightRow : js.Function2[String,String,_]) = {
       println(s"rendering row $example")
       View(key = example.title)(
         TouchableHighlight(onPress = () => onPressRow(example))(
