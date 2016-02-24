@@ -31,7 +31,7 @@ object LayoutEventsExample extends UIExample {
           ),
           View(onLayout = onViewLayout _, style = styles.view(state.viewStyle.getOrElse(null)))(
             Image(onLayout = onImageLayout _, style = styles.image, source = ImageSource(uri = "https://fbcdn-dragon-a.akamaihd.net/hphotos-ak-prn1/t39.1997/p128x128/851561_767334496626293_1958532586_n.png"))(),
-            Text()(s"ViewLayout : ${JSON.stringify(state.viewLayout)} \n\n"),
+            Text()(s"ViewLayout : ${JSON.stringify(state.viewLayout.getOrElse(""))} \n\n"),
             Text(style = styles.text, onLayout = onTextLayout _)(s"A simple piece of text.${state.extraText}"),
             Text()(
               s"""
@@ -66,7 +66,7 @@ object LayoutEventsExample extends UIExample {
         println(s"layout animation done")
         setState(state.copy(extraText = " And a bunch more text to wrap around a few lines", containerStyle = styles.containerStyle))
       })
-      setState(state.copy(viewStyle = styles.dynamicView(if (state.viewStyle.getOrElse("margin", 0).asInstanceOf[Double] > 20) 20 else 60)))
+      setState(state.copy(viewStyle = styles.dynamicView(if (state.viewStyle.get.getOrElse("margin", 0).asInstanceOf[Double] > 20) 20 else 60)))
     }
   }
 
