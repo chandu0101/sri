@@ -22,10 +22,9 @@ object StarWarsShip {
     }
   }
 
+
   @ScalaJSDefined
-  trait Props extends RelayComponentProps {
-    val ship : js.Dynamic
-  }
+  class Props(val ship : js.Dynamic) extends RelayComponentProps
 
   val ctor = getRelayTypedConstructor(js.constructorOf[Component], classOf[Component])
 
@@ -33,8 +32,6 @@ object StarWarsShip {
     override val fragments = Fragments("ship" -> (() => js.eval(RelayQL( """fragment on Ship { name }"""))))
   })
 
-  def apply(shipi: js.Dynamic, key: U[String] = js.undefined, ref: js.Function1[Component, _] = null) = createRelayElement(container,new Props {
-    override val ship: js.Dynamic = shipi
-  })
+  def apply(ship: js.Dynamic, key: U[String] = js.undefined, ref: js.Function1[Component, _] = null) = createRelayElement(container,new Props(ship))
 
 }

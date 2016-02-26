@@ -7,7 +7,7 @@
     "url": ""
   },
   "scripts": {
-    "start": "webpack --watch & webpack-dev-server --progress --colors --port 8090&babel-node ./server.js",
+    "start": "webpack --watch & webpack-dev-server --progress --colors --port 8090",
     "gs": "babel-node ./server.js",
     "build": "webpack --config webpack.config.prod.js",
     "relayquery": "webpack --config webpack_relay.config.js"

@@ -31,6 +31,6 @@
     "history": "^2.0.0",
     "react": "^0.14.6",
     "react-dom": "^0.14.6",
-    "react-web": "^0.2.1"
+    "react-web": "^0.2.3"
   }
 }
