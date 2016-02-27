@@ -1,15 +1,15 @@
 # PureComponents
 
-`React makes use of a virtual DOM, which is a descriptor of a DOM subtree rendered in the browser. This parallel representation allows React to avoid creating DOM nodes and accessing existing ones, which is slower than operations on JavaScript objects. When a component's props or state change, React decides whether an actual DOM update is necessary by constructing a new virtual DOM and comparing it to the old one. Only in the case they are not equal, will React reconcile the DOM, applying as few mutations as possible.
+`React makes use of a virtual DOM, which is a descriptor of a DOM subtree rendered in the browser. This parallel representation allows React to avoid creating DOM nodes and accessing existing ones, which is slower than operations on JavaScript objects. When a component's props or state change, React decides whether an actual DOM update is necessary by constructing a new virtual DOM and comparing it to the old one. Only in the case they are not equal, will React reconcile the DOM, applying as few mutations as possible.`
 
-On top of this, React provides a component lifecycle function, shouldComponentUpdate, which is triggered before the re-rendering process starts (virtual DOM comparison and possible eventual DOM reconciliation), giving the developer the ability to short circuit this process.`
+`On top of this, React provides a component lifecycle function, shouldComponentUpdate, which is triggered before the re-rendering process starts (virtual DOM comparison and possible eventual DOM reconciliation), giving the developer the ability to short circuit this process.`
 
 Sri comes with few helper classes that already have `shouldComponentUpdate` implemented.
 
 
 ##### ReactComponentPureRef[P `<:` AnyRef,S `<:` AnyRef]
 
-Use this class when your component have immutable Props and State.It uses scala 'reference equality`(eq,ne) to check whether props/sate updated.
+Use this class when your component have immutable Props and State.It uses scala `reference equality`(eq,ne) to check whether props/sate updated.
 
 Example : 
 
@@ -27,7 +27,7 @@ class MyComponent extends ReactComponentPureRef[Props,State] {
 
 ##### ReactComponentPureRefP[P `<:` AnyRef]
 
-Use this class when your component have immutable Props but no State.It uses scala 'reference equality`(eq,ne) to check whether props are updated or not.
+Use this class when your component have immutable Props but no State.It uses scala `reference equality`(eq,ne) to check whether props are updated or not.
 
 Example :
 
@@ -43,7 +43,7 @@ class MyComponent extends ReactComponentPureRefP[Props] {
 
 ##### ReactComponentPureRefS[S `<:` AnyRef]
 
-Use this class when your component have immutable State but no Props.It uses scala 'reference equality`(eq,ne) to check whether state is updated or not.
+Use this class when your component have immutable State but no Props.It uses scala `reference equality`(eq,ne) to check whether state is updated or not.
 
 Example :
 
@@ -59,7 +59,7 @@ class MyComponent extends ReactComponentPureRefS[State] {
 
 ##### ReactComponentPureValue[P,S]
 
-Use this class when your component have value classes(Boolean,Int,Double ..) as Props and State.It uses scala 'value equality`(==,!=) to check whether props/sate updated.
+Use this class when your component have value classes(Boolean,Int,Double ..) as Props and State.It uses scala `value equality`(==,!=) to check whether props/sate updated.
 
 Example :
 
@@ -73,7 +73,7 @@ class MyComponent extends ReactComponentPureValue[Int,Boolean] {
 
 ##### ReactComponentPureValueP[P]
 
-Use this class when your component have value class(Boolean,Int,Double ..) as Props but no State.It uses scala 'value equality`(==,!=) to check whether props are updated or not.
+Use this class when your component have value class(Boolean,Int,Double ..) as Props but no State.It uses scala `value equality`(==,!=) to check whether props are updated or not.
 
 Example :
 
@@ -87,7 +87,7 @@ class MyComponent extends ReactComponentPureValueP[Int] {
 
 ##### ReactComponentPureValueS[S]
 
-Use this class when your component have value class(Boolean,Int,Double ..) as State but no Props.It uses scala 'value equality`(==,!=) to check whether state is updated or not.
+Use this class when your component have value class(Boolean,Int,Double ..) as State but no Props.It uses scala `value equality`(==,!=) to check whether state is updated or not.
 
 Example :
 

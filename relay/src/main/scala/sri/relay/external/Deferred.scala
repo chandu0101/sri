@@ -1,8 +1,8 @@
 package sri.relay.external
 
-import org.scalajs.dom.raw.Promise
 
 import scala.scalajs.js
+import scala.scalajs.js.Promise
 import scala.scalajs.js.annotation.JSName
 
 /**

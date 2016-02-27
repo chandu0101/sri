@@ -21,20 +21,20 @@ Sri (Scala React interface) is a scalajs library to build truly native cross pla
 Use this module to build iOS/Android mobile applications:
 
 ```scala
-libraryDependencies += "com.github.chandu0101.sri" %%% "mobile" % "0.3.0"
+libraryDependencies += "com.github.chandu0101.sri" %%% "mobile" % "0.4.0"
 ```
 
 #Web
 Use this module to build browser based applications:
 
 ```scala
-libraryDependencies += "com.github.chandu0101.sri" %%% "web" % "0.3.0"
+libraryDependencies += "com.github.chandu0101.sri" %%% "web" % "0.4.0"
 ```
 
 #Relay
 Use this module to add relay support to your applications:
 ```scala
-libraryDependencies += "com.github.chandu0101.sri" %%% "relay" % "0.3.0"
+libraryDependencies += "com.github.chandu0101.sri" %%% "relay" % "0.4.0"
 ```
 #Documentation
  - [Sri Internals](/docs/SriInternals.md)
@@ -53,6 +53,7 @@ libraryDependencies += "com.github.chandu0101.sri" %%% "relay" % "0.3.0"
   - [Mobile Examples](/mobile-examples)
   - [Web Examples](/web-examples)
   - [Relay Web Examples](/relay-web-examples)
+  - [Sangria-Graphql Example](https://github.com/chandu0101/sri-sangria-example)
   
 #Templates
   - [Mobile App(iOS and Android) Template](https://github.com/chandu0101/sri-mobile-template)

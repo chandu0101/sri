@@ -1,8 +1,8 @@
 package sri.relay.network
 
-import org.scalajs.dom.raw.Promise
 
 import scala.scalajs.js
+import scala.scalajs.js.Promise
 import scala.scalajs.js.annotation.{JSName, ScalaJSDefined}
 
 @js.native

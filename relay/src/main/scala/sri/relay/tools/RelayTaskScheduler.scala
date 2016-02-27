@@ -1,9 +1,10 @@
 package sri.relay.tools
 
-import org.scalajs.dom.raw.Promise
+
 import sri.relay.tools.RelayTaskScheduler.TaskExecutor
 
 import scala.scalajs.js
+import scala.scalajs.js.Promise
 
 object RelayTaskScheduler {
   type TaskCallback = () => Unit
