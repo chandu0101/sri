@@ -23,7 +23,6 @@ object WebRouter {
     @ScalaJSDefined
     class Component extends ReactComponent[RouterState, Unit] {
       def render() = {
-        println(s"rendering mobile context : $props")
         props.location != null ?= props.ctrl.config.renderScene(RouteUtils.getRoute(props.location, props.ctrl))
       }
 
@@ -53,18 +52,15 @@ object WebRouter {
       val ctrl = new WebRouterCtrl(history, props.config)
       initialState(RouterState(ctrl, null))
       unlistenBefore = history.listenBefore((location: Location) => {
-        dom.window.console.log(s"before location changed : ", location)
         if (props.config.interceptTransition == null) true else props.config.interceptTransition(RouteUtils.getRoute(location, ctrl))
       })
       unlisten = history.listen((loc: Location) => {
-        dom.window.console.log(s"on location changed : ", loc)
         setState(state.copy(location = loc))
       })
 
     }
 
     override def render(): ReactElement = {
-      println(s"rendering root $state")
       WebRouterContext(state)
     }
 
