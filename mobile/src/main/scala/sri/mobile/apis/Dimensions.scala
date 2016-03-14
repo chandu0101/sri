@@ -7,6 +7,8 @@ import scala.scalajs.js.annotation.ScalaJSDefined
 trait Dimensions extends js.Object{
 
   def get(in : String) : js.Dynamic = js.native
+
+  def set(dims : js.Dictionary[js.Any]) : Boolean = js.native
 }
 
 

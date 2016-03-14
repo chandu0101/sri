@@ -23,6 +23,7 @@ object StarWarsShip {
       View()(Text()(ship.name.toString))
     }
   }
+
   @ScalaJSDefined
   trait Props extends RelayComponentProps {
     val ship : js.Dynamic

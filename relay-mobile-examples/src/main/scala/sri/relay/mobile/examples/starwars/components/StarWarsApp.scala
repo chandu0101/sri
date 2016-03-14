@@ -17,6 +17,7 @@ object StarWarsApp {
   @ScalaJSDefined
   class Component extends RelayComponent[Props, Unit] {
     def render() = {
+      println(s"rendering app $props")
       val factions = props.factions.asInstanceOf[js.Array[js.Dynamic]]
       View()(
         factions.map(faction => View()(
@@ -29,6 +30,7 @@ object StarWarsApp {
     }
 
   }
+
 
   @ScalaJSDefined
   trait  Props extends RelayComponentProps {

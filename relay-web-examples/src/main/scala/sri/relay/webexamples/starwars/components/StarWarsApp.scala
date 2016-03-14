@@ -29,6 +29,7 @@ object StarWarsApp {
     }
   }
 
+
   @ScalaJSDefined
   trait  Props extends RelayComponentProps {
     val factions : js.Dynamic

@@ -2,6 +2,7 @@ package sri.universal
 
 import sri.core.ReactClass
 import sri.universal.apis.{AsyncStorageJS, PixelRatio, ReactPlatForm}
+import sri.universal.navigation.NavigationExperimental
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSName
@@ -25,6 +26,9 @@ trait ReactUniversal extends js.Object {
   val Modal: ReactClass = js.native
   val Switch: ReactClass = js.native
   val RefreshControl: ReactClass = js.native
+
+
+  val NavigationExperimental: NavigationExperimental = js.native
 
 
 

@@ -24,6 +24,12 @@ package object core {
     def ?=(elm: => ReactNode): ReactElement = if (value) elm.asInstanceOf[ReactElement] else null
   }
 
+  implicit class UndefOr_Ext_Methods(val value: js.UndefOr[_]) extends AnyVal {
+    def isUndefinedOrNull: Boolean = value.isEmpty || value == null
+
+    def isDefinedAndNotNull: Boolean = value.isDefined && value != null
+  }
+
   implicit class String_Ext_Methods(val value: String) extends AnyVal {
 
     def removeForwardSlashes = if (value != null) value.replaceAll("/", "") else value
@@ -35,6 +41,7 @@ package object core {
     @inline def load[T](lib: String): T = g.require(lib).asInstanceOf[T]
 
     @inline def loadDynamic(lib: String): js.Dynamic = load[js.Dynamic](lib)
+
   }
 
   object all extends CoreAll

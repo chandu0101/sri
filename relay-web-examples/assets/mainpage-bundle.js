@@ -27738,13 +27738,13 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _ReactListViewDataSource = __webpack_require__(254);
-
-	var _ReactListViewDataSource2 = _interopRequireDefault(_ReactListViewDataSource);
-
 	var _reactDom = __webpack_require__(170);
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
+
+	var _ReactListViewDataSource = __webpack_require__(254);
+
+	var _ReactListViewDataSource2 = _interopRequireDefault(_ReactListViewDataSource);
 
 	var _ReactScrollView = __webpack_require__(256);
 
@@ -27766,16 +27766,60 @@
 
 	var _objectAssign2 = _interopRequireDefault(_objectAssign);
 
-	var _ReactGetLayout = __webpack_require__(171);
-
-	var _ReactGetLayout2 = _interopRequireDefault(_ReactGetLayout);
-
 	var DEFAULT_PAGE_SIZE = 1;
 	var DEFAULT_INITIAL_ROWS = 10;
 	var DEFAULT_SCROLL_RENDER_AHEAD = 1000;
 	var DEFAULT_END_REACHED_THRESHOLD = 1000;
 	var DEFAULT_SCROLL_CALLBACK_THROTTLE = 50;
 	var SCROLLVIEW_REF = 'listviewscroll';
+
+	/**
+	 * ListView - A core component designed for efficient display of vertically
+	 * scrolling lists of changing data.  The minimal API is to create a
+	 * `ListView.DataSource`, populate it with a simple array of data blobs, and
+	 * instantiate a `ListView` component with that data source and a `renderRow`
+	 * callback which takes a blob from the data array and returns a renderable
+	 * component.
+	 *
+	 * Minimal example:
+	 *
+	 * ```
+	 * getInitialState: function() {
+	 *   var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+	 *   return {
+	 *     dataSource: ds.cloneWithRows(['row 1', 'row 2']),
+	 *   };
+	 * },
+	 *
+	 * render: function() {
+	 *   return (
+	 *     <ListView
+	 *       dataSource={this.state.dataSource}
+	 *       renderRow={(rowData) => <Text>{rowData}</Text>}
+	 *     />
+	 *   );
+	 * },
+	 * ```
+	 *
+	 * ListView also supports more advanced features, including sections with sticky
+	 * section headers, header and footer support, callbacks on reaching the end of
+	 * the available data (`onEndReached`) and on the set of rows that are visible
+	 * in the device viewport change (`onChangeVisibleRows`), and several
+	 * performance optimizations.
+	 *
+	 * There are a few performance operations designed to make ListView scroll
+	 * smoothly while dynamically loading potentially very large (or conceptually
+	 * infinite) data sets:
+	 *
+	 *  * Only re-render changed rows - the rowHasChanged function provided to the
+	 *    data source tells the ListView if it needs to re-render a row because the
+	 *    source data has changed - see ListViewDataSource for more details.
+	 *
+	 *  * Rate-limited row rendering - By default, only one row is rendered per
+	 *    event-loop (customizable with the `pageSize` prop).  This breaks up the
+	 *    work into smaller chunks to reduce the chance of dropping frames while
+	 *    rendering rows.
+	 */
 
 	var ListView = _react2['default'].createClass({
 	  displayName: 'ListView',
@@ -27798,6 +27842,7 @@
 	    dataSource: _react.PropTypes.instanceOf(_ReactListViewDataSource2['default']).isRequired,
 	    /**
 	     * (sectionID, rowID, adjacentRowHighlighted) => renderable
+	     *
 	     * If provided, a renderable component to be rendered as the separator
 	     * below each row but not the last row if there is a section header below.
 	     * Take a sectionID and rowID of the row above and whether its adjacent row
@@ -27806,6 +27851,7 @@
 	    renderSeparator: _react.PropTypes.func,
 	    /**
 	     * (rowData, sectionID, rowID, highlightRow) => renderable
+	     *
 	     * Takes a data entry from the data source and its ids and should return
 	     * a renderable component to be rendered as the row.  By default the data
 	     * is exactly what was put into the data source, but it's also possible to
@@ -27817,7 +27863,7 @@
 	    renderRow: _react.PropTypes.func.isRequired,
 	    /**
 	     * How many rows to render on initial component mount.  Use this to make
-	     * it so that the first screen worth of data apears at one time instead of
+	     * it so that the first screen worth of data appears at one time instead of
 	     * over the course of multiple frames.
 	     */
 	    initialListSize: _react.PropTypes.number,
@@ -27828,11 +27874,15 @@
 	     */
 	    onEndReached: _react.PropTypes.func,
 	    /**
-	     * Threshold in pixels for onEndReached.
+	     * Threshold in pixels (virtual, not physical) for calling onEndReached.
 	     */
 	    onEndReachedThreshold: _react.PropTypes.number,
 	    /**
-	     * Number of rows to render per event loop.
+	     * Number of rows to render per event loop. Note: if your 'rows' are actually
+	     * cells, i.e. they don't span the full width of your view (as in the
+	     * ListViewGridLayoutExample), you should set the pageSize to be a multiple
+	     * of the number of cells per row, otherwise you're likely to see gaps at
+	     * the edge of the ListView as new pages are loaded.
 	     */
 	    pageSize: _react.PropTypes.number,
 	    /**
@@ -27878,19 +27928,51 @@
 	     */
 	    onChangeVisibleRows: _react2['default'].PropTypes.func,
 	    /**
-	     * An experimental performance optimization for improving scroll perf of
+	     * A performance optimization for improving scroll perf of
 	     * large lists, used in conjunction with overflow: 'hidden' on the row
-	     * containers.  Use at your own risk.
+	     * containers.  This is enabled by default.
 	     */
-	    removeClippedSubviews: _react2['default'].PropTypes.bool
+	    removeClippedSubviews: _react2['default'].PropTypes.bool,
+	    /**
+	     * An array of child indices determining which children get docked to the
+	     * top of the screen when scrolling. For example, passing
+	     * `stickyHeaderIndices={[0]}` will cause the first child to be fixed to the
+	     * top of the scroll view. This property is not supported in conjunction
+	     * with `horizontal={true}`.
+	     * @platform ios
+	     */
+	    stickyHeaderIndices: _react.PropTypes.arrayOf(_react.PropTypes.number)
 	  }),
 
 	  /**
-	   * Provides a handle to the underlying scroll responder to support operations
-	   * such as scrollTo.
+	   * Exports some data, e.g. for perf investigations or analytics.
+	   */
+	  getMetrics: function getMetrics() {
+	    return {
+	      contentLength: this.scrollProperties.contentLength,
+	      totalRows: this.props.dataSource.getRowCount(),
+	      renderedRows: this.state.curRenderedRowsCount,
+	      visibleRows: Object.keys(this._visibleRows).length
+	    };
+	  },
+
+	  /**
+	   * Provides a handle to the underlying scroll responder.
+	   * Note that the view in `SCROLLVIEW_REF` may not be a `ScrollView`, so we
+	   * need to check that it responds to `getScrollResponder` before calling it.
 	   */
 	  getScrollResponder: function getScrollResponder() {
 	    return this.refs[SCROLLVIEW_REF] && this.refs[SCROLLVIEW_REF].getScrollResponder && this.refs[SCROLLVIEW_REF].getScrollResponder();
+	  },
+
+	  scrollTo: function scrollTo() {
+	    var _refs$SCROLLVIEW_REF;
+
+	    this.refs[SCROLLVIEW_REF] && this.refs[SCROLLVIEW_REF].scrollTo && (_refs$SCROLLVIEW_REF = this.refs[SCROLLVIEW_REF]).scrollTo.apply(_refs$SCROLLVIEW_REF, arguments);
+	  },
+
+	  setNativeProps: function setNativeProps(props) {
+	    this.refs[SCROLLVIEW_REF] && this.refs[SCROLLVIEW_REF].setNativeProps(props);
 	  },
 
 	  /**
@@ -27905,16 +27987,20 @@
 	        return _react2['default'].createElement(_ReactScrollView2['default'], props);
 	      },
 	      scrollRenderAheadDistance: DEFAULT_SCROLL_RENDER_AHEAD,
-	      onEndReachedThreshold: DEFAULT_END_REACHED_THRESHOLD
+	      onEndReachedThreshold: DEFAULT_END_REACHED_THRESHOLD,
+	      stickyHeaderIndices: []
 	    };
 	  },
 
 	  getInitialState: function getInitialState() {
 	    return {
 	      curRenderedRowsCount: this.props.initialListSize,
-	      prevRenderedRowsCount: 0,
 	      highlightedRow: {}
 	    };
+	  },
+
+	  getInnerViewNode: function getInnerViewNode() {
+	    return this.refs[SCROLLVIEW_REF].getInnerViewNode();
 	  },
 
 	  componentWillMount: function componentWillMount() {
@@ -27926,6 +28012,8 @@
 	    };
 	    this._childFrames = [];
 	    this._visibleRows = {};
+	    this._prevRenderedRowsCount = 0;
+	    this._sentEndForContentLength = null;
 	  },
 
 	  componentDidMount: function componentDidMount() {
@@ -27939,22 +28027,25 @@
 	  },
 
 	  componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
-	    if (this.props.dataSource !== nextProps.dataSource) {
+	    var _this2 = this;
+
+	    if (this.props.dataSource !== nextProps.dataSource || this.props.initialListSize !== nextProps.initialListSize) {
 	      this.setState(function (state, props) {
-	        var rowsToRender = Math.min(state.curRenderedRowsCount + props.pageSize, props.dataSource.getRowCount());
+	        _this2._prevRenderedRowsCount = 0;
 	        return {
-	          prevRenderedRowsCount: 0,
-	          curRenderedRowsCount: rowsToRender
+	          curRenderedRowsCount: Math.min(Math.max(state.curRenderedRowsCount, props.initialListSize), props.dataSource.getRowCount())
 	        };
+	      }, function () {
+	        return _this2._renderMoreRowsIfNeeded();
 	      });
 	    }
 	  },
 
 	  componentDidUpdate: function componentDidUpdate() {
-	    var _this2 = this;
+	    var _this3 = this;
 
 	    this.requestAnimationFrame(function () {
-	      _this2._measureAndUpdateScrollProps();
+	      _this3._measureAndUpdateScrollProps();
 	    });
 	  },
 
@@ -27982,7 +28073,7 @@
 	      }
 
 	      if (this.props.renderSectionHeader) {
-	        var shouldUpdateHeader = rowCount >= this.state.prevRenderedRowsCount && dataSource.sectionHeaderShouldUpdate(sectionIdx);
+	        var shouldUpdateHeader = rowCount >= this._prevRenderedRowsCount && dataSource.sectionHeaderShouldUpdate(sectionIdx);
 	        bodyComponents.push(_react2['default'].createElement(_ReactStaticRenderer2['default'], {
 	          key: 's_' + sectionID,
 	          shouldUpdate: !!shouldUpdateHeader,
@@ -27993,8 +28084,8 @@
 
 	      for (var rowIdx = 0; rowIdx < rowIDs.length; rowIdx++) {
 	        var rowID = rowIDs[rowIdx];
-	        var comboID = sectionID + rowID;
-	        var shouldUpdateRow = rowCount >= this.state.prevRenderedRowsCount && dataSource.rowShouldUpdate(sectionIdx, rowIdx);
+	        var comboID = sectionID + '_' + rowID;
+	        var shouldUpdateRow = rowCount >= this._prevRenderedRowsCount && dataSource.rowShouldUpdate(sectionIdx, rowIdx);
 	        var row = _react2['default'].createElement(_ReactStaticRenderer2['default'], {
 	          key: 'r_' + comboID,
 	          shouldUpdate: !!shouldUpdateRow,
@@ -28006,8 +28097,10 @@
 	        if (this.props.renderSeparator && (rowIdx !== rowIDs.length - 1 || sectionIdx === allRowIDs.length - 1)) {
 	          var adjacentRowHighlighted = this.state.highlightedRow.sectionID === sectionID && (this.state.highlightedRow.rowID === rowID || this.state.highlightedRow.rowID === rowIDs[rowIdx + 1]);
 	          var separator = this.props.renderSeparator(sectionID, rowID, adjacentRowHighlighted);
-	          bodyComponents.push(separator);
-	          totalIndex++;
+	          if (separator) {
+	            bodyComponents.push(separator);
+	            totalIndex++;
+	          }
 	        }
 	        if (++rowCount === this.state.curRenderedRowsCount) {
 	          break;
@@ -28026,13 +28119,12 @@
 	    if (!props.scrollEventThrottle) {
 	      props.scrollEventThrottle = DEFAULT_SCROLL_CALLBACK_THROTTLE;
 	    }
-
+	    if (props.removeClippedSubviews === undefined) {
+	      props.removeClippedSubviews = true;
+	    }
 	    (0, _objectAssign2['default'])(props, {
 	      onScroll: this._onScroll,
-
-	      onMoveShouldSetResponderCapture: this.scrollResponderHandleMoveShouldSetResponderCapture,
-
-	      stickyHeaderIndices: sectionHeaderIndices,
+	      stickyHeaderIndices: this.props.stickyHeaderIndices.concat(sectionHeaderIndices),
 
 	      // Do not pass these events downstream to ScrollView since they will be
 	      // registered in ListView's own ScrollResponder.Mixin
@@ -28045,7 +28137,9 @@
 	    // TODO(ide): Use function refs so we can compose with the scroll
 	    // component's original ref instead of clobbering it
 	    return _react2['default'].cloneElement(renderScrollComponent(props), {
-	      ref: SCROLLVIEW_REF
+	      ref: SCROLLVIEW_REF,
+	      onContentSizeChange: this._onContentSizeChange,
+	      onLayout: this._onLayout
 	    }, header, bodyComponents, footer);
 	  },
 
@@ -28059,21 +28153,37 @@
 	      return;
 	    }
 
-	    // TODO: get layout maybe couse performance problem
-	    var innerLayout = (0, _ReactGetLayout2['default'])(_reactDom2['default'].findDOMNode(scrollComponent.getInnerViewNode()));
-	    this._setScrollContentLength(innerLayout.x, innerLayout.y, innerLayout.width, innerLayout.height);
-
-	    var layout = (0, _ReactGetLayout2['default'])(_reactDom2['default'].findDOMNode(scrollComponent));
-	    this._setScrollVisibleLength(layout.x, layout.y, layout.width, layout.height);
+	    // RCTScrollViewManager.calculateChildFrames is not available on
+	    // every platform
+	    // RCTScrollViewManager && RCTScrollViewManager.calculateChildFrames &&
+	    //   RCTScrollViewManager.calculateChildFrames(
+	    //     React.findNodeHandle(scrollComponent),
+	    //     this._updateVisibleRows,
+	    //   );
 	  },
 
-	  _setScrollContentLength: function _setScrollContentLength(left, top, width, height) {
-	    this.scrollProperties.contentLength = !this.props.horizontal ? height : width;
+	  _onContentSizeChange: function _onContentSizeChange(width, height) {
+	    var contentLength = !this.props.horizontal ? height : width;
+	    if (contentLength !== this.scrollProperties.contentLength) {
+	      this.scrollProperties.contentLength = contentLength;
+	      this._updateVisibleRows();
+	      this._renderMoreRowsIfNeeded();
+	    }
+	    this.props.onContentSizeChange && this.props.onContentSizeChange(width, height);
 	  },
 
-	  _setScrollVisibleLength: function _setScrollVisibleLength(left, top, width, height) {
-	    this.scrollProperties.visibleLength = !this.props.horizontal ? height : width;
-	    this._renderMoreRowsIfNeeded();
+	  _onLayout: function _onLayout(event) {
+	    var _event$nativeEvent$layout = event.nativeEvent.layout;
+	    var width = _event$nativeEvent$layout.width;
+	    var height = _event$nativeEvent$layout.height;
+
+	    var visibleLength = !this.props.horizontal ? height : width;
+	    if (visibleLength !== this.scrollProperties.visibleLength) {
+	      this.scrollProperties.visibleLength = visibleLength;
+	      this._updateVisibleRows();
+	      this._renderMoreRowsIfNeeded();
+	    }
+	    this.props.onLayout && this.props.onLayout(event);
 	  },
 
 	  _maybeCallOnEndReached: function _maybeCallOnEndReached(event) {
@@ -28098,21 +28208,17 @@
 	  },
 
 	  _pageInNewRows: function _pageInNewRows() {
-	    var _this3 = this;
+	    var _this4 = this;
 
 	    this.setState(function (state, props) {
 	      var rowsToRender = Math.min(state.curRenderedRowsCount + props.pageSize, props.dataSource.getRowCount());
+	      _this4._prevRenderedRowsCount = state.curRenderedRowsCount;
 	      return {
-	        prevRenderedRowsCount: state.curRenderedRowsCount,
 	        curRenderedRowsCount: rowsToRender
 	      };
 	    }, function () {
-	      _this3._measureAndUpdateScrollProps();
-	      _this3.setState(function (state) {
-	        return {
-	          prevRenderedRowsCount: state.curRenderedRowsCount
-	        };
-	      });
+	      _this4._measureAndUpdateScrollProps();
+	      _this4._prevRenderedRowsCount = _this4.state.curRenderedRowsCount;
 	    });
 	  },
 
@@ -28120,87 +28226,99 @@
 	    return scrollProperties.contentLength - scrollProperties.visibleLength - scrollProperties.offset;
 	  },
 
-	  // _updateVisibleRows: function(updatedFrames) {
-	  //   if (!this.props.onChangeVisibleRows) {
-	  //     return; // No need to compute visible rows if there is no callback
-	  //   }
-	  //   if (updatedFrames) {
-	  //     updatedFrames.forEach((newFrame) => {
-	  //       this._childFrames[newFrame.index] = merge(newFrame);
-	  //     });
-	  //   }
-	  //   var isVertical = !this.props.horizontal;
-	  //   var dataSource = this.props.dataSource;
-	  //   var visibleMin = this.scrollProperties.offset;
-	  //   var visibleMax = visibleMin + this.scrollProperties.visibleLength;
-	  //   var allRowIDs = dataSource.rowIdentities;
-	  //
-	  //   var header = this.props.renderHeader && this.props.renderHeader();
-	  //   var totalIndex = header ? 1 : 0;
-	  //   var visibilityChanged = false;
-	  //   var changedRows = {};
-	  //   for (var sectionIdx = 0; sectionIdx < allRowIDs.length; sectionIdx++) {
-	  //     var rowIDs = allRowIDs[sectionIdx];
-	  //     if (rowIDs.length === 0) {
-	  //       continue;
-	  //     }
-	  //     var sectionID = dataSource.sectionIdentities[sectionIdx];
-	  //     if (this.props.renderSectionHeader) {
-	  //       totalIndex++;
-	  //     }
-	  //     var visibleSection = this._visibleRows[sectionID];
-	  //     if (!visibleSection) {
-	  //       visibleSection = {};
-	  //     }
-	  //     for (var rowIdx = 0; rowIdx < rowIDs.length; rowIdx++) {
-	  //       var rowID = rowIDs[rowIdx];
-	  //       var frame = this._childFrames[totalIndex];
-	  //       totalIndex++;
-	  //       if (!frame) {
-	  //         break;
-	  //       }
-	  //       var rowVisible = visibleSection[rowID];
-	  //       var min = isVertical ? frame.y : frame.x;
-	  //       var max = min + (isVertical ? frame.height : frame.width);
-	  //       if (min > visibleMax || max < visibleMin) {
-	  //         if (rowVisible) {
-	  //           visibilityChanged = true;
-	  //           delete visibleSection[rowID];
-	  //           if (!changedRows[sectionID]) {
-	  //             changedRows[sectionID] = {};
-	  //           }
-	  //           changedRows[sectionID][rowID] = false;
-	  //         }
-	  //       } else if (!rowVisible) {
-	  //         visibilityChanged = true;
-	  //         visibleSection[rowID] = true;
-	  //         if (!changedRows[sectionID]) {
-	  //           changedRows[sectionID] = {};
-	  //         }
-	  //         changedRows[sectionID][rowID] = true;
-	  //       }
-	  //     }
-	  //     if (!isEmpty(visibleSection)) {
-	  //       this._visibleRows[sectionID] = visibleSection;
-	  //     } else if (this._visibleRows[sectionID]) {
-	  //       delete this._visibleRows[sectionID];
-	  //     }
-	  //   }
-	  //   visibilityChanged && this.props.onChangeVisibleRows(this._visibleRows, changedRows);
-	  // },
+	  _updateVisibleRows: function _updateVisibleRows(updatedFrames) {
+	    // if (!this.props.onChangeVisibleRows) {
+	    //   return; // No need to compute visible rows if there is no callback
+	    // }
+	    // if (updatedFrames) {
+	    //   updatedFrames.forEach((newFrame) => {
+	    //     this._childFrames[newFrame.index] = merge(newFrame);
+	    //   });
+	    // }
+	    // var isVertical = !this.props.horizontal;
+	    // var dataSource = this.props.dataSource;
+	    // var visibleMin = this.scrollProperties.offset;
+	    // var visibleMax = visibleMin + this.scrollProperties.visibleLength;
+	    // var allRowIDs = dataSource.rowIdentities;
+	    //
+	    // var header = this.props.renderHeader && this.props.renderHeader();
+	    // var totalIndex = header ? 1 : 0;
+	    // var visibilityChanged = false;
+	    // var changedRows = {};
+	    // for (var sectionIdx = 0; sectionIdx < allRowIDs.length; sectionIdx++) {
+	    //   var rowIDs = allRowIDs[sectionIdx];
+	    //   if (rowIDs.length === 0) {
+	    //     continue;
+	    //   }
+	    //   var sectionID = dataSource.sectionIdentities[sectionIdx];
+	    //   if (this.props.renderSectionHeader) {
+	    //     totalIndex++;
+	    //   }
+	    //   var visibleSection = this._visibleRows[sectionID];
+	    //   if (!visibleSection) {
+	    //     visibleSection = {};
+	    //   }
+	    //   for (var rowIdx = 0; rowIdx < rowIDs.length; rowIdx++) {
+	    //     var rowID = rowIDs[rowIdx];
+	    //     var frame = this._childFrames[totalIndex];
+	    //     totalIndex++;
+	    //     if (!frame) {
+	    //       break;
+	    //     }
+	    //     var rowVisible = visibleSection[rowID];
+	    //     var min = isVertical ? frame.y : frame.x;
+	    //     var max = min + (isVertical ? frame.height : frame.width);
+	    //     if (min > visibleMax || max < visibleMin) {
+	    //       if (rowVisible) {
+	    //         visibilityChanged = true;
+	    //         delete visibleSection[rowID];
+	    //         if (!changedRows[sectionID]) {
+	    //           changedRows[sectionID] = {};
+	    //         }
+	    //         changedRows[sectionID][rowID] = false;
+	    //       }
+	    //     } else if (!rowVisible) {
+	    //       visibilityChanged = true;
+	    //       visibleSection[rowID] = true;
+	    //       if (!changedRows[sectionID]) {
+	    //         changedRows[sectionID] = {};
+	    //       }
+	    //       changedRows[sectionID][rowID] = true;
+	    //     }
+	    //   }
+	    //   if (!isEmpty(visibleSection)) {
+	    //     this._visibleRows[sectionID] = visibleSection;
+	    //   } else if (this._visibleRows[sectionID]) {
+	    //     delete this._visibleRows[sectionID];
+	    //   }
+	    // }
+	    // visibilityChanged && this.props.onChangeVisibleRows(this._visibleRows, changedRows);
+	  },
 
 	  _onScroll: function _onScroll(e) {
 	    var isVertical = !this.props.horizontal;
+	    // this.scrollProperties.visibleLength = e.nativeEvent.layoutMeasurement[
+	    //   isVertical ? 'height' : 'width'
+	    // ];
+	    // this.scrollProperties.contentLength = e.nativeEvent.contentSize[
+	    //   isVertical ? 'height' : 'width'
+	    // ];
+	    // this.scrollProperties.offset = e.nativeEvent.contentOffset[
+	    //   isVertical ? 'y' : 'x'
+	    // ];
 
 	    var target = _reactDom2['default'].findDOMNode(this.refs[SCROLLVIEW_REF]);
-
 	    this.scrollProperties.visibleLength = target[isVertical ? 'offsetHeight' : 'offsetWidth'];
 	    this.scrollProperties.contentLength = target[isVertical ? 'scrollHeight' : 'scrollWidth'];
 	    this.scrollProperties.offset = target[isVertical ? 'scrollTop' : 'scrollTop'];
-
 	    // this._updateVisibleRows(e.nativeEvent.updatedChildFrames);
 	    if (!this._maybeCallOnEndReached(e)) {
 	      this._renderMoreRowsIfNeeded();
+	    }
+
+	    if (this.props.onEndReached && this._getDistanceFromEnd(this.scrollProperties) > this.props.onEndReachedThreshold) {
+	      // Scrolled out of the end zone, so it should be able to trigger again.
+	      this._sentEndForContentLength = null;
 	    }
 
 	    this.props.onScroll && this.props.onScroll(e);
@@ -30721,6 +30839,10 @@
 	      } else {
 	        history.go(n);
 	      }
+	      return;
+	    }
+	    if (n < 0) {
+	      __uid += n;
 	    }
 	  },
 
@@ -45939,7 +46061,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -45956,7 +46078,7 @@
 	var _extends = __webpack_require__(338)['default'];
 
 	var RelayDefaultNetworkLayer = __webpack_require__(354);
-	var RelayPublic = __webpack_require__(373);
+	var RelayPublic = __webpack_require__(374);
 
 	// By default, assume that GraphQL is served at `/graphql` on the same domain.
 	// $FlowFixMe(>=0.16.0)
@@ -46235,7 +46357,7 @@
 	var Promise = __webpack_require__(356);
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -46250,7 +46372,7 @@
 	'use strict';
 
 	var fetch = __webpack_require__(366);
-	var fetchWithRetries = __webpack_require__(368);
+	var fetchWithRetries = __webpack_require__(369);
 
 	var RelayDefaultNetworkLayer = (function () {
 	  // InitWithRetries
@@ -46437,18 +46559,17 @@
 /* 356 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
 	 * LICENSE file in the root directory of this source tree. An additional grant
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 *
-	 * @providesModule Promise
 	 */
-
-	'use strict';
 
 	module.exports = __webpack_require__(357);
 
@@ -47128,27 +47249,46 @@
 /* 366 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	/* WEBPACK VAR INJECTION */(function(global) {/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
 	 * LICENSE file in the root directory of this source tree. An additional grant
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 *
-	 * @providesModule fetch
 	 */
 
 	'use strict';
 
-	__webpack_require__(367);
-	module.exports = self.fetch.bind(self);
+	// This hopefully supports the React Native case, which is already bringing along
+	// its own fetch polyfill. That should exist on `global`. If that doesn't exist
+	// then we'll try to polyfill, which might not work correctly in all environments.
+
+	if (global.fetch) {
+	  module.exports = global.fetch.bind(global);
+	} else {
+	  module.exports = __webpack_require__(367);
+	}
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
 /* 367 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// the whatwg-fetch polyfill installs the fetch() function
+	// on the global object (window or self)
+	//
+	// Return that as the export for use in Webpack, Browserify etc.
+	__webpack_require__(368);
+	module.exports = self.fetch.bind(self);
+
+
+/***/ },
+/* 368 */
 /***/ function(module, exports) {
 
-	(function() {
+	(function(self) {
 	  'use strict';
 
 	  if (self.fetch) {
@@ -47157,7 +47297,7 @@
 
 	  function normalizeName(name) {
 	    if (typeof name !== 'string') {
-	      name = name.toString();
+	      name = String(name)
 	    }
 	    if (/[^a-z0-9\-#$%&'*+.\^_`|~]/i.test(name)) {
 	      throw new TypeError('Invalid character in header field name')
@@ -47167,7 +47307,7 @@
 
 	  function normalizeValue(value) {
 	    if (typeof value !== 'string') {
-	      value = value.toString();
+	      value = String(value)
 	    }
 	    return value
 	  }
@@ -47266,7 +47406,8 @@
 	        return false
 	      }
 	    })(),
-	    formData: 'FormData' in self
+	    formData: 'FormData' in self,
+	    arrayBuffer: 'ArrayBuffer' in self
 	  }
 
 	  function Body() {
@@ -47283,8 +47424,19 @@
 	        this._bodyFormData = body
 	      } else if (!body) {
 	        this._bodyText = ''
+	      } else if (support.arrayBuffer && ArrayBuffer.prototype.isPrototypeOf(body)) {
+	        // Only support ArrayBuffers for POST method.
+	        // Receiving ArrayBuffers happens via Blobs, instead.
 	      } else {
 	        throw new Error('unsupported BodyInit type')
+	      }
+
+	      if (!this.headers.get('content-type')) {
+	        if (typeof body === 'string') {
+	          this.headers.set('content-type', 'text/plain;charset=UTF-8')
+	        } else if (this._bodyBlob && this._bodyBlob.type) {
+	          this.headers.set('content-type', this._bodyBlob.type)
+	        }
 	      }
 	    }
 
@@ -47350,20 +47502,44 @@
 	    return (methods.indexOf(upcased) > -1) ? upcased : method
 	  }
 
-	  function Request(url, options) {
+	  function Request(input, options) {
 	    options = options || {}
-	    this.url = url
+	    var body = options.body
+	    if (Request.prototype.isPrototypeOf(input)) {
+	      if (input.bodyUsed) {
+	        throw new TypeError('Already read')
+	      }
+	      this.url = input.url
+	      this.credentials = input.credentials
+	      if (!options.headers) {
+	        this.headers = new Headers(input.headers)
+	      }
+	      this.method = input.method
+	      this.mode = input.mode
+	      if (!body) {
+	        body = input._bodyInit
+	        input.bodyUsed = true
+	      }
+	    } else {
+	      this.url = input
+	    }
 
-	    this.credentials = options.credentials || 'omit'
-	    this.headers = new Headers(options.headers)
-	    this.method = normalizeMethod(options.method || 'GET')
-	    this.mode = options.mode || null
+	    this.credentials = options.credentials || this.credentials || 'omit'
+	    if (options.headers || !this.headers) {
+	      this.headers = new Headers(options.headers)
+	    }
+	    this.method = normalizeMethod(options.method || this.method || 'GET')
+	    this.mode = options.mode || this.mode || null
 	    this.referrer = null
 
-	    if ((this.method === 'GET' || this.method === 'HEAD') && options.body) {
+	    if ((this.method === 'GET' || this.method === 'HEAD') && body) {
 	      throw new TypeError('Body not allowed for GET or HEAD requests')
 	    }
-	    this._initBody(options.body)
+	    this._initBody(body)
+	  }
+
+	  Request.prototype.clone = function() {
+	    return new Request(this)
 	  }
 
 	  function decode(body) {
@@ -47398,32 +47574,55 @@
 	      options = {}
 	    }
 
-	    this._initBody(bodyInit)
 	    this.type = 'default'
-	    this.url = null
 	    this.status = options.status
 	    this.ok = this.status >= 200 && this.status < 300
 	    this.statusText = options.statusText
 	    this.headers = options.headers instanceof Headers ? options.headers : new Headers(options.headers)
 	    this.url = options.url || ''
+	    this._initBody(bodyInit)
 	  }
 
 	  Body.call(Response.prototype)
+
+	  Response.prototype.clone = function() {
+	    return new Response(this._bodyInit, {
+	      status: this.status,
+	      statusText: this.statusText,
+	      headers: new Headers(this.headers),
+	      url: this.url
+	    })
+	  }
+
+	  Response.error = function() {
+	    var response = new Response(null, {status: 0, statusText: ''})
+	    response.type = 'error'
+	    return response
+	  }
+
+	  var redirectStatuses = [301, 302, 303, 307, 308]
+
+	  Response.redirect = function(url, status) {
+	    if (redirectStatuses.indexOf(status) === -1) {
+	      throw new RangeError('Invalid status code')
+	    }
+
+	    return new Response(null, {status: status, headers: {location: url}})
+	  }
 
 	  self.Headers = Headers;
 	  self.Request = Request;
 	  self.Response = Response;
 
 	  self.fetch = function(input, init) {
-	    // TODO: Request constructor should accept input, init
-	    var request
-	    if (Request.prototype.isPrototypeOf(input) && !init) {
-	      request = input
-	    } else {
-	      request = new Request(input, init)
-	    }
-
 	    return new Promise(function(resolve, reject) {
+	      var request
+	      if (Request.prototype.isPrototypeOf(input) && !init) {
+	        request = input
+	      } else {
+	        request = new Request(input, init)
+	      }
+
 	      var xhr = new XMLHttpRequest()
 
 	      function responseURL() {
@@ -47477,40 +47676,36 @@
 	    })
 	  }
 	  self.fetch.polyfill = true
-	})();
+	})(typeof self !== 'undefined' ? self : this);
 
 
 /***/ },
-/* 368 */
+/* 369 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
 	 * LICENSE file in the root directory of this source tree. An additional grant
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 *
-	 * @providesModule fetchWithRetries
 	 * @typechecks
 	 * 
 	 */
 
 	'use strict';
 
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
+	var Promise = __webpack_require__(356);
 
 	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
-	var ExecutionEnvironment = __webpack_require__(369);
-	var Promise = __webpack_require__(356);
+	var ExecutionEnvironment = __webpack_require__(370);
 
-	var sprintf = __webpack_require__(370);
+	var sprintf = __webpack_require__(371);
 	var fetch = __webpack_require__(366);
-	var warning = __webpack_require__(371);
+	var warning = __webpack_require__(372);
 
 	var DEFAULT_TIMEOUT = 15000;
 	var DEFAULT_RETRIES = [1000, 3000];
@@ -47562,7 +47757,7 @@
 	          } else if (shouldRetry(requestsAttempted)) {
 	            // Fetch was not successful, retrying.
 	            // TODO(#7595849): Only retry on transient HTTP errors.
-	             true ?  true ? warning(false, 'fetchWithRetries: HTTP error, retrying.') : undefined : undefined, retryRequest();
+	             true ? warning(false, 'fetchWithRetries: HTTP error, retrying.') : undefined, retryRequest();
 	          } else {
 	            // Request was not successful, giving up.
 	            var error = new Error(sprintf('fetchWithRetries(): Still no successful response after ' + '%s retries, giving up.', requestsAttempted));
@@ -47605,18 +47800,17 @@
 	module.exports = fetchWithRetries;
 
 /***/ },
-/* 369 */
+/* 370 */
 /***/ function(module, exports) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
 	 * LICENSE file in the root directory of this source tree. An additional grant
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 *
-	 * @providesModule ExecutionEnvironment
 	 */
 
 	'use strict';
@@ -47646,18 +47840,19 @@
 	module.exports = ExecutionEnvironment;
 
 /***/ },
-/* 370 */
+/* 371 */
 /***/ function(module, exports) {
 
+	"use strict";
+
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
 	 * LICENSE file in the root directory of this source tree. An additional grant
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 *
-	 * @providesModule sprintf
 	 * @typechecks
 	 */
 
@@ -47670,8 +47865,6 @@
 	 * @param ...args the values to insert
 	 * @return {string} the replaced string
 	 */
-	"use strict";
-
 	function sprintf(format) {
 	  for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
 	    args[_key - 1] = arguments[_key];
@@ -47686,7 +47879,7 @@
 	module.exports = sprintf;
 
 /***/ },
-/* 371 */
+/* 372 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -47697,12 +47890,11 @@
 	 * LICENSE file in the root directory of this source tree. An additional grant
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 *
-	 * @providesModule warning
 	 */
 
 	'use strict';
 
-	var emptyFunction = __webpack_require__(372);
+	var emptyFunction = __webpack_require__(373);
 
 	/**
 	 * Similar to invariant but only logs a warning if the condition is not met.
@@ -47748,21 +47940,20 @@
 	module.exports = warning;
 
 /***/ },
-/* 372 */
+/* 373 */
 /***/ function(module, exports) {
 
+	"use strict";
+
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
 	 * LICENSE file in the root directory of this source tree. An additional grant
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 *
-	 * @providesModule emptyFunction
 	 */
-
-	"use strict";
 
 	function makeEmptyFunction(arg) {
 	  return function () {
@@ -47791,11 +47982,11 @@
 	module.exports = emptyFunction;
 
 /***/ },
-/* 373 */
+/* 374 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -47809,20 +48000,20 @@
 
 	'use strict';
 
-	var RelayContainer = __webpack_require__(374);
-	var RelayMutation = __webpack_require__(550);
-	var RelayNetworkLayer = __webpack_require__(480);
-	var RelayPropTypes = __webpack_require__(464);
-	var RelayQL = __webpack_require__(551);
-	var RelayRootContainer = __webpack_require__(552);
-	var RelayRoute = __webpack_require__(557);
-	var RelayStore = __webpack_require__(466);
-	var RelayTaskScheduler = __webpack_require__(481);
-	var RelayInternals = __webpack_require__(559);
+	var RelayContainer = __webpack_require__(375);
+	var RelayMutation = __webpack_require__(485);
+	var RelayNetworkLayer = __webpack_require__(506);
+	var RelayPropTypes = __webpack_require__(432);
+	var RelayQL = __webpack_require__(558);
+	var RelayRootContainer = __webpack_require__(559);
+	var RelayRoute = __webpack_require__(564);
+	var RelayStore = __webpack_require__(486);
+	var RelayTaskScheduler = __webpack_require__(509);
+	var RelayInternals = __webpack_require__(566);
 
-	var createRelayQuery = __webpack_require__(560);
-	var getRelayQueries = __webpack_require__(556);
-	var isRelayContainer = __webpack_require__(465);
+	var createRelayQuery = __webpack_require__(567);
+	var getRelayQueries = __webpack_require__(563);
+	var isRelayContainer = __webpack_require__(433);
 
 	if (typeof global.__REACT_DEVTOOLS_GLOBAL_HOOK__ !== 'undefined') {
 	  global.__REACT_DEVTOOLS_GLOBAL_HOOK__._relayInternals = RelayInternals;
@@ -47852,11 +48043,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 374 */
+/* 375 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -47870,53 +48061,50 @@
 
 	'use strict';
 
-	var _inherits = __webpack_require__(375)['default'];
+	var _inherits = __webpack_require__(376)['default'];
 
 	var _classCallCheck = __webpack_require__(355)['default'];
 
 	var _extends = __webpack_require__(338)['default'];
 
-	var _Object$keys = __webpack_require__(384)['default'];
+	var _Object$keys = __webpack_require__(385)['default'];
 
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
 
-	var ErrorUtils = __webpack_require__(388);
-	var GraphQLFragmentPointer = __webpack_require__(389);
-	var GraphQLStoreDataHandler = __webpack_require__(390);
-	var GraphQLStoreQueryResolver = __webpack_require__(421);
+	var ErrorUtils = __webpack_require__(389);
+	var RelayFragmentPointer = __webpack_require__(390);
 	var React = __webpack_require__(2);
-	var ReactDOM = __webpack_require__(170);
-	var RelayContainerComparators = __webpack_require__(459);
-	var RelayContainerProxy = __webpack_require__(460);
-	var RelayFragmentReference = __webpack_require__(406);
+	var RelayContainerComparators = __webpack_require__(427);
+	var RelayContainerProxy = __webpack_require__(428);
 
-	var RelayMetaRoute = __webpack_require__(408);
-	var RelayMutationTransaction = __webpack_require__(462);
-	var RelayPropTypes = __webpack_require__(464);
-	var RelayProfiler = __webpack_require__(409);
+	var RelayFragmentReference = __webpack_require__(412);
+
+	var RelayMetaRoute = __webpack_require__(414);
+	var RelayMutationTransaction = __webpack_require__(430);
+	var RelayPropTypes = __webpack_require__(432);
+	var RelayProfiler = __webpack_require__(415);
 	var RelayQuery = __webpack_require__(391);
-	var RelayStore = __webpack_require__(466);
-	var RelayStoreData = __webpack_require__(468);
+	var RelayRecord = __webpack_require__(426);
+	var RelayRecordStatusMap = __webpack_require__(435);
 
-	var buildRQL = __webpack_require__(545);
+	var buildRQL = __webpack_require__(436);
 
-	var forEachObject = __webpack_require__(407);
+	var forEachObject = __webpack_require__(413);
 	var invariant = __webpack_require__(399);
-	var nullthrows = __webpack_require__(520);
-	var prepareRelayContainerProps = __webpack_require__(547);
-	var shallowEqual = __webpack_require__(419);
-	var warning = __webpack_require__(371);
-	var isReactComponent = __webpack_require__(549);
+	var isRelayContext = __webpack_require__(434);
+	var nullthrows = __webpack_require__(480);
+	var prepareRelayContainerProps = __webpack_require__(481);
+	var relayUnstableBatchedUpdates = __webpack_require__(483);
+	var shallowEqual = __webpack_require__(425);
+	var warning = __webpack_require__(372);
+	var isReactComponent = __webpack_require__(484);
 
 	var containerContextTypes = {
+	  relay: RelayPropTypes.Context,
 	  route: RelayPropTypes.QueryConfig.isRequired
 	};
-
-	var storeData = RelayStoreData.getDefaultInstance();
-
-	storeData.getChangeEmitter().injectBatchingStrategy(ReactDOM.unstable_batchedUpdates);
 
 	/**
 	 * @public
@@ -47948,8 +48136,10 @@
 
 	      _React$Component.call(this, props, context);
 
+	      var relay = context.relay;
 	      var route = context.route;
 
+	      !isRelayContext(relay) ?  true ? invariant(false, 'RelayContainer: `%s` was rendered with invalid Relay context `%s`. ' + 'Make sure the `relay` property on the React context conforms to the ' + '`RelayContext` interface.', containerName, relay) : invariant(false) : undefined;
 	      !(route && typeof route.name === 'string') ?  true ? invariant(false, 'RelayContainer: `%s` was rendered without a valid route. Make sure ' + 'the route is valid, and make sure that it is correctly set on the ' + 'parent component\'s context (e.g. using <RelayRootContainer>).', containerName) : invariant(false) : undefined;
 
 	      var self = this;
@@ -47957,13 +48147,13 @@
 	      self.getPendingTransactions = this.getPendingTransactions.bind(this);
 	      self.hasFragmentData = this.hasFragmentData.bind(this);
 	      self.hasOptimisticUpdate = this.hasOptimisticUpdate.bind(this);
+	      self.hasPartialData = this.hasPartialData.bind(this);
 	      self.setVariables = this.setVariables.bind(this);
 
-	      this._deferredSubscriptions = null;
 	      this._didShowFakeDataWarning = false;
 	      this._fragmentPointers = {};
 	      this._hasStaleQueryData = false;
-	      this._queryResolvers = {};
+	      this._fragmentResolvers = {};
 
 	      this.mounted = true;
 	      this.pending = null;
@@ -48005,6 +48195,7 @@
 
 	      var fragmentPointers = {};
 	      var querySet = {};
+	      var storeData = this.context.relay.getStoreData();
 	      fragmentNames.forEach(function (fragmentName) {
 	        var fragment = getFragment(fragmentName, _this.context.route, variables);
 	        var queryData = _this.state.queryData[fragmentName];
@@ -48014,24 +48205,29 @@
 
 	        var fragmentPointer;
 	        if (fragment.isPlural()) {
-	          !Array.isArray(queryData) ?  true ? invariant(false, 'RelayContainer: Invalid queryData for `%s`, expected an array ' + 'of records because the corresponding fragment is plural.', fragmentName) : invariant(false) : undefined;
-	          var dataIDs = [];
-	          queryData.forEach(function (data, ii) {
-	            var dataID = GraphQLStoreDataHandler.getID(data);
-	            if (dataID) {
-	              querySet[fragmentName + ii] = storeData.buildFragmentQueryForDataID(fragment, dataID);
-	              dataIDs.push(dataID);
+	          (function () {
+	            !Array.isArray(queryData) ?  true ? invariant(false, 'RelayContainer: Invalid queryData for `%s`, expected an array ' + 'of records because the corresponding fragment is plural.', fragmentName) : invariant(false) : undefined;
+	            var dataIDs = [];
+	            queryData.forEach(function (data, ii) {
+	              var dataID = RelayRecord.getDataID(data);
+	              if (dataID) {
+	                querySet[fragmentName + ii] = storeData.buildFragmentQueryForDataID(fragment, dataID);
+	                dataIDs.push(dataID);
+	              }
+	            });
+	            if (dataIDs.length) {
+	              fragmentPointer = { fragment: fragment, dataIDs: dataIDs };
 	            }
-	          });
-	          if (dataIDs.length) {
-	            fragmentPointer = new GraphQLFragmentPointer(dataIDs, fragment);
-	          }
+	          })();
 	        } else {
 	          /* $FlowFixMe(>=0.19.0) - queryData is mixed but getID expects Object
 	           */
-	          var dataID = GraphQLStoreDataHandler.getID(queryData);
+	          var dataID = RelayRecord.getDataID(queryData);
 	          if (dataID) {
-	            fragmentPointer = new GraphQLFragmentPointer(dataID, fragment);
+	            fragmentPointer = {
+	              fragment: fragment,
+	              dataIDs: dataID
+	            };
 	            querySet[fragmentName] = storeData.buildFragmentQueryForDataID(fragment, dataID);
 	          }
 	        }
@@ -48083,7 +48279,7 @@
 	          // and `fragmentPointers` will be empty, and `nextVariables` will be
 	          // equal to `lastVariables`.
 	          _this2._fragmentPointers = fragmentPointers;
-	          _this2._updateQueryResolvers();
+	          _this2._updateFragmentResolvers(_this2.context.relay);
 	          var queryData = _this2._getQueryData(_this2.props);
 	          partialState = { variables: nextVariables, queryData: queryData };
 	        } else {
@@ -48092,7 +48288,7 @@
 	        var mounted = _this2.mounted;
 	        if (mounted) {
 	          var updateProfiler = RelayProfiler.profile('RelayContainer.update');
-	          ReactDOM.unstable_batchedUpdates(function () {
+	          relayUnstableBatchedUpdates(function () {
 	            _this2.setState(partialState, function () {
 	              updateProfiler.stop();
 	              if (isComplete) {
@@ -48115,7 +48311,7 @@
 
 	      var current = {
 	        variables: nextVariables,
-	        request: forceFetch ? RelayStore.forceFetch(querySet, onReadyStateChange) : RelayStore.primeCache(querySet, onReadyStateChange)
+	        request: forceFetch ? this.context.relay.forceFetch(querySet, onReadyStateChange) : this.context.relay.primeCache(querySet, onReadyStateChange)
 	      };
 	      this.pending = current;
 	    };
@@ -48125,9 +48321,9 @@
 	     */
 
 	    RelayContainer.prototype.hasOptimisticUpdate = function hasOptimisticUpdate(record) {
-	      var dataID = GraphQLStoreDataHandler.getID(record);
+	      var dataID = RelayRecord.getDataID(record);
 	      !(dataID != null) ?  true ? invariant(false, 'RelayContainer.hasOptimisticUpdate(): Expected a record in `%s`.', componentName) : invariant(false) : undefined;
-	      return storeData.hasOptimisticUpdate(dataID);
+	      return this.context.relay.getStoreData().hasOptimisticUpdate(dataID);
 	    };
 
 	    /**
@@ -48135,8 +48331,9 @@
 	     */
 
 	    RelayContainer.prototype.getPendingTransactions = function getPendingTransactions(record) {
-	      var dataID = GraphQLStoreDataHandler.getID(record);
+	      var dataID = RelayRecord.getDataID(record);
 	      !(dataID != null) ?  true ? invariant(false, 'RelayContainer.getPendingTransactions(): Expected a record in `%s`.', componentName) : invariant(false) : undefined;
+	      var storeData = this.context.relay.getStoreData();
 	      var mutationIDs = storeData.getClientMutationIDs(dataID);
 	      if (!mutationIDs) {
 	        return null;
@@ -48154,31 +48351,36 @@
 	     */
 
 	    RelayContainer.prototype.hasFragmentData = function hasFragmentData(fragmentReference, record) {
+	      var storeData = this.context.relay.getStoreData();
 	      if (!storeData.getPendingQueryTracker().hasPendingQueries()) {
 	        // nothing can be missing => must have data
 	        return true;
 	      }
 	      // convert builder -> fragment in order to get the fragment's name
-	      var dataID = GraphQLStoreDataHandler.getID(record);
+	      var dataID = RelayRecord.getDataID(record);
 	      !(dataID != null) ?  true ? invariant(false, 'RelayContainer.hasFragmentData(): Second argument is not a valid ' + 'record. For `<%s X={this.props.X} />`, use ' + '`this.props.hasFragmentData(%s.getFragment(\'X\'), this.props.X)`.', componentName, componentName) : invariant(false) : undefined;
 	      var fragment = getDeferredFragment(fragmentReference, this.context, this.state.variables);
 	      !(fragment instanceof RelayQuery.Fragment) ?  true ? invariant(false, 'RelayContainer.hasFragmentData(): First argument is not a valid ' + 'fragment. Ensure that there are no failing `if` or `unless` ' + 'conditions.') : invariant(false) : undefined;
 	      return storeData.getCachedStore().hasDeferredFragmentData(dataID, fragment.getCompositeHash());
 	    };
 
+	    /**
+	     * Determine if the supplied record might be missing data.
+	     */
+
+	    RelayContainer.prototype.hasPartialData = function hasPartialData(record) {
+	      return RelayRecordStatusMap.isPartialStatus(record[RelayRecord.MetadataKey.STATUS]);
+	    };
+
 	    RelayContainer.prototype.componentWillMount = function componentWillMount() {
-	      if (this.context.route.useMockData) {
+	      var _context = this.context;
+	      var relay = _context.relay;
+	      var route = _context.route;
+
+	      if (route.useMockData) {
 	        return;
 	      }
-	      var variables = getVariablesWithPropOverrides(spec, this.props, initialVariables);
-	      this._updateFragmentPointers(this.props, this.context.route, variables);
-	      this._updateQueryResolvers();
-	      var queryData = this._getQueryData(this.props);
-
-	      this.setState({
-	        variables: variables,
-	        queryData: queryData
-	      });
+	      this.setState(this._initialize(this.props, relay, route, initialVariables));
 	    };
 
 	    RelayContainer.prototype.componentWillReceiveProps = function componentWillReceiveProps(nextProps, nextContext) {
@@ -48186,69 +48388,77 @@
 
 	      var _nullthrows = nullthrows(nextContext);
 
+	      var relay = _nullthrows.relay;
 	      var route = _nullthrows.route;
 
 	      if (route.useMockData) {
 	        return;
 	      }
 	      this.setState(function (state) {
-	        var variables = getVariablesWithPropOverrides(spec, nextProps, resetPropOverridesForVariables(spec, nextProps, state.variables));
-	        _this3._updateFragmentPointers(nextProps, route, variables);
-	        _this3._updateQueryResolvers();
-	        return {
-	          variables: variables,
-	          queryData: _this3._getQueryData(nextProps)
-	        };
+	        if (_this3.context.relay !== relay) {
+	          _this3._cleanup();
+	        }
+	        return _this3._initialize(nextProps, relay, route, resetPropOverridesForVariables(spec, nextProps, state.variables));
 	      });
 	    };
 
 	    RelayContainer.prototype.componentWillUnmount = function componentWillUnmount() {
-	      // A guarded error in mounting might prevent initialization of resolvers.
-	      if (this._queryResolvers) {
-	        forEachObject(this._queryResolvers, function (queryResolver) {
-	          return queryResolver && queryResolver.reset();
-	        });
-	      }
+	      this._cleanup();
+	      this.mounted = false;
+	    };
 
-	      if (this._deferredSubscriptions) {
-	        forEachObject(this._deferredSubscriptions, function (sub) {
-	          return sub.dispose();
+	    RelayContainer.prototype._initialize = function _initialize(props, relayContext, route, prevVariables) {
+	      var variables = getVariablesWithPropOverrides(spec, props, prevVariables);
+	      this._updateFragmentPointers(props, route, variables);
+	      this._updateFragmentResolvers(relayContext);
+	      return {
+	        variables: variables,
+	        queryData: this._getQueryData(props)
+	      };
+	    };
+
+	    RelayContainer.prototype._cleanup = function _cleanup() {
+	      // A guarded error in mounting might prevent initialization of resolvers.
+	      if (this._fragmentResolvers) {
+	        forEachObject(this._fragmentResolvers, function (fragmentResolver) {
+	          return fragmentResolver && fragmentResolver.dispose();
 	        });
 	      }
-	      this._deferredSubscriptions = null;
 
 	      this._fragmentPointers = {};
-	      this._queryResolvers = {};
+	      this._fragmentResolvers = {};
 
 	      var pending = this.pending;
 	      if (pending) {
 	        pending.request.abort();
 	        this.pending = null;
 	      }
-	      this.mounted = false;
 	    };
 
-	    RelayContainer.prototype._updateQueryResolvers = function _updateQueryResolvers() {
+	    RelayContainer.prototype._updateFragmentResolvers = function _updateFragmentResolvers(relayContext) {
 	      var _this4 = this;
 
 	      var fragmentPointers = this._fragmentPointers;
-	      var queryResolvers = this._queryResolvers;
+	      var fragmentResolvers = this._fragmentResolvers;
 	      fragmentNames.forEach(function (fragmentName) {
 	        var fragmentPointer = fragmentPointers[fragmentName];
-	        var queryResolver = queryResolvers[fragmentName];
+	        var fragmentResolver = fragmentResolvers[fragmentName];
 	        if (!fragmentPointer) {
-	          if (queryResolver) {
-	            queryResolver.reset();
-	            queryResolvers[fragmentName] = null;
+	          if (fragmentResolver) {
+	            fragmentResolver.dispose();
+	            fragmentResolvers[fragmentName] = null;
 	          }
-	        } else if (!queryResolver) {
-	          queryResolver = new GraphQLStoreQueryResolver(storeData, fragmentPointer, _this4._handleFragmentDataUpdate.bind(_this4));
-	          queryResolvers[fragmentName] = queryResolver;
+	        } else if (!fragmentResolver) {
+	          fragmentResolver = relayContext.getFragmentResolver(fragmentPointer.fragment, _this4._handleFragmentDataUpdate.bind(_this4));
+	          fragmentResolvers[fragmentName] = fragmentResolver;
 	        }
 	      });
 	    };
 
 	    RelayContainer.prototype._handleFragmentDataUpdate = function _handleFragmentDataUpdate() {
+	      if (!this.mounted) {
+	        return;
+	      }
 	      var queryData = this._getQueryData(this.props);
 	      var updateProfiler = RelayProfiler.profile('RelayContainer.handleFragmentDataUpdate');
 	      this.setState({ queryData: queryData }, updateProfiler.stop);
@@ -48260,48 +48470,64 @@
 	      var fragmentPointers = this._fragmentPointers;
 	      fragmentNames.forEach(function (fragmentName) {
 	        var propValue = props[fragmentName];
-	         true ? warning(propValue !== undefined, 'RelayContainer: Expected query `%s` to be supplied to `%s` as ' + 'a prop from the parent. Pass an explicit `null` if this is ' + 'intentional.', fragmentName, componentName) : undefined;
-	        if (!propValue) {
+	         true ? warning(propValue !== undefined, 'RelayContainer: Expected prop `%s` to be supplied to `%s`, but ' + 'got `undefined`. Pass an explicit `null` if this is intentional.', fragmentName, componentName) : undefined;
+	        if (propValue == null) {
+	          fragmentPointers[fragmentName] = null;
+	          return;
+	        }
+	        // handle invalid prop values using a warning at first.
+	        if (typeof propValue !== 'object') {
+	           true ? warning(false, 'RelayContainer: Expected prop `%s` supplied to `%s` to be an ' + 'object, got `%s`.', fragmentName, componentName, propValue) : undefined;
 	          fragmentPointers[fragmentName] = null;
 	          return;
 	        }
 	        var fragment = getFragment(fragmentName, route, variables);
-	        var fragmentHash = fragment.getConcreteNodeHash();
 	        var dataIDOrIDs = undefined;
 
 	        if (fragment.isPlural()) {
-	          // Plural fragments require the prop value to be an array of fragment
-	          // pointers, which are merged into a single fragment pointer to pass
-	          // to the query resolver `resolve`.
-	          !Array.isArray(propValue) ?  true ? invariant(false, 'RelayContainer: Invalid prop `%s` supplied to `%s`, expected an ' + 'array of records because the corresponding fragment is plural.', fragmentName, componentName) : invariant(false) : undefined;
-	          if (propValue.length) {
-	            dataIDOrIDs = propValue.reduce(function (acc, item, ii) {
-	              var eachFragmentPointer = item[fragmentHash];
-	              !eachFragmentPointer ?  true ? invariant(false, 'RelayContainer: Invalid prop `%s` supplied to `%s`, ' + 'expected element at index %s to have query data.', fragmentName, componentName, ii) : invariant(false) : undefined;
-	              return acc.concat(eachFragmentPointer.getDataIDs());
-	            }, []);
-	          } else {
-	            // An empty plural fragment cannot be observed; the empty array prop
-	            // can be passed as-is to the component.
-	            dataIDOrIDs = null;
-	          }
-	        } else {
-	          !!Array.isArray(propValue) ?  true ? invariant(false, 'RelayContainer: Invalid prop `%s` supplied to `%s`, expected a ' + 'single record because the corresponding fragment is not plural.', fragmentName, componentName) : invariant(false) : undefined;
-	          var fragmentPointer = propValue[fragmentHash];
-	          if (fragmentPointer) {
-	            dataIDOrIDs = fragmentPointer.getDataID();
-	          } else {
-	            // TODO: Throw when we have mock data validation, #6332949.
-	            dataIDOrIDs = null;
-	            if (true) {
-	              if (!route.useMockData && !_this5._didShowFakeDataWarning) {
-	                _this5._didShowFakeDataWarning = true;
-	                 true ? warning(false, 'RelayContainer: Expected prop `%s` supplied to `%s` to ' + 'be data fetched by Relay. This is likely an error unless ' + 'you are purposely passing in mock data that conforms to ' + 'the shape of this component\'s fragment.', fragmentName, componentName) : undefined;
+	          var _ret2 = (function () {
+	            // Plural fragments require the prop value to be an array of fragment
+	            // pointers, which are merged into a single fragment pointer to pass
+	            // to the query resolver `resolve`.
+	            !Array.isArray(propValue) ?  true ? invariant(false, 'RelayContainer: Invalid prop `%s` supplied to `%s`, expected an ' + 'array of records because the corresponding fragment has ' + '`@relay(plural: true)`.', fragmentName, componentName) : invariant(false) : undefined;
+	            if (!propValue.length) {
+	              // Nothing to observe: pass the empty array through
+	              fragmentPointers[fragmentName] = null;
+	              return {
+	                v: undefined
+	              };
+	            }
+	            var dataIDs = null;
+	            propValue.forEach(function (item, ii) {
+	              if (typeof item === 'object' && item != null) {
+	                var dataID = RelayFragmentPointer.getDataID(item, fragment);
+	                if (dataID) {
+	                  dataIDs = dataIDs || [];
+	                  dataIDs.push(dataID);
+	                }
 	              }
+	            });
+	            if (dataIDs) {
+	              !(dataIDs.length === propValue.length) ?  true ? invariant(false, 'RelayContainer: Invalid prop `%s` supplied to `%s`. Some ' + 'array items contain data fetched by Relay and some items ' + 'contain null/mock data.', fragmentName, componentName) : invariant(false) : undefined;
+	            }
+	            dataIDOrIDs = dataIDs;
+	          })();
+
+	          if (typeof _ret2 === 'object') return _ret2.v;
+	        } else {
+	          !!Array.isArray(propValue) ?  true ? invariant(false, 'RelayContainer: Invalid prop `%s` supplied to `%s`, expected a ' + 'single record because the corresponding fragment is not plural ' + '(i.e. does not have `@relay(plural: true)`).', fragmentName, componentName) : invariant(false) : undefined;
+	          dataIDOrIDs = RelayFragmentPointer.getDataID(propValue, fragment);
+	        }
+	        if (dataIDOrIDs == null) {
+	          // TODO: Throw when we have mock data validation, #6332949.
+	          if (true) {
+	            if (!route.useMockData && !_this5._didShowFakeDataWarning) {
+	              _this5._didShowFakeDataWarning = true;
+	               true ? warning(false, 'RelayContainer: Expected prop `%s` supplied to `%s` to ' + 'be data fetched by Relay. This is likely an error unless ' + 'you are purposely passing in mock data that conforms to ' + 'the shape of this component\'s fragment.', fragmentName, componentName) : undefined;
 	            }
 	          }
 	        }
-	        fragmentPointers[fragmentName] = dataIDOrIDs ? new GraphQLFragmentPointer(dataIDOrIDs, fragment) : null;
+	        fragmentPointers[fragmentName] = dataIDOrIDs ? { fragment: fragment, dataIDs: dataIDOrIDs } : null;
 	      });
 	      if (true) {
 	        // If a fragment pointer is null, warn if it was found on another prop.
@@ -48310,9 +48536,8 @@
 	            return;
 	          }
 	          var fragment = getFragment(fragmentName, route, variables);
-	          var fragmentHash = fragment.getConcreteNodeHash();
 	          _Object$keys(props).forEach(function (propName) {
-	             true ? warning(fragmentPointers[propName] || !props[propName] || !props[propName][fragmentHash], 'RelayContainer: Expected record data for prop `%s` on `%s`, ' + 'but it was instead on prop `%s`. Did you misspell a prop or ' + 'pass record data into the wrong prop?', fragmentName, componentName, propName) : undefined;
+	             true ? warning(fragmentPointers[propName] || !RelayRecord.isRecord(props[propName]) || typeof props[propName] !== 'object' || props[propName] == null || !RelayFragmentPointer.getDataID(props[propName], fragment), 'RelayContainer: Expected record data for prop `%s` on `%s`, ' + 'but it was instead on prop `%s`. Did you misspell a prop or ' + 'pass record data into the wrong prop?', fragmentName, componentName, propName) : undefined;
 	          });
 	        });
 	      }
@@ -48323,17 +48548,17 @@
 
 	      var queryData = {};
 	      var fragmentPointers = this._fragmentPointers;
-	      forEachObject(this._queryResolvers, function (queryResolver, propName) {
+	      forEachObject(this._fragmentResolvers, function (fragmentResolver, propName) {
 	        var propValue = props[propName];
 	        var fragmentPointer = fragmentPointers[propName];
 
 	        if (!propValue || !fragmentPointer) {
 	          // Clear any subscriptions since there is no data.
-	          queryResolver && queryResolver.reset();
+	          fragmentResolver && fragmentResolver.dispose();
 	          // Allow mock data to pass through without modification.
 	          queryData[propName] = propValue;
 	        } else {
-	          queryData[propName] = queryResolver.resolve(fragmentPointer);
+	          queryData[propName] = fragmentResolver.resolve(fragmentPointer.fragment, fragmentPointer.dataIDs);
 	        }
 	        if (_this6.state.queryData.hasOwnProperty(propName) && queryData[propName] !== _this6.state.queryData[propName]) {
 	          _this6._hasStaleQueryData = true;
@@ -48349,7 +48574,7 @@
 	        return true;
 	      }
 
-	      if (this.context.route !== nextContext.route) {
+	      if (this.context.relay !== nextContext.relay || this.context.route !== nextContext.route) {
 	        return true;
 	      }
 
@@ -48363,6 +48588,7 @@
 	        getPendingTransactions: this.getPendingTransactions,
 	        hasFragmentData: this.hasFragmentData,
 	        hasOptimisticUpdate: this.hasOptimisticUpdate,
+	        hasPartialData: this.hasPartialData,
 	        route: this.context.route,
 	        setVariables: this.setVariables,
 	        variables: this.state.variables
@@ -48530,14 +48756,14 @@
 	module.exports = { create: create };
 
 /***/ },
-/* 375 */
+/* 376 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var _Object$create = __webpack_require__(376)["default"];
+	var _Object$create = __webpack_require__(377)["default"];
 
-	var _Object$setPrototypeOf = __webpack_require__(378)["default"];
+	var _Object$setPrototypeOf = __webpack_require__(379)["default"];
 
 	exports["default"] = function (subClass, superClass) {
 	  if (typeof superClass !== "function" && superClass !== null) {
@@ -48558,13 +48784,13 @@
 	exports.__esModule = true;
 
 /***/ },
-/* 376 */
+/* 377 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(377), __esModule: true };
+	module.exports = { "default": __webpack_require__(378), __esModule: true };
 
 /***/ },
-/* 377 */
+/* 378 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var $ = __webpack_require__(348);
@@ -48573,35 +48799,35 @@
 	};
 
 /***/ },
-/* 378 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = { "default": __webpack_require__(379), __esModule: true };
-
-/***/ },
 /* 379 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(380);
-	module.exports = __webpack_require__(344).Object.setPrototypeOf;
+	module.exports = { "default": __webpack_require__(380), __esModule: true };
 
 /***/ },
 /* 380 */
 /***/ function(module, exports, __webpack_require__) {
 
-	// 19.1.3.19 Object.setPrototypeOf(O, proto)
-	var $export = __webpack_require__(342);
-	$export($export.S, 'Object', {setPrototypeOf: __webpack_require__(381).set});
+	__webpack_require__(381);
+	module.exports = __webpack_require__(344).Object.setPrototypeOf;
 
 /***/ },
 /* 381 */
 /***/ function(module, exports, __webpack_require__) {
 
+	// 19.1.3.19 Object.setPrototypeOf(O, proto)
+	var $export = __webpack_require__(342);
+	$export($export.S, 'Object', {setPrototypeOf: __webpack_require__(382).set});
+
+/***/ },
+/* 382 */
+/***/ function(module, exports, __webpack_require__) {
+
 	// Works with __proto__ only. Old v8 can't work with null proto objects.
 	/* eslint-disable no-proto */
 	var getDesc  = __webpack_require__(348).getDesc
-	  , isObject = __webpack_require__(382)
-	  , anObject = __webpack_require__(383);
+	  , isObject = __webpack_require__(383)
+	  , anObject = __webpack_require__(384);
 	var check = function(O, proto){
 	  anObject(O);
 	  if(!isObject(proto) && proto !== null)throw TypeError(proto + ": can't set as prototype!");
@@ -48625,7 +48851,7 @@
 	};
 
 /***/ },
-/* 382 */
+/* 383 */
 /***/ function(module, exports) {
 
 	module.exports = function(it){
@@ -48633,43 +48859,43 @@
 	};
 
 /***/ },
-/* 383 */
+/* 384 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isObject = __webpack_require__(382);
+	var isObject = __webpack_require__(383);
 	module.exports = function(it){
 	  if(!isObject(it))throw TypeError(it + ' is not an object!');
 	  return it;
 	};
 
 /***/ },
-/* 384 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = { "default": __webpack_require__(385), __esModule: true };
-
-/***/ },
 /* 385 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(386);
-	module.exports = __webpack_require__(344).Object.keys;
+	module.exports = { "default": __webpack_require__(386), __esModule: true };
 
 /***/ },
 /* 386 */
 /***/ function(module, exports, __webpack_require__) {
 
+	__webpack_require__(387);
+	module.exports = __webpack_require__(344).Object.keys;
+
+/***/ },
+/* 387 */
+/***/ function(module, exports, __webpack_require__) {
+
 	// 19.1.2.14 Object.keys(O)
 	var toObject = __webpack_require__(349);
 
-	__webpack_require__(387)('keys', function($keys){
+	__webpack_require__(388)('keys', function($keys){
 	  return function keys(it){
 	    return $keys(toObject(it));
 	  };
 	});
 
 /***/ },
-/* 387 */
+/* 388 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// most Object methods by ES6 should accept primitives
@@ -48684,163 +48910,128 @@
 	};
 
 /***/ },
-/* 388 */
+/* 389 */
 /***/ function(module, exports) {
 
+	/* WEBPACK VAR INJECTION */(function(global) {"use strict";
+
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
 	 * LICENSE file in the root directory of this source tree. An additional grant
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 *
-	 * @providesModule ErrorUtils
 	 */
 
 	/* jslint unused:false */
 
-	"use strict";
+	if (global.ErrorUtils) {
+	  module.exports = global.ErrorUtils;
+	} else {
+	  var ErrorUtils = {
+	    applyWithGuard: function (callback, context, args, onError, name) {
+	      return callback.apply(context, args);
+	    },
+	    guard: function (callback, name) {
+	      return callback;
+	    }
+	  };
 
-	var ErrorUtils = {
-	  applyWithGuard: function (callback, context, args, onError, name) {
-	    return callback.apply(context, args);
-	  },
-	  guard: function (callback, name) {
-	    return callback;
-	  }
-	};
-
-	module.exports = ErrorUtils;
+	  module.exports = ErrorUtils;
+	}
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 389 */
+/* 390 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
 	 * LICENSE file in the root directory of this source tree. An additional grant
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 *
-	 * @providesModule GraphQLFragmentPointer
+	 * @providesModule RelayFragmentPointer
 	 * 
 	 * @typechecks
 	 */
 
 	'use strict';
 
-	var _classCallCheck = __webpack_require__(355)['default'];
-
-	var GraphQLStoreDataHandler = __webpack_require__(390);
 	var RelayQuery = __webpack_require__(391);
+	var RelayRecord = __webpack_require__(426);
 
+	var forEachRootCallArg = __webpack_require__(398);
 	var invariant = __webpack_require__(399);
-	var shallowEqual = __webpack_require__(419);
 
 	/**
 	 * Fragment pointers encapsulate the fetched data for a fragment reference. They
 	 * are opaque tokens that are used by Relay containers to read data that is then
 	 * passed to the underlying React component.
+	 *
+	 * @internal
 	 */
+	var RelayFragmentPointer = {
+	  addFragment: function addFragment(record, fragment, dataID) {
+	    var fragmentMap = record.__fragments__;
+	    if (fragmentMap == null) {
+	      fragmentMap = record.__fragments__ = {};
+	    }
+	    !(typeof fragmentMap === 'object' && fragmentMap != null) ?  true ? invariant(false, 'RelayFragmentPointer: Expected record to contain a fragment map, got ' + '`%s` for record `%s`.', fragmentMap, record.__dataID__) : invariant(false) : undefined;
+	    fragmentMap[fragment.getConcreteFragmentID()] = dataID;
+	  },
 
-	var GraphQLFragmentPointer = (function () {
+	  getDataID: function getDataID(record, fragment) {
+	    var fragmentMap = record.__fragments__;
+	    if (typeof fragmentMap === 'object' && fragmentMap != null) {
+	      return fragmentMap[fragment.getConcreteFragmentID()];
+	    }
+	    return null;
+	  },
 
-	  /**
-	   * Creates a valid prop value to be passed into the top-level Relay container.
-	   */
+	  create: function create(dataID, fragment) {
+	    var record = RelayRecord.create(dataID);
+	    RelayFragmentPointer.addFragment(record, fragment, dataID);
+	    return record;
+	  },
 
-	  GraphQLFragmentPointer.createForRoot = function createForRoot(store, query) {
+	  createForRoot: function createForRoot(store, query) {
 	    var fragment = getRootFragment(query);
 	    if (!fragment) {
 	      return null;
 	    }
-	    var fragmentHash = fragment.getConcreteNodeHash();
 	    var storageKey = query.getStorageKey();
+	    var pointers = [];
+	    forEachRootCallArg(query, function (_ref) {
+	      var identifyingArgKey = _ref.identifyingArgKey;
+
+	      var dataID = store.getDataID(storageKey, identifyingArgKey);
+	      if (dataID == null) {
+	        pointers.push(null);
+	      } else {
+	        pointers.push(RelayFragmentPointer.create(dataID, fragment));
+	      }
+	    });
+	    // Distinguish between singular/plural queries.
 	    var identifyingArg = query.getIdentifyingArg();
 	    var identifyingArgValue = identifyingArg && identifyingArg.value || null;
 	    if (Array.isArray(identifyingArgValue)) {
-	      var rootFragment = fragment; // for Flow
-	      return identifyingArgValue.map(function (singleIdentifyingArgValue) {
-	        var dataID = store.getDataID(storageKey, singleIdentifyingArgValue);
-	        if (!dataID) {
-	          return null;
-	        }
-	        var pointer = GraphQLStoreDataHandler.createPointerWithID(dataID);
-	        pointer[fragmentHash] = new GraphQLFragmentPointer([dataID], rootFragment);
-	        return pointer;
-	      });
+	      return pointers;
 	    }
-	    !(typeof identifyingArgValue === 'string' || identifyingArgValue == null) ?  true ? invariant(false, 'GraphQLFragmentPointer: Value for the argument to `%s` on query `%s` ' + 'should be a string, but it was set to `%s`. Check that the value is a ' + 'string.', query.getFieldName(), query.getName(), identifyingArgValue) : invariant(false) : undefined;
-	    var dataIDOrIDs = store.getDataID(storageKey, identifyingArgValue);
-	    if (!dataIDOrIDs) {
-	      return null;
-	    }
-	    var result = {};
-	    // TODO(t7765591): Throw if `fragment` is not optional.
-	    var fragmentPointer = new GraphQLFragmentPointer(dataIDOrIDs, fragment);
-	    result[fragmentHash] = fragmentPointer;
-	    return result;
-	  };
-
-	  function GraphQLFragmentPointer(dataIDOrIDs, fragment) {
-	    _classCallCheck(this, GraphQLFragmentPointer);
-
-	    var isArray = Array.isArray(dataIDOrIDs);
-	    var isPlural = fragment.isPlural();
-	    !(isArray === isPlural) ?  true ? invariant(false, 'GraphQLFragmentPointer: Wrong plurality, %s supplied with %s fragment.', isArray ? 'array of data IDs' : 'single data ID', isPlural ? 'plural' : 'non-plural') : invariant(false) : undefined;
-
-	    this._dataIDOrIDs = dataIDOrIDs;
-	    this._fragment = fragment;
+	    return pointers[0];
 	  }
-
-	  /**
-	   * Get the data ID for a singular query fragment.
-	   */
-
-	  GraphQLFragmentPointer.prototype.getDataID = function getDataID() {
-	    !!Array.isArray(this._dataIDOrIDs) ?  true ? invariant(false, 'GraphQLFragmentPointer.getDataID(): Bad call for plural fragment.') : invariant(false) : undefined;
-	    return this._dataIDOrIDs;
-	  };
-
-	  /**
-	   * Get the data ID for a plural query fragment.
-	   */
-
-	  GraphQLFragmentPointer.prototype.getDataIDs = function getDataIDs() {
-	    !Array.isArray(this._dataIDOrIDs) ?  true ? invariant(false, 'GraphQLFragmentPointer.getDataIDs(): Bad call for non-plural fragment.') : invariant(false) : undefined;
-	    return this._dataIDOrIDs;
-	  };
-
-	  GraphQLFragmentPointer.prototype.getFragment = function getFragment() {
-	    return this._fragment;
-	  };
-
-	  GraphQLFragmentPointer.prototype.equals = function equals(that) {
-	    return shallowEqual(this._dataIDOrIDs, that._dataIDOrIDs) && this._fragment.isEquivalent(that._fragment);
-	  };
-
-	  /**
-	   * @unstable
-	   *
-	   * For debugging only, do not rely on this for comparing values at runtime.
-	   */
-
-	  GraphQLFragmentPointer.prototype.toString = function toString() {
-	    return 'GraphQLFragmentPointer(ids: ' + JSON.stringify(this._dataIDOrIDs) + ', fragment: `' + this.getFragment().getDebugName() + ', params: ' + JSON.stringify(this._fragment.getVariables()) + ')';
-	  };
-
-	  return GraphQLFragmentPointer;
-	})();
+	};
 
 	function getRootFragment(query) {
 	  var batchCall = query.getBatchCall();
 	  if (batchCall) {
 	     true ?  true ? invariant(false, 'Queries supplied at the root cannot have batch call variables. Query ' + '`%s` has a batch call variable, `%s`.', query.getName(), batchCall.refParamName) : invariant(false) : undefined;
 	  }
-	  var fragment;
+	  var fragment = undefined;
 	  query.getChildren().forEach(function (child) {
 	    if (child instanceof RelayQuery.Fragment) {
 	      !!fragment ?  true ? invariant(false, 'Queries supplied at the root should contain exactly one fragment ' + '(e.g. `${Component.getFragment(\'...\')}`). Query `%s` contains ' + 'more than one fragment.', query.getName()) : invariant(false) : undefined;
@@ -48852,81 +49043,14 @@
 	  return fragment;
 	}
 
-	module.exports = GraphQLFragmentPointer;
-
-/***/ },
-/* 390 */
-/***/ function(module, exports) {
-
-	/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule GraphQLStoreDataHandler
-	 * 
-	 * @typechecks
-	 */
-
-	'use strict';
-
-	var METADATA_KEYS = {
-	  __dataID__: true,
-	  __range__: true,
-	  __resolvedFragmentMap__: true,
-	  __resolvedFragmentMapGeneration__: true,
-	  __status__: true
-	};
-
-	/**
-	 * Utility functions for working with data stored in GraphQLStore.
-	 *
-	 * @internal
-	 */
-	var GraphQLStoreDataHandler = {
-	  /**
-	   * Returns the id that can be used to reference the given node in
-	   * the store.
-	   */
-	  getID: function getID(node) {
-	    return node.__dataID__;
-	  },
-
-	  /**
-	   * Returns a pointer object containing a `__dataID__` property for the node
-	   * corresponding to the given id.
-	   */
-	  createPointerWithID: function createPointerWithID(dataID) {
-	    return { __dataID__: dataID };
-	  },
-
-	  /**
-	   * Checks whether the given ID was created on the client, as opposed to an ID
-	   * that's understood by the server as well.
-	   */
-	  isClientID: function isClientID(dataID) {
-	    return dataID.substring(0, 7) === 'client:';
-	  },
-
-	  /**
-	   * Checks whether the given key is a valid metadata key.
-	   */
-	  isMetadataKey: function isMetadataKey(key) {
-	    return METADATA_KEYS[key] || false;
-	  }
-	};
-
-	module.exports = GraphQLStoreDataHandler;
+	module.exports = RelayFragmentPointer;
 
 /***/ },
 /* 391 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -48942,29 +49066,30 @@
 
 	var _classCallCheck = __webpack_require__(355)['default'];
 
-	var _inherits = __webpack_require__(375)['default'];
+	var _inherits = __webpack_require__(376)['default'];
 
 	var _extends = __webpack_require__(338)['default'];
 
 	var _Object$freeze = __webpack_require__(392)['default'];
 
 	var QueryBuilder = __webpack_require__(395);
+	var RelayConnectionInterface = __webpack_require__(407);
+	var RelayFragmentReference = __webpack_require__(412);
 
-	var RelayConnectionInterface = __webpack_require__(404);
-	var RelayFragmentReference = __webpack_require__(406);
+	var RelayMetaRoute = __webpack_require__(414);
+	var RelayProfiler = __webpack_require__(415);
+	var RelayRouteFragment = __webpack_require__(417);
 
-	var RelayMetaRoute = __webpack_require__(408);
-	var RelayProfiler = __webpack_require__(409);
-	var RelayRouteFragment = __webpack_require__(411);
-
-	var areEqual = __webpack_require__(412);
-	var callsFromGraphQL = __webpack_require__(413);
-	var callsToGraphQL = __webpack_require__(414);
-	var generateRQLFieldAlias = __webpack_require__(415);
+	var areEqual = __webpack_require__(418);
+	var callsFromGraphQL = __webpack_require__(419);
+	var callsToGraphQL = __webpack_require__(420);
+	var directivesToGraphQL = __webpack_require__(421);
+	var generateConcreteFragmentID = __webpack_require__(405);
+	var generateRQLFieldAlias = __webpack_require__(422);
 	var invariant = __webpack_require__(399);
-	var serializeRelayQueryCall = __webpack_require__(417);
-	var shallowEqual = __webpack_require__(419);
-	var stableStringify = __webpack_require__(420);
+	var serializeRelayQueryCall = __webpack_require__(423);
+	var shallowEqual = __webpack_require__(425);
+	var stableStringify = __webpack_require__(400);
 
 	// TODO: replace once #6525923 is resolved
 
@@ -48976,7 +49101,6 @@
 	var SKIP = 'skip';
 	var INCLUDE = 'include';
 
-	var _nextFragmentID = 0;
 	var _nextQueryID = 0;
 
 	var DEFAULT_FRAGMENT_METADATA = {
@@ -49052,6 +49176,10 @@
 	   * Wraps access to query root nodes.
 	   */
 
+	  RelayQueryNode.prototype.canHaveSubselections = function canHaveSubselections() {
+	    return true;
+	  };
+
 	  RelayQueryNode.prototype.isGenerated = function isGenerated() {
 	    return false;
 	  };
@@ -49060,14 +49188,10 @@
 	    return false;
 	  };
 
-	  RelayQueryNode.prototype.isScalar = function isScalar() {
-	    return false;
-	  };
-
 	  RelayQueryNode.prototype.clone = function clone(children) {
-	    if (this.isScalar()) {
+	    if (!this.canHaveSubselections()) {
 	      // Compact new children *after* this check, for consistency.
-	      !(children.length === 0) ?  true ? invariant(false, 'RelayQueryNode: Cannot add children to scalar field `%s`.', this instanceof RelayQueryField ? this.getSchemaName() : null) : invariant(false) : undefined;
+	      !(children.length === 0) ?  true ? invariant(false, 'RelayQueryNode: Cannot add children to field `%s` because it does ' + 'not support sub-selections (sub-fields).', this instanceof RelayQueryField ? this.getSchemaName() : null) : invariant(false) : undefined;
 	      return this;
 	    }
 
@@ -49122,11 +49246,11 @@
 	    }
 	    return this.getDirectives().every(function (directive) {
 	      if (directive.name === SKIP) {
-	        return !directive.arguments.some(function (arg) {
+	        return !directive.args.some(function (arg) {
 	          return arg.name === IF && !!arg.value;
 	        });
 	      } else if (directive.name === INCLUDE) {
-	        return !directive.arguments.some(function (arg) {
+	        return !directive.args.some(function (arg) {
 	          return arg.name === IF && !arg.value;
 	        });
 	      }
@@ -49141,8 +49265,8 @@
 	    if (concreteDirectives) {
 	      return this.__concreteNode__.directives.map(function (directive) {
 	        return {
-	          name: directive.name,
-	          arguments: callsFromGraphQL(directive.arguments, _this2.__variables__)
+	          args: callsFromGraphQL(directive.args, _this2.__variables__),
+	          name: directive.name
 	        };
 	      });
 	    }
@@ -49185,7 +49309,7 @@
 	  RelayQueryNode.prototype.hasDeferredDescendant = function hasDeferredDescendant() {
 	    var hasDeferredDescendant = this.__hasDeferredDescendant__;
 	    if (hasDeferredDescendant == null) {
-	      hasDeferredDescendant = !this.isScalar() && this.getChildren().some(function (child) {
+	      hasDeferredDescendant = this.canHaveSubselections() && this.getChildren().some(function (child) {
 	        return child.hasDeferredDescendant();
 	      });
 	      this.__hasDeferredDescendant__ = hasDeferredDescendant;
@@ -49297,6 +49421,10 @@
 	   *
 	   * Abstract base class for mutations and subscriptions.
 	   */
+
+	  RelayQueryRoot.prototype.canHaveSubselections = function canHaveSubselections() {
+	    return true;
+	  };
 
 	  RelayQueryRoot.prototype.getName = function getName() {
 	    var name = this.__concreteNode__.name;
@@ -49427,7 +49555,7 @@
 	    if (!areEqual(this.getBatchCall(), that.getBatchCall())) {
 	      return false;
 	    }
-	    if (this.getFieldName() !== that.getFieldName() || !areEqual(this.getCallsWithValues(), that.getCallsWithValues())) {
+	    if (this.getFieldName() !== that.getFieldName() || !areCallValuesEqual(this.getCallsWithValues(), that.getCallsWithValues())) {
 	      return false;
 	    }
 	    return _RelayQueryNode.prototype.equals.call(this, that);
@@ -49451,6 +49579,10 @@
 	   *
 	   * Represents a GraphQL mutation.
 	   */
+
+	  RelayQueryOperation.prototype.canHaveSubselections = function canHaveSubselections() {
+	    return true;
+	  };
 
 	  RelayQueryOperation.prototype.getName = function getName() {
 	    return this.__concreteNode__.name;
@@ -49640,7 +49772,6 @@
 
 	    _RelayQueryNode3.call(this, concreteNode, route, variables);
 	    this.__compositeHash__ = null;
-	    this.__isCloned__ = false;
 	    this.__metadata__ = metadata || DEFAULT_FRAGMENT_METADATA;
 	  }
 
@@ -49650,51 +49781,38 @@
 	   * Wraps access to query fields.
 	   */
 
+	  RelayQueryFragment.prototype.canHaveSubselections = function canHaveSubselections() {
+	    return true;
+	  };
+
 	  RelayQueryFragment.prototype.getDebugName = function getDebugName() {
 	    return this.__concreteNode__.name;
 	  };
 
 	  /**
-	   * Checks whether a fragment has been cloned such that the concrete node is no
-	   * longer representative of this instance. This will return true for fragments
-	   * that are the result of cloning with new children.
+	   * The "concrete fragment id" uniquely identifies a Relay.QL`fragment ...`
+	   * within the source code of an application and will remain the same across
+	   * runs of a particular version of an application.
 	   */
 
-	  RelayQueryFragment.prototype.isCloned = function isCloned() {
-	    return this.__isCloned__;
+	  RelayQueryFragment.prototype.getConcreteFragmentID = function getConcreteFragmentID() {
+	    return this.__concreteNode__.id;
 	  };
 
 	  /**
-	   * The "concrete node hash" of a fragment uniquely identifies the instance of
-	   * the concrete node. This method should be used with `isCloned()` if you may
-	   * be dealing with fragments that have been cloned with new children.
+	   * The "composite hash" is similar to the concrete instance hash, but it also
+	   * differentiates between varying variable values or route names.
 	   *
-	   * This hash may change between runtime sessions (e.g. client and server).
-	   */
-
-	  RelayQueryFragment.prototype.getConcreteNodeHash = function getConcreteNodeHash() {
-	    var instanceHash = this.__concreteNode__.__instanceHash__;
-	    if (instanceHash == null) {
-	      instanceHash = (_nextFragmentID++).toString();
-	      this.__concreteNode__.__instanceHash__ = instanceHash;
-	    }
-	    return instanceHash;
-	  };
-
-	  /**
-	   * The "composite hash" is similar to the concrete instance hash, but is also
-	   * uniquely differentiates between varying variable values or route names. It
-	   * should also be used with `isCloned()`.
-	   *
-	   * The composite hash is used to identify fragment pointers in records. It is
-	   * also used to store the status of fetching deferred fragments.
+	   * The composite hash is used to:
+	   * - Avoid printing the same fragment twice, in order to reduce upload size.
+	   * - Remember which deferred fragment/data pairs have been fetched.
 	   */
 
 	  RelayQueryFragment.prototype.getCompositeHash = function getCompositeHash() {
 	    var compositeHash = this.__compositeHash__;
 	    if (!compositeHash) {
 	      // TODO: Simplify this hash function, #9599170.
-	      compositeHash = generateRQLFieldAlias(this.getConcreteNodeHash() + '.' + this.__route__.name + '.' + stableStringify(this.__variables__));
+	      compositeHash = generateRQLFieldAlias(this.getConcreteFragmentID() + '.' + this.__route__.name + '.' + stableStringify(this.__variables__));
 	      this.__compositeHash__ = compositeHash;
 	    }
 	    return compositeHash;
@@ -49706,6 +49824,10 @@
 
 	  RelayQueryFragment.prototype.isDeferred = function isDeferred() {
 	    return this.__metadata__.isDeferred;
+	  };
+
+	  RelayQueryFragment.prototype.isPattern = function isPattern() {
+	    return !!this.__concreteNode__.metadata.pattern;
 	  };
 
 	  RelayQueryFragment.prototype.isPlural = function isPlural() {
@@ -49730,7 +49852,9 @@
 	  RelayQueryFragment.prototype.clone = function clone(children) {
 	    var clone = _RelayQueryNode3.prototype.clone.call(this, children);
 	    if (clone !== this && clone instanceof RelayQueryFragment) {
-	      clone.__isCloned__ = true;
+	      clone.__concreteNode__ = _extends({}, clone.__concreteNode__, {
+	        id: generateConcreteFragmentID()
+	      });
 	      clone.__metadata__ = _extends({}, this.__metadata__);
 	    }
 	    return clone;
@@ -49768,6 +49892,7 @@
 
 	  RelayQueryField.build = function build(_ref) {
 	    var alias = _ref.alias;
+	    var directives = _ref.directives;
 	    var calls = _ref.calls;
 	    var children = _ref.children;
 	    var fieldName = _ref.fieldName;
@@ -49780,6 +49905,7 @@
 	      var concreteField = QueryBuilder.createField({
 	        alias: alias,
 	        calls: calls ? callsToGraphQL(calls) : null,
+	        directives: directives ? directivesToGraphQL(directives) : null,
 	        fieldName: fieldName,
 	        metadata: metadata,
 	        type: type
@@ -49800,6 +49926,10 @@
 	    this.__shallowHash__ = undefined;
 	  }
 
+	  RelayQueryField.prototype.canHaveSubselections = function canHaveSubselections() {
+	    return !!this.__concreteNode__.metadata.canHaveSubselections;
+	  };
+
 	  RelayQueryField.prototype.isAbstract = function isAbstract() {
 	    return !!this.__concreteNode__.metadata.isAbstract;
 	  };
@@ -49816,6 +49946,10 @@
 	    return !!this.__concreteNode__.metadata.isConnection;
 	  };
 
+	  RelayQueryField.prototype.isConnectionWithoutNodeID = function isConnectionWithoutNodeID() {
+	    return !!this.__concreteNode__.metadata.isConnectionWithoutNodeID;
+	  };
+
 	  RelayQueryField.prototype.isPlural = function isPlural() {
 	    return !!this.__concreteNode__.metadata.isPlural;
 	  };
@@ -49826,11 +49960,6 @@
 
 	  RelayQueryField.prototype.isRequisite = function isRequisite() {
 	    return !!this.__concreteNode__.metadata.isRequisite;
-	  };
-
-	  RelayQueryField.prototype.isScalar = function isScalar() {
-	    var concreteChildren = this.__concreteNode__.children;
-	    return (!this.__children__ || this.__children__.length === 0) && (!concreteChildren || concreteChildren.length === 0);
 	  };
 
 	  RelayQueryField.prototype.getDebugName = function getDebugName() {
@@ -50000,7 +50129,7 @@
 	    if (!(that instanceof RelayQueryField)) {
 	      return false;
 	    }
-	    if (this.getSchemaName() !== that.getSchemaName() || this.getApplicationName() !== that.getApplicationName() || !areEqual(this.getCallsWithValues(), that.getCallsWithValues())) {
+	    if (this.getSchemaName() !== that.getSchemaName() || this.getApplicationName() !== that.getApplicationName() || !areCallValuesEqual(this.getCallsWithValues(), that.getCallsWithValues())) {
 	      return false;
 	    }
 	    return _RelayQueryNode4.prototype.equals.call(this, that);
@@ -50014,9 +50143,9 @@
 	  };
 
 	  RelayQueryField.prototype.cloneFieldWithCalls = function cloneFieldWithCalls(children, calls) {
-	    if (this.isScalar()) {
+	    if (!this.canHaveSubselections()) {
 	      // Compact new children *after* this check, for consistency.
-	      !(children.length === 0) ?  true ? invariant(false, 'RelayQueryField: Cannot add children to scalar fields.') : invariant(false) : undefined;
+	      !(children.length === 0) ?  true ? invariant(false, 'RelayQueryNode: Cannot add children to field `%s` because it does ' + 'not support sub-selections (sub-fields).', this.getSchemaName()) : invariant(false) : undefined;
 	    }
 
 	    // use `clone()` if call values do not change
@@ -50177,6 +50306,22 @@
 	  }
 	}
 
+	/**
+	 * Checks if two sets of calls have equal names and values. This skips testing
+	 * argument types because type metadata for scalar arguments may be omitted by
+	 * the Babel plugin.
+	 */
+	function areCallValuesEqual(thisCalls, thatCalls) {
+	  if (thisCalls.length !== thatCalls.length) {
+	    return false;
+	  }
+	  return thisCalls.every(function (_ref2, ii) {
+	    var name = _ref2.name;
+	    var value = _ref2.value;
+	    return thatCalls[ii].name === name && areEqual(thatCalls[ii].value, value);
+	  });
+	}
+
 	RelayProfiler.instrumentMethods(RelayQueryNode.prototype, {
 	  clone: '@RelayQueryNode.prototype.clone',
 	  equals: '@RelayQueryNode.prototype.equals',
@@ -50220,9 +50365,9 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	// 19.1.2.5 Object.freeze(O)
-	var isObject = __webpack_require__(382);
+	var isObject = __webpack_require__(383);
 
-	__webpack_require__(387)('freeze', function($freeze){
+	__webpack_require__(388)('freeze', function($freeze){
 	  return function freeze(it){
 	    return $freeze && isObject(it) ? $freeze(it) : it;
 	  };
@@ -50233,7 +50378,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -50249,12 +50394,9 @@
 
 	var _Object$freeze = __webpack_require__(392)['default'];
 
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-
 	var RelayNodeInterface = __webpack_require__(396);
 
+	var generateConcreteFragmentID = __webpack_require__(405);
 	var invariant = __webpack_require__(399);
 
 	var EMPTY_CALLS = [];
@@ -50308,6 +50450,21 @@
 	    };
 	  },
 
+	  createDirective: function createDirective(name, args) {
+	    return {
+	      args: args,
+	      kind: 'Directive',
+	      name: name
+	    };
+	  },
+
+	  createDirectiveArgument: function createDirectiveArgument(name, value) {
+	    return {
+	      name: name,
+	      value: value
+	    };
+	  },
+
 	  createField: function createField(partialField) {
 	    var partialMetadata = partialField.metadata || EMPTY_METADATA;
 	    return {
@@ -50318,6 +50475,7 @@
 	      fieldName: partialField.fieldName,
 	      kind: 'Field',
 	      metadata: {
+	        canHaveSubselections: !!partialMetadata.canHaveSubselections,
 	        inferredRootCallName: partialMetadata.inferredRootCallName,
 	        inferredPrimaryKey: partialMetadata.inferredPrimaryKey,
 	        isConnection: !!partialMetadata.isConnection,
@@ -50336,9 +50494,11 @@
 	    return {
 	      children: partialFragment.children || EMPTY_CHILDREN,
 	      directives: partialFragment.directives || EMPTY_DIRECTIVES,
+	      id: generateConcreteFragmentID(),
 	      kind: 'Fragment',
 	      metadata: {
 	        isAbstract: !!metadata.isAbstract,
+	        pattern: !!metadata.pattern,
 	        plural: !!metadata.plural },
 	      // match the `@relay` argument name
 	      name: partialFragment.name,
@@ -50472,7 +50632,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -50491,7 +50651,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -50506,7 +50666,7 @@
 	'use strict';
 
 	var forEachRootCallArg = __webpack_require__(398);
-	var generateClientID = __webpack_require__(400);
+	var generateClientID = __webpack_require__(401);
 	var invariant = __webpack_require__(399);
 
 	/**
@@ -50517,6 +50677,7 @@
 	var RelayOSSNodeInterface = {
 	  ANY_TYPE: '__any',
 	  ID: 'id',
+	  ID_TYPE: 'ID!',
 	  NODE: 'node',
 	  NODE_TYPE: 'Node',
 	  NODES: 'nodes',
@@ -50548,9 +50709,11 @@
 	        ii = 0;
 
 	        var storageKey = query.getStorageKey();
-	        forEachRootCallArg(query, function (identifyingArgValue) {
+	        forEachRootCallArg(query, function (_ref) {
+	          var identifyingArgKey = _ref.identifyingArgKey;
+
 	          var result = records[ii++];
-	          var dataID = store.getDataID(storageKey, identifyingArgValue);
+	          var dataID = store.getDataID(storageKey, identifyingArgKey);
 	          if (dataID == null) {
 	            var payloadID = typeof result === 'object' && result ? result[RelayOSSNodeInterface.ID] : null;
 	            if (payloadID != null) {
@@ -50559,8 +50722,11 @@
 	              dataID = generateClientID();
 	            }
 	          }
-	          store.putDataID(storageKey, identifyingArgValue, dataID);
-	          results.push({ dataID: dataID, result: result });
+	          results.push({
+	            dataID: dataID,
+	            result: result,
+	            rootCallInfo: { storageKey: storageKey, identifyingArgKey: identifyingArgKey }
+	          });
 	        });
 	      })();
 	    }
@@ -50592,7 +50758,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -50607,6 +50773,7 @@
 	'use strict';
 
 	var invariant = __webpack_require__(399);
+	var stableStringify = __webpack_require__(400);
 
 	/**
 	 * @internal
@@ -50622,11 +50789,11 @@
 	      identifyingArgValue.forEach(function (value) {
 	        return each(value, fn);
 	      });
-	    } else if (identifyingArgValue == null) {
-	      fn(identifyingArgValue);
 	    } else {
-	      !(typeof identifyingArgValue === 'string' || typeof identifyingArgValue === 'number') ?  true ? invariant(false, 'Relay: Expected arguments to root field `%s` to each be strings/' + 'numbers, got `%s`.', query.getFieldName(), JSON.stringify(identifyingArgValue)) : invariant(false) : undefined;
-	      fn('' + identifyingArgValue);
+	      fn({
+	        identifyingArgValue: identifyingArgValue,
+	        identifyingArgKey: identifyingArgValue == null ? null : typeof identifyingArgValue === 'string' ? identifyingArgValue : stableStringify(identifyingArgValue)
+	      });
 	    }
 	  }
 	  var identifyingArg = query.getIdentifyingArg();
@@ -50641,14 +50808,13 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
 	 * LICENSE file in the root directory of this source tree. An additional grant
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 *
-	 * @providesModule invariant
 	 */
 
 	'use strict';
@@ -50696,7 +50862,96 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule stableStringify
+	 * 
+	 */
+
+	'use strict';
+
+	var _Object$keys = __webpack_require__(385)['default'];
+
+	function isObject(value) {
+	  return value !== null && Object.prototype.toString.call(value) === '[object Object]';
+	}
+
+	/**
+	 * Simple recursive stringifier that handles basic objects (does not handle
+	 * corner cases such as circular references) and produces a JSON-like
+	 * serialization suitable for use as a cache key or other similar internal
+	 * book-keeping detail.
+	 *
+	 * Sample input:
+	 *
+	 *     var object = {
+	 *       top2: {
+	 *         middle: {
+	 *           inner: [1, 'foo', ['bar', 2]],
+	 *           other: false,
+	 *         },
+	 *       },
+	 *       top1: [
+	 *         {first: true},
+	 *         {first: false},
+	 *         'random',
+	 *       ],
+	 *       misc: true,
+	 *       extra: null,
+	 *     };
+	 *
+	 * Sample output (some whitespace added for clarity):
+	 *
+	 *    {
+	 *      extra:null,
+	 *      misc:true,
+	 *      top1:[0:{first:true},1:{first:false},2:"random"],
+	 *      top2:{middle:{inner:[0:1,1:"foo",2:[0:"bar",1:2]],other:false}}
+	 *    }
+	 */
+	function stableStringify(input) {
+	  var inputIsArray = Array.isArray(input);
+	  var inputIsObject = isObject(input);
+	  if (inputIsArray || inputIsObject) {
+	    var keys = _Object$keys(input);
+	    if (keys.length) {
+	      var result = [];
+	      keys.sort();
+
+	      for (var i = 0; i < keys.length; i++) {
+	        var key = keys[i];
+	        var value = input[key];
+	        if (isObject(value) || Array.isArray(value)) {
+	          value = stableStringify(value);
+	        } else {
+	          value = JSON.stringify(value);
+	        }
+	        result.push(key + ':' + value);
+	      }
+
+	      if (inputIsArray) {
+	        return '[' + result.join(',') + ']';
+	      } else {
+	        return '{' + result.join(',') + '}';
+	      }
+	    }
+	  }
+	  return JSON.stringify(input);
+	}
+
+	module.exports = stableStringify;
+
+/***/ },
+/* 401 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -50709,8 +50964,8 @@
 
 	'use strict';
 
-	var crc32 = __webpack_require__(401);
-	var performanceNow = __webpack_require__(402);
+	var crc32 = __webpack_require__(402);
+	var performanceNow = __webpack_require__(403);
 
 	var _clientID = 1;
 	var _prefix = 'client:' + crc32('' + performanceNow());
@@ -50728,22 +50983,21 @@
 	module.exports = generateClientID;
 
 /***/ },
-/* 401 */
+/* 402 */
 /***/ function(module, exports) {
 
-	/* WEBPACK VAR INJECTION */(function(global) {/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	/* WEBPACK VAR INJECTION */(function(global) {"use strict";
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
 	 * LICENSE file in the root directory of this source tree. An additional grant
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 *
-	 * @providesModule crc32
 	 * 
 	 */
-
-	"use strict";
 
 	function crc32(str) {
 	  /* jslint bitwise: true */
@@ -50764,24 +51018,23 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 402 */
+/* 403 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
 	 * LICENSE file in the root directory of this source tree. An additional grant
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 *
-	 * @providesModule performanceNow
 	 * @typechecks
 	 */
 
-	'use strict';
-
-	var performance = __webpack_require__(403);
+	var performance = __webpack_require__(404);
 
 	var performanceNow;
 
@@ -50803,24 +51056,23 @@
 	module.exports = performanceNow;
 
 /***/ },
-/* 403 */
+/* 404 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
 	 * LICENSE file in the root directory of this source tree. An additional grant
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 *
-	 * @providesModule performance
 	 * @typechecks
 	 */
 
 	'use strict';
 
-	var ExecutionEnvironment = __webpack_require__(369);
+	var ExecutionEnvironment = __webpack_require__(370);
 
 	var performance;
 
@@ -50831,11 +51083,86 @@
 	module.exports = performance || {};
 
 /***/ },
-/* 404 */
+/* 405 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule generateConcreteFragmentID
+	 * @typechecks
+	 * 
+	 */
+
+	'use strict';
+
+	var base62 = __webpack_require__(406);
+
+	// Static ids always end with `:<HASH>` where HASH is an alphanumeric transform
+	// of an auto-incrementing index. A double-colon is used to distinguish between
+	// client ids and static ids that happen to hash to `:client`.
+	var SUFFIX = '::client';
+
+	var _nextFragmentID = 0;
+
+	/**
+	 * The "concrete fragment id" uniquely identifies a Relay.QL`fragment ...`
+	 * within the source code of an application and will remain the same across
+	 * runs of a particular version of an application.
+	 *
+	 * This function can be used to generate a unique id for fragments constructed
+	 * at runtime and is guaranteed not to conflict with statically created ids.
+	 */
+	function generateConcreteFragmentID() {
+	  return base62(_nextFragmentID++) + SUFFIX;
+	}
+
+	module.exports = generateConcreteFragmentID;
+
+/***/ },
+/* 406 */
+/***/ function(module, exports) {
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * 
+	 */
+
+	'use strict';
+
+	var BASE62 = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+	function base62(number) {
+	  if (!number) {
+	    return '0';
+	  }
+	  var string = '';
+	  while (number > 0) {
+	    string = BASE62[number % 62] + string;
+	    number = Math.floor(number / 62);
+	  }
+	  return string;
+	}
+
+	module.exports = base62;
+
+/***/ },
+/* 407 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -50847,14 +51174,14 @@
 
 	'use strict';
 
-	module.exports = __webpack_require__(405);
+	module.exports = __webpack_require__(408);
 
 /***/ },
-/* 405 */
-/***/ function(module, exports) {
+/* 408 */
+/***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -50868,6 +51195,13 @@
 
 	'use strict';
 
+	var _defineProperty = __webpack_require__(409)['default'];
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+
+	var CLIENT_MUTATION_ID = 'clientMutationId';
 	var CONNECTION_CALLS = {
 	  'after': true,
 	  'before': true,
@@ -50876,11 +51210,19 @@
 	  'last': true,
 	  'surrounds': true
 	};
+	var CURSOR = 'cursor';
+	var EDGES = 'edges';
+	var END_CURSOR = 'endCursor';
+	var HAS_NEXT_PAGE = 'hasNextPage';
+	var HAS_PREV_PAGE = 'hasPreviousPage';
+	var NODE = 'node';
+	var PAGE_INFO = 'pageInfo';
 	var REQUIRED_RANGE_CALLS = {
 	  'find': true,
 	  'first': true,
 	  'last': true
 	};
+	var START_CURSOR = 'startCursor';
 
 	/**
 	 * @internal
@@ -50888,15 +51230,15 @@
 	 * Defines logic relevant to the informal "Connection" GraphQL interface.
 	 */
 	var RelayOSSConnectionInterface = {
-	  CLIENT_MUTATION_ID: 'clientMutationId',
-	  CURSOR: 'cursor',
-	  EDGES: 'edges',
-	  END_CURSOR: 'endCursor',
-	  HAS_NEXT_PAGE: 'hasNextPage',
-	  HAS_PREV_PAGE: 'hasPreviousPage',
-	  NODE: 'node',
-	  PAGE_INFO: 'pageInfo',
-	  START_CURSOR: 'startCursor',
+	  CLIENT_MUTATION_ID: CLIENT_MUTATION_ID,
+	  CURSOR: CURSOR,
+	  EDGES: EDGES,
+	  END_CURSOR: END_CURSOR,
+	  HAS_NEXT_PAGE: HAS_NEXT_PAGE,
+	  HAS_PREV_PAGE: HAS_PREV_PAGE,
+	  NODE: NODE,
+	  PAGE_INFO: PAGE_INFO,
+	  START_CURSOR: START_CURSOR,
 
 	  /**
 	   * Whether `edges` fields are expected to have `source` fields.
@@ -50926,23 +51268,60 @@
 	   * Gets a default record representing a connection's `PAGE_INFO`.
 	   */
 	  getDefaultPageInfo: function getDefaultPageInfo() {
-	    var pageInfo = {};
-	    pageInfo[RelayOSSConnectionInterface.START_CURSOR] = undefined;
-	    pageInfo[RelayOSSConnectionInterface.END_CURSOR] = undefined;
-	    pageInfo[RelayOSSConnectionInterface.HAS_NEXT_PAGE] = false;
-	    pageInfo[RelayOSSConnectionInterface.HAS_PREV_PAGE] = false;
-	    return pageInfo;
+	    var _ref;
+
+	    return _ref = {}, _defineProperty(_ref, END_CURSOR, undefined), _defineProperty(_ref, HAS_NEXT_PAGE, false), _defineProperty(_ref, HAS_PREV_PAGE, false), _defineProperty(_ref, START_CURSOR, undefined), _ref;
 	  }
 	};
 
 	module.exports = RelayOSSConnectionInterface;
 
 /***/ },
-/* 406 */
+/* 409 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var _Object$defineProperty = __webpack_require__(410)["default"];
+
+	exports["default"] = function (obj, key, value) {
+	  if (key in obj) {
+	    _Object$defineProperty(obj, key, {
+	      value: value,
+	      enumerable: true,
+	      configurable: true,
+	      writable: true
+	    });
+	  } else {
+	    obj[key] = value;
+	  }
+
+	  return obj;
+	};
+
+	exports.__esModule = true;
+
+/***/ },
+/* 410 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = { "default": __webpack_require__(411), __esModule: true };
+
+/***/ },
+/* 411 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var $ = __webpack_require__(348);
+	module.exports = function defineProperty(it, key, desc){
+	  return $.setDesc(it, key, desc);
+	};
+
+/***/ },
+/* 412 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -50962,9 +51341,9 @@
 
 	var QueryBuilder = __webpack_require__(395);
 
-	var forEachObject = __webpack_require__(407);
+	var forEachObject = __webpack_require__(413);
 	var invariant = __webpack_require__(399);
-	var warning = __webpack_require__(371);
+	var warning = __webpack_require__(372);
 
 	/**
 	 * @internal
@@ -51165,18 +51544,17 @@
 	module.exports = RelayFragmentReference;
 
 /***/ },
-/* 407 */
+/* 413 */
 /***/ function(module, exports) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
 	 * LICENSE file in the root directory of this source tree. An additional grant
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 *
-	 * @providesModule forEachObject
 	 * @typechecks
 	 */
 
@@ -51213,11 +51591,11 @@
 	module.exports = forEachObject;
 
 /***/ },
-/* 408 */
+/* 414 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -51261,11 +51639,11 @@
 	module.exports = RelayMetaRoute;
 
 /***/ },
-/* 409 */
+/* 415 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -51279,9 +51657,9 @@
 
 	'use strict';
 
-	var emptyFunction = __webpack_require__(372);
-	var forEachObject = __webpack_require__(407);
-	var removeFromArray = __webpack_require__(410);
+	var emptyFunction = __webpack_require__(373);
+	var forEachObject = __webpack_require__(413);
+	var removeFromArray = __webpack_require__(416);
 
 	var aggregateHandlersByName = {
 	  '*': []
@@ -51531,18 +51909,19 @@
 	module.exports = RelayProfiler;
 
 /***/ },
-/* 410 */
+/* 416 */
 /***/ function(module, exports) {
 
+	"use strict";
+
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
 	 * LICENSE file in the root directory of this source tree. An additional grant
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 *
-	 * @providesModule removeFromArray
 	 * @typechecks
 	 * 
 	 */
@@ -51550,8 +51929,6 @@
 	/**
 	 * Removes an element from an array.
 	 */
-	"use strict";
-
 	function removeFromArray(array, element) {
 	  var index = array.indexOf(element);
 	  if (index !== -1) {
@@ -51562,11 +51939,11 @@
 	module.exports = removeFromArray;
 
 /***/ },
-/* 411 */
+/* 417 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -51616,22 +51993,21 @@
 	module.exports = RelayRouteFragment;
 
 /***/ },
-/* 412 */
+/* 418 */
 /***/ function(module, exports) {
 
+	'use strict';
+
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
 	 * LICENSE file in the root directory of this source tree. An additional grant
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 *
-	 * @providesModule areEqual
 	 * 
 	 */
-
-	'use strict';
 
 	var aStackPool = [];
 	var bStackPool = [];
@@ -51730,11 +52106,11 @@
 	module.exports = areEqual;
 
 /***/ },
-/* 413 */
+/* 419 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -51767,13 +52143,13 @@
 	    if (value != null) {
 	      if (Array.isArray(value)) {
 	        value = value.map(function (arg) {
-	          return getCallVaue(arg, variables);
+	          return getCallValue(arg, variables);
 	        });
 	      } else if (value.kind === 'BatchCallVariable') {
 	        // Batch calls are handled separately
 	        value = null;
 	      } else {
-	        value = getCallVaue(value, variables);
+	        value = getCallValue(value, variables);
 	      }
 	    }
 	    orderedCalls.push({ name: name, value: value });
@@ -51781,24 +52157,30 @@
 	  return orderedCalls;
 	}
 
-	function getCallVaue(value, variables) {
-	  if (value.kind === 'CallValue') {
-	    return value.callValue;
+	function getCallValue(concreteValue, variables) {
+	  var callValue = undefined;
+	  if (concreteValue.kind === 'CallValue') {
+	    callValue = concreteValue.callValue;
 	  } else {
-	    var variableName = value.callVariableName;
+	    var variableName = concreteValue.callVariableName;
 	    !variables.hasOwnProperty(variableName) ?  true ? invariant(false, 'callsFromGraphQL(): Expected a declared value for variable, `$%s`.', variableName) : invariant(false) : undefined;
-	    return variables[variableName];
+	    callValue = variables[variableName];
 	  }
+	  // Perform a shallow check to ensure the value conforms to `CallValue` type:
+	  // For performance reasons, skip recursively testing array/object values.
+	  var valueType = typeof callValue;
+	  !(callValue == null || valueType === 'boolean' || valueType === 'number' || valueType === 'string' || valueType === 'object') ?  true ? invariant(false, 'callsFromGraphQL(): Expected argument value `%s` to either be null or a ' + 'boolean, number, string, or array/object.', JSON.stringify(callValue)) : invariant(false) : undefined;
+	  return callValue;
 	}
 
 	module.exports = callsFromGraphQL;
 
 /***/ },
-/* 414 */
+/* 420 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -51837,11 +52219,61 @@
 	module.exports = callsToGraphQL;
 
 /***/ },
-/* 415 */
+/* 421 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule directivesToGraphQL
+	 * 
+	 * @typechecks
+	 */
+
+	'use strict';
+
+	var QueryBuilder = __webpack_require__(395);
+
+	/**
+	 * @internal
+	 *
+	 * Convert plain object `{name, arguments}` directives to GraphQL directive
+	 * nodes.
+	 */
+	function directivesToGraphQL(directives) {
+	  return directives.map(function (_ref) {
+	    var name = _ref.name;
+	    var args = _ref.args;
+
+	    var concreteArguments = args.map(function (_ref2) {
+	      var name = _ref2.name;
+	      var value = _ref2.value;
+
+	      var concreteArgument = null;
+	      if (Array.isArray(value)) {
+	        concreteArgument = value.map(QueryBuilder.createCallValue);
+	      } else if (value != null) {
+	        concreteArgument = QueryBuilder.createCallValue(value);
+	      }
+	      return QueryBuilder.createDirectiveArgument(name, concreteArgument);
+	    });
+	    return QueryBuilder.createDirective(name, concreteArguments);
+	  });
+	}
+
+	module.exports = directivesToGraphQL;
+
+/***/ },
+/* 422 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -51850,16 +52282,21 @@
 	 *
 	 * @providesModule generateRQLFieldAlias
 	 * @typechecks
+	 * 
 	 */
 
 	'use strict';
 
-	var base62 = __webpack_require__(416);
-	var crc32 = __webpack_require__(401);
+	/* eslint-disable no-bitwise */
+
+	var base62 = __webpack_require__(406);
+	var crc32 = __webpack_require__(402);
 
 	var PREFIX = '_';
 
 	/**
+	 * @internal
+	 *
 	 * Sanitizes a stringified GraphQL field (including any calls and their values)
 	 * to produce a valid alias.
 	 *
@@ -51868,11 +52305,6 @@
 	 * between components requesting the same fields. (Explicit aliases are only
 	 * needed within a single component when it uses the same field multiple times,
 	 * in order to differentiate these fields in the props).
-	 *
-	 * @internal
-	 *
-	 * @param {string} input
-	 * @return {string}
 	 */
 	function generateRQLFieldAlias(input) {
 	  // Field names with no calls can be used as aliases without encoding
@@ -51880,52 +52312,18 @@
 	  if (index === -1) {
 	    return input;
 	  }
-
-	  return PREFIX + input.substr(0, index) + base62(Math.abs(crc32(input)));
+	  // Unsign crc32 hash so we do not base62 encode a negative number.
+	  return PREFIX + input.substr(0, index) + base62(crc32(input) >>> 0);
 	}
 
 	module.exports = generateRQLFieldAlias;
 
 /***/ },
-/* 416 */
-/***/ function(module, exports) {
-
-	/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule base62
-	 * 
-	 */
-
-	'use strict';
-
-	var BASE62 = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
-	function base62(number) {
-	  if (!number) {
-	    return '0';
-	  }
-	  var string = '';
-	  while (number > 0) {
-	    string = BASE62[number % 62] + string;
-	    number = Math.floor(number / 62);
-	  }
-	  return string;
-	}
-
-	module.exports = base62;
-
-/***/ },
-/* 417 */
+/* 423 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -51939,7 +52337,7 @@
 
 	'use strict';
 
-	var flattenArray = __webpack_require__(418);
+	var flattenArray = __webpack_require__(424);
 
 	/**
 	 * @internal
@@ -51951,51 +52349,39 @@
 
 	  var valueString;
 	  if (Array.isArray(value)) {
-	    valueString = flattenArray(value).map(sanitizeCallValue).join(',');
-	  } else if (value != null) {
-	    valueString = sanitizeCallValue(value);
+	    valueString = flattenArray(value).map(serializeCallValue).join(',');
 	  } else {
-	    valueString = '';
+	    valueString = serializeCallValue(value);
 	  }
 	  return '.' + call.name + '(' + valueString + ')';
 	}
 
-	function sanitizeCallValue(value) {
+	function serializeCallValue(value) {
 	  if (value == null) {
 	    return '';
+	  } else if (typeof value !== 'string') {
+	    return JSON.stringify(value);
+	  } else {
+	    return value;
 	  }
-	  // Special case for FB GraphQL to resolve ambiguity around "empty" arguments.
-	  if (value === '') {
-	    return '\ ';
-	  }
-	  if (typeof value !== 'string') {
-	    value = JSON.stringify(value);
-	  }
-	  value = value.replace(/[)(}{><,.\\]/g, '\\$&');
-	  // Works around a bug in Legacy GraphQL, see Task #7599025.
-	  if (/ $/.test(value)) {
-	    value += ' ';
-	  }
-	  return value.replace(/^( *)(.*?)( *)$/, function (_, prefix, body, suffix) {
-	    return '\\ '.repeat(prefix.length) + body + '\\ '.repeat(suffix.length);
-	  });
 	}
 
 	module.exports = serializeRelayQueryCall;
 
 /***/ },
-/* 418 */
+/* 424 */
 /***/ function(module, exports) {
 
+	"use strict";
+
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
 	 * LICENSE file in the root directory of this source tree. An additional grant
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 *
-	 * @providesModule flattenArray
 	 * @typechecks
 	 * 
 	 */
@@ -52013,8 +52399,6 @@
 	 * @copyright 2014-2015 Jon Schlinkert
 	 * @license MIT
 	 */
-	"use strict";
-
 	function flattenArray(array) {
 	  var result = [];
 	  flatten(array, result);
@@ -52038,25 +52422,42 @@
 	module.exports = flattenArray;
 
 /***/ },
-/* 419 */
+/* 425 */
 /***/ function(module, exports) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
 	 * LICENSE file in the root directory of this source tree. An additional grant
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 *
-	 * @providesModule shallowEqual
 	 * @typechecks
 	 * 
 	 */
 
+	/*eslint-disable no-self-compare */
+
 	'use strict';
 
 	var hasOwnProperty = Object.prototype.hasOwnProperty;
+
+	/**
+	 * inlined Object.is polyfill to avoid requiring consumers ship their own
+	 * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is
+	 */
+	function is(x, y) {
+	  // SameValue algorithm
+	  if (x === y) {
+	    // Steps 1-5, 7-10
+	    // Steps 6.b-6.e: +0 != -0
+	    return x !== 0 || 1 / x === 1 / y;
+	  } else {
+	    // Step 6.a: NaN == NaN
+	    return x !== x && y !== y;
+	  }
+	}
 
 	/**
 	 * Performs equality by iterating through keys on an object and returning false
@@ -52064,7 +52465,7 @@
 	 * Returns true when the values of all keys are strictly equal.
 	 */
 	function shallowEqual(objA, objB) {
-	  if (objA === objB) {
+	  if (is(objA, objB)) {
 	    return true;
 	  }
 
@@ -52080,9 +52481,8 @@
 	  }
 
 	  // Test for A's keys different from B.
-	  var bHasOwnProperty = hasOwnProperty.bind(objB);
 	  for (var i = 0; i < keysA.length; i++) {
-	    if (!bHasOwnProperty(keysA[i]) || objA[keysA[i]] !== objB[keysA[i]]) {
+	    if (!hasOwnProperty.call(objB, keysA[i]) || !is(objA[keysA[i]], objB[keysA[i]])) {
 	      return false;
 	    }
 	  }
@@ -52093,7 +52493,1720 @@
 	module.exports = shallowEqual;
 
 /***/ },
-/* 420 */
+/* 426 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule RelayRecord
+	 * @typechecks
+	 * 
+	 */
+
+	'use strict';
+
+	var _extends = __webpack_require__(338)['default'];
+
+	var _Object$keys = __webpack_require__(385)['default'];
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+
+	var MetadataKey = {
+	  DATA_ID: '__dataID__',
+	  FILTER_CALLS: '__filterCalls__',
+	  FORCE_INDEX: '__forceIndex__',
+	  MUTATION_IDS: '__mutationIDs__',
+	  PATH: '__path__',
+	  RANGE: '__range__',
+	  RESOLVED_DEFERRED_FRAGMENTS: '__resolvedDeferredFragments__',
+	  RESOLVED_FRAGMENT_MAP: '__resolvedFragmentMap__',
+	  RESOLVED_FRAGMENT_MAP_GENERATION: '__resolvedFragmentMapGeneration__',
+	  STATUS: '__status__'
+	};
+
+	var metadataKeyLookup = {};
+	_Object$keys(MetadataKey).forEach(function (name) {
+	  metadataKeyLookup[MetadataKey[name]] = true;
+	});
+
+	/**
+	 * Records are plain objects with special metadata properties.
+	 */
+	var RelayRecord = {
+
+	  MetadataKey: MetadataKey,
+
+	  create: function create(dataID) {
+	    return { __dataID__: dataID };
+	  },
+
+	  createWithFields: function createWithFields(dataID, fieldMap) {
+	    return _extends({
+	      __dataID__: dataID
+	    }, fieldMap);
+	  },
+
+	  isRecord: function isRecord(value) {
+	    return typeof value === 'object' && value != null && !Array.isArray(value) && typeof value.__dataID__ === 'string';
+	  },
+
+	  getDataID: function getDataID(record) {
+	    return record.__dataID__;
+	  },
+
+	  /**
+	   * Checks whether the given ID was created on the client, as opposed to an ID
+	   * that's understood by the server as well.
+	   */
+	  isClientID: function isClientID(dataID) {
+	    return dataID.substring(0, 7) === 'client:';
+	  },
+
+	  isMetadataKey: function isMetadataKey(key) {
+	    return metadataKeyLookup.hasOwnProperty(key);
+	  }
+	};
+
+	module.exports = RelayRecord;
+
+/***/ },
+/* 427 */
+/***/ function(module, exports) {
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule RelayContainerComparators
+	 * 
+	 * @typechecks
+	 */
+
+	'use strict';
+
+	/**
+	 * Compares `objectA` and `objectB` using the provided `isEqual` function.
+	 *
+	 * If a `filter` object is provided, only its keys will be checked during
+	 * comparison.
+	 */
+	function compareObjects(isEqual, objectA, objectB, filter) {
+	  var key;
+
+	  // Test for A's keys different from B.
+	  for (key in objectA) {
+	    if (filter && !filter.hasOwnProperty(key)) {
+	      continue;
+	    }
+
+	    if (objectA.hasOwnProperty(key) && (!objectB.hasOwnProperty(key) || !isEqual(objectA[key], objectB[key], key))) {
+	      return false;
+	    }
+	  }
+	  // Test for B's keys missing from A.
+	  for (key in objectB) {
+	    if (filter && !filter.hasOwnProperty(key)) {
+	      continue;
+	    }
+
+	    if (objectB.hasOwnProperty(key) && !objectA.hasOwnProperty(key)) {
+	      return false;
+	    }
+	  }
+	  return true;
+	}
+
+	function isScalarAndEqual(valueA, valueB) {
+	  return valueA === valueB && (valueA === null || typeof valueA !== 'object');
+	}
+
+	function isQueryDataEqual(fragmentPointers, currProp, nextProp, propName) {
+	  return(
+	    // resolved data did not change
+	    fragmentPointers[propName] && currProp === nextProp ||
+	    // otherwise compare fake data
+	    isScalarAndEqual(currProp, nextProp)
+	  );
+	}
+
+	function isNonQueryPropEqual(fragments, currProp, nextProp, propName) {
+	  return(
+	    // ignore props with fragments (instead resolved values are compared)
+	    fragments.hasOwnProperty(propName) ||
+	    // otherwise props must be scalar and === in order to skip
+	    isScalarAndEqual(currProp, nextProp)
+	  );
+	}
+
+	/**
+	 * Relay-aware comparators for props and state provide a reasonable default
+	 * implementation of `shouldComponentUpdate`.
+	 */
+	var RelayContainerComparators = {
+	  areQueryResultsEqual: function areQueryResultsEqual(fragmentPointers, prevQueryData, nextQueryData) {
+	    return compareObjects(isQueryDataEqual.bind(null, fragmentPointers), prevQueryData, nextQueryData);
+	  },
+
+	  areNonQueryPropsEqual: function areNonQueryPropsEqual(fragments, props, nextProps) {
+	    return compareObjects(isNonQueryPropEqual.bind(null, fragments), props, nextProps);
+	  },
+
+	  areQueryVariablesEqual: function areQueryVariablesEqual(variables, nextVariables) {
+	    return compareObjects(isScalarAndEqual, variables, nextVariables);
+	  }
+	};
+
+	module.exports = RelayContainerComparators;
+
+/***/ },
+/* 428 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule RelayContainerProxy
+	 */
+
+	'use strict';
+
+	module.exports = __webpack_require__(429);
+
+/***/ },
+/* 429 */
+/***/ function(module, exports) {
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule RelayOSSContainerProxy
+	 * @typechecks
+	 * 
+	 */
+
+	/**
+	 * This feature is deprecated and unavailable in open source.
+	 */
+	'use strict';
+
+	var RelayOSSContainerProxy = {
+	  proxyMethods: function proxyMethods(RelayContainer, Component) {}
+	};
+
+	module.exports = RelayOSSContainerProxy;
+
+/***/ },
+/* 430 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule RelayMutationTransaction
+	 * @typechecks
+	 * 
+	 */
+
+	'use strict';
+
+	var _classCallCheck = __webpack_require__(355)['default'];
+
+	var RelayMutationTransactionStatus = __webpack_require__(431);
+
+	var invariant = __webpack_require__(399);
+
+	/**
+	 * @internal
+	 */
+
+	var RelayMutationTransaction = (function () {
+	  function RelayMutationTransaction(mutationQueue, id) {
+	    _classCallCheck(this, RelayMutationTransaction);
+
+	    this._id = id;
+	    this._mutationQueue = mutationQueue;
+	  }
+
+	  RelayMutationTransaction.prototype.commit = function commit() {
+	    var status = this.getStatus();
+	    !(status === RelayMutationTransactionStatus.UNCOMMITTED) ?  true ? invariant(false, 'RelayMutationTransaction: Only transactions with status `UNCOMMITTED` ' + 'can be comitted.') : invariant(false) : undefined;
+
+	    this._mutationQueue.commit(this._id);
+	  };
+
+	  RelayMutationTransaction.prototype.recommit = function recommit() {
+	    var status = this.getStatus();
+	    !(status === RelayMutationTransactionStatus.COMMIT_FAILED || status === RelayMutationTransactionStatus.COLLISION_COMMIT_FAILED) ?  true ? invariant(false, 'RelayMutationTransaction: Only transaction with status ' + '`COMMIT_FAILED` or `COLLISION_COMMIT_FAILED` can be comitted.') : invariant(false) : undefined;
+
+	    this._mutationQueue.commit(this._id);
+	  };
+
+	  RelayMutationTransaction.prototype.rollback = function rollback() {
+	    var status = this.getStatus();
+	    !(status === RelayMutationTransactionStatus.UNCOMMITTED || status === RelayMutationTransactionStatus.COMMIT_FAILED || status === RelayMutationTransactionStatus.COLLISION_COMMIT_FAILED) ?  true ? invariant(false, 'RelayMutationTransaction: Only transactions with status `UNCOMMITTED` ' + '`COMMIT_FAILED` or `COLLISION_COMMIT_FAILED` can be rolledback.') : invariant(false) : undefined;
+
+	    this._mutationQueue.rollback(this._id);
+	  };
+
+	  RelayMutationTransaction.prototype.getError = function getError() {
+	    return this._mutationQueue.getError(this._id);
+	  };
+
+	  RelayMutationTransaction.prototype.getStatus = function getStatus() {
+	    return this._mutationQueue.getStatus(this._id);
+	  };
+
+	  return RelayMutationTransaction;
+	})();
+
+	module.exports = RelayMutationTransaction;
+
+/***/ },
+/* 431 */
+/***/ function(module, exports) {
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule RelayMutationTransactionStatus
+	 * @typechecks
+	 * 
+	 */
+
+	'use strict';
+
+	var RelayMutationTransactionStatus = {
+	  /**
+	   * Transaction hasn't yet been sent to the server. Client has an optimistic
+	   * update applied if the mutation defined one. Transaction can be committed or
+	   * rolledback.
+	   */
+	  UNCOMMITTED: 'UNCOMMITTED',
+
+	  /**
+	   * Transaction was committed but another transaction with the same collision
+	   * key is pending, so the transaction has been queued to send to the server.
+	   */
+	  COMMIT_QUEUED: 'COMMIT_QUEUED',
+
+	  /**
+	   * Transaction was queued for commit but another transaction with the same
+	   * collision queue failed to commit. All transactions in the collision
+	   * queue, including this one, have been failed as well. Transaction can be
+	   * recommitted or rolledback.
+	   */
+	  COLLISION_COMMIT_FAILED: 'COLLISION_COMMIT_FAILED',
+
+	  /**
+	   * Transaction was sent to the server for comitting and a response is awaited.
+	   */
+	  COMMITTING: 'COMMITTING',
+
+	  /**
+	   * Transaction was sent to the server for comitting but was failed.
+	   */
+	  COMMIT_FAILED: 'COMMIT_FAILED'
+	};
+
+	module.exports = RelayMutationTransactionStatus;
+
+/***/ },
+/* 432 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule RelayPropTypes
+	 * 
+	 * @typechecks
+	 */
+
+	'use strict';
+
+	var _require = __webpack_require__(2);
+
+	var PropTypes = _require.PropTypes;
+
+	var isRelayContainer = __webpack_require__(433);
+	var isRelayContext = __webpack_require__(434);
+	var sprintf = __webpack_require__(371);
+
+	var RelayPropTypes = {
+	  Container: function Container(props, propName, componentName) {
+	    var component = props[propName];
+	    if (component == null) {
+	      return new Error(sprintf('Required prop `%s` was not specified in `%s`.', propName, componentName));
+	    } else if (!isRelayContainer(component)) {
+	      return new Error(sprintf('Invalid prop `%s` supplied to `%s`, expected a RelayContainer.', propName, componentName));
+	    }
+	    return null;
+	  },
+
+	  Context: function Context(props, propName, componentName) {
+	    var context = props[propName];
+	    if (!isRelayContext(context)) {
+	      return new Error(sprintf('Invalid prop/context `%s` supplied to `%s`, expected `%s` to be ' + 'an object conforming to the `RelayContext` interface.', propName, componentName, context));
+	    }
+	    return null;
+	  },
+
+	  QueryConfig: PropTypes.shape({
+	    name: PropTypes.string.isRequired,
+	    params: PropTypes.object.isRequired,
+	    queries: PropTypes.object.isRequired
+	  })
+	};
+
+	module.exports = RelayPropTypes;
+
+/***/ },
+/* 433 */
+/***/ function(module, exports) {
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule isRelayContainer
+	 * 
+	 * @typechecks
+	 */
+
+	'use strict';
+
+	function isRelayContainer(component) {
+	  return !!(component && component.getFragmentNames && component.getFragment && component.hasFragment && component.hasVariable);
+	}
+
+	module.exports = isRelayContainer;
+
+/***/ },
+/* 434 */
+/***/ function(module, exports) {
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule isRelayContext
+	 * @typechecks
+	 * 
+	 */
+
+	'use strict';
+
+	/**
+	 * Determine if a given value is an object that implements the `RelayContext`
+	 * interface.
+	 */
+	function isRelayContext(context) {
+	  return typeof context === 'object' && context !== null && typeof context.forceFetch === 'function' && typeof context.getFragmentResolver === 'function' && typeof context.getStoreData === 'function' && typeof context.primeCache === 'function';
+	}
+
+	module.exports = isRelayContext;
+
+/***/ },
+/* 435 */
+/***/ function(module, exports) {
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule RelayRecordStatusMap
+	 * 
+	 * @typechecks
+	 */
+
+	'use strict';
+	/**
+	 * Record might contain data from optimistic update.
+	 */
+	var OPTIMISTIC_MASK = 0x01;
+	/**
+	 * Record was part of a mutation that resulted in an error.
+	 */
+	var ERROR_MASK = 0x02;
+	/**
+	 * The subtree of data from this record contains partial data.
+	 */
+	var PARTIAL_MASK = 0x04;
+
+	function set(status, value, mask) {
+	  status = status || 0;
+	  if (value) {
+	    return status | mask; // eslint-disable-line no-bitwise
+	  } else {
+	      return status & ~mask; // eslint-disable-line no-bitwise
+	    }
+	}
+
+	function check(status, mask) {
+	  return ((status || 0) & mask) != 0; // eslint-disable-line no-bitwise
+	}
+	/**
+	 * A set of functions for modifying `__status__` on records inside of
+	 * RelayStore.
+	 */
+	var RelayRecordStatusMap = {
+	  setOptimisticStatus: function setOptimisticStatus(status, value) {
+	    return set(status, value, OPTIMISTIC_MASK);
+	  },
+
+	  isOptimisticStatus: function isOptimisticStatus(status) {
+	    return check(status, OPTIMISTIC_MASK);
+	  },
+
+	  setErrorStatus: function setErrorStatus(status, value) {
+	    return set(status, value, ERROR_MASK);
+	  },
+
+	  isErrorStatus: function isErrorStatus(status) {
+	    return check(status, ERROR_MASK);
+	  },
+
+	  // Should only be used on records read out from RelayRecordStore
+	  // by `readRelayQueryData`.
+	  setPartialStatus: function setPartialStatus(status, value) {
+	    return set(status, value, PARTIAL_MASK);
+	  },
+
+	  isPartialStatus: function isPartialStatus(status) {
+	    return check(status, PARTIAL_MASK);
+	  }
+	};
+
+	module.exports = RelayRecordStatusMap;
+
+/***/ },
+/* 436 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule buildRQL
+	 * 
+	 * @typechecks
+	 */
+
+	'use strict';
+
+	var _extends = __webpack_require__(338)['default'];
+
+	var _toConsumableArray = __webpack_require__(437)['default'];
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+
+	var Map = __webpack_require__(463);
+	var QueryBuilder = __webpack_require__(395);
+
+	var RelayProfiler = __webpack_require__(415);
+
+	var filterObject = __webpack_require__(478);
+	var invariant = __webpack_require__(399);
+	var mapObject = __webpack_require__(479);
+
+	// Cache results of executing fragment query builders.
+	var fragmentCache = new Map();
+
+	// Cache results of executing component-specific route query builders.
+	var queryCache = new Map();
+
+	function isDeprecatedCallWithArgCountGreaterThan(nodeBuilder, count) {
+	  var argLength = nodeBuilder.length;
+	  if (true) {
+	    var mockImpl = nodeBuilder;
+	    while (mockImpl && mockImpl._getMockImplementation) {
+	      mockImpl = mockImpl._getMockImplementation();
+	    }
+	    if (mockImpl) {
+	      argLength = mockImpl.length;
+	    }
+	  }
+	  return argLength > count;
+	}
+
+	/**
+	 * @internal
+	 *
+	 * Builds a static node representation using a supplied query or fragment
+	 * builder. This is used for routes, containers, and mutations.
+	 *
+	 * If the supplied fragment builder produces an invalid node (e.g. the wrong
+	 * node type), these will return `undefined`. This is not to be confused with
+	 * a return value of `null`, which may result from the lack of a node.
+	 */
+	var buildRQL = {
+	  Fragment: function Fragment(fragmentBuilder, values) {
+	    var node = fragmentCache.get(fragmentBuilder);
+	    if (node) {
+	      return QueryBuilder.getFragment(node);
+	    }
+	    var variables = toVariables(values);
+	    !!isDeprecatedCallWithArgCountGreaterThan(fragmentBuilder, 1) ?  true ? invariant(false, 'Relay.QL: Deprecated usage detected. If you are trying to define a ' + 'fragment, use `variables => Relay.QL`.') : invariant(false) : undefined;
+	    node = fragmentBuilder(variables);
+	    var fragment = node != null ? QueryBuilder.getFragment(node) : null;
+	    if (!fragment) {
+	      return fragment;
+	    }
+	    fragmentCache.set(fragmentBuilder, fragment);
+	    return fragment;
+	  },
+
+	  Query: function Query(queryBuilder, Component, queryName, values) {
+	    var componentCache = queryCache.get(queryBuilder);
+	    var node = undefined;
+	    if (!componentCache) {
+	      componentCache = new Map();
+	      queryCache.set(queryBuilder, componentCache);
+	    } else {
+	      node = componentCache.get(Component);
+	    }
+	    if (!node) {
+	      var _variables = toVariables(values);
+	      !!isDeprecatedCallWithArgCountGreaterThan(queryBuilder, 2) ?  true ? invariant(false, 'Relay.QL: Deprecated usage detected. If you are trying to define a ' + 'query, use `(Component, variables) => Relay.QL`.') : invariant(false) : undefined;
+	      if (isDeprecatedCallWithArgCountGreaterThan(queryBuilder, 0)) {
+	        node = queryBuilder(Component, _variables);
+	      } else {
+	        node = queryBuilder(Component, _variables);
+	        var query = QueryBuilder.getQuery(node);
+	        if (query) {
+	          (function () {
+	            var hasFragment = false;
+	            var hasScalarFieldsOnly = true;
+	            if (query.children) {
+	              query.children.forEach(function (child) {
+	                if (child) {
+	                  hasFragment = hasFragment || child.kind === 'Fragment';
+	                  hasScalarFieldsOnly = hasScalarFieldsOnly && child.kind === 'Field' && (!child.children || child.children.length === 0);
+	                }
+	              });
+	            }
+	            if (!hasFragment) {
+	              var children = query.children ? [].concat(_toConsumableArray(query.children)) : [];
+	              !hasScalarFieldsOnly ?  true ? invariant(false, 'Relay.QL: Expected query `%s` to be empty. For example, use ' + '`node(id: $id)`, not `node(id: $id) { ... }`.', query.fieldName) : invariant(false) : undefined;
+	              var fragmentVariables = filterObject(_variables, function (_, name) {
+	                return Component.hasVariable(name);
+	              });
+	              children.push(Component.getFragment(queryName, fragmentVariables));
+	              node = _extends({}, query, {
+	                children: children
+	              });
+	            }
+	          })();
+	        }
+	      }
+	      componentCache.set(Component, node);
+	    }
+	    if (node) {
+	      return QueryBuilder.getQuery(node) || undefined;
+	    }
+	    return null;
+	  }
+	};
+
+	function toVariables(variables) // ConcreteCallVariable should flow into mixed
+	{
+	  return mapObject(variables, function (_, name) {
+	    return QueryBuilder.createCallVariable(name);
+	  });
+	}
+
+	RelayProfiler.instrumentMethods(buildRQL, {
+	  Fragment: 'buildRQL.Fragment',
+	  Query: 'buildRQL.Query'
+	});
+
+	module.exports = buildRQL;
+
+/***/ },
+/* 437 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var _Array$from = __webpack_require__(438)["default"];
+
+	exports["default"] = function (arr) {
+	  if (Array.isArray(arr)) {
+	    for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
+
+	    return arr2;
+	  } else {
+	    return _Array$from(arr);
+	  }
+	};
+
+	exports.__esModule = true;
+
+/***/ },
+/* 438 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = { "default": __webpack_require__(439), __esModule: true };
+
+/***/ },
+/* 439 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(440);
+	__webpack_require__(456);
+	module.exports = __webpack_require__(344).Array.from;
+
+/***/ },
+/* 440 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	var $at  = __webpack_require__(441)(true);
+
+	// 21.1.3.27 String.prototype[@@iterator]()
+	__webpack_require__(443)(String, 'String', function(iterated){
+	  this._t = String(iterated); // target
+	  this._i = 0;                // next index
+	// 21.1.5.2.1 %StringIteratorPrototype%.next()
+	}, function(){
+	  var O     = this._t
+	    , index = this._i
+	    , point;
+	  if(index >= O.length)return {value: undefined, done: true};
+	  point = $at(O, index);
+	  this._i += point.length;
+	  return {value: point, done: false};
+	});
+
+/***/ },
+/* 441 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var toInteger = __webpack_require__(442)
+	  , defined   = __webpack_require__(350);
+	// true  -> String#at
+	// false -> String#codePointAt
+	module.exports = function(TO_STRING){
+	  return function(that, pos){
+	    var s = String(defined(that))
+	      , i = toInteger(pos)
+	      , l = s.length
+	      , a, b;
+	    if(i < 0 || i >= l)return TO_STRING ? '' : undefined;
+	    a = s.charCodeAt(i);
+	    return a < 0xd800 || a > 0xdbff || i + 1 === l || (b = s.charCodeAt(i + 1)) < 0xdc00 || b > 0xdfff
+	      ? TO_STRING ? s.charAt(i) : a
+	      : TO_STRING ? s.slice(i, i + 2) : (a - 0xd800 << 10) + (b - 0xdc00) + 0x10000;
+	  };
+	};
+
+/***/ },
+/* 442 */
+/***/ function(module, exports) {
+
+	// 7.1.4 ToInteger
+	var ceil  = Math.ceil
+	  , floor = Math.floor;
+	module.exports = function(it){
+	  return isNaN(it = +it) ? 0 : (it > 0 ? floor : ceil)(it);
+	};
+
+/***/ },
+/* 443 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	var LIBRARY        = __webpack_require__(444)
+	  , $export        = __webpack_require__(342)
+	  , redefine       = __webpack_require__(445)
+	  , hide           = __webpack_require__(446)
+	  , has            = __webpack_require__(449)
+	  , Iterators      = __webpack_require__(450)
+	  , $iterCreate    = __webpack_require__(451)
+	  , setToStringTag = __webpack_require__(452)
+	  , getProto       = __webpack_require__(348).getProto
+	  , ITERATOR       = __webpack_require__(453)('iterator')
+	  , BUGGY          = !([].keys && 'next' in [].keys()) // Safari has buggy iterators w/o `next`
+	  , FF_ITERATOR    = '@@iterator'
+	  , KEYS           = 'keys'
+	  , VALUES         = 'values';
+
+	var returnThis = function(){ return this; };
+
+	module.exports = function(Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCED){
+	  $iterCreate(Constructor, NAME, next);
+	  var getMethod = function(kind){
+	    if(!BUGGY && kind in proto)return proto[kind];
+	    switch(kind){
+	      case KEYS: return function keys(){ return new Constructor(this, kind); };
+	      case VALUES: return function values(){ return new Constructor(this, kind); };
+	    } return function entries(){ return new Constructor(this, kind); };
+	  };
+	  var TAG        = NAME + ' Iterator'
+	    , DEF_VALUES = DEFAULT == VALUES
+	    , VALUES_BUG = false
+	    , proto      = Base.prototype
+	    , $native    = proto[ITERATOR] || proto[FF_ITERATOR] || DEFAULT && proto[DEFAULT]
+	    , $default   = $native || getMethod(DEFAULT)
+	    , methods, key;
+	  // Fix native
+	  if($native){
+	    var IteratorPrototype = getProto($default.call(new Base));
+	    // Set @@toStringTag to native iterators
+	    setToStringTag(IteratorPrototype, TAG, true);
+	    // FF fix
+	    if(!LIBRARY && has(proto, FF_ITERATOR))hide(IteratorPrototype, ITERATOR, returnThis);
+	    // fix Array#{values, @@iterator}.name in V8 / FF
+	    if(DEF_VALUES && $native.name !== VALUES){
+	      VALUES_BUG = true;
+	      $default = function values(){ return $native.call(this); };
+	    }
+	  }
+	  // Define iterator
+	  if((!LIBRARY || FORCED) && (BUGGY || VALUES_BUG || !proto[ITERATOR])){
+	    hide(proto, ITERATOR, $default);
+	  }
+	  // Plug for library
+	  Iterators[NAME] = $default;
+	  Iterators[TAG]  = returnThis;
+	  if(DEFAULT){
+	    methods = {
+	      values:  DEF_VALUES  ? $default : getMethod(VALUES),
+	      keys:    IS_SET      ? $default : getMethod(KEYS),
+	      entries: !DEF_VALUES ? $default : getMethod('entries')
+	    };
+	    if(FORCED)for(key in methods){
+	      if(!(key in proto))redefine(proto, key, methods[key]);
+	    } else $export($export.P + $export.F * (BUGGY || VALUES_BUG), NAME, methods);
+	  }
+	  return methods;
+	};
+
+/***/ },
+/* 444 */
+/***/ function(module, exports) {
+
+	module.exports = true;
+
+/***/ },
+/* 445 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__(446);
+
+/***/ },
+/* 446 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var $          = __webpack_require__(348)
+	  , createDesc = __webpack_require__(447);
+	module.exports = __webpack_require__(448) ? function(object, key, value){
+	  return $.setDesc(object, key, createDesc(1, value));
+	} : function(object, key, value){
+	  object[key] = value;
+	  return object;
+	};
+
+/***/ },
+/* 447 */
+/***/ function(module, exports) {
+
+	module.exports = function(bitmap, value){
+	  return {
+	    enumerable  : !(bitmap & 1),
+	    configurable: !(bitmap & 2),
+	    writable    : !(bitmap & 4),
+	    value       : value
+	  };
+	};
+
+/***/ },
+/* 448 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// Thank's IE8 for his funny defineProperty
+	module.exports = !__webpack_require__(353)(function(){
+	  return Object.defineProperty({}, 'a', {get: function(){ return 7; }}).a != 7;
+	});
+
+/***/ },
+/* 449 */
+/***/ function(module, exports) {
+
+	var hasOwnProperty = {}.hasOwnProperty;
+	module.exports = function(it, key){
+	  return hasOwnProperty.call(it, key);
+	};
+
+/***/ },
+/* 450 */
+/***/ function(module, exports) {
+
+	module.exports = {};
+
+/***/ },
+/* 451 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	var $              = __webpack_require__(348)
+	  , descriptor     = __webpack_require__(447)
+	  , setToStringTag = __webpack_require__(452)
+	  , IteratorPrototype = {};
+
+	// 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
+	__webpack_require__(446)(IteratorPrototype, __webpack_require__(453)('iterator'), function(){ return this; });
+
+	module.exports = function(Constructor, NAME, next){
+	  Constructor.prototype = $.create(IteratorPrototype, {next: descriptor(1, next)});
+	  setToStringTag(Constructor, NAME + ' Iterator');
+	};
+
+/***/ },
+/* 452 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var def = __webpack_require__(348).setDesc
+	  , has = __webpack_require__(449)
+	  , TAG = __webpack_require__(453)('toStringTag');
+
+	module.exports = function(it, tag, stat){
+	  if(it && !has(it = stat ? it : it.prototype, TAG))def(it, TAG, {configurable: true, value: tag});
+	};
+
+/***/ },
+/* 453 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var store  = __webpack_require__(454)('wks')
+	  , uid    = __webpack_require__(455)
+	  , Symbol = __webpack_require__(343).Symbol;
+	module.exports = function(name){
+	  return store[name] || (store[name] =
+	    Symbol && Symbol[name] || (Symbol || uid)('Symbol.' + name));
+	};
+
+/***/ },
+/* 454 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var global = __webpack_require__(343)
+	  , SHARED = '__core-js_shared__'
+	  , store  = global[SHARED] || (global[SHARED] = {});
+	module.exports = function(key){
+	  return store[key] || (store[key] = {});
+	};
+
+/***/ },
+/* 455 */
+/***/ function(module, exports) {
+
+	var id = 0
+	  , px = Math.random();
+	module.exports = function(key){
+	  return 'Symbol('.concat(key === undefined ? '' : key, ')_', (++id + px).toString(36));
+	};
+
+/***/ },
+/* 456 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	var ctx         = __webpack_require__(345)
+	  , $export     = __webpack_require__(342)
+	  , toObject    = __webpack_require__(349)
+	  , call        = __webpack_require__(457)
+	  , isArrayIter = __webpack_require__(458)
+	  , toLength    = __webpack_require__(459)
+	  , getIterFn   = __webpack_require__(460);
+	$export($export.S + $export.F * !__webpack_require__(462)(function(iter){ Array.from(iter); }), 'Array', {
+	  // 22.1.2.1 Array.from(arrayLike, mapfn = undefined, thisArg = undefined)
+	  from: function from(arrayLike/*, mapfn = undefined, thisArg = undefined*/){
+	    var O       = toObject(arrayLike)
+	      , C       = typeof this == 'function' ? this : Array
+	      , $$      = arguments
+	      , $$len   = $$.length
+	      , mapfn   = $$len > 1 ? $$[1] : undefined
+	      , mapping = mapfn !== undefined
+	      , index   = 0
+	      , iterFn  = getIterFn(O)
+	      , length, result, step, iterator;
+	    if(mapping)mapfn = ctx(mapfn, $$len > 2 ? $$[2] : undefined, 2);
+	    // if object isn't iterable or it's array with default iterator - use simple case
+	    if(iterFn != undefined && !(C == Array && isArrayIter(iterFn))){
+	      for(iterator = iterFn.call(O), result = new C; !(step = iterator.next()).done; index++){
+	        result[index] = mapping ? call(iterator, mapfn, [step.value, index], true) : step.value;
+	      }
+	    } else {
+	      length = toLength(O.length);
+	      for(result = new C(length); length > index; index++){
+	        result[index] = mapping ? mapfn(O[index], index) : O[index];
+	      }
+	    }
+	    result.length = index;
+	    return result;
+	  }
+	});
+
+
+/***/ },
+/* 457 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// call something on iterator step with safe closing on error
+	var anObject = __webpack_require__(384);
+	module.exports = function(iterator, fn, value, entries){
+	  try {
+	    return entries ? fn(anObject(value)[0], value[1]) : fn(value);
+	  // 7.4.6 IteratorClose(iterator, completion)
+	  } catch(e){
+	    var ret = iterator['return'];
+	    if(ret !== undefined)anObject(ret.call(iterator));
+	    throw e;
+	  }
+	};
+
+/***/ },
+/* 458 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// check on default Array iterator
+	var Iterators  = __webpack_require__(450)
+	  , ITERATOR   = __webpack_require__(453)('iterator')
+	  , ArrayProto = Array.prototype;
+
+	module.exports = function(it){
+	  return it !== undefined && (Iterators.Array === it || ArrayProto[ITERATOR] === it);
+	};
+
+/***/ },
+/* 459 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// 7.1.15 ToLength
+	var toInteger = __webpack_require__(442)
+	  , min       = Math.min;
+	module.exports = function(it){
+	  return it > 0 ? min(toInteger(it), 0x1fffffffffffff) : 0; // pow(2, 53) - 1 == 9007199254740991
+	};
+
+/***/ },
+/* 460 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var classof   = __webpack_require__(461)
+	  , ITERATOR  = __webpack_require__(453)('iterator')
+	  , Iterators = __webpack_require__(450);
+	module.exports = __webpack_require__(344).getIteratorMethod = function(it){
+	  if(it != undefined)return it[ITERATOR]
+	    || it['@@iterator']
+	    || Iterators[classof(it)];
+	};
+
+/***/ },
+/* 461 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// getting tag from 19.1.3.6 Object.prototype.toString()
+	var cof = __webpack_require__(352)
+	  , TAG = __webpack_require__(453)('toStringTag')
+	  // ES3 wrong here
+	  , ARG = cof(function(){ return arguments; }()) == 'Arguments';
+
+	module.exports = function(it){
+	  var O, T, B;
+	  return it === undefined ? 'Undefined' : it === null ? 'Null'
+	    // @@toStringTag case
+	    : typeof (T = (O = Object(it))[TAG]) == 'string' ? T
+	    // builtinTag case
+	    : ARG ? cof(O)
+	    // ES3 arguments fallback
+	    : (B = cof(O)) == 'Object' && typeof O.callee == 'function' ? 'Arguments' : B;
+	};
+
+/***/ },
+/* 462 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ITERATOR     = __webpack_require__(453)('iterator')
+	  , SAFE_CLOSING = false;
+
+	try {
+	  var riter = [7][ITERATOR]();
+	  riter['return'] = function(){ SAFE_CLOSING = true; };
+	  Array.from(riter, function(){ throw 2; });
+	} catch(e){ /* empty */ }
+
+	module.exports = function(exec, skipClosing){
+	  if(!skipClosing && !SAFE_CLOSING)return false;
+	  var safe = false;
+	  try {
+	    var arr  = [7]
+	      , iter = arr[ITERATOR]();
+	    iter.next = function(){ safe = true; };
+	    arr[ITERATOR] = function(){ return iter; };
+	    exec(arr);
+	  } catch(e){ /* empty */ }
+	  return safe;
+	};
+
+/***/ },
+/* 463 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 */
+
+	module.exports = __webpack_require__(464);
+
+/***/ },
+/* 464 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(465);
+	__webpack_require__(440);
+	__webpack_require__(466);
+	__webpack_require__(471);
+	module.exports = __webpack_require__(344).Map;
+
+/***/ },
+/* 465 */
+/***/ function(module, exports) {
+
+	
+
+/***/ },
+/* 466 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(467);
+	var Iterators = __webpack_require__(450);
+	Iterators.NodeList = Iterators.HTMLCollection = Iterators.Array;
+
+/***/ },
+/* 467 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	var addToUnscopables = __webpack_require__(468)
+	  , step             = __webpack_require__(469)
+	  , Iterators        = __webpack_require__(450)
+	  , toIObject        = __webpack_require__(470);
+
+	// 22.1.3.4 Array.prototype.entries()
+	// 22.1.3.13 Array.prototype.keys()
+	// 22.1.3.29 Array.prototype.values()
+	// 22.1.3.30 Array.prototype[@@iterator]()
+	module.exports = __webpack_require__(443)(Array, 'Array', function(iterated, kind){
+	  this._t = toIObject(iterated); // target
+	  this._i = 0;                   // next index
+	  this._k = kind;                // kind
+	// 22.1.5.2.1 %ArrayIteratorPrototype%.next()
+	}, function(){
+	  var O     = this._t
+	    , kind  = this._k
+	    , index = this._i++;
+	  if(!O || index >= O.length){
+	    this._t = undefined;
+	    return step(1);
+	  }
+	  if(kind == 'keys'  )return step(0, index);
+	  if(kind == 'values')return step(0, O[index]);
+	  return step(0, [index, O[index]]);
+	}, 'values');
+
+	// argumentsList[@@iterator] is %ArrayProto_values% (9.4.4.6, 9.4.4.7)
+	Iterators.Arguments = Iterators.Array;
+
+	addToUnscopables('keys');
+	addToUnscopables('values');
+	addToUnscopables('entries');
+
+/***/ },
+/* 468 */
+/***/ function(module, exports) {
+
+	module.exports = function(){ /* empty */ };
+
+/***/ },
+/* 469 */
+/***/ function(module, exports) {
+
+	module.exports = function(done, value){
+	  return {value: value, done: !!done};
+	};
+
+/***/ },
+/* 470 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// to indexed object, toObject with fallback for non-array-like ES3 strings
+	var IObject = __webpack_require__(351)
+	  , defined = __webpack_require__(350);
+	module.exports = function(it){
+	  return IObject(defined(it));
+	};
+
+/***/ },
+/* 471 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	var strong = __webpack_require__(472);
+
+	// 23.1 Map Objects
+	__webpack_require__(477)('Map', function(get){
+	  return function Map(){ return get(this, arguments.length > 0 ? arguments[0] : undefined); };
+	}, {
+	  // 23.1.3.6 Map.prototype.get(key)
+	  get: function get(key){
+	    var entry = strong.getEntry(this, key);
+	    return entry && entry.v;
+	  },
+	  // 23.1.3.9 Map.prototype.set(key, value)
+	  set: function set(key, value){
+	    return strong.def(this, key === 0 ? 0 : key, value);
+	  }
+	}, strong, true);
+
+/***/ },
+/* 472 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	var $            = __webpack_require__(348)
+	  , hide         = __webpack_require__(446)
+	  , redefineAll  = __webpack_require__(473)
+	  , ctx          = __webpack_require__(345)
+	  , strictNew    = __webpack_require__(474)
+	  , defined      = __webpack_require__(350)
+	  , forOf        = __webpack_require__(475)
+	  , $iterDefine  = __webpack_require__(443)
+	  , step         = __webpack_require__(469)
+	  , ID           = __webpack_require__(455)('id')
+	  , $has         = __webpack_require__(449)
+	  , isObject     = __webpack_require__(383)
+	  , setSpecies   = __webpack_require__(476)
+	  , DESCRIPTORS  = __webpack_require__(448)
+	  , isExtensible = Object.isExtensible || isObject
+	  , SIZE         = DESCRIPTORS ? '_s' : 'size'
+	  , id           = 0;
+
+	var fastKey = function(it, create){
+	  // return primitive with prefix
+	  if(!isObject(it))return typeof it == 'symbol' ? it : (typeof it == 'string' ? 'S' : 'P') + it;
+	  if(!$has(it, ID)){
+	    // can't set id to frozen object
+	    if(!isExtensible(it))return 'F';
+	    // not necessary to add id
+	    if(!create)return 'E';
+	    // add missing object id
+	    hide(it, ID, ++id);
+	  // return object id with prefix
+	  } return 'O' + it[ID];
+	};
+
+	var getEntry = function(that, key){
+	  // fast case
+	  var index = fastKey(key), entry;
+	  if(index !== 'F')return that._i[index];
+	  // frozen object case
+	  for(entry = that._f; entry; entry = entry.n){
+	    if(entry.k == key)return entry;
+	  }
+	};
+
+	module.exports = {
+	  getConstructor: function(wrapper, NAME, IS_MAP, ADDER){
+	    var C = wrapper(function(that, iterable){
+	      strictNew(that, C, NAME);
+	      that._i = $.create(null); // index
+	      that._f = undefined;      // first entry
+	      that._l = undefined;      // last entry
+	      that[SIZE] = 0;           // size
+	      if(iterable != undefined)forOf(iterable, IS_MAP, that[ADDER], that);
+	    });
+	    redefineAll(C.prototype, {
+	      // 23.1.3.1 Map.prototype.clear()
+	      // 23.2.3.2 Set.prototype.clear()
+	      clear: function clear(){
+	        for(var that = this, data = that._i, entry = that._f; entry; entry = entry.n){
+	          entry.r = true;
+	          if(entry.p)entry.p = entry.p.n = undefined;
+	          delete data[entry.i];
+	        }
+	        that._f = that._l = undefined;
+	        that[SIZE] = 0;
+	      },
+	      // 23.1.3.3 Map.prototype.delete(key)
+	      // 23.2.3.4 Set.prototype.delete(value)
+	      'delete': function(key){
+	        var that  = this
+	          , entry = getEntry(that, key);
+	        if(entry){
+	          var next = entry.n
+	            , prev = entry.p;
+	          delete that._i[entry.i];
+	          entry.r = true;
+	          if(prev)prev.n = next;
+	          if(next)next.p = prev;
+	          if(that._f == entry)that._f = next;
+	          if(that._l == entry)that._l = prev;
+	          that[SIZE]--;
+	        } return !!entry;
+	      },
+	      // 23.2.3.6 Set.prototype.forEach(callbackfn, thisArg = undefined)
+	      // 23.1.3.5 Map.prototype.forEach(callbackfn, thisArg = undefined)
+	      forEach: function forEach(callbackfn /*, that = undefined */){
+	        var f = ctx(callbackfn, arguments.length > 1 ? arguments[1] : undefined, 3)
+	          , entry;
+	        while(entry = entry ? entry.n : this._f){
+	          f(entry.v, entry.k, this);
+	          // revert to the last existing entry
+	          while(entry && entry.r)entry = entry.p;
+	        }
+	      },
+	      // 23.1.3.7 Map.prototype.has(key)
+	      // 23.2.3.7 Set.prototype.has(value)
+	      has: function has(key){
+	        return !!getEntry(this, key);
+	      }
+	    });
+	    if(DESCRIPTORS)$.setDesc(C.prototype, 'size', {
+	      get: function(){
+	        return defined(this[SIZE]);
+	      }
+	    });
+	    return C;
+	  },
+	  def: function(that, key, value){
+	    var entry = getEntry(that, key)
+	      , prev, index;
+	    // change existing entry
+	    if(entry){
+	      entry.v = value;
+	    // create new entry
+	    } else {
+	      that._l = entry = {
+	        i: index = fastKey(key, true), // <- index
+	        k: key,                        // <- key
+	        v: value,                      // <- value
+	        p: prev = that._l,             // <- previous entry
+	        n: undefined,                  // <- next entry
+	        r: false                       // <- removed
+	      };
+	      if(!that._f)that._f = entry;
+	      if(prev)prev.n = entry;
+	      that[SIZE]++;
+	      // add to index
+	      if(index !== 'F')that._i[index] = entry;
+	    } return that;
+	  },
+	  getEntry: getEntry,
+	  setStrong: function(C, NAME, IS_MAP){
+	    // add .keys, .values, .entries, [@@iterator]
+	    // 23.1.3.4, 23.1.3.8, 23.1.3.11, 23.1.3.12, 23.2.3.5, 23.2.3.8, 23.2.3.10, 23.2.3.11
+	    $iterDefine(C, NAME, function(iterated, kind){
+	      this._t = iterated;  // target
+	      this._k = kind;      // kind
+	      this._l = undefined; // previous
+	    }, function(){
+	      var that  = this
+	        , kind  = that._k
+	        , entry = that._l;
+	      // revert to the last existing entry
+	      while(entry && entry.r)entry = entry.p;
+	      // get next entry
+	      if(!that._t || !(that._l = entry = entry ? entry.n : that._t._f)){
+	        // or finish the iteration
+	        that._t = undefined;
+	        return step(1);
+	      }
+	      // return step by kind
+	      if(kind == 'keys'  )return step(0, entry.k);
+	      if(kind == 'values')return step(0, entry.v);
+	      return step(0, [entry.k, entry.v]);
+	    }, IS_MAP ? 'entries' : 'values' , !IS_MAP, true);
+
+	    // add [@@species], 23.1.2.2, 23.2.2.2
+	    setSpecies(NAME);
+	  }
+	};
+
+/***/ },
+/* 473 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var redefine = __webpack_require__(445);
+	module.exports = function(target, src){
+	  for(var key in src)redefine(target, key, src[key]);
+	  return target;
+	};
+
+/***/ },
+/* 474 */
+/***/ function(module, exports) {
+
+	module.exports = function(it, Constructor, name){
+	  if(!(it instanceof Constructor))throw TypeError(name + ": use the 'new' operator!");
+	  return it;
+	};
+
+/***/ },
+/* 475 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ctx         = __webpack_require__(345)
+	  , call        = __webpack_require__(457)
+	  , isArrayIter = __webpack_require__(458)
+	  , anObject    = __webpack_require__(384)
+	  , toLength    = __webpack_require__(459)
+	  , getIterFn   = __webpack_require__(460);
+	module.exports = function(iterable, entries, fn, that){
+	  var iterFn = getIterFn(iterable)
+	    , f      = ctx(fn, that, entries ? 2 : 1)
+	    , index  = 0
+	    , length, step, iterator;
+	  if(typeof iterFn != 'function')throw TypeError(iterable + ' is not iterable!');
+	  // fast case for arrays with default iterator
+	  if(isArrayIter(iterFn))for(length = toLength(iterable.length); length > index; index++){
+	    entries ? f(anObject(step = iterable[index])[0], step[1]) : f(iterable[index]);
+	  } else for(iterator = iterFn.call(iterable); !(step = iterator.next()).done; ){
+	    call(iterator, f, step.value, entries);
+	  }
+	};
+
+/***/ },
+/* 476 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	var core        = __webpack_require__(344)
+	  , $           = __webpack_require__(348)
+	  , DESCRIPTORS = __webpack_require__(448)
+	  , SPECIES     = __webpack_require__(453)('species');
+
+	module.exports = function(KEY){
+	  var C = core[KEY];
+	  if(DESCRIPTORS && C && !C[SPECIES])$.setDesc(C, SPECIES, {
+	    configurable: true,
+	    get: function(){ return this; }
+	  });
+	};
+
+/***/ },
+/* 477 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	var $              = __webpack_require__(348)
+	  , global         = __webpack_require__(343)
+	  , $export        = __webpack_require__(342)
+	  , fails          = __webpack_require__(353)
+	  , hide           = __webpack_require__(446)
+	  , redefineAll    = __webpack_require__(473)
+	  , forOf          = __webpack_require__(475)
+	  , strictNew      = __webpack_require__(474)
+	  , isObject       = __webpack_require__(383)
+	  , setToStringTag = __webpack_require__(452)
+	  , DESCRIPTORS    = __webpack_require__(448);
+
+	module.exports = function(NAME, wrapper, methods, common, IS_MAP, IS_WEAK){
+	  var Base  = global[NAME]
+	    , C     = Base
+	    , ADDER = IS_MAP ? 'set' : 'add'
+	    , proto = C && C.prototype
+	    , O     = {};
+	  if(!DESCRIPTORS || typeof C != 'function' || !(IS_WEAK || proto.forEach && !fails(function(){
+	    new C().entries().next();
+	  }))){
+	    // create collection constructor
+	    C = common.getConstructor(wrapper, NAME, IS_MAP, ADDER);
+	    redefineAll(C.prototype, methods);
+	  } else {
+	    C = wrapper(function(target, iterable){
+	      strictNew(target, C, NAME);
+	      target._c = new Base;
+	      if(iterable != undefined)forOf(iterable, IS_MAP, target[ADDER], target);
+	    });
+	    $.each.call('add,clear,delete,forEach,get,has,set,keys,values,entries'.split(','),function(KEY){
+	      var IS_ADDER = KEY == 'add' || KEY == 'set';
+	      if(KEY in proto && !(IS_WEAK && KEY == 'clear'))hide(C.prototype, KEY, function(a, b){
+	        if(!IS_ADDER && IS_WEAK && !isObject(a))return KEY == 'get' ? undefined : false;
+	        var result = this._c[KEY](a === 0 ? 0 : a, b);
+	        return IS_ADDER ? this : result;
+	      });
+	    });
+	    if('size' in proto)$.setDesc(C.prototype, 'size', {
+	      get: function(){
+	        return this._c.size;
+	      }
+	    });
+	  }
+
+	  setToStringTag(C, NAME);
+
+	  O[NAME] = C;
+	  $export($export.G + $export.W + $export.F, O);
+
+	  if(!IS_WEAK)common.setStrong(C, NAME, IS_MAP);
+
+	  return C;
+	};
+
+/***/ },
+/* 478 */
+/***/ function(module, exports) {
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 */
+
+	'use strict';
+
+	var hasOwnProperty = Object.prototype.hasOwnProperty;
+
+	/**
+	 * Executes the provided `callback` once for each enumerable own property in the
+	 * object and constructs a new object of all the values for which `callback`
+	 * returns a true value. The `callback` is invoked with three arguments:
+	 *
+	 *  - the property value
+	 *  - the property name
+	 *  - the object being traversed
+	 *
+	 * Properties that are added after the call to `filterObject` will not be
+	 * visited by `callback`. If the values of existing properties are changed, the
+	 * value passed to `callback` will be the value at the time `filterObject`
+	 * visits them. Properties that are deleted before being visited are not
+	 * visited.
+	 *
+	 * @grep function objectFilter()
+	 * @grep function objFilter()
+	 *
+	 * @param {?object} object
+	 * @param {function} callback
+	 * @param {*} context
+	 * @return {?object}
+	 */
+	function filterObject(object, callback, context) {
+	  if (!object) {
+	    return null;
+	  }
+	  var result = {};
+	  for (var name in object) {
+	    if (hasOwnProperty.call(object, name) && callback.call(context, object[name], name, object)) {
+	      result[name] = object[name];
+	    }
+	  }
+	  return result;
+	}
+
+	module.exports = filterObject;
+
+/***/ },
+/* 479 */
+/***/ function(module, exports) {
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 */
+
+	'use strict';
+
+	var hasOwnProperty = Object.prototype.hasOwnProperty;
+
+	/**
+	 * Executes the provided `callback` once for each enumerable own property in the
+	 * object and constructs a new object from the results. The `callback` is
+	 * invoked with three arguments:
+	 *
+	 *  - the property value
+	 *  - the property name
+	 *  - the object being traversed
+	 *
+	 * Properties that are added after the call to `mapObject` will not be visited
+	 * by `callback`. If the values of existing properties are changed, the value
+	 * passed to `callback` will be the value at the time `mapObject` visits them.
+	 * Properties that are deleted before being visited are not visited.
+	 *
+	 * @grep function objectMap()
+	 * @grep function objMap()
+	 *
+	 * @param {?object} object
+	 * @param {function} callback
+	 * @param {*} context
+	 * @return {?object}
+	 */
+	function mapObject(object, callback, context) {
+	  if (!object) {
+	    return null;
+	  }
+	  var result = {};
+	  for (var name in object) {
+	    if (hasOwnProperty.call(object, name)) {
+	      result[name] = callback.call(context, object[name], name, object);
+	    }
+	  }
+	  return result;
+	}
+
+	module.exports = mapObject;
+
+/***/ },
+/* 480 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * 
+	 */
+
+	var nullthrows = function (x) {
+	  if (x != null) {
+	    return x;
+	  }
+	  throw new Error("Got unexpected null or undefined");
+	};
+
+	module.exports = nullthrows;
+
+/***/ },
+/* 481 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule prepareRelayContainerProps
+	 */
+
+	'use strict';
+
+	module.exports = __webpack_require__(482);
+
+/***/ },
+/* 482 */
+/***/ function(module, exports) {
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule prepareRelayOSSContainerProps
+	 * @typechecks
+	 * 
+	 */
+
+	'use strict';
+
+	/**
+	 * @internal
+	 *
+	 * Provides an opportunity for Relay to fork how RelayContainer props are spread
+	 * into the inner component.
+	 */
+	function prepareRelayOSSContainerProps(relayProps) {
+	  return { relay: relayProps };
+	}
+
+	module.exports = prepareRelayOSSContainerProps;
+
+/***/ },
+/* 483 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -52104,89 +54217,594 @@
 	 * LICENSE file in the root directory of this source tree. An additional grant
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 *
-	 * @providesModule stableStringify
+	 * @providesModule relayUnstableBatchedUpdates
+	 * 
+	 * @typechecks
+	 */
+
+	'use strict';
+
+	var ReactDOM = __webpack_require__(170);
+
+	module.exports = ReactDOM.unstable_batchedUpdates;
+
+/***/ },
+/* 484 */
+/***/ function(module, exports) {
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule isReactComponent
+	 * @typechecks
 	 * 
 	 */
 
 	'use strict';
 
-	var _Object$keys = __webpack_require__(384)['default'];
-
-	function isObject(value) {
-	  return value !== null && Object.prototype.toString.call(value) === '[object Object]';
-	}
-
 	/**
-	 * Simple recursive stringifier that handles basic objects (does not handle
-	 * corner cases such as circular references) and produces a JSON-like
-	 * serialization suitable for use as a cache key or other similar internal
-	 * book-keeping detail.
+	 * @internal
 	 *
-	 * Sample input:
-	 *
-	 *     var object = {
-	 *       top2: {
-	 *         middle: {
-	 *           inner: [1, 'foo', ['bar', 2]],
-	 *           other: false,
-	 *         },
-	 *       },
-	 *       top1: [
-	 *         {first: true},
-	 *         {first: false},
-	 *         'random',
-	 *       ],
-	 *       misc: true,
-	 *       extra: null,
-	 *     };
-	 *
-	 * Sample output (some whitespace added for clarity):
-	 *
-	 *    {
-	 *      extra:null,
-	 *      misc:true,
-	 *      top1:[0:{first:true},1:{first:false},2:"random"],
-	 *      top2:{middle:{inner:[0:1,1:"foo",2:[0:"bar",1:2]],other:false}}
-	 *    }
+	 * Helper for checking if this is a React Component
+	 * created with React.Component or React.createClass().
 	 */
-	function stableStringify(input) {
-	  var inputIsArray = Array.isArray(input);
-	  var inputIsObject = isObject(input);
-	  if (inputIsArray || inputIsObject) {
-	    var keys = _Object$keys(input);
-	    if (keys.length) {
-	      var result = [];
-	      keys.sort();
-
-	      for (var i = 0; i < keys.length; i++) {
-	        var key = keys[i];
-	        var value = input[key];
-	        if (isObject(value) || Array.isArray(value)) {
-	          value = stableStringify(value);
-	        } else {
-	          value = JSON.stringify(value);
-	        }
-	        result.push(key + ':' + value);
-	      }
-
-	      if (inputIsArray) {
-	        return '[' + result.join(',') + ']';
-	      } else {
-	        return '{' + result.join(',') + '}';
-	      }
-	    }
-	  }
-	  return JSON.stringify(input);
+	function isReactComponent(component) {
+	  return !!(component && component.prototype && component.prototype.isReactComponent);
 	}
 
-	module.exports = stableStringify;
+	module.exports = isReactComponent;
 
 /***/ },
-/* 421 */
+/* 485 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule RelayMutation
+	 * @typechecks
+	 * 
+	 */
+
+	'use strict';
+
+	var _classCallCheck = __webpack_require__(355)['default'];
+
+	var _extends = __webpack_require__(338)['default'];
+
+	var _Object$keys = __webpack_require__(385)['default'];
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+
+	var RelayFragmentPointer = __webpack_require__(390);
+	var RelayFragmentReference = __webpack_require__(412);
+	var RelayMetaRoute = __webpack_require__(414);
+	var RelayQuery = __webpack_require__(391);
+	var RelayStore = __webpack_require__(486);
+
+	var buildRQL = __webpack_require__(436);
+
+	var forEachObject = __webpack_require__(413);
+	var invariant = __webpack_require__(399);
+	var warning = __webpack_require__(372);
+
+	/**
+	 * @public
+	 *
+	 * RelayMutation is the base class for modeling mutations of data.
+	 */
+
+	var RelayMutation = (function () {
+	  function RelayMutation(props) {
+	    _classCallCheck(this, RelayMutation);
+
+	    this._didShowFakeDataWarning = false;
+	    this._resolveProps(props);
+	  }
+
+	  /**
+	   * Wrapper around `buildRQL.Fragment` with contextual error messages.
+	   */
+
+	  /**
+	   * Each mutation corresponds to a field on the server which is used by clients
+	   * to communicate the type of mutation to be executed.
+	   */
+
+	  RelayMutation.prototype.getMutation = function getMutation() {
+	     true ?  true ? invariant(false, '%s: Expected abstract method `getMutation` to be implemented.', this.constructor.name) : invariant(false) : undefined;
+	  };
+
+	  /**
+	   * "Fat queries" represent a predetermined set of fields that may change as a
+	   * result of a mutation, and which should therefore be queried in order to get
+	   * a consistent view of the data after performing a mutation. In practice, we
+	   * query for a subset of those fields because we intersect the fat query with
+	   * the tracked query we have for a given node (ie. the pieces of data we've
+	   * previously queried for and have therefore written to the store).
+	   *
+	   * Fat queries can be written like normal GraphQL queries with one main
+	   * exception: fat queries use childless non-scalar fields to indicate that
+	   * anything under that field may change. For example, the fat query for
+	   * feedback_like contains the field `like_sentence` with no child fields.
+	   * This means that any field below `like_sentence` may change as a result of
+	   * feedback_like.
+	   *
+	   * When adding a fat query, consider *all* of the data that might change as a
+	   * result of the mutation - not just data that we currently use in Relay. We
+	   * don't need to worry about overfetching here (this query is never executed
+	   * on its own; the infrastructure always intersects it with what is actually
+	   * needed), and if we omit fields here we might get odd consistency behavior
+	   * in the future when we add new views or modify existing ones.
+	   */
+
+	  RelayMutation.prototype.getFatQuery = function getFatQuery() {
+	     true ?  true ? invariant(false, '%s: Expected abstract method `getFatQuery` to be implemented.', this.constructor.name) : invariant(false) : undefined;
+	  };
+
+	  /**
+	   * These configurations are used to generate the query for the mutation to be
+	   * sent to the server and to correctly write the server's response into the
+	   * client store.
+	   *
+	   * Possible configuration types:
+	   *
+	   * -  FIELDS_CHANGE provides configuration for mutation fields.
+	   *    {
+	   *      type: RelayMutationType.FIELDS_CHANGE;
+	   *      fieldIDs: {[fieldName: string]: DataID | Array<DataID>};
+	   *    }
+	   *    where fieldIDs map `fieldName`s from the fatQuery to a DataID or
+	   *    array of DataIDs to be updated in the store.
+	   *
+	   * -  RANGE_ADD provides configuration for adding a new edge to a range.
+	   *    {
+	   *      type: RelayMutationType.RANGE_ADD;
+	   *      parentName: string;
+	   *      parentID: string;
+	   *      connectionName: string;
+	   *      edgeName: string;
+	   *      rangeBehaviors:
+	   *        {[call: string]: GraphQLMutatorConstants.RANGE_OPERATIONS};
+	   *    }
+	   *    where `parentName` is the field in the fatQuery that contains the range,
+	   *    `parentID` is the DataID of `parentName` in the store, `connectionName`
+	   *    is the name of the range, `edgeName` is the name of the key in server
+	   *    response that contains the newly created edge, `rangeBehaviors` maps
+	   *    stringified representation of calls on the connection to
+	   *    GraphQLMutatorConstants.RANGE_OPERATIONS.
+	   *
+	   * -  NODE_DELETE provides configuration for deleting a node and the
+	   *    corresponding edge from a range.
+	   *    {
+	   *      type: RelayMutationType.NODE_DELETE;
+	   *      parentName: string;
+	   *      parentID: string;
+	   *      connectionName: string;
+	   *      deletedIDFieldName: string;
+	   *    }
+	   *    where `parentName`, `parentID` and `connectionName` refer to the same
+	   *    things as in RANGE_ADD, `deletedIDFieldName` is the name of the key in
+	   *    the server response that contains the DataID of the deleted node.
+	   *
+	   * -  RANGE_DELETE provides configuration for deleting an edge from a range
+	   *    but doesn't delete the node.
+	   *    {
+	   *      type: RelayMutationType.RANGE_DELETE;
+	   *      parentName: string;
+	   *      parentID: string;
+	   *      connectionName: string;
+	   *      deletedIDFieldName: string | Array<string>;
+	   *      pathToConnection: Array<string>;
+	   *    }
+	   *    where `parentName`, `parentID`, `connectionName` and
+	   *    `deletedIDFieldName` refer to the same things as in NODE_DELETE.
+	   *    `deletedIDFieldName` can also be a path from the response root to the
+	   *    deleted node. `pathToConnection` is a path from `parentName` to
+	   *    `connectionName`.
+	   *
+	   * -  REQUIRED_CHILDREN is used to append additional children (fragments or
+	   *    fields) to the mutation query. Any data fetched for these children is
+	   *    not written to the client store, but you can add code to process it
+	   *    in the `onSuccess` callback passed to the `RelayContext` `applyUpdate`
+	   *    method. You may need to use this, for example, to fetch fields on a new
+	   *    object created by the mutation (and which Relay would normally not
+	   *    attempt to fetch because it has not previously fetched anything for that
+	   *    object).
+	   *    {
+	   *      type: RelayMutationType.REQUIRED_CHILDREN;
+	   *      children: Array<RelayQuery.Node>;
+	   *    }
+	   */
+
+	  RelayMutation.prototype.getConfigs = function getConfigs() {
+	     true ?  true ? invariant(false, '%s: Expected abstract method `getConfigs` to be implemented.', this.constructor.name) : invariant(false) : undefined;
+	  };
+
+	  /**
+	   * These variables form the "input" to the mutation query sent to the server.
+	   */
+
+	  RelayMutation.prototype.getVariables = function getVariables() {
+	     true ?  true ? invariant(false, '%s: Expected abstract method `getVariables` to be implemented.', this.constructor.name) : invariant(false) : undefined;
+	  };
+
+	  /**
+	   * These will be sent along with the mutation query to the server.
+	   */
+
+	  RelayMutation.prototype.getFiles = function getFiles() {
+	    return null;
+	  };
+
+	  /**
+	   * When a request is sent to the server, mutations can optionally construct an
+	   * optimistic response that has the same shape as the server response payload.
+	   * This optimistic response is used to pre-emptively update the client cache
+	   * to simulate an instantaneous response.
+	   *
+	   * The optimistic response may be a subset or superset of the actual response
+	   * payload. It can be a subset if certain fields are impossible to create on
+	   * the client (and if views are expected to handle the data inconsistency). It
+	   * can be a superset of the actual response payload if certain fields that are
+	   * affected have not been queried by the client, yet.
+	   */
+
+	  RelayMutation.prototype.getOptimisticResponse = function getOptimisticResponse() {
+	    return null;
+	  };
+
+	  /**
+	   * Optional. Similar to `getConfig`, this is used to create the query
+	   * corresponding to the `optimisticResponse`. If not provided, the query
+	   * will be inferred from the optimistic response. Most subclasses shouldn't
+	   * need to extend this method.
+	   */
+
+	  RelayMutation.prototype.getOptimisticConfigs = function getOptimisticConfigs() {
+	    return null;
+	  };
+
+	  /**
+	   * An optional collision key allows a mutation to identify itself with other
+	   * mutations that affect the same fields. Mutations with the same collision
+	   * are sent to the server serially and in-order to avoid unpredictable and
+	   * potentially incorrect behavior.
+	   */
+
+	  RelayMutation.prototype.getCollisionKey = function getCollisionKey() {
+	    return null;
+	  };
+
+	  RelayMutation.prototype._resolveProps = function _resolveProps(props) {
+	    var _this = this;
+
+	    var fragments = this.constructor.fragments;
+	    var initialVariables = this.constructor.initialVariables || {};
+
+	    var resolvedProps = _extends({}, props);
+	    forEachObject(fragments, function (fragmentBuilder, fragmentName) {
+	      var propValue = props[fragmentName];
+	       true ? warning(propValue !== undefined, 'RelayMutation: Expected data for fragment `%s` to be supplied to ' + '`%s` as a prop. Pass an explicit `null` if this is intentional.', fragmentName, _this.constructor.name) : undefined;
+
+	      if (propValue == null) {
+	        return;
+	      }
+	      if (typeof propValue !== 'object') {
+	         true ? warning(false, 'RelayMutation: Expected data for fragment `%s` supplied to `%s` ' + 'to be an object.', fragmentName, _this.constructor.name) : undefined;
+	        return;
+	      }
+
+	      var fragment = RelayQuery.Fragment.create(buildMutationFragment(_this.constructor.name, fragmentName, fragmentBuilder, initialVariables), RelayMetaRoute.get('$RelayMutation_' + _this.constructor.name), initialVariables);
+
+	      if (fragment.isPlural()) {
+	        !Array.isArray(propValue) ?  true ? invariant(false, 'RelayMutation: Invalid prop `%s` supplied to `%s`, expected an ' + 'array of records because the corresponding fragment is plural.', fragmentName, _this.constructor.name) : invariant(false) : undefined;
+	        var dataIDs = propValue.map(function (item, ii) {
+	          !(typeof item === 'object' && item != null) ?  true ? invariant(false, 'RelayMutation: Invalid prop `%s` supplied to `%s`, ' + 'expected element at index %s to have query data.', fragmentName, _this.constructor.name, ii) : invariant(false) : undefined;
+	          var dataID = RelayFragmentPointer.getDataID(item, fragment);
+	          !dataID ?  true ? invariant(false, 'RelayMutation: Invalid prop `%s` supplied to `%s`, ' + 'expected element at index %s to have query data.', fragmentName, _this.constructor.name, ii) : invariant(false) : undefined;
+	          return dataID;
+	        });
+
+	        resolvedProps[fragmentName] = RelayStore.readAll(fragment, dataIDs);
+	      } else {
+	        !!Array.isArray(propValue) ?  true ? invariant(false, 'RelayMutation: Invalid prop `%s` supplied to `%s`, expected a ' + 'single record because the corresponding fragment is not plural.', fragmentName, _this.constructor.name) : invariant(false) : undefined;
+	        var dataID = RelayFragmentPointer.getDataID(propValue, fragment);
+	        if (dataID) {
+	          resolvedProps[fragmentName] = RelayStore.read(fragment, dataID);
+	        } else {
+	          if (true) {
+	            if (!_this._didShowFakeDataWarning) {
+	              _this._didShowFakeDataWarning = true;
+	               true ? warning(false, 'RelayMutation: Expected prop `%s` supplied to `%s` to ' + 'be data fetched by Relay. This is likely an error unless ' + 'you are purposely passing in mock data that conforms to ' + 'the shape of this mutation\'s fragment.', fragmentName, _this.constructor.name) : undefined;
+	            }
+	          }
+	        }
+	      }
+	    });
+	    this.props = resolvedProps;
+	  };
+
+	  RelayMutation.getFragment = function getFragment(fragmentName, variableMapping) {
+	    var _this2 = this;
+
+	    // TODO: Unify fragment API for containers and mutations, #7860172.
+	    var fragments = this.fragments;
+	    var fragmentBuilder = fragments[fragmentName];
+	    if (!fragmentBuilder) {
+	       true ?  true ? invariant(false, '%s.getFragment(): `%s` is not a valid fragment name. Available ' + 'fragments names: %s', this.name, fragmentName, _Object$keys(fragments).map(function (name) {
+	        return '`' + name + '`';
+	      }).join(', ')) : invariant(false) : undefined;
+	    }
+
+	    var initialVariables = this.initialVariables || {};
+	    var prepareVariables = this.prepareVariables;
+
+	    return RelayFragmentReference.createForContainer(function () {
+	      return buildMutationFragment(_this2.name, fragmentName, fragmentBuilder, initialVariables);
+	    }, initialVariables, variableMapping, prepareVariables);
+	  };
+
+	  return RelayMutation;
+	})();
+
+	function buildMutationFragment(mutationName, fragmentName, fragmentBuilder, variables) {
+	  var fragment = buildRQL.Fragment(fragmentBuilder, variables);
+	  !fragment ?  true ? invariant(false, 'Relay.QL defined on mutation `%s` named `%s` is not a valid fragment. ' + 'A typical fragment is defined using: Relay.QL`fragment on Type {...}`', mutationName, fragmentName) : invariant(false) : undefined;
+	  return fragment;
+	}
+
+	module.exports = RelayMutation;
+
+	/* $FlowIssue(>=0.20.0) #9410317 */
+
+/***/ },
+/* 486 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule RelayStore
+	 * 
+	 * @typechecks
+	 */
+
+	'use strict';
+
+	var RelayContext = __webpack_require__(487);
+
+	module.exports = new RelayContext();
+
+/***/ },
+/* 487 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule RelayContext
+	 * @typechecks
+	 * 
+	 */
+
+	'use strict';
+
+	var _classCallCheck = __webpack_require__(355)['default'];
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	var GraphQLStoreQueryResolver = __webpack_require__(488);
+
+	var RelayQueryResultObservable = __webpack_require__(502);
+	var RelayStoreData = __webpack_require__(503);
+
+	var forEachRootCallArg = __webpack_require__(398);
+	var readRelayQueryData = __webpack_require__(496);
+	var relayUnstableBatchedUpdates = __webpack_require__(483);
+	var warning = __webpack_require__(372);
+
+	/**
+	 * @public
+	 *
+	 * RelayContext is a caching layer that records GraphQL response data and
+	 * enables resolving and subscribing to queries.
+	 *
+	 * === onReadyStateChange ===
+	 *
+	 * Whenever Relay sends a request for data via GraphQL, an "onReadyStateChange"
+	 * callback can be supplied. This callback is called one or more times with a
+	 * `readyState` object with the following properties:
+	 *
+	 *   aborted: Whether the request was aborted.
+	 *   done: Whether all response data has been fetched.
+	 *   error: An error in the event of a failure, or null if none.
+	 *   ready: Whether the queries are at least partially resolvable.
+	 *   stale: When resolvable during `forceFetch`, whether data is stale.
+	 *
+	 * If the callback is invoked with `aborted`, `done`, or a non-null `error`, the
+	 * callback will never be called again. Example usage:
+	 *
+	 *  function onReadyStateChange(readyState) {
+	 *    if (readyState.aborted) {
+	 *      // Request was aborted.
+	 *    } else if (readyState.error) {
+	 *      // Failure occurred.
+	 *    } else if (readyState.ready) {
+	 *      // Queries are at least partially resolvable.
+	 *      if (readyState.done) {
+	 *        // Queries are completely resolvable.
+	 *      }
+	 *    }
+	 *  }
+	 *
+	 */
+
+	var RelayContext = (function () {
+	  function RelayContext() {
+	    _classCallCheck(this, RelayContext);
+
+	    this._storeData = new RelayStoreData();
+	    this._storeData.getChangeEmitter().injectBatchingStrategy(relayUnstableBatchedUpdates);
+	  }
+
+	  /**
+	   * @internal
+	   */
+
+	  RelayContext.prototype.getStoreData = function getStoreData() {
+	    return this._storeData;
+	  };
+
+	  /**
+	   * Primes the store by sending requests for any missing data that would be
+	   * required to satisfy the supplied set of queries.
+	   */
+
+	  RelayContext.prototype.primeCache = function primeCache(querySet, callback) {
+	    return this._storeData.getQueryRunner().run(querySet, callback);
+	  };
+
+	  /**
+	   * Forces the supplied set of queries to be fetched and written to the store.
+	   * Any data that previously satisfied the queries will be overwritten.
+	   */
+
+	  RelayContext.prototype.forceFetch = function forceFetch(querySet, callback) {
+	    return this._storeData.getQueryRunner().forceFetch(querySet, callback);
+	  };
+
+	  /**
+	   * Reads query data anchored at the supplied data ID.
+	   */
+
+	  RelayContext.prototype.read = function read(node, dataID, options) {
+	    return readRelayQueryData(this._storeData, node, dataID, options).data;
+	  };
+
+	  /**
+	   * Reads query data anchored at the supplied data IDs.
+	   */
+
+	  RelayContext.prototype.readAll = function readAll(node, dataIDs, options) {
+	    var _this = this;
+
+	    return dataIDs.map(function (dataID) {
+	      return readRelayQueryData(_this._storeData, node, dataID, options).data;
+	    });
+	  };
+
+	  /**
+	   * Reads query data, where each element in the result array corresponds to a
+	   * root call argument. If the root call has no arguments, the result array
+	   * will contain exactly one element.
+	   */
+
+	  RelayContext.prototype.readQuery = function readQuery(root, options) {
+	    var _this2 = this;
+
+	    var queuedStore = this._storeData.getQueuedStore();
+	    var storageKey = root.getStorageKey();
+	    var results = [];
+	    forEachRootCallArg(root, function (_ref) {
+	      var identifyingArgKey = _ref.identifyingArgKey;
+
+	      var data = undefined;
+	      var dataID = queuedStore.getDataID(storageKey, identifyingArgKey);
+	      if (dataID != null) {
+	        data = _this2.read(root, dataID, options);
+	      }
+	      results.push(data);
+	    });
+	    return results;
+	  };
+
+	  /**
+	   * Reads and subscribes to query data anchored at the supplied data ID. The
+	   * returned observable emits updates as the data changes over time.
+	   */
+
+	  RelayContext.prototype.observe = function observe(fragment, dataID) {
+	    return new RelayQueryResultObservable(this._storeData, fragment, dataID);
+	  };
+
+	  /**
+	   * @internal
+	   *
+	   * Returns a fragment "resolver" - a subscription to the results of a fragment
+	   * and a means to access the latest results. This is a transitional API and
+	   * not recommended for general use.
+	   */
+
+	  RelayContext.prototype.getFragmentResolver = function getFragmentResolver(fragment, onNext) {
+	    return new GraphQLStoreQueryResolver(this._storeData, fragment, onNext);
+	  };
+
+	  /**
+	   * Adds an update to the store without committing it. The returned
+	   * RelayMutationTransaction can be committed or rolled back at a later time.
+	   */
+
+	  RelayContext.prototype.applyUpdate = function applyUpdate(mutation, callbacks) {
+	    return this._storeData.getMutationQueue().createTransaction(mutation, callbacks);
+	  };
+
+	  /**
+	   * Adds an update to the store and commits it immediately. Returns
+	   * the RelayMutationTransaction.
+	   */
+
+	  RelayContext.prototype.commitUpdate = function commitUpdate(mutation, callbacks) {
+	    var transaction = this.applyUpdate(mutation, callbacks);
+	    transaction.commit();
+	    return transaction;
+	  };
+
+	  /**
+	   * @deprecated
+	   *
+	   * Method renamed to commitUpdate
+	   */
+
+	  RelayContext.prototype.update = function update(mutation, callbacks) {
+	     true ? warning(false, '`Relay.Store.update` is deprecated. Please use' + ' `Relay.Store.commitUpdate` or `Relay.Store.applyUpdate` instead.') : undefined;
+	    this.commitUpdate(mutation, callbacks);
+	  };
+
+	  return RelayContext;
+	})();
+
+	module.exports = RelayContext;
+
+/***/ },
+/* 488 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -52202,15 +54820,15 @@
 
 	var _classCallCheck = __webpack_require__(355)['default'];
 
-	var _slicedToArray = __webpack_require__(422)['default'];
+	var _slicedToArray = __webpack_require__(489)['default'];
 
-	var _Object$keys = __webpack_require__(384)['default'];
+	var _Object$keys = __webpack_require__(385)['default'];
 
-	var RelayProfiler = __webpack_require__(409);
+	var RelayProfiler = __webpack_require__(415);
 
-	var filterExclusiveKeys = __webpack_require__(452);
-	var readRelayQueryData = __webpack_require__(453);
-	var recycleNodesInto = __webpack_require__(458);
+	var readRelayQueryData = __webpack_require__(496);
+	var recycleNodesInto = __webpack_require__(501);
+	var warning = __webpack_require__(372);
 
 	/**
 	 * @internal
@@ -52222,12 +54840,12 @@
 	 */
 
 	var GraphQLStoreQueryResolver = (function () {
-	  function GraphQLStoreQueryResolver(storeData, fragmentPointer, callback) {
+	  function GraphQLStoreQueryResolver(storeData, fragment, callback) {
 	    _classCallCheck(this, GraphQLStoreQueryResolver);
 
-	    this.reset();
+	    this.dispose();
 	    this._callback = callback;
-	    this._fragmentPointer = fragmentPointer;
+	    this._fragment = fragment;
 	    this._resolver = null;
 	    this._storeData = storeData;
 	  }
@@ -52237,23 +54855,53 @@
 	   */
 
 	  /**
-	   * Resets the resolver's internal state such that future `resolve()` results
+	   * disposes the resolver's internal state such that future `resolve()` results
 	   * will not be `===` to previous results, and unsubscribes any subscriptions.
 	   */
 
-	  GraphQLStoreQueryResolver.prototype.reset = function reset() {
+	  GraphQLStoreQueryResolver.prototype.dispose = function dispose() {
 	    if (this._resolver) {
-	      this._resolver.reset();
+	      this._resolver.dispose();
 	    }
 	  };
 
-	  GraphQLStoreQueryResolver.prototype.resolve = function resolve(fragmentPointer) {
-	    var resolver = this._resolver;
-	    if (!resolver) {
-	      resolver = this._fragmentPointer.getFragment().isPlural() ? new GraphQLStorePluralQueryResolver(this._storeData, this._callback) : new GraphQLStoreSingleQueryResolver(this._storeData, this._callback);
-	      this._resolver = resolver;
+	  GraphQLStoreQueryResolver.prototype.resolve = function resolve(fragment, dataIDs) {
+	    // Warn but don't crash if resolved with the wrong fragment.
+	    if (this._fragment.getConcreteFragmentID() !== fragment.getConcreteFragmentID()) {
+	       true ? warning(false, 'GraphQLStoreQueryResolver: Expected `resolve` to be called with the ' + 'same concrete fragment as the constructor. The resolver was created ' + 'with fragment `%s` but resolved with fragment `%s`.', this._fragment.getDebugName(), fragment.getDebugName()) : undefined;
 	    }
-	    return resolver.resolve(fragmentPointer);
+	    // Rather than crash on mismatched plurality of fragment/ids just warn
+	    // and resolve as if the fragment's pluarity matched the format of the ids.
+	    // Note that the inverse - attempt to resolve based on fragment plurarity -
+	    // doesn't work because there's no way convert plural ids to singular w/o
+	    // losing data.
+	    if (Array.isArray(dataIDs)) {
+	      // Fragment should be plural if data is pluaral.
+	       true ? warning(fragment.isPlural(), 'GraphQLStoreQueryResolver: Expected id/fragment plurality to be ' + 'consistent: got plural ids for singular fragment `%s`.', fragment.getDebugName()) : undefined;
+	      var resolver = this._resolver;
+	      if (resolver instanceof GraphQLStoreSingleQueryResolver) {
+	        resolver.dispose();
+	        resolver = null;
+	      }
+	      if (!resolver) {
+	        resolver = new GraphQLStorePluralQueryResolver(this._storeData, this._callback);
+	      }
+	      this._resolver = resolver;
+	      return resolver.resolve(fragment, dataIDs);
+	    } else {
+	      // Fragment should be singular if data is singular.
+	       true ? warning(!fragment.isPlural(), 'GraphQLStoreQueryResolver: Expected id/fragment plurality to be ' + 'consistent: got a singular id for plural fragment `%s`.', fragment.getDebugName()) : undefined;
+	      var resolver = this._resolver;
+	      if (resolver instanceof GraphQLStorePluralQueryResolver) {
+	        resolver.dispose();
+	        resolver = null;
+	      }
+	      if (!resolver) {
+	        resolver = new GraphQLStoreSingleQueryResolver(this._storeData, this._callback);
+	      }
+	      this._resolver = resolver;
+	      return resolver.resolve(fragment, dataIDs);
+	    }
 	  };
 
 	  return GraphQLStoreQueryResolver;
@@ -52263,7 +54911,7 @@
 	  function GraphQLStorePluralQueryResolver(storeData, callback) {
 	    _classCallCheck(this, GraphQLStorePluralQueryResolver);
 
-	    this.reset();
+	    this.dispose();
 	    this._callback = callback;
 	    this._storeData = storeData;
 	  }
@@ -52272,10 +54920,10 @@
 	   * Resolves non-plural fragments.
 	   */
 
-	  GraphQLStorePluralQueryResolver.prototype.reset = function reset() {
+	  GraphQLStorePluralQueryResolver.prototype.dispose = function dispose() {
 	    if (this._resolvers) {
 	      this._resolvers.forEach(function (resolver) {
-	        return resolver.reset();
+	        return resolver.dispose();
 	      });
 	    }
 	    this._resolvers = [];
@@ -52290,11 +54938,10 @@
 	   * new array will be returned.
 	   */
 
-	  GraphQLStorePluralQueryResolver.prototype.resolve = function resolve(fragmentPointer) {
+	  GraphQLStorePluralQueryResolver.prototype.resolve = function resolve(fragment, nextIDs) {
 	    var prevResults = this._results;
 	    var nextResults;
 
-	    var nextIDs = fragmentPointer.getDataIDs();
 	    var prevLength = prevResults.length;
 	    var nextLength = nextIDs.length;
 	    var resolvers = this._resolvers;
@@ -52304,7 +54951,7 @@
 	      resolvers.push(new GraphQLStoreSingleQueryResolver(this._storeData, this._callback));
 	    }
 	    while (resolvers.length > nextLength) {
-	      resolvers.pop().reset();
+	      resolvers.pop().dispose();
 	    }
 
 	    // Allocate `nextResults` if and only if results have changed.
@@ -52312,7 +54959,7 @@
 	      nextResults = [];
 	    }
 	    for (var ii = 0; ii < nextLength; ii++) {
-	      var nextResult = resolvers[ii].resolve(fragmentPointer, nextIDs[ii]);
+	      var nextResult = resolvers[ii].resolve(fragment, nextIDs[ii]);
 	      if (nextResults || ii >= prevLength || nextResult !== prevResults[ii]) {
 	        nextResults = nextResults || prevResults.slice(0, ii);
 	        nextResults.push(nextResult);
@@ -52332,14 +54979,14 @@
 	  function GraphQLStoreSingleQueryResolver(storeData, callback) {
 	    _classCallCheck(this, GraphQLStoreSingleQueryResolver);
 
-	    this.reset();
+	    this.dispose();
 	    this._callback = callback;
 	    this._garbageCollector = storeData.getGarbageCollector();
 	    this._storeData = storeData;
 	    this._subscribedIDs = {};
 	  }
 
-	  GraphQLStoreSingleQueryResolver.prototype.reset = function reset() {
+	  GraphQLStoreSingleQueryResolver.prototype.dispose = function dispose() {
 	    if (this._subscription) {
 	      this._subscription.remove();
 	    }
@@ -52354,15 +55001,10 @@
 
 	  /**
 	   * Resolves data for a single fragment pointer.
-	   *
-	   * NOTE: `nextPluralID` should only be passed by the plural query resolver.
 	   */
 
-	  GraphQLStoreSingleQueryResolver.prototype.resolve = function resolve(fragmentPointer, nextPluralID) {
-	    var nextFragment = fragmentPointer.getFragment();
+	  GraphQLStoreSingleQueryResolver.prototype.resolve = function resolve(nextFragment, nextID) {
 	    var prevFragment = this._fragment;
-
-	    var nextID = nextPluralID || fragmentPointer.getDataID();
 	    var prevID = this._resultID;
 	    var nextResult;
 	    var prevResult = this._result;
@@ -52457,26 +55099,18 @@
 	      (function () {
 	        var garbageCollector = _this._garbageCollector;
 	        var rangeData = _this._storeData.getRangeData();
-
 	        var prevDataIDs = _this._subscribedIDs;
-
-	        var _filterExclusiveKeys = filterExclusiveKeys(prevDataIDs, nextDataIDs);
-
-	        var _filterExclusiveKeys2 = _slicedToArray(_filterExclusiveKeys, 2);
-
-	        var removed = _filterExclusiveKeys2[0];
-	        var added = _filterExclusiveKeys2[1];
 
 	        // Note: the same canonical ID may appear in both removed and added: in
 	        // that case, it would have been:
-	        // - previous: canonical ID ref count is incremented
-	        // - current: canonical ID is incremented *and* decremented
-	        // In both cases the next ref count change is +1.
-	        added.forEach(function (id) {
+	        // - previous step: canonical ID ref count was incremented
+	        // - current step: canonical ID is incremented *and* decremented
+	        // Note that the net ref count change is +1.
+	        _Object$keys(nextDataIDs).forEach(function (id) {
 	          id = rangeData.getCanonicalClientID(id);
 	          garbageCollector.incrementReferenceCount(id);
 	        });
-	        removed.forEach(function (id) {
+	        _Object$keys(prevDataIDs).forEach(function (id) {
 	          id = rangeData.getCanonicalClientID(id);
 	          garbageCollector.decrementReferenceCount(id);
 	        });
@@ -52494,14 +55128,14 @@
 	module.exports = GraphQLStoreQueryResolver;
 
 /***/ },
-/* 422 */
+/* 489 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var _getIterator = __webpack_require__(423)["default"];
+	var _getIterator = __webpack_require__(490)["default"];
 
-	var _isIterable = __webpack_require__(449)["default"];
+	var _isIterable = __webpack_require__(493)["default"];
 
 	exports["default"] = (function () {
 	  function sliceIterator(arr, i) {
@@ -52544,348 +55178,25 @@
 	exports.__esModule = true;
 
 /***/ },
-/* 423 */
+/* 490 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(424), __esModule: true };
+	module.exports = { "default": __webpack_require__(491), __esModule: true };
 
 /***/ },
-/* 424 */
+/* 491 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(425);
-	__webpack_require__(443);
-	module.exports = __webpack_require__(446);
+	__webpack_require__(466);
+	__webpack_require__(440);
+	module.exports = __webpack_require__(492);
 
 /***/ },
-/* 425 */
+/* 492 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(426);
-	var Iterators = __webpack_require__(429);
-	Iterators.NodeList = Iterators.HTMLCollection = Iterators.Array;
-
-/***/ },
-/* 426 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	var addToUnscopables = __webpack_require__(427)
-	  , step             = __webpack_require__(428)
-	  , Iterators        = __webpack_require__(429)
-	  , toIObject        = __webpack_require__(430);
-
-	// 22.1.3.4 Array.prototype.entries()
-	// 22.1.3.13 Array.prototype.keys()
-	// 22.1.3.29 Array.prototype.values()
-	// 22.1.3.30 Array.prototype[@@iterator]()
-	module.exports = __webpack_require__(431)(Array, 'Array', function(iterated, kind){
-	  this._t = toIObject(iterated); // target
-	  this._i = 0;                   // next index
-	  this._k = kind;                // kind
-	// 22.1.5.2.1 %ArrayIteratorPrototype%.next()
-	}, function(){
-	  var O     = this._t
-	    , kind  = this._k
-	    , index = this._i++;
-	  if(!O || index >= O.length){
-	    this._t = undefined;
-	    return step(1);
-	  }
-	  if(kind == 'keys'  )return step(0, index);
-	  if(kind == 'values')return step(0, O[index]);
-	  return step(0, [index, O[index]]);
-	}, 'values');
-
-	// argumentsList[@@iterator] is %ArrayProto_values% (9.4.4.6, 9.4.4.7)
-	Iterators.Arguments = Iterators.Array;
-
-	addToUnscopables('keys');
-	addToUnscopables('values');
-	addToUnscopables('entries');
-
-/***/ },
-/* 427 */
-/***/ function(module, exports) {
-
-	module.exports = function(){ /* empty */ };
-
-/***/ },
-/* 428 */
-/***/ function(module, exports) {
-
-	module.exports = function(done, value){
-	  return {value: value, done: !!done};
-	};
-
-/***/ },
-/* 429 */
-/***/ function(module, exports) {
-
-	module.exports = {};
-
-/***/ },
-/* 430 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// to indexed object, toObject with fallback for non-array-like ES3 strings
-	var IObject = __webpack_require__(351)
-	  , defined = __webpack_require__(350);
-	module.exports = function(it){
-	  return IObject(defined(it));
-	};
-
-/***/ },
-/* 431 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	var LIBRARY        = __webpack_require__(432)
-	  , $export        = __webpack_require__(342)
-	  , redefine       = __webpack_require__(433)
-	  , hide           = __webpack_require__(434)
-	  , has            = __webpack_require__(437)
-	  , Iterators      = __webpack_require__(429)
-	  , $iterCreate    = __webpack_require__(438)
-	  , setToStringTag = __webpack_require__(439)
-	  , getProto       = __webpack_require__(348).getProto
-	  , ITERATOR       = __webpack_require__(440)('iterator')
-	  , BUGGY          = !([].keys && 'next' in [].keys()) // Safari has buggy iterators w/o `next`
-	  , FF_ITERATOR    = '@@iterator'
-	  , KEYS           = 'keys'
-	  , VALUES         = 'values';
-
-	var returnThis = function(){ return this; };
-
-	module.exports = function(Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCED){
-	  $iterCreate(Constructor, NAME, next);
-	  var getMethod = function(kind){
-	    if(!BUGGY && kind in proto)return proto[kind];
-	    switch(kind){
-	      case KEYS: return function keys(){ return new Constructor(this, kind); };
-	      case VALUES: return function values(){ return new Constructor(this, kind); };
-	    } return function entries(){ return new Constructor(this, kind); };
-	  };
-	  var TAG        = NAME + ' Iterator'
-	    , DEF_VALUES = DEFAULT == VALUES
-	    , VALUES_BUG = false
-	    , proto      = Base.prototype
-	    , $native    = proto[ITERATOR] || proto[FF_ITERATOR] || DEFAULT && proto[DEFAULT]
-	    , $default   = $native || getMethod(DEFAULT)
-	    , methods, key;
-	  // Fix native
-	  if($native){
-	    var IteratorPrototype = getProto($default.call(new Base));
-	    // Set @@toStringTag to native iterators
-	    setToStringTag(IteratorPrototype, TAG, true);
-	    // FF fix
-	    if(!LIBRARY && has(proto, FF_ITERATOR))hide(IteratorPrototype, ITERATOR, returnThis);
-	    // fix Array#{values, @@iterator}.name in V8 / FF
-	    if(DEF_VALUES && $native.name !== VALUES){
-	      VALUES_BUG = true;
-	      $default = function values(){ return $native.call(this); };
-	    }
-	  }
-	  // Define iterator
-	  if((!LIBRARY || FORCED) && (BUGGY || VALUES_BUG || !proto[ITERATOR])){
-	    hide(proto, ITERATOR, $default);
-	  }
-	  // Plug for library
-	  Iterators[NAME] = $default;
-	  Iterators[TAG]  = returnThis;
-	  if(DEFAULT){
-	    methods = {
-	      values:  DEF_VALUES  ? $default : getMethod(VALUES),
-	      keys:    IS_SET      ? $default : getMethod(KEYS),
-	      entries: !DEF_VALUES ? $default : getMethod('entries')
-	    };
-	    if(FORCED)for(key in methods){
-	      if(!(key in proto))redefine(proto, key, methods[key]);
-	    } else $export($export.P + $export.F * (BUGGY || VALUES_BUG), NAME, methods);
-	  }
-	  return methods;
-	};
-
-/***/ },
-/* 432 */
-/***/ function(module, exports) {
-
-	module.exports = true;
-
-/***/ },
-/* 433 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__(434);
-
-/***/ },
-/* 434 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var $          = __webpack_require__(348)
-	  , createDesc = __webpack_require__(435);
-	module.exports = __webpack_require__(436) ? function(object, key, value){
-	  return $.setDesc(object, key, createDesc(1, value));
-	} : function(object, key, value){
-	  object[key] = value;
-	  return object;
-	};
-
-/***/ },
-/* 435 */
-/***/ function(module, exports) {
-
-	module.exports = function(bitmap, value){
-	  return {
-	    enumerable  : !(bitmap & 1),
-	    configurable: !(bitmap & 2),
-	    writable    : !(bitmap & 4),
-	    value       : value
-	  };
-	};
-
-/***/ },
-/* 436 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// Thank's IE8 for his funny defineProperty
-	module.exports = !__webpack_require__(353)(function(){
-	  return Object.defineProperty({}, 'a', {get: function(){ return 7; }}).a != 7;
-	});
-
-/***/ },
-/* 437 */
-/***/ function(module, exports) {
-
-	var hasOwnProperty = {}.hasOwnProperty;
-	module.exports = function(it, key){
-	  return hasOwnProperty.call(it, key);
-	};
-
-/***/ },
-/* 438 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	var $              = __webpack_require__(348)
-	  , descriptor     = __webpack_require__(435)
-	  , setToStringTag = __webpack_require__(439)
-	  , IteratorPrototype = {};
-
-	// 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
-	__webpack_require__(434)(IteratorPrototype, __webpack_require__(440)('iterator'), function(){ return this; });
-
-	module.exports = function(Constructor, NAME, next){
-	  Constructor.prototype = $.create(IteratorPrototype, {next: descriptor(1, next)});
-	  setToStringTag(Constructor, NAME + ' Iterator');
-	};
-
-/***/ },
-/* 439 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var def = __webpack_require__(348).setDesc
-	  , has = __webpack_require__(437)
-	  , TAG = __webpack_require__(440)('toStringTag');
-
-	module.exports = function(it, tag, stat){
-	  if(it && !has(it = stat ? it : it.prototype, TAG))def(it, TAG, {configurable: true, value: tag});
-	};
-
-/***/ },
-/* 440 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var store  = __webpack_require__(441)('wks')
-	  , uid    = __webpack_require__(442)
-	  , Symbol = __webpack_require__(343).Symbol;
-	module.exports = function(name){
-	  return store[name] || (store[name] =
-	    Symbol && Symbol[name] || (Symbol || uid)('Symbol.' + name));
-	};
-
-/***/ },
-/* 441 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var global = __webpack_require__(343)
-	  , SHARED = '__core-js_shared__'
-	  , store  = global[SHARED] || (global[SHARED] = {});
-	module.exports = function(key){
-	  return store[key] || (store[key] = {});
-	};
-
-/***/ },
-/* 442 */
-/***/ function(module, exports) {
-
-	var id = 0
-	  , px = Math.random();
-	module.exports = function(key){
-	  return 'Symbol('.concat(key === undefined ? '' : key, ')_', (++id + px).toString(36));
-	};
-
-/***/ },
-/* 443 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	var $at  = __webpack_require__(444)(true);
-
-	// 21.1.3.27 String.prototype[@@iterator]()
-	__webpack_require__(431)(String, 'String', function(iterated){
-	  this._t = String(iterated); // target
-	  this._i = 0;                // next index
-	// 21.1.5.2.1 %StringIteratorPrototype%.next()
-	}, function(){
-	  var O     = this._t
-	    , index = this._i
-	    , point;
-	  if(index >= O.length)return {value: undefined, done: true};
-	  point = $at(O, index);
-	  this._i += point.length;
-	  return {value: point, done: false};
-	});
-
-/***/ },
-/* 444 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var toInteger = __webpack_require__(445)
-	  , defined   = __webpack_require__(350);
-	// true  -> String#at
-	// false -> String#codePointAt
-	module.exports = function(TO_STRING){
-	  return function(that, pos){
-	    var s = String(defined(that))
-	      , i = toInteger(pos)
-	      , l = s.length
-	      , a, b;
-	    if(i < 0 || i >= l)return TO_STRING ? '' : undefined;
-	    a = s.charCodeAt(i);
-	    return a < 0xd800 || a > 0xdbff || i + 1 === l || (b = s.charCodeAt(i + 1)) < 0xdc00 || b > 0xdfff
-	      ? TO_STRING ? s.charAt(i) : a
-	      : TO_STRING ? s.slice(i, i + 2) : (a - 0xd800 << 10) + (b - 0xdc00) + 0x10000;
-	  };
-	};
-
-/***/ },
-/* 445 */
-/***/ function(module, exports) {
-
-	// 7.1.4 ToInteger
-	var ceil  = Math.ceil
-	  , floor = Math.floor;
-	module.exports = function(it){
-	  return isNaN(it = +it) ? 0 : (it > 0 ? floor : ceil)(it);
-	};
-
-/***/ },
-/* 446 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var anObject = __webpack_require__(383)
-	  , get      = __webpack_require__(447);
+	var anObject = __webpack_require__(384)
+	  , get      = __webpack_require__(460);
 	module.exports = __webpack_require__(344).getIterator = function(it){
 	  var iterFn = get(it);
 	  if(typeof iterFn != 'function')throw TypeError(it + ' is not iterable!');
@@ -52893,60 +55204,26 @@
 	};
 
 /***/ },
-/* 447 */
+/* 493 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var classof   = __webpack_require__(448)
-	  , ITERATOR  = __webpack_require__(440)('iterator')
-	  , Iterators = __webpack_require__(429);
-	module.exports = __webpack_require__(344).getIteratorMethod = function(it){
-	  if(it != undefined)return it[ITERATOR]
-	    || it['@@iterator']
-	    || Iterators[classof(it)];
-	};
+	module.exports = { "default": __webpack_require__(494), __esModule: true };
 
 /***/ },
-/* 448 */
+/* 494 */
 /***/ function(module, exports, __webpack_require__) {
 
-	// getting tag from 19.1.3.6 Object.prototype.toString()
-	var cof = __webpack_require__(352)
-	  , TAG = __webpack_require__(440)('toStringTag')
-	  // ES3 wrong here
-	  , ARG = cof(function(){ return arguments; }()) == 'Arguments';
-
-	module.exports = function(it){
-	  var O, T, B;
-	  return it === undefined ? 'Undefined' : it === null ? 'Null'
-	    // @@toStringTag case
-	    : typeof (T = (O = Object(it))[TAG]) == 'string' ? T
-	    // builtinTag case
-	    : ARG ? cof(O)
-	    // ES3 arguments fallback
-	    : (B = cof(O)) == 'Object' && typeof O.callee == 'function' ? 'Arguments' : B;
-	};
+	__webpack_require__(466);
+	__webpack_require__(440);
+	module.exports = __webpack_require__(495);
 
 /***/ },
-/* 449 */
+/* 495 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(450), __esModule: true };
-
-/***/ },
-/* 450 */
-/***/ function(module, exports, __webpack_require__) {
-
-	__webpack_require__(425);
-	__webpack_require__(443);
-	module.exports = __webpack_require__(451);
-
-/***/ },
-/* 451 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var classof   = __webpack_require__(448)
-	  , ITERATOR  = __webpack_require__(440)('iterator')
-	  , Iterators = __webpack_require__(429);
+	var classof   = __webpack_require__(461)
+	  , ITERATOR  = __webpack_require__(453)('iterator')
+	  , Iterators = __webpack_require__(450);
 	module.exports = __webpack_require__(344).isIterable = function(it){
 	  var O = Object(it);
 	  return O[ITERATOR] !== undefined
@@ -52955,53 +55232,11 @@
 	};
 
 /***/ },
-/* 452 */
+/* 496 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule filterExclusiveKeys
-	 * @typechecks
-	 * 
-	 */
-
-	'use strict';
-
-	var _Object$keys = __webpack_require__(384)['default'];
-
-	var hasOwnProperty = Object.prototype.hasOwnProperty;
-
-	/**
-	 * Returns two arrays of keys that contain each object's exclusive keys.
-	 */
-	function filterExclusiveKeys(a, b) {
-	  var keysA = a ? _Object$keys(a) : [];
-	  var keysB = b ? _Object$keys(b) : [];
-
-	  if (keysA.length === 0 || keysB.length === 0) {
-	    return [keysA, keysB];
-	  }
-	  return [keysA.filter(function (key) {
-	    return !hasOwnProperty.call(b, key);
-	  }), keysB.filter(function (key) {
-	    return !hasOwnProperty.call(a, key);
-	  })];
-	}
-
-	module.exports = filterExclusiveKeys;
-
-/***/ },
-/* 453 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -53015,28 +55250,29 @@
 
 	'use strict';
 
-	var _inherits = __webpack_require__(375)['default'];
+	var _inherits = __webpack_require__(376)['default'];
 
 	var _classCallCheck = __webpack_require__(355)['default'];
 
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
-	var GraphQLFragmentPointer = __webpack_require__(389);
-	var GraphQLStoreDataHandler = __webpack_require__(390);
+	var RelayFragmentPointer = __webpack_require__(390);
 
-	var RelayConnectionInterface = __webpack_require__(404);
+	var RelayConnectionInterface = __webpack_require__(407);
 
-	var RelayProfiler = __webpack_require__(409);
+	var RelayProfiler = __webpack_require__(415);
 	var RelayQuery = __webpack_require__(391);
-	var RelayQueryVisitor = __webpack_require__(454);
-	var RelayRecordState = __webpack_require__(455);
+	var RelayQueryVisitor = __webpack_require__(497);
+	var RelayRecord = __webpack_require__(426);
+	var RelayRecordState = __webpack_require__(498);
+	var RelayRecordStatusMap = __webpack_require__(435);
 
-	var callsFromGraphQL = __webpack_require__(413);
-	var callsToGraphQL = __webpack_require__(414);
+	var callsFromGraphQL = __webpack_require__(419);
+	var callsToGraphQL = __webpack_require__(420);
 	var invariant = __webpack_require__(399);
-	var isCompatibleRelayFragmentType = __webpack_require__(456);
-	var validateRelayReadQuery = __webpack_require__(457);
+	var isCompatibleRelayFragmentType = __webpack_require__(499);
+	var validateRelayReadQuery = __webpack_require__(500);
 
 	var EDGES = RelayConnectionInterface.EDGES;
 	var PAGE_INFO = RelayConnectionInterface.PAGE_INFO;
@@ -53090,14 +55326,15 @@
 	    var rangeData = this._rangeData.parseRangeClientID(dataID);
 	    var status = this._recordStore.getRecordState(rangeData ? rangeData.dataID : dataID);
 	    if (status === RelayRecordState.EXISTENT) {
-	      var state = {
+	      var state = this._createState({
 	        componentDataID: null,
 	        data: undefined,
+	        isPartial: false,
 	        parent: null,
 	        rangeInfo: null,
 	        seenDataIDs: result.dataIDs,
 	        storeDataID: dataID
-	      };
+	      });
 	      this.visit(queryNode, state);
 	      result.data = state.data;
 	    } else if (status === RelayRecordState.NONEXISTENT) {
@@ -53106,12 +55343,18 @@
 	    return result;
 	  };
 
+	  RelayStoreReader.prototype.visit = function visit(node, state) {
+	    var result = _RelayQueryVisitor.prototype.visit.call(this, node, state);
+	    this._updateMetadataFields(state);
+	    return result;
+	  };
+
 	  RelayStoreReader.prototype.visitField = function visitField(node, state) {
 	    // Check for range client IDs (eg. `someID_first(25)`) and unpack if
 	    // present, overriding `state`.
 	    this._handleRangeInfo(node, state);
 
-	    if (!node.isScalar() || node.isGenerated()) {
+	    if (node.canHaveSubselections() || node.isGenerated()) {
 	      // Make sure we return at least the __dataID__.
 	      getDataObject(state);
 	    }
@@ -53124,7 +55367,7 @@
 	      this._readEdges(node, rangeInfo, state);
 	    } else if (rangeInfo && node.getSchemaName() === PAGE_INFO) {
 	      this._readPageInfo(node, rangeInfo, state);
-	    } else if (node.isScalar()) {
+	    } else if (!node.canHaveSubselections()) {
 	      this._readScalar(node, state);
 	    } else if (node.isPlural()) {
 	      this._readPlural(node, state);
@@ -53140,18 +55383,28 @@
 	    var dataID = getComponentDataID(state);
 	    if (node.isContainerFragment() && !this._traverseFragmentReferences) {
 	      state.seenDataIDs[dataID] = true;
-	      var fragmentPointer = new GraphQLFragmentPointer(node.isPlural() ? [dataID] : dataID, node);
-	      this._setDataValue(state, fragmentPointer.getFragment().getConcreteNodeHash(), fragmentPointer);
+	      var _data = getDataObject(state);
+	      RelayFragmentPointer.addFragment(_data, node, dataID);
 	    } else if (isCompatibleRelayFragmentType(node, this._recordStore.getType(dataID))) {
 	      this.traverse(node, state);
 	    }
+	  };
+
+	  RelayStoreReader.prototype._createState = function _createState(state) {
+	    // If we have a valid `dataID`, ensure that a record is created for it even
+	    // if we do not actually end up populating it with fields.
+	    var status = this._recordStore.getRecordState(state.storeDataID);
+	    if (status === RelayRecordState.EXISTENT) {
+	      getDataObject(state);
+	    }
+	    return state;
 	  };
 
 	  RelayStoreReader.prototype._readScalar = function _readScalar(node, state) {
 	    var storageKey = node.getStorageKey();
 	    var field = this._recordStore.getField(state.storeDataID, storageKey);
 	    if (field === undefined) {
-	      return;
+	      state.isPartial = true;
 	    } else if (field === null && !state.data) {
 	      state.data = null;
 	    } else {
@@ -53172,17 +55425,21 @@
 	        if (previousData instanceof Object) {
 	          data = previousData[ii];
 	        }
-	        var nextState = {
+	        var nextState = _this._createState({
 	          componentDataID: null,
 	          data: data,
+	          isPartial: false,
 	          parent: node,
 	          rangeInfo: null,
 	          seenDataIDs: state.seenDataIDs,
 	          storeDataID: dataID
-	        };
+	        });
 	        node.getChildren().forEach(function (child) {
 	          return _this.visit(child, nextState);
 	        });
+	        if (nextState.isPartial) {
+	          state.isPartial = true;
+	        }
 	        return nextState.data;
 	      });
 	      this._setDataValue(state, applicationName, nextData);
@@ -53195,40 +55452,52 @@
 	    var calls = node.getCallsWithValues();
 	    var dataID = this._recordStore.getLinkedRecordID(state.storeDataID, storageKey);
 	    if (!dataID) {
+	      state.isPartial = true;
 	      return;
 	    }
 	    enforceRangeCalls(node);
 	    var metadata = this._recordStore.getRangeMetadata(dataID, calls);
-	    var nextState = {
+	    var nextState = this._createState({
 	      componentDataID: this._getConnectionClientID(node, dataID),
 	      data: getDataValue(state, applicationName),
+	      isPartial: false,
 	      parent: node,
 	      rangeInfo: metadata && calls.length ? metadata : null,
 	      seenDataIDs: state.seenDataIDs,
 	      storeDataID: dataID
-	    };
+	    });
 	    this.traverse(node, nextState);
+	    if (nextState.isPartial) {
+	      state.isPartial = true;
+	    }
 	    this._setDataValue(state, applicationName, nextState.data);
 	  };
 
 	  RelayStoreReader.prototype._readEdges = function _readEdges(node, rangeInfo, state) {
 	    var _this2 = this;
 
+	    if (rangeInfo.diffCalls.length) {
+	      state.isPartial = true;
+	    }
 	    var previousData = getDataValue(state, EDGES);
 	    var edges = rangeInfo.filteredEdges.map(function (edgeData, ii) {
 	      var data;
 	      if (previousData instanceof Object) {
 	        data = previousData[ii];
 	      }
-	      var nextState = {
+	      var nextState = _this2._createState({
 	        componentDataID: null,
 	        data: data,
+	        isPartial: false,
 	        parent: node,
 	        rangeInfo: null,
 	        seenDataIDs: state.seenDataIDs,
 	        storeDataID: edgeData.edgeID
-	      };
+	      });
 	      _this2.traverse(node, nextState);
+	      if (nextState.isPartial) {
+	        state.isPartial = true;
+	      }
 	      return nextState.data;
 	    });
 	    this._setDataValue(state, EDGES, edges);
@@ -53240,6 +55509,9 @@
 	    var pageInfo = rangeInfo.pageInfo;
 
 	    !pageInfo ?  true ? invariant(false, 'readRelayQueryData(): Missing field, `%s`.', PAGE_INFO) : invariant(false) : undefined;
+	    if (rangeInfo.diffCalls.length) {
+	      state.isPartial = true;
+	    }
 	    var info = pageInfo; // for Flow
 	    var nextData;
 
@@ -53249,10 +55521,9 @@
 	    var read = function read(child) {
 	      if (child instanceof RelayQuery.Fragment) {
 	        if (child.isContainerFragment() && !_this3._traverseFragmentReferences) {
-	          var fragmentPointer = new GraphQLFragmentPointer(getComponentDataID(state), child);
+	          var dataID = getComponentDataID(state);
 	          nextData = nextData || {};
-	          var fragmentHash = fragmentPointer.getFragment().getConcreteNodeHash();
-	          nextData[fragmentHash] = fragmentPointer;
+	          RelayFragmentPointer.addFragment(nextData, child, dataID);
 	        } else {
 	          child.getChildren().forEach(read);
 	        }
@@ -53274,23 +55545,25 @@
 	    var applicationName = node.getApplicationName();
 	    var dataID = this._recordStore.getLinkedRecordID(state.storeDataID, storageKey);
 	    if (dataID == null) {
+	      if (dataID === undefined) {
+	        state.isPartial = true;
+	      }
 	      this._setDataValue(state, applicationName, dataID);
 	      return;
 	    }
-	    var nextState = {
+	    var nextState = this._createState({
 	      componentDataID: null,
 	      data: getDataValue(state, applicationName),
+	      isPartial: false,
 	      parent: node,
 	      rangeInfo: null,
 	      seenDataIDs: state.seenDataIDs,
 	      storeDataID: dataID
-	    };
-	    var status = this._recordStore.getRecordState(dataID);
-	    if (status === RelayRecordState.EXISTENT) {
-	      // Make sure we return at least the __dataID__.
-	      getDataObject(nextState);
-	    }
+	    });
 	    this.traverse(node, nextState);
+	    if (nextState.isPartial) {
+	      state.isPartial = true;
+	    }
 	    this._setDataValue(state, applicationName, nextState.data);
 	  };
 
@@ -53302,14 +55575,20 @@
 	   */
 
 	  RelayStoreReader.prototype._setDataValue = function _setDataValue(state, key, value) {
-	    var _this4 = this;
-
 	    var data = getDataObject(state); // ensure __dataID__
 	    if (value === undefined) {
 	      return;
 	    }
 	    data[key] = value;
+	  };
 
+	  RelayStoreReader.prototype._updateMetadataFields = function _updateMetadataFields(state) {
+	    var _this4 = this;
+
+	    var data = state.data;
+	    if (!(data instanceof Object)) {
+	      return;
+	    }
 	    // Copy metadata like `__resolvedFragmentMapGeneration__` and `__status__`.
 	    METADATA_KEYS.forEach(function (metadataKey) {
 	      var metadataValue = _this4._recordStore.getField(state.storeDataID, metadataKey);
@@ -53317,6 +55596,10 @@
 	        data[metadataKey] = metadataValue;
 	      }
 	    });
+	    // Set the partial bit after metadata has been copied over.
+	    if (state.isPartial) {
+	      data.__status__ = RelayRecordStatusMap.setPartialStatus(data.__status__, true);
+	    }
 	  };
 
 	  /**
@@ -53404,8 +55687,7 @@
 	function getDataObject(state) {
 	  var data = state.data;
 	  if (!data) {
-	    var pointer = GraphQLStoreDataHandler.createPointerWithID(getComponentDataID(state));
-	    data = state.data = pointer;
+	    data = state.data = RelayRecord.create(getComponentDataID(state));
 	  }
 	  !(data instanceof Object) ?  true ? invariant(false, 'readRelayQueryData(): Unable to read field on non-object.') : invariant(false) : undefined;
 	  return data;
@@ -53424,11 +55706,11 @@
 	module.exports = RelayProfiler.instrument('readRelayQueryData', readRelayQueryData);
 
 /***/ },
-/* 454 */
+/* 497 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -53494,20 +55776,18 @@
 	  };
 
 	  RelayQueryVisitor.prototype.traverse = function traverse(node, nextState) {
-	    var _this = this;
-
-	    if (!node.isScalar()) {
+	    if (node.canHaveSubselections()) {
 	      this.traverseChildren(node, nextState, function (child) {
-	        _this.visit(child, nextState);
-	      });
+	        this.visit(child, nextState);
+	      }, this);
 	    }
 	    return node;
 	  };
 
-	  RelayQueryVisitor.prototype.traverseChildren = function traverseChildren(node, nextState, callback) {
+	  RelayQueryVisitor.prototype.traverseChildren = function traverseChildren(node, nextState, callback, context) {
 	    var children = node.getChildren();
 	    for (var _index = 0; _index < children.length; _index++) {
-	      callback(children[_index], _index, children);
+	      callback.call(context, children[_index], _index, children);
 	    }
 	  };
 
@@ -53529,11 +55809,11 @@
 	module.exports = RelayQueryVisitor;
 
 /***/ },
-/* 455 */
+/* 498 */
 /***/ function(module, exports) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -53574,11 +55854,11 @@
 	module.exports = RelayRecordState;
 
 /***/ },
-/* 456 */
+/* 499 */
 /***/ function(module, exports) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -53610,11 +55890,11 @@
 	module.exports = isCompatibleRelayFragmentType;
 
 /***/ },
-/* 457 */
+/* 500 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -53628,13 +55908,13 @@
 
 	'use strict';
 
-	var _inherits = __webpack_require__(375)['default'];
+	var _inherits = __webpack_require__(376)['default'];
 
 	var _classCallCheck = __webpack_require__(355)['default'];
 
-	var RelayQueryVisitor = __webpack_require__(454);
+	var RelayQueryVisitor = __webpack_require__(497);
 
-	var emptyFunction = __webpack_require__(372);
+	var emptyFunction = __webpack_require__(373);
 
 	var validateRelayReadQuery = emptyFunction;
 
@@ -53693,7 +55973,7 @@
 
 	        if (node.isGenerated()) {
 	          return;
-	        } else if (node.isScalar()) {
+	        } else if (!node.canHaveSubselections()) {
 	          return;
 	        } else if (node.isPlural()) {
 	          this._readPlural(node, aliasMap);
@@ -53730,11 +56010,11 @@
 	module.exports = validateRelayReadQuery;
 
 /***/ },
-/* 458 */
+/* 501 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -53748,43 +56028,38 @@
 
 	'use strict';
 
-	var _Object$keys = __webpack_require__(384)['default'];
-
-	var GraphQLFragmentPointer = __webpack_require__(389);
-
 	/**
 	 * Recycles subtrees from `prevData` by replacing equal subtrees in `nextData`.
 	 */
+
+	var _Object$keys = __webpack_require__(385)['default'];
+
 	function recycleNodesInto(prevData, nextData) {
 	  if (typeof prevData !== 'object' || !prevData || typeof nextData !== 'object' || !nextData) {
 	    return nextData;
 	  }
 	  var canRecycle = false;
-	  if (prevData instanceof GraphQLFragmentPointer) {
-	    canRecycle = nextData instanceof GraphQLFragmentPointer && nextData.equals(prevData);
-	  } else {
-	    var isPrevArray = Array.isArray(prevData);
-	    var isNextArray = Array.isArray(nextData);
-	    if (isPrevArray && isNextArray) {
-	      // Assign local variables to preserve Flow type refinement.
-	      var prevArray = prevData;
-	      var nextArray = nextData;
-	      canRecycle = nextArray.reduce(function (wasEqual, nextItem, ii) {
-	        nextArray[ii] = recycleNodesInto(prevArray[ii], nextItem);
-	        return wasEqual && nextArray[ii] === prevArray[ii];
-	      }, true) && prevArray.length === nextArray.length;
-	    } else if (!isPrevArray && !isNextArray) {
-	      // Assign local variables to preserve Flow type refinement.
-	      var prevObject = prevData;
-	      var nextObject = nextData;
-	      var prevKeys = _Object$keys(prevObject);
-	      var nextKeys = _Object$keys(nextObject);
-	      canRecycle = nextKeys.reduce(function (wasEqual, key) {
-	        var nextValue = nextObject[key];
-	        nextObject[key] = recycleNodesInto(prevObject[key], nextValue);
-	        return wasEqual && nextObject[key] === prevObject[key];
-	      }, true) && prevKeys.length === nextKeys.length;
-	    }
+	  var isPrevArray = Array.isArray(prevData);
+	  var isNextArray = Array.isArray(nextData);
+	  if (isPrevArray && isNextArray) {
+	    // Assign local variables to preserve Flow type refinement.
+	    var prevArray = prevData;
+	    var nextArray = nextData;
+	    canRecycle = nextArray.reduce(function (wasEqual, nextItem, ii) {
+	      nextArray[ii] = recycleNodesInto(prevArray[ii], nextItem);
+	      return wasEqual && nextArray[ii] === prevArray[ii];
+	    }, true) && prevArray.length === nextArray.length;
+	  } else if (!isPrevArray && !isNextArray) {
+	    // Assign local variables to preserve Flow type refinement.
+	    var prevObject = prevData;
+	    var nextObject = nextData;
+	    var prevKeys = _Object$keys(prevObject);
+	    var nextKeys = _Object$keys(nextObject);
+	    canRecycle = nextKeys.reduce(function (wasEqual, key) {
+	      var nextValue = nextObject[key];
+	      nextObject[key] = recycleNodesInto(prevObject[key], nextValue);
+	      return wasEqual && nextObject[key] === prevObject[key];
+	    }, true) && prevKeys.length === nextKeys.length;
 	  }
 	  return canRecycle ? prevData : nextData;
 	}
@@ -53792,510 +56067,11 @@
 	module.exports = recycleNodesInto;
 
 /***/ },
-/* 459 */
-/***/ function(module, exports) {
-
-	/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule RelayContainerComparators
-	 * 
-	 * @typechecks
-	 */
-
-	'use strict';
-
-	/**
-	 * Compares `objectA` and `objectB` using the provided `isEqual` function.
-	 *
-	 * If a `filter` object is provided, only its keys will be checked during
-	 * comparison.
-	 */
-	function compareObjects(isEqual, objectA, objectB, filter) {
-	  var key;
-
-	  // Test for A's keys different from B.
-	  for (key in objectA) {
-	    if (filter && !filter.hasOwnProperty(key)) {
-	      continue;
-	    }
-
-	    if (objectA.hasOwnProperty(key) && (!objectB.hasOwnProperty(key) || !isEqual(objectA[key], objectB[key], key))) {
-	      return false;
-	    }
-	  }
-	  // Test for B's keys missing from A.
-	  for (key in objectB) {
-	    if (filter && !filter.hasOwnProperty(key)) {
-	      continue;
-	    }
-
-	    if (objectB.hasOwnProperty(key) && !objectA.hasOwnProperty(key)) {
-	      return false;
-	    }
-	  }
-	  return true;
-	}
-
-	function isScalarAndEqual(valueA, valueB) {
-	  return valueA === valueB && (valueA === null || typeof valueA !== 'object');
-	}
-
-	function isQueryDataEqual(fragmentPointers, currProp, nextProp, propName) {
-	  return(
-	    // resolved data did not change
-	    fragmentPointers[propName] && currProp === nextProp ||
-	    // otherwise compare fake data
-	    isScalarAndEqual(currProp, nextProp)
-	  );
-	}
-
-	function isNonQueryPropEqual(fragments, currProp, nextProp, propName) {
-	  return(
-	    // ignore props with fragments (instead resolved values are compared)
-	    fragments.hasOwnProperty(propName) ||
-	    // otherwise props must be scalar and === in order to skip
-	    isScalarAndEqual(currProp, nextProp)
-	  );
-	}
-
-	/**
-	 * Relay-aware comparators for props and state provide a reasonable default
-	 * implementation of `shouldComponentUpdate`.
-	 */
-	var RelayContainerComparators = {
-	  areQueryResultsEqual: function areQueryResultsEqual(fragmentPointers, prevQueryData, nextQueryData) {
-	    return compareObjects(isQueryDataEqual.bind(null, fragmentPointers), prevQueryData, nextQueryData);
-	  },
-
-	  areNonQueryPropsEqual: function areNonQueryPropsEqual(fragments, props, nextProps) {
-	    return compareObjects(isNonQueryPropEqual.bind(null, fragments), props, nextProps);
-	  },
-
-	  areQueryVariablesEqual: function areQueryVariablesEqual(variables, nextVariables) {
-	    return compareObjects(isScalarAndEqual, variables, nextVariables);
-	  }
-	};
-
-	module.exports = RelayContainerComparators;
-
-/***/ },
-/* 460 */
+/* 502 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule RelayContainerProxy
-	 */
-
-	'use strict';
-
-	module.exports = __webpack_require__(461);
-
-/***/ },
-/* 461 */
-/***/ function(module, exports) {
-
-	/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule RelayOSSContainerProxy
-	 * @typechecks
-	 * 
-	 */
-
-	/**
-	 * This feature is deprecated and unavailable in open source.
-	 */
-	'use strict';
-
-	var RelayOSSContainerProxy = {
-	  proxyMethods: function proxyMethods(RelayContainer, Component) {}
-	};
-
-	module.exports = RelayOSSContainerProxy;
-
-/***/ },
-/* 462 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule RelayMutationTransaction
-	 * @typechecks
-	 * 
-	 */
-
-	'use strict';
-
-	var _classCallCheck = __webpack_require__(355)['default'];
-
-	var RelayMutationTransactionStatus = __webpack_require__(463);
-
-	var invariant = __webpack_require__(399);
-
-	/**
-	 * @internal
-	 */
-
-	var RelayMutationTransaction = (function () {
-	  function RelayMutationTransaction(mutationQueue, id) {
-	    _classCallCheck(this, RelayMutationTransaction);
-
-	    this._id = id;
-	    this._mutationQueue = mutationQueue;
-	  }
-
-	  RelayMutationTransaction.prototype.commit = function commit() {
-	    var status = this.getStatus();
-	    !(status === RelayMutationTransactionStatus.UNCOMMITTED) ?  true ? invariant(false, 'RelayMutationTransaction: Only transactions with status `UNCOMMITTED` ' + 'can be comitted.') : invariant(false) : undefined;
-
-	    this._mutationQueue.commit(this._id);
-	  };
-
-	  RelayMutationTransaction.prototype.recommit = function recommit() {
-	    var status = this.getStatus();
-	    !(status === RelayMutationTransactionStatus.COMMIT_FAILED || status === RelayMutationTransactionStatus.COLLISION_COMMIT_FAILED) ?  true ? invariant(false, 'RelayMutationTransaction: Only transaction with status ' + '`COMMIT_FAILED` or `COLLISION_COMMIT_FAILED` can be comitted.') : invariant(false) : undefined;
-
-	    this._mutationQueue.commit(this._id);
-	  };
-
-	  RelayMutationTransaction.prototype.rollback = function rollback() {
-	    var status = this.getStatus();
-	    !(status === RelayMutationTransactionStatus.UNCOMMITTED || status === RelayMutationTransactionStatus.COMMIT_FAILED || status === RelayMutationTransactionStatus.COLLISION_COMMIT_FAILED) ?  true ? invariant(false, 'RelayMutationTransaction: Only transactions with status `UNCOMMITTED` ' + '`COMMIT_FAILED` or `COLLISION_COMMIT_FAILED` can be rolledback.') : invariant(false) : undefined;
-
-	    this._mutationQueue.rollback(this._id);
-	  };
-
-	  RelayMutationTransaction.prototype.getError = function getError() {
-	    return this._mutationQueue.getError(this._id);
-	  };
-
-	  RelayMutationTransaction.prototype.getStatus = function getStatus() {
-	    return this._mutationQueue.getStatus(this._id);
-	  };
-
-	  return RelayMutationTransaction;
-	})();
-
-	module.exports = RelayMutationTransaction;
-
-/***/ },
-/* 463 */
-/***/ function(module, exports) {
-
-	/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule RelayMutationTransactionStatus
-	 * @typechecks
-	 * 
-	 */
-
-	'use strict';
-
-	var RelayMutationTransactionStatus = {
-	  /**
-	   * Transaction hasn't yet been sent to the server. Client has an optimistic
-	   * update applied if the mutation defined one. Transaction can be committed or
-	   * rolledback.
-	   */
-	  UNCOMMITTED: 'UNCOMMITTED',
-
-	  /**
-	   * Transaction was committed but another transaction with the same collision
-	   * key is pending, so the transaction has been queued to send to the server.
-	   */
-	  COMMIT_QUEUED: 'COMMIT_QUEUED',
-
-	  /**
-	   * Transaction was queued for commit but another transaction with the same
-	   * collision queue failed to commit. All transactions in the collision
-	   * queue, including this one, have been failed as well. Transaction can be
-	   * recommitted or rolledback.
-	   */
-	  COLLISION_COMMIT_FAILED: 'COLLISION_COMMIT_FAILED',
-
-	  /**
-	   * Transaction was sent to the server for comitting and a response is awaited.
-	   */
-	  COMMITTING: 'COMMITTING',
-
-	  /**
-	   * Transaction was sent to the server for comitting but was failed.
-	   */
-	  COMMIT_FAILED: 'COMMIT_FAILED'
-	};
-
-	module.exports = RelayMutationTransactionStatus;
-
-/***/ },
-/* 464 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule RelayPropTypes
-	 * 
-	 * @typechecks
-	 */
-
-	'use strict';
-
-	var _require = __webpack_require__(2);
-
-	var PropTypes = _require.PropTypes;
-
-	var isRelayContainer = __webpack_require__(465);
-	var sprintf = __webpack_require__(370);
-
-	var RelayPropTypes = {
-	  Container: function Container(props, propName, componentName) {
-	    var component = props[propName];
-	    if (component == null) {
-	      return new Error(sprintf('Required prop `%s` was not specified in `%s`.', propName, componentName));
-	    } else if (!isRelayContainer(component)) {
-	      return new Error(sprintf('Invalid prop `%s` supplied to `%s`, expected a RelayContainer.', propName, componentName));
-	    }
-	    return null;
-	  },
-
-	  QueryConfig: PropTypes.shape({
-	    name: PropTypes.string.isRequired,
-	    params: PropTypes.object.isRequired,
-	    queries: PropTypes.object.isRequired,
-	    uri: PropTypes.object
-	  })
-	};
-
-	module.exports = RelayPropTypes;
-
-/***/ },
-/* 465 */
-/***/ function(module, exports) {
-
-	/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule isRelayContainer
-	 * 
-	 * @typechecks
-	 */
-
-	'use strict';
-
-	function isRelayContainer(component) {
-	  return !!(component && component.getFragmentNames && component.getFragment && component.hasFragment && component.hasVariable);
-	}
-
-	module.exports = isRelayContainer;
-
-/***/ },
-/* 466 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule RelayStore
-	 * @typechecks
-	 * 
-	 */
-
-	'use strict';
-
-	var GraphQLFragmentPointer = __webpack_require__(389);
-
-	var RelayMutationTransaction = __webpack_require__(462);
-	var RelayQuery = __webpack_require__(391);
-	var RelayQueryResultObservable = __webpack_require__(467);
-	var RelayStoreData = __webpack_require__(468);
-
-	var forEachRootCallArg = __webpack_require__(398);
-	var readRelayQueryData = __webpack_require__(453);
-	var warning = __webpack_require__(371);
-
-	var storeData = RelayStoreData.getDefaultInstance();
-	var queryRunner = storeData.getQueryRunner();
-	var queuedStore = storeData.getQueuedStore();
-
-	/**
-	 * @public
-	 *
-	 * RelayStore is a caching layer that records GraphQL response data and enables
-	 * resolving and subscribing to queries.
-	 *
-	 * === onReadyStateChange ===
-	 *
-	 * Whenever Relay sends a request for data via GraphQL, an "onReadyStateChange"
-	 * callback can be supplied. This callback is called one or more times with a
-	 * `readyState` object with the following properties:
-	 *
-	 *   aborted: Whether the request was aborted.
-	 *   done: Whether all response data has been fetched.
-	 *   error: An error in the event of a failure, or null if none.
-	 *   ready: Whether the queries are at least partially resolvable.
-	 *   stale: When resolvable during `forceFetch`, whether data is stale.
-	 *
-	 * If the callback is invoked with `aborted`, `done`, or a non-null `error`, the
-	 * callback will never be called again. Example usage:
-	 *
-	 *  function onReadyStateChange(readyState) {
-	 *    if (readyState.aborted) {
-	 *      // Request was aborted.
-	 *    } else if (readyState.error) {
-	 *      // Failure occurred.
-	 *    } else if (readyState.ready) {
-	 *      // Queries are at least partially resolvable.
-	 *      if (readyState.done) {
-	 *        // Queries are completely resolvable.
-	 *      }
-	 *    }
-	 *  }
-	 *
-	 */
-	var RelayStore = {
-
-	  /**
-	   * Primes the store by sending requests for any missing data that would be
-	   * required to satisfy the supplied set of queries.
-	   */
-	  primeCache: function primeCache(querySet, callback) {
-	    return queryRunner.run(querySet, callback);
-	  },
-
-	  /**
-	   * Forces the supplied set of queries to be fetched and written to the store.
-	   * Any data that previously satisfied the queries will be overwritten.
-	   */
-	  forceFetch: function forceFetch(querySet, callback) {
-	    return queryRunner.forceFetch(querySet, callback);
-	  },
-
-	  /**
-	   * Reads query data anchored at the supplied data ID.
-	   */
-	  read: function read(node, dataID, options) {
-	    return readRelayQueryData(storeData, node, dataID, options).data;
-	  },
-
-	  /**
-	   * Reads query data anchored at the supplied data IDs.
-	   */
-	  readAll: function readAll(node, dataIDs, options) {
-	    return dataIDs.map(function (dataID) {
-	      return readRelayQueryData(storeData, node, dataID, options).data;
-	    });
-	  },
-
-	  /**
-	   * Reads query data, where each element in the result array corresponds to a
-	   * root call argument. If the root call has no arguments, the result array
-	   * will contain exactly one element.
-	   */
-	  readQuery: function readQuery(root, options) {
-	    var storageKey = root.getStorageKey();
-	    var results = [];
-	    forEachRootCallArg(root, function (identifyingArgValue) {
-	      var data;
-	      var dataID = queuedStore.getDataID(storageKey, identifyingArgValue);
-	      if (dataID != null) {
-	        data = RelayStore.read(root, dataID, options);
-	      }
-	      results.push(data);
-	    });
-	    return results;
-	  },
-
-	  /**
-	   * Reads and subscribes to query data anchored at the supplied data ID. The
-	   * returned observable emits updates as the data changes over time.
-	   */
-	  observe: function observe(fragment, dataID) {
-	    var fragmentPointer = new GraphQLFragmentPointer(fragment.isPlural() ? [dataID] : dataID, fragment);
-	    return new RelayQueryResultObservable(storeData, fragmentPointer);
-	  },
-
-	  /**
-	   * Adds an update to the store without committing it. The returned
-	   * RelayMutationTransaction can be committed or rolled back at a later time.
-	   */
-	  applyUpdate: function applyUpdate(mutation, callbacks) {
-	    return storeData.getMutationQueue().createTransaction(mutation, callbacks);
-	  },
-
-	  /**
-	   * Adds an update to the store and commits it immediately. Returns
-	   * the RelayMutationTransaction.
-	   */
-	  commitUpdate: function commitUpdate(mutation, callbacks) {
-	    var transaction = this.applyUpdate(mutation, callbacks);
-	    transaction.commit();
-	    return transaction;
-	  },
-
-	  /**
-	   * @deprecated
-	   *
-	   * Method renamed to commitUpdate
-	   */
-	  update: function update(mutation, callbacks) {
-	     true ? warning(false, '`Relay.Store.update` is deprecated. Please use' + ' `Relay.Store.commitUpdate` or `Relay.Store.applyUpdate` instead.') : undefined;
-	    this.commitUpdate(mutation, callbacks);
-	  }
-	};
-
-	module.exports = RelayStore;
-
-/***/ },
-/* 467 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -54311,8 +56087,7 @@
 
 	var _classCallCheck = __webpack_require__(355)['default'];
 
-	var GraphQLFragmentPointer = __webpack_require__(389);
-	var GraphQLStoreQueryResolver = __webpack_require__(421);
+	var GraphQLStoreQueryResolver = __webpack_require__(488);
 
 	var invariant = __webpack_require__(399);
 
@@ -54338,12 +56113,13 @@
 	 */
 
 	var RelayQueryResultObservable = (function () {
-	  function RelayQueryResultObservable(storeData, fragmentPointer) {
+	  function RelayQueryResultObservable(storeData, fragment, dataID) {
 	    _classCallCheck(this, RelayQueryResultObservable);
 
 	    this._data = undefined;
-	    this._fragmentPointer = fragmentPointer;
-	    this._queryResolver = null;
+	    this._dataID = dataID;
+	    this._fragment = fragment;
+	    this._fragmentResolver = null;
 	    this._storeData = storeData;
 	    this._subscriptionCallbacks = [];
 	    this._subscriptionCount = 0;
@@ -54377,26 +56153,26 @@
 	  RelayQueryResultObservable.prototype._observe = function _observe() {
 	    var _this2 = this;
 
-	    !!this._queryResolver ?  true ? invariant(false, 'RelayQueryResultObservable: Initialized twice.') : invariant(false) : undefined;
-	    var queryResolver = new GraphQLStoreQueryResolver(this._storeData, this._fragmentPointer, function () {
-	      return _this2._onUpdate(queryResolver);
+	    !!this._fragmentResolver ?  true ? invariant(false, 'RelayQueryResultObservable: Initialized twice.') : invariant(false) : undefined;
+	    var fragmentResolver = new GraphQLStoreQueryResolver(this._storeData, this._fragment, function () {
+	      return _this2._onUpdate(fragmentResolver);
 	    });
-	    this._queryResolver = queryResolver;
-	    return queryResolver;
+	    this._fragmentResolver = fragmentResolver;
+	    return fragmentResolver;
 	  };
 
 	  RelayQueryResultObservable.prototype._unobserve = function _unobserve() {
-	    if (this._queryResolver) {
+	    if (this._fragmentResolver) {
 	      this._data = undefined;
-	      this._queryResolver.reset();
-	      this._queryResolver = null;
+	      this._fragmentResolver.dispose();
+	      this._fragmentResolver = null;
 	    }
 	  };
 
-	  RelayQueryResultObservable.prototype._onUpdate = function _onUpdate(queryResolver) {
+	  RelayQueryResultObservable.prototype._onUpdate = function _onUpdate(fragmentResolver) {
 	    var _this3 = this;
 
-	    this._resolveData(queryResolver);
+	    this._resolveData(fragmentResolver);
 	    this._subscriptionCallbacks.forEach(function (callbacks) {
 	      return _this3._fire(callbacks);
 	    });
@@ -54406,8 +56182,8 @@
 	    callbacks.onNext && callbacks.onNext(this._data);
 	  };
 
-	  RelayQueryResultObservable.prototype._resolveData = function _resolveData(queryResolver) {
-	    var data = queryResolver.resolve(this._fragmentPointer);
+	  RelayQueryResultObservable.prototype._resolveData = function _resolveData(fragmentResolver) {
+	    var data = fragmentResolver.resolve(this._fragment, this._dataID);
 	    !!Array.isArray(data) ?  true ? invariant(false, 'RelayQueryResultObservable: Plural fragments are not supported.') : invariant(false) : undefined;
 	    this._data = data;
 	  };
@@ -54418,11 +56194,11 @@
 	module.exports = RelayQueryResultObservable;
 
 /***/ },
-/* 468 */
+/* 503 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -54438,40 +56214,54 @@
 
 	var _classCallCheck = __webpack_require__(355)['default'];
 
-	var _Object$keys = __webpack_require__(384)['default'];
+	var _Object$keys = __webpack_require__(385)['default'];
 
-	var GraphQLQueryRunner = __webpack_require__(469);
-	var GraphQLStoreChangeEmitter = __webpack_require__(495);
-	var GraphQLStoreDataHandler = __webpack_require__(390);
-	var GraphQLStoreRangeUtils = __webpack_require__(496);
-	var RelayChangeTracker = __webpack_require__(497);
+	var GraphQLQueryRunner = __webpack_require__(504);
+	var GraphQLStoreChangeEmitter = __webpack_require__(521);
+	var GraphQLStoreRangeUtils = __webpack_require__(522);
+	var RelayChangeTracker = __webpack_require__(523);
 
-	var RelayConnectionInterface = __webpack_require__(404);
+	var RelayConnectionInterface = __webpack_require__(407);
+	var RelayDiskCacheReader = __webpack_require__(524);
 
-	var RelayGarbageCollector = __webpack_require__(498);
-	var RelayMutationQueue = __webpack_require__(505);
+	var RelayGarbageCollector = __webpack_require__(527);
+	var RelayMutationQueue = __webpack_require__(532);
 
 	var RelayNodeInterface = __webpack_require__(396);
-	var RelayPendingQueryTracker = __webpack_require__(528);
-	var RelayProfiler = __webpack_require__(409);
+	var RelayPendingQueryTracker = __webpack_require__(544);
+	var RelayProfiler = __webpack_require__(415);
 	var RelayQuery = __webpack_require__(391);
-	var RelayQueryTracker = __webpack_require__(534);
-	var RelayQueryWriter = __webpack_require__(535);
-	var RelayRecordStore = __webpack_require__(537);
 
-	var forEachObject = __webpack_require__(407);
+	var RelayQueryPath = __webpack_require__(513);
+	var RelayQueryTracker = __webpack_require__(550);
+	var RelayQueryWriter = __webpack_require__(551);
+	var RelayRecord = __webpack_require__(426);
+
+	var RelayRecordStore = __webpack_require__(553);
+	var RelayRecordWriter = __webpack_require__(554);
+
+	var forEachObject = __webpack_require__(413);
 	var invariant = __webpack_require__(399);
-	var generateForceIndex = __webpack_require__(488);
-	var readRelayDiskCache = __webpack_require__(539);
-	var warning = __webpack_require__(371);
-	var writeRelayQueryPayload = __webpack_require__(542);
-	var writeRelayUpdatePayload = __webpack_require__(543);
+	var generateForceIndex = __webpack_require__(516);
+	var warning = __webpack_require__(372);
+	var writeRelayQueryPayload = __webpack_require__(555);
+	var writeRelayUpdatePayload = __webpack_require__(556);
 
 	var CLIENT_MUTATION_ID = RelayConnectionInterface.CLIENT_MUTATION_ID;
+	var ID = RelayNodeInterface.ID;
+	var ID_TYPE = RelayNodeInterface.ID_TYPE;
+	var NODE = RelayNodeInterface.NODE;
 	var NODE_TYPE = RelayNodeInterface.NODE_TYPE;
+	var TYPENAME = RelayNodeInterface.TYPENAME;
 
-	// The source of truth for application data.
-	var _instance;
+	var idField = RelayQuery.Field.build({
+	  fieldName: ID,
+	  type: 'String'
+	});
+	var typeField = RelayQuery.Field.build({
+	  fieldName: TYPENAME,
+	  type: 'String'
+	});
 
 	/**
 	 * @internal
@@ -54481,18 +56271,6 @@
 	 */
 
 	var RelayStoreData = (function () {
-
-	  /**
-	   * Get the data set backing actual Relay operations. Used in GraphQLStore.
-	   */
-
-	  RelayStoreData.getDefaultInstance = function getDefaultInstance() {
-	    if (!_instance) {
-	      _instance = new RelayStoreData();
-	    }
-	    return _instance;
-	  };
-
 	  function RelayStoreData() {
 	    _classCallCheck(this, RelayStoreData);
 
@@ -54636,7 +56414,7 @@
 	    !cacheManager ?  true ? invariant(false, 'RelayStoreData: `readFromDiskCache` should only be called when cache ' + 'manager is available.') : invariant(false) : undefined;
 	    var changeTracker = new RelayChangeTracker();
 	    var profile = RelayProfiler.profile('RelayStoreData.readFromDiskCache');
-	    readRelayDiskCache(queries, this._queuedStore, this._cachedRecords, this._cachedRootCallMap, cacheManager, changeTracker, {
+	    RelayDiskCacheReader.readQueries(queries, this._queuedStore, this._cachedRecords, this._cachedRootCallMap, this._garbageCollector, cacheManager, changeTracker, {
 	      onSuccess: function onSuccess() {
 	        _this._handleChangedAndNewDataIDs(changeTracker.getChangeSet());
 	        profile.stop();
@@ -54651,13 +56429,40 @@
 	  };
 
 	  /**
+	   * Reads data for a fragment incrementally from disk cache.
+	   * It calls onSuccess when all the data has been loaded into memory.
+	   * It calls onFailure when some data is unabled to be satisfied from disk.
+	   */
+
+	  RelayStoreData.prototype.readFragmentFromDiskCache = function readFragmentFromDiskCache(dataID, fragment, path, callbacks) {
+	    var _this2 = this;
+
+	    var cacheManager = this._cacheManager;
+	    !cacheManager ?  true ? invariant(false, 'RelayStoreData: `readFragmentFromDiskCache` should only be called ' + 'when cache manager is available.') : invariant(false) : undefined;
+	    var changeTracker = new RelayChangeTracker();
+	    var profile = RelayProfiler.profile('RelayStoreData.readFragmentFromDiskCache');
+	    RelayDiskCacheReader.readFragment(dataID, fragment, path, this._queuedStore, this._cachedRecords, this._cachedRootCallMap, this._garbageCollector, cacheManager, changeTracker, {
+	      onSuccess: function onSuccess() {
+	        _this2._handleChangedAndNewDataIDs(changeTracker.getChangeSet());
+	        profile.stop();
+	        callbacks.onSuccess && callbacks.onSuccess();
+	      },
+	      onFailure: function onFailure() {
+	        _this2._handleChangedAndNewDataIDs(changeTracker.getChangeSet());
+	        profile.stop();
+	        callbacks.onFailure && callbacks.onFailure();
+	      }
+	    });
+	  };
+
+	  /**
 	   * Write the results of a query into the base record store.
 	   */
 
 	  RelayStoreData.prototype.handleQueryPayload = function handleQueryPayload(query, response, forceIndex) {
 	    var profiler = RelayProfiler.profile('RelayStoreData.handleQueryPayload');
 	    var changeTracker = new RelayChangeTracker();
-	    var writer = new RelayQueryWriter(this._recordStore, this._queryTracker, changeTracker, {
+	    var writer = new RelayQueryWriter(this._recordStore, this.getRecordWriter(), this._queryTracker, changeTracker, {
 	      forceIndex: forceIndex,
 	      updateTrackedQueries: true
 	    });
@@ -54677,14 +56482,17 @@
 	    var profiler = RelayProfiler.profile('RelayStoreData.handleUpdatePayload');
 	    var changeTracker = new RelayChangeTracker();
 	    var store;
+	    var recordWriter;
 	    if (isOptimisticUpdate) {
 	      var clientMutationID = payload[CLIENT_MUTATION_ID];
 	      !(typeof clientMutationID === 'string') ?  true ? invariant(false, 'RelayStoreData.handleUpdatePayload(): Expected optimistic payload ' + 'to have a valid `%s`.', CLIENT_MUTATION_ID) : invariant(false) : undefined;
 	      store = this.getRecordStoreForOptimisticMutation(clientMutationID);
+	      recordWriter = this.getRecordWriterForOptimisticMutation(clientMutationID);
 	    } else {
 	      store = this._getRecordStoreForMutation();
+	      recordWriter = this._getRecordWriterForMutation();
 	    }
-	    var writer = new RelayQueryWriter(store, this._queryTracker, changeTracker, {
+	    var writer = new RelayQueryWriter(store, recordWriter, this._queryTracker, changeTracker, {
 	      forceIndex: generateForceIndex(),
 	      isOptimisticUpdate: isOptimisticUpdate,
 	      updateTrackedQueries: false
@@ -54700,14 +56508,20 @@
 	   */
 
 	  RelayStoreData.prototype.buildFragmentQueryForDataID = function buildFragmentQueryForDataID(fragment, dataID) {
-	    if (GraphQLStoreDataHandler.isClientID(dataID)) {
+	    if (RelayRecord.isClientID(dataID)) {
 	      var path = this._queuedStore.getPathToRecord(this._rangeData.getCanonicalClientID(dataID));
 	      !path ?  true ? invariant(false, 'RelayStoreData.buildFragmentQueryForDataID(): Cannot refetch ' + 'record `%s` without a path.', dataID) : invariant(false) : undefined;
-	      return path.getQuery(fragment);
+	      return RelayQueryPath.getQuery(this._cachedStore, path, fragment);
 	    }
 	    // Fragment fields cannot be spread directly into the root because they
 	    // may not exist on the `Node` type.
-	    return RelayQuery.Root.build(fragment.getDebugName() || 'UnknownQuery', RelayNodeInterface.NODE, dataID, [fragment], { identifyingArgName: RelayNodeInterface.ID }, NODE_TYPE);
+	    return RelayQuery.Root.build(fragment.getDebugName() || 'UnknownQuery', NODE, dataID, [idField, typeField, fragment], {
+	      identifyingArgName: ID,
+	      identifyingArgType: ID_TYPE,
+	      isAbstract: true,
+	      isDeferred: false,
+	      isPlural: false
+	    }, NODE_TYPE);
 	  };
 
 	  RelayStoreData.prototype.getNodeData = function getNodeData() {
@@ -54719,11 +56533,11 @@
 	  };
 
 	  RelayStoreData.prototype.clearQueuedData = function clearQueuedData() {
-	    var _this2 = this;
+	    var _this3 = this;
 
 	    forEachObject(this._queuedRecords, function (_, key) {
-	      delete _this2._queuedRecords[key];
-	      _this2._changeEmitter.broadcastChangeForID(key);
+	      delete _this3._queuedRecords[key];
+	      _this3._changeEmitter.broadcastChangeForID(key);
 	    });
 	  };
 
@@ -54761,6 +56575,15 @@
 
 	  RelayStoreData.prototype.getRecordStore = function getRecordStore() {
 	    return this._recordStore;
+	  };
+
+	  /**
+	   * Get the record writer for the base data.
+	   */
+
+	  RelayStoreData.prototype.getRecordWriter = function getRecordWriter() {
+	    return new RelayRecordWriter(this._records, this._rootCallMap, false, // isOptimistic
+	    this._nodeRangeMap, this._cacheManager ? this._cacheManager.getQueryWriter() : null);
 	  };
 
 	  RelayStoreData.prototype.getQueryTracker = function getQueryTracker() {
@@ -54804,11 +56627,11 @@
 	   */
 
 	  RelayStoreData.prototype._handleChangedAndNewDataIDs = function _handleChangedAndNewDataIDs(changeSet) {
-	    var _this3 = this;
+	    var _this4 = this;
 
 	    var updatedDataIDs = _Object$keys(changeSet.updated);
 	    updatedDataIDs.forEach(function (id) {
-	      return _this3._changeEmitter.broadcastChangeForID(id);
+	      return _this4._changeEmitter.broadcastChangeForID(id);
 	    });
 	    if (this._garbageCollector) {
 	      var createdDataIDs = _Object$keys(changeSet.created);
@@ -54823,7 +56646,12 @@
 	    var records = this._records;
 	    var rootCallMap = this._rootCallMap;
 
-	    return new RelayRecordStore({ records: records }, { rootCallMap: rootCallMap }, this._nodeRangeMap, this._cacheManager ? this._cacheManager.getMutationWriter() : null);
+	    return new RelayRecordStore({ records: records }, { rootCallMap: rootCallMap }, this._nodeRangeMap);
+	  };
+
+	  RelayStoreData.prototype._getRecordWriterForMutation = function _getRecordWriterForMutation() {
+	    return new RelayRecordWriter(this._records, this._rootCallMap, false, // isOptimistic
+	    this._nodeRangeMap, this._cacheManager ? this._cacheManager.getMutationWriter() : null);
 	  };
 
 	  RelayStoreData.prototype.getRecordStoreForOptimisticMutation = function getRecordStoreForOptimisticMutation(clientMutationID) {
@@ -54833,7 +56661,12 @@
 	    var queuedRecords = this._queuedRecords;
 	    var records = this._records;
 
-	    return new RelayRecordStore({ cachedRecords: cachedRecords, queuedRecords: queuedRecords, records: records }, { cachedRootCallMap: cachedRootCallMap, rootCallMap: rootCallMap }, this._nodeRangeMap, null, // don't cache optimistic data
+	    return new RelayRecordStore({ cachedRecords: cachedRecords, queuedRecords: queuedRecords, records: records }, { cachedRootCallMap: cachedRootCallMap, rootCallMap: rootCallMap }, this._nodeRangeMap);
+	  };
+
+	  RelayStoreData.prototype.getRecordWriterForOptimisticMutation = function getRecordWriterForOptimisticMutation(clientMutationID) {
+	    return new RelayRecordWriter(this._queuedRecords, this._rootCallMap, true, // isOptimistic
+	    this._nodeRangeMap, null, // don't cache optimistic data
 	    clientMutationID);
 	  };
 
@@ -54851,8 +56684,8 @@
 
 	  return {
 	    queuedStore: new RelayRecordStore({ cachedRecords: cachedRecords, queuedRecords: queuedRecords, records: records }, { cachedRootCallMap: cachedRootCallMap, rootCallMap: rootCallMap }, nodeRangeMap),
-	    cachedStore: new RelayRecordStore({ cachedRecords: cachedRecords, records: records }, { cachedRootCallMap: cachedRootCallMap, rootCallMap: rootCallMap }, nodeRangeMap, cacheWriter),
-	    recordStore: new RelayRecordStore({ records: records }, { rootCallMap: rootCallMap }, nodeRangeMap, cacheWriter)
+	    cachedStore: new RelayRecordStore({ cachedRecords: cachedRecords, records: records }, { cachedRootCallMap: cachedRootCallMap, rootCallMap: rootCallMap }, nodeRangeMap),
+	    recordStore: new RelayRecordStore({ records: records }, { rootCallMap: rootCallMap }, nodeRangeMap)
 	  };
 	}
 
@@ -54864,11 +56697,11 @@
 	module.exports = RelayStoreData;
 
 /***/ },
-/* 469 */
+/* 504 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -54879,34 +56712,6 @@
 	 * @typechecks
 	 * 
 	 */
-
-	'use strict';
-
-	var _classCallCheck = __webpack_require__(355)['default'];
-
-	var _toConsumableArray = __webpack_require__(470)['default'];
-
-	var _Object$keys = __webpack_require__(384)['default'];
-
-	var DliteFetchModeConstants = __webpack_require__(478);
-
-	var RelayNetworkLayer = __webpack_require__(480);
-	var RelayProfiler = __webpack_require__(409);
-
-	var RelayTaskScheduler = __webpack_require__(481);
-
-	var checkRelayQueryData = __webpack_require__(483);
-	var diffRelayQuery = __webpack_require__(484);
-	var everyObject = __webpack_require__(486);
-	var flattenSplitRelayQueries = __webpack_require__(487);
-	var forEachObject = __webpack_require__(407);
-	var generateForceIndex = __webpack_require__(488);
-	var invariant = __webpack_require__(399);
-	var mapObject = __webpack_require__(489);
-	var resolveImmediate = __webpack_require__(490);
-	var someObject = __webpack_require__(491);
-	var splitDeferredRelayQueries = __webpack_require__(492);
-	var warning = __webpack_require__(371);
 
 	/**
 	 * This is the high-level entry point for sending queries to the GraphQL
@@ -54919,6 +56724,34 @@
 	 *
 	 * @internal
 	 */
+	'use strict';
+
+	var _classCallCheck = __webpack_require__(355)['default'];
+
+	var _toConsumableArray = __webpack_require__(437)['default'];
+
+	var _Object$keys = __webpack_require__(385)['default'];
+
+	var RelayFetchMode = __webpack_require__(505);
+
+	var RelayNetworkLayer = __webpack_require__(506);
+	var RelayProfiler = __webpack_require__(415);
+
+	var RelayReadyState = __webpack_require__(507);
+
+	var RelayTaskScheduler = __webpack_require__(509);
+
+	var checkRelayQueryData = __webpack_require__(511);
+	var diffRelayQuery = __webpack_require__(512);
+	var everyObject = __webpack_require__(514);
+	var flattenSplitRelayQueries = __webpack_require__(515);
+	var forEachObject = __webpack_require__(413);
+	var generateForceIndex = __webpack_require__(516);
+	var mapObject = __webpack_require__(479);
+	var resolveImmediate = __webpack_require__(508);
+	var someObject = __webpack_require__(517);
+	var splitDeferredRelayQueries = __webpack_require__(518);
+	var warning = __webpack_require__(372);
 
 	var GraphQLQueryRunner = (function () {
 	  function GraphQLQueryRunner(storeData) {
@@ -54930,32 +56763,12 @@
 	  /**
 	   * Fetches data required to resolve a set of queries. See the `RelayStore`
 	   * module for documentation on the callback.
-	   *
-	   * Fetch mode must be a value in `DliteFetchModeConstants`.
 	   */
 
-	  GraphQLQueryRunner.prototype.run = function run(querySet, callback, fetchMode) {
-	    var _this = this;
+	  GraphQLQueryRunner.prototype.run = function run(querySet, callback) {
+	    var fetchMode = arguments.length <= 2 || arguments[2] === undefined ? RelayFetchMode.CLIENT : arguments[2];
 
-	    fetchMode = fetchMode || DliteFetchModeConstants.FETCH_MODE_CLIENT;
-	    var profiler = fetchMode === DliteFetchModeConstants.FETCH_MODE_REFETCH ? RelayProfiler.profile('GraphQLQueryRunner.forceFetch') : RelayProfiler.profile('GraphQLQueryRunner.primeCache');
-
-	    var diffQueries = [];
-	    if (fetchMode === DliteFetchModeConstants.FETCH_MODE_CLIENT) {
-	      forEachObject(querySet, function (query) {
-	        if (query) {
-	          diffQueries.push.apply(diffQueries, _toConsumableArray(diffRelayQuery(query, _this._storeData.getRecordStore(), _this._storeData.getQueryTracker())));
-	        }
-	      });
-	    } else {
-	      forEachObject(querySet, function (query) {
-	        if (query) {
-	          diffQueries.push(query);
-	        }
-	      });
-	    }
-
-	    return runQueries(this._storeData, diffQueries, callback, fetchMode, profiler);
+	    return runQueries(this._storeData, querySet, callback, fetchMode);
 	  };
 
 	  /**
@@ -54967,14 +56780,8 @@
 	   */
 
 	  GraphQLQueryRunner.prototype.forceFetch = function forceFetch(querySet, callback) {
-	    var fetchMode = DliteFetchModeConstants.FETCH_MODE_REFETCH;
-	    var profiler = RelayProfiler.profile('GraphQLQueryRunner.forceFetch');
-	    var queries = [];
-	    forEachObject(querySet, function (query) {
-	      query && queries.push(query);
-	    });
-
-	    return runQueries(this._storeData, queries, callback, fetchMode, profiler);
+	    var fetchMode = RelayFetchMode.REFETCH;
+	    return runQueries(this._storeData, querySet, callback, fetchMode);
 	  };
 
 	  return GraphQLQueryRunner;
@@ -55001,39 +56808,10 @@
 	  return flattenedQueries;
 	}
 
-	function runQueries(storeData, queries, callback, fetchMode, profiler) {
-	  var readyState = {
-	    aborted: false,
-	    done: false,
-	    error: null,
-	    ready: false,
-	    stale: false
-	  };
-	  var scheduled = false;
-	  function setReadyState(partial) {
-	    if (readyState.aborted) {
-	      return;
-	    }
-	    if (readyState.done || readyState.error) {
-	      !partial.aborted ?  true ? invariant(false, 'GraphQLQueryRunner: Unexpected ready state change.') : invariant(false) : undefined;
-	      return;
-	    }
-	    readyState = {
-	      aborted: partial.aborted != null ? partial.aborted : readyState.aborted,
-	      done: partial.done != null ? partial.done : readyState.done,
-	      error: partial.error != null ? partial.error : readyState.error,
-	      ready: partial.ready != null ? partial.ready : readyState.ready,
-	      stale: partial.stale != null ? partial.stale : readyState.stale
-	    };
-	    if (scheduled) {
-	      return;
-	    }
-	    scheduled = true;
-	    resolveImmediate(function () {
-	      scheduled = false;
-	      callback(readyState);
-	    });
-	  }
+	function runQueries(storeData, querySet, callback, fetchMode) {
+	  var profiler = fetchMode === RelayFetchMode.REFETCH ? RelayProfiler.profile('GraphQLQueryRunner.forceFetch') : RelayProfiler.profile('GraphQLQueryRunner.primeCache');
+
+	  var readyState = new RelayReadyState(callback);
 
 	  var remainingFetchMap = {};
 	  var remainingRequiredFetchMap = {};
@@ -55054,19 +56832,19 @@
 	      return query.isResolvable();
 	    })) {
 	      // The other resolvable query will resolve imminently and call
-	      // `setReadyState` instead.
+	      // `readyState.update` instead.
 	      return;
 	    }
 
 	    if (hasItems(remainingFetchMap)) {
-	      setReadyState({ done: false, ready: true, stale: false });
+	      readyState.update({ done: false, ready: true, stale: false });
 	    } else {
-	      setReadyState({ done: true, ready: true, stale: false });
+	      readyState.update({ done: true, ready: true, stale: false });
 	    }
 	  }
 
 	  function onRejected(pendingFetch, error) {
-	    setReadyState({ error: error });
+	    readyState.update({ error: error });
 
 	    var pendingQuery = pendingFetch.getQuery();
 	    var pendingQueryID = pendingQuery.getID();
@@ -55081,7 +56859,22 @@
 	  }
 
 	  RelayTaskScheduler.enqueue(function () {
-	    var forceIndex = fetchMode === DliteFetchModeConstants.FETCH_MODE_REFETCH ? generateForceIndex() : null;
+	    var forceIndex = fetchMode === RelayFetchMode.REFETCH ? generateForceIndex() : null;
+
+	    var queries = [];
+	    if (fetchMode === RelayFetchMode.CLIENT) {
+	      forEachObject(querySet, function (query) {
+	        if (query) {
+	          queries.push.apply(queries, _toConsumableArray(diffRelayQuery(query, storeData.getRecordStore(), storeData.getQueryTracker())));
+	        }
+	      });
+	    } else {
+	      forEachObject(querySet, function (query) {
+	        if (query) {
+	          queries.push(query);
+	        }
+	      });
+	    }
 
 	    splitAndFlattenQueries(queries).forEach(function (query) {
 	      var pendingFetch = storeData.getPendingQueryTracker().add({ query: query, fetchMode: fetchMode, forceIndex: forceIndex, storeData: storeData });
@@ -55094,12 +56887,12 @@
 	    });
 
 	    if (!hasItems(remainingFetchMap)) {
-	      setReadyState({ done: true, ready: true });
+	      readyState.update({ done: true, ready: true });
 	    } else {
 	      if (!hasItems(remainingRequiredFetchMap)) {
-	        setReadyState({ ready: true });
+	        readyState.update({ ready: true });
 	      } else {
-	        setReadyState({ ready: false });
+	        readyState.update({ ready: false });
 	        resolveImmediate(function () {
 	          if (storeData.hasCacheManager()) {
 	            var requiredQueryMap = mapObject(remainingRequiredFetchMap, function (value) {
@@ -55108,14 +56901,14 @@
 	            storeData.readFromDiskCache(requiredQueryMap, {
 	              onSuccess: function onSuccess() {
 	                if (hasItems(remainingRequiredFetchMap)) {
-	                  setReadyState({ ready: true, stale: true });
+	                  readyState.update({ ready: true, stale: true });
 	                }
 	              }
 	            });
 	          } else {
 	            if (everyObject(remainingRequiredFetchMap, canResolve)) {
 	              if (hasItems(remainingRequiredFetchMap)) {
-	                setReadyState({ ready: true, stale: true });
+	                readyState.update({ ready: true, stale: true });
 	              }
 	            }
 	          }
@@ -55128,7 +56921,7 @@
 
 	  return {
 	    abort: function abort() {
-	      setReadyState({ aborted: true });
+	      readyState.update({ aborted: true });
 	    }
 	  };
 	}
@@ -55136,231 +56929,40 @@
 	module.exports = GraphQLQueryRunner;
 
 /***/ },
-/* 470 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var _Array$from = __webpack_require__(471)["default"];
-
-	exports["default"] = function (arr) {
-	  if (Array.isArray(arr)) {
-	    for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
-
-	    return arr2;
-	  } else {
-	    return _Array$from(arr);
-	  }
-	};
-
-	exports.__esModule = true;
-
-/***/ },
-/* 471 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = { "default": __webpack_require__(472), __esModule: true };
-
-/***/ },
-/* 472 */
-/***/ function(module, exports, __webpack_require__) {
-
-	__webpack_require__(443);
-	__webpack_require__(473);
-	module.exports = __webpack_require__(344).Array.from;
-
-/***/ },
-/* 473 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	var ctx         = __webpack_require__(345)
-	  , $export     = __webpack_require__(342)
-	  , toObject    = __webpack_require__(349)
-	  , call        = __webpack_require__(474)
-	  , isArrayIter = __webpack_require__(475)
-	  , toLength    = __webpack_require__(476)
-	  , getIterFn   = __webpack_require__(447);
-	$export($export.S + $export.F * !__webpack_require__(477)(function(iter){ Array.from(iter); }), 'Array', {
-	  // 22.1.2.1 Array.from(arrayLike, mapfn = undefined, thisArg = undefined)
-	  from: function from(arrayLike/*, mapfn = undefined, thisArg = undefined*/){
-	    var O       = toObject(arrayLike)
-	      , C       = typeof this == 'function' ? this : Array
-	      , $$      = arguments
-	      , $$len   = $$.length
-	      , mapfn   = $$len > 1 ? $$[1] : undefined
-	      , mapping = mapfn !== undefined
-	      , index   = 0
-	      , iterFn  = getIterFn(O)
-	      , length, result, step, iterator;
-	    if(mapping)mapfn = ctx(mapfn, $$len > 2 ? $$[2] : undefined, 2);
-	    // if object isn't iterable or it's array with default iterator - use simple case
-	    if(iterFn != undefined && !(C == Array && isArrayIter(iterFn))){
-	      for(iterator = iterFn.call(O), result = new C; !(step = iterator.next()).done; index++){
-	        result[index] = mapping ? call(iterator, mapfn, [step.value, index], true) : step.value;
-	      }
-	    } else {
-	      length = toLength(O.length);
-	      for(result = new C(length); length > index; index++){
-	        result[index] = mapping ? mapfn(O[index], index) : O[index];
-	      }
-	    }
-	    result.length = index;
-	    return result;
-	  }
-	});
-
-
-/***/ },
-/* 474 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// call something on iterator step with safe closing on error
-	var anObject = __webpack_require__(383);
-	module.exports = function(iterator, fn, value, entries){
-	  try {
-	    return entries ? fn(anObject(value)[0], value[1]) : fn(value);
-	  // 7.4.6 IteratorClose(iterator, completion)
-	  } catch(e){
-	    var ret = iterator['return'];
-	    if(ret !== undefined)anObject(ret.call(iterator));
-	    throw e;
-	  }
-	};
-
-/***/ },
-/* 475 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// check on default Array iterator
-	var Iterators  = __webpack_require__(429)
-	  , ITERATOR   = __webpack_require__(440)('iterator')
-	  , ArrayProto = Array.prototype;
-
-	module.exports = function(it){
-	  return it !== undefined && (Iterators.Array === it || ArrayProto[ITERATOR] === it);
-	};
-
-/***/ },
-/* 476 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// 7.1.15 ToLength
-	var toInteger = __webpack_require__(445)
-	  , min       = Math.min;
-	module.exports = function(it){
-	  return it > 0 ? min(toInteger(it), 0x1fffffffffffff) : 0; // pow(2, 53) - 1 == 9007199254740991
-	};
-
-/***/ },
-/* 477 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var ITERATOR     = __webpack_require__(440)('iterator')
-	  , SAFE_CLOSING = false;
-
-	try {
-	  var riter = [7][ITERATOR]();
-	  riter['return'] = function(){ SAFE_CLOSING = true; };
-	  Array.from(riter, function(){ throw 2; });
-	} catch(e){ /* empty */ }
-
-	module.exports = function(exec, skipClosing){
-	  if(!skipClosing && !SAFE_CLOSING)return false;
-	  var safe = false;
-	  try {
-	    var arr  = [7]
-	      , iter = arr[ITERATOR]();
-	    iter.next = function(){ safe = true; };
-	    arr[ITERATOR] = function(){ return iter; };
-	    exec(arr);
-	  } catch(e){ /* empty */ }
-	  return safe;
-	};
-
-/***/ },
-/* 478 */
+/* 505 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
 	 * LICENSE file in the root directory of this source tree. An additional grant
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 *
-	 * @providesModule DliteFetchModeConstants
+	 * @providesModule RelayFetchMode
 	 * @typechecks
+	 * 
 	 */
 
 	'use strict';
 
-	var keyMirror = __webpack_require__(479);
+	var _Object$freeze = __webpack_require__(392)['default'];
 
-	var DliteFetchModeConstants = keyMirror({
-	  FETCH_MODE_CLIENT: null,
-	  FETCH_MODE_PRELOAD: null,
-	  FETCH_MODE_REFETCH: null
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
 	});
 
-	module.exports = DliteFetchModeConstants;
+	var RelayFetchMode = _Object$freeze({
+	  CLIENT: 'CLIENT',
+	  PRELOAD: 'PRELOAD',
+	  REFETCH: 'REFETCH'
+	});
+
+	module.exports = RelayFetchMode;
 
 /***/ },
-/* 479 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule keyMirror
-	 * @typechecks static-only
-	 */
-
-	'use strict';
-
-	var invariant = __webpack_require__(399);
-
-	/**
-	 * Constructs an enumeration with keys equal to their value.
-	 *
-	 * For example:
-	 *
-	 *   var COLORS = keyMirror({blue: null, red: null});
-	 *   var myColor = COLORS.blue;
-	 *   var isColorValid = !!COLORS[myColor];
-	 *
-	 * The last line could not be performed if the values of the generated enum were
-	 * not equal to their keys.
-	 *
-	 *   Input:  {key1: val1, key2: val2}
-	 *   Output: {key1: key1, key2: key2}
-	 *
-	 * @param {object} obj
-	 * @return {object}
-	 */
-	var keyMirror = function (obj) {
-	  var ret = {};
-	  var key;
-	  !(obj instanceof Object && !Array.isArray(obj)) ?  true ? invariant(false, 'keyMirror(...): Argument must be an object.') : invariant(false) : undefined;
-	  for (key in obj) {
-	    if (!obj.hasOwnProperty(key)) {
-	      continue;
-	    }
-	    ret[key] = key;
-	  }
-	  return ret;
-	};
-
-	module.exports = keyMirror;
-
-/***/ },
-/* 480 */
+/* 506 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -55368,7 +56970,7 @@
 	var Promise = __webpack_require__(356);
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -55382,7 +56984,7 @@
 
 	'use strict';
 
-	var RelayProfiler = __webpack_require__(409);
+	var RelayProfiler = __webpack_require__(415);
 
 	var invariant = __webpack_require__(399);
 
@@ -55433,7 +57035,117 @@
 	module.exports = RelayNetworkLayer;
 
 /***/ },
-/* 481 */
+/* 507 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule RelayReadyState
+	 * @typechecks
+	 * 
+	 */
+
+	'use strict';
+
+	var _classCallCheck = __webpack_require__(355)['default'];
+
+	var _extends = __webpack_require__(338)['default'];
+
+	var resolveImmediate = __webpack_require__(508);
+	var warning = __webpack_require__(372);
+
+	/**
+	 * @internal
+	 */
+
+	var RelayReadyState = (function () {
+	  function RelayReadyState(onReadyStateChange) {
+	    _classCallCheck(this, RelayReadyState);
+
+	    this._onReadyStateChange = onReadyStateChange;
+	    this._readyState = {
+	      aborted: false,
+	      done: false,
+	      error: null,
+	      ready: false,
+	      stale: false
+	    };
+	    this._scheduled = false;
+	  }
+
+	  RelayReadyState.prototype.update = function update(nextReadyState) {
+	    var _this = this;
+
+	    var prevReadyState = this._readyState;
+	    if (prevReadyState.aborted) {
+	      return;
+	    }
+	    if (prevReadyState.done || prevReadyState.error) {
+	      if (!nextReadyState.aborted) {
+	         true ? warning(false, 'RelayReadyState: Invalid state change from `%s` to `%s`.', JSON.stringify(prevReadyState), JSON.stringify(nextReadyState)) : undefined;
+	      }
+	      return;
+	    }
+	    this._readyState = _extends({}, prevReadyState, nextReadyState);
+	    if (this._scheduled) {
+	      return;
+	    }
+	    this._scheduled = true;
+	    resolveImmediate(function () {
+	      _this._scheduled = false;
+	      _this._onReadyStateChange(_this._readyState);
+	    });
+	  };
+
+	  return RelayReadyState;
+	})();
+
+	module.exports = RelayReadyState;
+
+/***/ },
+/* 508 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var Promise = __webpack_require__(356);
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * 
+	 */
+
+	var resolvedPromise = Promise.resolve();
+
+	/**
+	 * An alternative to setImmediate based on Promise.
+	 */
+	function resolveImmediate(callback) {
+	  resolvedPromise.then(callback)["catch"](throwNext);
+	}
+
+	function throwNext(error) {
+	  setTimeout(function () {
+	    throw error;
+	  }, 0);
+	}
+
+	module.exports = resolveImmediate;
+
+/***/ },
+/* 509 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -55441,7 +57153,7 @@
 	var Promise = __webpack_require__(356);
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -55455,7 +57167,7 @@
 
 	'use strict';
 
-	var RelayTaskQueue = __webpack_require__(482);
+	var RelayTaskQueue = __webpack_require__(510);
 
 	var queue = undefined;
 	var scheduler = undefined;
@@ -55542,7 +57254,7 @@
 	module.exports = RelayTaskScheduler;
 
 /***/ },
-/* 482 */
+/* 510 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -55556,7 +57268,7 @@
 	var Promise = __webpack_require__(356);
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -55737,11 +57449,11 @@
 	module.exports = RelayTaskQueue;
 
 /***/ },
-/* 483 */
+/* 511 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -55755,19 +57467,19 @@
 
 	'use strict';
 
-	var _inherits = __webpack_require__(375)['default'];
+	var _inherits = __webpack_require__(376)['default'];
 
 	var _classCallCheck = __webpack_require__(355)['default'];
 
-	var RelayConnectionInterface = __webpack_require__(404);
+	var RelayConnectionInterface = __webpack_require__(407);
 
-	var RelayProfiler = __webpack_require__(409);
+	var RelayProfiler = __webpack_require__(415);
 
-	var RelayQueryVisitor = __webpack_require__(454);
-	var RelayRecordState = __webpack_require__(455);
+	var RelayQueryVisitor = __webpack_require__(497);
+	var RelayRecordState = __webpack_require__(498);
 
 	var forEachRootCallArg = __webpack_require__(398);
-	var isCompatibleRelayFragmentType = __webpack_require__(456);
+	var isCompatibleRelayFragmentType = __webpack_require__(499);
 
 	var EDGES = RelayConnectionInterface.EDGES;
 	var PAGE_INFO = RelayConnectionInterface.PAGE_INFO;
@@ -55821,8 +57533,10 @@
 
 	    var nextState;
 	    var storageKey = root.getStorageKey();
-	    forEachRootCallArg(root, function (identifyingArgValue) {
-	      var dataID = _this._store.getDataID(storageKey, identifyingArgValue);
+	    forEachRootCallArg(root, function (_ref) {
+	      var identifyingArgKey = _ref.identifyingArgKey;
+
+	      var dataID = _this._store.getDataID(storageKey, identifyingArgKey);
 	      if (dataID == null) {
 	        state.result = false;
 	      } else {
@@ -55859,7 +57573,7 @@
 	      this._checkEdges(field, state);
 	    } else if (rangeInfo && field.getSchemaName() === PAGE_INFO) {
 	      this._checkPageInfo(field, state);
-	    } else if (field.isScalar()) {
+	    } else if (!field.canHaveSubselections()) {
 	      this._checkScalar(field, state);
 	    } else if (field.isPlural()) {
 	      this._checkPlural(field, state);
@@ -55975,11 +57689,11 @@
 	module.exports = RelayProfiler.instrument('checkRelayQueryData', checkRelayQueryData);
 
 /***/ },
-/* 484 */
+/* 512 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -55995,19 +57709,22 @@
 
 	var _classCallCheck = __webpack_require__(355)['default'];
 
-	var GraphQLStoreDataHandler = __webpack_require__(390);
-	var RelayConnectionInterface = __webpack_require__(404);
+	var RelayConnectionInterface = __webpack_require__(407);
 	var RelayNodeInterface = __webpack_require__(396);
-	var RelayProfiler = __webpack_require__(409);
+	var RelayProfiler = __webpack_require__(415);
 	var RelayQuery = __webpack_require__(391);
-	var RelayQueryPath = __webpack_require__(485);
+
+	var RelayQueryPath = __webpack_require__(513);
+
+	var RelayRecord = __webpack_require__(426);
 
 	var forEachRootCallArg = __webpack_require__(398);
 	var invariant = __webpack_require__(399);
-	var isCompatibleRelayFragmentType = __webpack_require__(456);
-	var warning = __webpack_require__(371);
+	var isCompatibleRelayFragmentType = __webpack_require__(499);
+	var warning = __webpack_require__(372);
 
 	var ID = RelayNodeInterface.ID;
+	var ID_TYPE = RelayNodeInterface.ID_TYPE;
 	var NODE_TYPE = RelayNodeInterface.NODE_TYPE;
 	var TYPENAME = RelayNodeInterface.TYPENAME;
 	var EDGES = RelayConnectionInterface.EDGES;
@@ -56031,6 +57748,9 @@
 	var nodeWithID = RelayQuery.Field.build({
 	  fieldName: RelayNodeInterface.NODE,
 	  children: [idField, typeField],
+	  metadata: {
+	    canHaveSubselections: true
+	  },
 	  type: NODE_TYPE
 	});
 
@@ -56042,7 +57762,7 @@
 	 * the difference, or an empty array if the query can be resolved locally.
 	 */
 	function diffRelayQuery(root, store, tracker) {
-	  var path = new RelayQueryPath(root);
+	  var path = RelayQueryPath.create(root);
 	  var queries = [];
 
 	  var visitor = new RelayDiffQueryBuilder(store, tracker);
@@ -56051,15 +57771,20 @@
 	  var isPluralCall = Array.isArray(rootIdentifyingArgValue) && rootIdentifyingArgValue.length > 1;
 	  var metadata = undefined;
 	  if (rootIdentifyingArg != null) {
-	    metadata = {};
-	    metadata.identifyingArgName = rootIdentifyingArg.name;
-	    if (rootIdentifyingArg.type != null) {
-	      metadata.identifyingArgType = rootIdentifyingArg.type;
-	    }
+	    metadata = {
+	      identifyingArgName: rootIdentifyingArg.name,
+	      identifyingArgType: rootIdentifyingArg.type != null ? rootIdentifyingArg.type : ID_TYPE,
+	      isAbstract: true,
+	      isDeferred: false,
+	      isPlural: false
+	    };
 	  }
 	  var fieldName = root.getFieldName();
 	  var storageKey = root.getStorageKey();
-	  forEachRootCallArg(root, function (identifyingArgValue) {
+	  forEachRootCallArg(root, function (_ref) {
+	    var identifyingArgValue = _ref.identifyingArgValue;
+	    var identifyingArgKey = _ref.identifyingArgKey;
+
 	    var nodeRoot;
 	    if (isPluralCall) {
 	      !(identifyingArgValue != null) ?  true ? invariant(false, 'diffRelayQuery(): Unexpected null or undefined value in root call ' + 'argument array for query, `%s(...).', fieldName) : invariant(false) : undefined;
@@ -56070,7 +57795,7 @@
 	    }
 
 	    // The whole query must be fetched if the root dataID is unknown.
-	    var dataID = store.getDataID(storageKey, identifyingArgValue);
+	    var dataID = store.getDataID(storageKey, identifyingArgKey);
 	    if (dataID == null) {
 	      queries.push(nodeRoot);
 	      return;
@@ -56149,11 +57874,11 @@
 	   * ancestor field.
 	   */
 
-	  RelayDiffQueryBuilder.prototype.visitField = function visitField(node, path, _ref) {
-	    var connectionField = _ref.connectionField;
-	    var dataID = _ref.dataID;
-	    var edgeID = _ref.edgeID;
-	    var rangeInfo = _ref.rangeInfo;
+	  RelayDiffQueryBuilder.prototype.visitField = function visitField(node, path, _ref2) {
+	    var connectionField = _ref2.connectionField;
+	    var dataID = _ref2.dataID;
+	    var edgeID = _ref2.edgeID;
+	    var rangeInfo = _ref2.rangeInfo;
 
 	    // special case when inside a connection traversal
 	    if (connectionField && rangeInfo) {
@@ -56161,7 +57886,7 @@
 	        // When traversing a specific connection edge only look at `edges`
 	        if (node.getSchemaName() === EDGES) {
 	          return this.diffConnectionEdge(connectionField, node, // edge field
-	          path.getPath(node, edgeID), edgeID, rangeInfo);
+	          RelayQueryPath.getPath(path, node, edgeID), edgeID, rangeInfo);
 	        } else {
 	          return null;
 	        }
@@ -56179,7 +57904,7 @@
 	    }
 
 	    // default field diffing algorithm
-	    if (node.isScalar()) {
+	    if (!node.canHaveSubselections()) {
 	      return this.diffScalar(node, dataID);
 	    } else if (node.isGenerated()) {
 	      return {
@@ -56317,10 +58042,13 @@
 	      };
 	    }
 	    if (nextDataID === null) {
-	      return null;
+	      return {
+	        diffNode: null,
+	        trackedNode: field
+	      };
 	    }
 
-	    return this.traverse(field, path.getPath(field, nextDataID), makeScope(nextDataID));
+	    return this.traverse(field, RelayQueryPath.getPath(path, field, nextDataID), makeScope(nextDataID));
 	  };
 
 	  /**
@@ -56339,8 +58067,11 @@
 	        trackedNode: null
 	      };
 	    } else if (linkedIDs === null || linkedIDs.length === 0) {
-	      // empty array means nothing to fetch
-	      return null;
+	      // Don't fetch if array is null or empty, but still track the fragment
+	      return {
+	        diffNode: null,
+	        trackedNode: field
+	      };
 	    } else if (field.getInferredRootCallName() === NODE) {
 	      // The items in this array are fetchable and may have been filled in
 	      // from other sources, so check them all. For example, `Story{actors}`
@@ -56348,13 +58079,13 @@
 	      // had data fetched for them elsewhere (like `viewer(){actor}`).
 	      var hasSplitQueries = false;
 	      linkedIDs.forEach(function (itemID) {
-	        var itemState = _this2.traverse(field, path.getPath(field, itemID), makeScope(itemID));
+	        var itemState = _this2.traverse(field, RelayQueryPath.getPath(path, field, itemID), makeScope(itemID));
 	        if (itemState) {
 	          // If any child was tracked then `field` will also be tracked
 	          hasSplitQueries = hasSplitQueries || !!itemState.trackedNode || !!itemState.diffNode;
 	          // split diff nodes into root queries
 	          if (itemState.diffNode) {
-	            _this2.splitQuery(buildRoot(itemID, itemState.diffNode.getChildren(), path.getName(), field.getType()));
+	            _this2.splitQuery(buildRoot(itemID, itemState.diffNode.getChildren(), RelayQueryPath.getName(path), field.getType()));
 	          }
 	        }
 	      });
@@ -56372,7 +58103,7 @@
 	      // we only need to diff the first record to figure out which fields have
 	      // previously been fetched.
 	      var sampleItemID = linkedIDs[0];
-	      return this.traverse(field, path.getPath(field, sampleItemID), makeScope(sampleItemID));
+	      return this.traverse(field, RelayQueryPath.getPath(path, field, sampleItemID), makeScope(sampleItemID));
 	    }
 	    return null;
 	  };
@@ -56397,15 +58128,18 @@
 	        trackedNode: null
 	      };
 	    }
-	    // Skip if the connection is deleted.
+	    // Don't fetch if connection is null, but continue to track the fragment
 	    if (connectionID === null) {
-	      return null;
+	      return {
+	        diffNode: null,
+	        trackedNode: field
+	      };
 	    }
 	    // If metadata fields but not edges are fetched, diff as a normal field.
 	    // In practice, `rangeInfo` is `undefined` if unfetched, `null` if the
 	    // connection was deleted (in which case `connectionID` is null too).
 	    if (rangeInfo == null) {
-	      return this.traverse(field, path.getPath(field, connectionID), makeScope(connectionID));
+	      return this.traverse(field, RelayQueryPath.getPath(path, field, connectionID), makeScope(connectionID));
 	    }
 	    var diffCalls = rangeInfo.diffCalls;
 	    var filteredEdges = rangeInfo.filteredEdges;
@@ -56421,7 +58155,7 @@
 	          edgeID: edge.edgeID,
 	          rangeInfo: rangeInfo
 	        };
-	        var diffOutput = _this3.traverse(field, path.getPath(field, edge.edgeID), scope);
+	        var diffOutput = _this3.traverse(field, RelayQueryPath.getPath(path, field, edge.edgeID), scope);
 	        // If any edges were missing data (resulting in a split query),
 	        // then the entire original connection field must be tracked.
 	        if (diffOutput) {
@@ -56438,7 +58172,7 @@
 	      rangeInfo: rangeInfo
 	    };
 	    // diff non-`edges` fields such as `count`
-	    var diffOutput = this.traverse(field, path.getPath(field, connectionID), scope);
+	    var diffOutput = this.traverse(field, RelayQueryPath.getPath(path, field, connectionID), scope);
 	    var diffNode = diffOutput ? diffOutput.diffNode : null;
 	    var trackedNode = diffOutput ? diffOutput.trackedNode : null;
 	    if (diffCalls.length && diffNode instanceof RelayQuery.Field) {
@@ -56473,45 +58207,46 @@
 	   */
 
 	  RelayDiffQueryBuilder.prototype.diffConnectionEdge = function diffConnectionEdge(connectionField, edgeField, path, edgeID, rangeInfo) {
-	    var nodeID = this._store.getLinkedRecordID(edgeID, NODE);
-	    if (!nodeID || GraphQLStoreDataHandler.isClientID(nodeID)) {
-	       true ? warning(false, 'RelayDiffQueryBuilder: connection `node{*}` can only be refetched ' + 'if the node is refetchable by `id`. Cannot refetch data for field ' + '`%s`.', connectionField.getStorageKey()) : undefined;
-	      return null;
-	    }
 
 	    var hasSplitQueries = false;
-	    var diffOutput = this.traverse(edgeField, path.getPath(edgeField, edgeID), makeScope(edgeID));
+	    var diffOutput = this.traverse(edgeField, RelayQueryPath.getPath(path, edgeField, edgeID), makeScope(edgeID));
 	    var diffNode = diffOutput ? diffOutput.diffNode : null;
 	    var trackedNode = diffOutput ? diffOutput.trackedNode : null;
+	    var nodeID = this._store.getLinkedRecordID(edgeID, NODE);
 
 	    if (diffNode) {
-	      var _splitNodeAndEdgesFields = splitNodeAndEdgesFields(diffNode);
+	      if (!nodeID || RelayRecord.isClientID(nodeID)) {
+	         true ? warning(connectionField.isConnectionWithoutNodeID(), 'RelayDiffQueryBuilder: Field `node` on connection `%s` cannot be ' + 'retrieved if it does not have an `id` field. If you expect fields ' + 'to be retrieved on this field, add an `id` field in the schema. ' + 'If you choose to ignore this warning, you can silence it by ' + 'adding `@relay(isConnectionWithoutNodeID: true)` to the ' + 'connection field.', connectionField.getStorageKey()) : undefined;
+	      } else {
+	        var _splitNodeAndEdgesFields = splitNodeAndEdgesFields(diffNode);
 
-	      var diffEdgesField = _splitNodeAndEdgesFields.edges;
-	      var diffNodeField = _splitNodeAndEdgesFields.node;
+	        var diffEdgesField = _splitNodeAndEdgesFields.edges;
+	        var diffNodeField = _splitNodeAndEdgesFields.node;
 
-	      // split missing `node` fields into a `node(id)` root query
-	      if (diffNodeField) {
-	        hasSplitQueries = true;
-	        var nodeField = edgeField.getFieldByStorageKey('node');
-	        !nodeField ?  true ? invariant(false, 'RelayDiffQueryBuilder: expected a `node` field for connection `%s`.', connectionField.getSchemaName()) : invariant(false) : undefined;
-	        this.splitQuery(buildRoot(nodeID, diffNodeField.getChildren(), path.getName(), nodeField.getType()));
-	      }
+	        // split missing `node` fields into a `node(id)` root query
+	        if (diffNodeField) {
+	          hasSplitQueries = true;
+	          var nodeField = edgeField.getFieldByStorageKey('node');
+	          !nodeField ?  true ? invariant(false, 'RelayDiffQueryBuilder: Expected connection `%s` to have a ' + '`node` field.', connectionField.getSchemaName()) : invariant(false) : undefined;
+	          this.splitQuery(buildRoot(nodeID, diffNodeField.getChildren(), RelayQueryPath.getName(path), nodeField.getType()));
+	        }
 
-	      // split missing `edges` fields into a `connection.find(id)` query
-	      // if `find` is supported, otherwise warn
-	      if (diffEdgesField) {
-	        if (connectionField.isFindable()) {
-	          diffEdgesField = diffEdgesField.clone(diffEdgesField.getChildren().concat(nodeWithID));
-	          var connectionFind = connectionField.cloneFieldWithCalls([diffEdgesField], rangeInfo.filterCalls.concat({ name: 'find', value: nodeID }));
-	          if (connectionFind) {
-	            hasSplitQueries = true;
-	            // current path has `parent`, `connection`, `edges`; pop to parent
-	            var connectionParent = path.getParent().getParent();
-	            this.splitQuery(connectionParent.getQuery(connectionFind));
+	        // split missing `edges` fields into a `connection.find(id)` query
+	        // if `find` is supported, otherwise warn
+	        if (diffEdgesField) {
+	          if (connectionField.isFindable()) {
+	            diffEdgesField = diffEdgesField.clone(diffEdgesField.getChildren().concat(nodeWithID));
+	            var connectionFind = connectionField.cloneFieldWithCalls([diffEdgesField], rangeInfo.filterCalls.concat({ name: 'find', value: nodeID }));
+	            if (connectionFind) {
+	              hasSplitQueries = true;
+	              // current path has `parent`, `connection`, `edges`; pop to parent
+	              var connectionParent = RelayQueryPath.getParent(RelayQueryPath.getParent(path));
+	              var connectionQuery = RelayQueryPath.getQuery(this._store, connectionParent, connectionFind);
+	              this.splitQuery(connectionQuery);
+	            }
+	          } else {
+	             true ? warning(false, 'RelayDiffQueryBuilder: connection `edges{*}` fields can only ' + 'be refetched if the connection supports the `find` call. ' + 'Cannot refetch data for field `%s`.', connectionField.getStorageKey()) : undefined;
 	          }
-	        } else {
-	           true ? warning(false, 'RelayDiffQueryBuilder: connection `edges{*}` fields can only be ' + 'refetched if the connection supports the `find` call. Cannot ' + 'refetch data for field `%s`.', connectionField.getStorageKey()) : undefined;
 	        }
 	      }
 	    }
@@ -56639,17 +58374,23 @@
 	  });
 	  children.push(RelayQuery.Fragment.build('diffRelayQuery', type, fields));
 
-	  return RelayQuery.Root.build(name, NODE, rootID, children, { identifyingArgName: RelayNodeInterface.ID }, NODE_TYPE);
+	  return RelayQuery.Root.build(name, NODE, rootID, children, {
+	    identifyingArgName: ID,
+	    identifyingArgType: ID_TYPE,
+	    isAbstract: true,
+	    isDeferred: false,
+	    isPlural: false
+	  }, NODE_TYPE);
 	}
 
 	module.exports = RelayProfiler.instrument('diffRelayQuery', diffRelayQuery);
 
 /***/ },
-/* 485 */
+/* 513 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -56663,18 +58404,22 @@
 
 	'use strict';
 
-	var _classCallCheck = __webpack_require__(355)['default'];
-
-	var _extends = __webpack_require__(338)['default'];
-
-	var GraphQLStoreDataHandler = __webpack_require__(390);
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
 
 	var RelayNodeInterface = __webpack_require__(396);
 	var RelayQuery = __webpack_require__(391);
+	var RelayRecord = __webpack_require__(426);
+	var RelayRecordState = __webpack_require__(498);
 
+	var forEachRootCallArg = __webpack_require__(398);
 	var invariant = __webpack_require__(399);
+	var warning = __webpack_require__(372);
 
 	var ID = RelayNodeInterface.ID;
+	var ID_TYPE = RelayNodeInterface.ID_TYPE;
+	var NODE = RelayNodeInterface.NODE;
 	var NODE_TYPE = RelayNodeInterface.NODE_TYPE;
 	var TYPENAME = RelayNodeInterface.TYPENAME;
 
@@ -56694,115 +58439,151 @@
 	 * particular node. Each step of the path may represent a root query (for
 	 * refetchable nodes) or the field path from the nearest refetchable node.
 	 */
+	var RelayQueryPath = {
+	  createForID: function createForID(dataID, name) {
+	    !!RelayRecord.isClientID(dataID) ?  true ? invariant(false, 'RelayQueryPath.createForID: Expected dataID to be a server id, got ' + '`%s`.', dataID) : invariant(false) : undefined;
+	    return {
+	      dataID: dataID,
+	      name: name,
+	      type: 'node'
+	    };
+	  },
 
-	var RelayQueryPath = (function () {
-	  function RelayQueryPath(node, parent) {
-	    _classCallCheck(this, RelayQueryPath);
-
-	    if (node instanceof RelayQuery.Root) {
-	      !!parent ?  true ? invariant(false, 'RelayQueryPath: Root paths may not have a parent.') : invariant(false) : undefined;
-	      this._name = node.getName();
-	    } else {
-	      !parent ?  true ? invariant(false, 'RelayQueryPath: A parent is required for field paths.') : invariant(false) : undefined;
-	      this._name = parent.getName();
-	    }
-	    this._node = node;
-	    this._parent = parent;
-	  }
-
-	  /**
-	   * Returns true if this is a root path (the node is a root node with an ID),
-	   * false otherwise.
-	   */
-
-	  RelayQueryPath.prototype.isRootPath = function isRootPath() {
-	    return !this._parent;
-	  };
-
-	  /**
-	   * Gets the parent path, throwing if it does not exist. Use `!isRootPath()`
-	   * to check if there is a parent.
-	   */
-
-	  RelayQueryPath.prototype.getParent = function getParent() {
-	    var parent = this._parent;
-	    !parent ?  true ? invariant(false, 'RelayQueryPath.getParent(): Cannot get the parent of a root path.') : invariant(false) : undefined;
-	    return parent;
-	  };
-
-	  /**
-	   * Helper to get the name of the root query node.
-	   */
-
-	  RelayQueryPath.prototype.getName = function getName() {
-	    return this._name;
-	  };
-
-	  /**
-	   * Gets a new path that describes how to access the given `node` via the
-	   * current path. Returns a new, root path if `dataID` is provided and
-	   * refetchable, otherwise returns an extension of the current path.
-	   */
-
-	  RelayQueryPath.prototype.getPath = function getPath(node, dataID) {
-	    if (GraphQLStoreDataHandler.isClientID(dataID)) {
-	      return new RelayQueryPath(node, this);
-	    } else {
-	      var root = RelayQuery.Root.build(this.getName(), RelayNodeInterface.NODE, dataID, [idField, typeField], { identifyingArgName: RelayNodeInterface.ID }, NODE_TYPE);
-	      return new RelayQueryPath(root);
-	    }
-	  };
-
-	  /**
-	   * Returns a new root query that follows only the fields in this path and then
-	   * appends the specified field/fragment at the node reached by the path.
-	   *
-	   * The query also includes any ID fields along the way.
-	   */
-
-	  RelayQueryPath.prototype.getQuery = function getQuery(appendNode) {
-	    var node = this._node;
-	    var path = this;
-	    var child = appendNode;
-	    while (node instanceof RelayQuery.Field || node instanceof RelayQuery.Fragment) {
-	      var idFieldName = node instanceof RelayQuery.Field ? node.getInferredPrimaryKey() : ID;
-	      if (idFieldName) {
-	        child = node.clone([child, node.getFieldByStorageKey(idFieldName), node.getFieldByStorageKey(TYPENAME)]);
-	      } else {
-	        child = node.clone([child]);
+	  create: function create(root) {
+	    if (root.getFieldName() === NODE) {
+	      var identifyingArg = root.getIdentifyingArg();
+	      if (identifyingArg && typeof identifyingArg.value === 'string') {
+	        return {
+	          dataID: identifyingArg.value,
+	          name: root.getName(),
+	          type: 'node'
+	        };
 	      }
-	      path = path._parent;
-	      !path ?  true ? invariant(false, 'RelayQueryPath.getQuery(): Expected a parent path.') : invariant(false) : undefined;
-	      node = path._node;
 	    }
-	    !child ?  true ? invariant(false, 'RelayQueryPath: Expected a leaf node.') : invariant(false) : undefined;
-	    !(node instanceof RelayQuery.Root) ?  true ? invariant(false, 'RelayQueryPath: Expected a root node.') : invariant(false) : undefined;
-	    var metadata = _extends({}, node.getConcreteQueryNode().metadata);
-	    var identifyingArg = node.getIdentifyingArg();
-	    if (identifyingArg && identifyingArg.name != null) {
-	      metadata.identifyingArgName = identifyingArg.name;
-	    }
-	    return RelayQuery.Root.build(this.getName(), node.getFieldName(), identifyingArg && identifyingArg.value || null, [child, node.getFieldByStorageKey(ID), node.getFieldByStorageKey(TYPENAME)], metadata, node.getType());
-	  };
+	    return {
+	      root: root,
+	      type: 'root'
+	    };
+	  },
 
-	  return RelayQueryPath;
-	})();
+	  getPath: function getPath(parent, node, dataID) {
+	    if (RelayRecord.isClientID(dataID)) {
+	      return {
+	        node: node,
+	        parent: parent,
+	        type: 'client'
+	      };
+	    } else if (parent.type === 'node' && parent.dataID === dataID) {
+	      return parent;
+	    } else {
+	      return {
+	        dataID: dataID,
+	        name: RelayQueryPath.getName(parent),
+	        type: 'node'
+	      };
+	    }
+	  },
+
+	  isRootPath: function isRootPath(path) {
+	    return path.type === 'node' || path.type === 'root';
+	  },
+
+	  getParent: function getParent(path) {
+	    !(path.type === 'client') ?  true ? invariant(false, 'RelayQueryPath: Cannot get the parent of a root path.') : invariant(false) : undefined;
+	    return path.parent;
+	  },
+
+	  getName: function getName(path) {
+	    while (path.type === 'client') {
+	      path = path.parent;
+	    }
+	    if (path.type === 'root') {
+	      return path.root.getName();
+	    } else if (path.type === 'node') {
+	      return path.name;
+	    } else {
+	       true ?  true ? invariant(false, 'RelayQueryPath: Invalid path `%s`.', path) : invariant(false) : undefined;
+	    }
+	  },
+
+	  getQuery: function getQuery(store, path, appendNode) {
+	    var child = appendNode;
+	    while (path.type === 'client') {
+	      var _node = path.node;
+	      var idFieldName = _node instanceof RelayQuery.Field ? _node.getInferredPrimaryKey() : ID;
+	      if (idFieldName) {
+	        child = _node.clone([child, _node.getFieldByStorageKey(idFieldName), _node.getFieldByStorageKey(TYPENAME)]);
+	      } else {
+	        child = _node.clone([child]);
+	      }
+	      path = path.parent;
+	    }
+	    var root = path.type === 'root' ? path.root : createRootQueryFromNodePath(path);
+	    var children = [child, root.getFieldByStorageKey(ID), root.getFieldByStorageKey(TYPENAME)];
+	    var rootChildren = getRootFragmentForQuery(store, root, children);
+	    var pathQuery = root.clone(rootChildren);
+	    // for flow
+	    !(pathQuery instanceof RelayQuery.Root) ?  true ? invariant(false, 'RelayQueryPath: Expected the root of path `%s` to be a query.', RelayQueryPath.getName(path)) : invariant(false) : undefined;
+	    return pathQuery;
+	  }
+	};
+
+	function createRootQueryFromNodePath(nodePath) {
+	  return RelayQuery.Root.build(nodePath.name, NODE, nodePath.dataID, [idField, typeField], {
+	    identifyingArgName: ID,
+	    identifyingArgType: ID_TYPE,
+	    isAbstract: true,
+	    isDeferred: false,
+	    isPlural: false
+	  }, NODE_TYPE);
+	}
+
+	function getRootFragmentForQuery(store, root, children) {
+	  var nextChildren = [];
+	  // $FlowIssue: Flow isn't recognizing that `filter(x => !!x)` returns a list
+	  // of non-null values.
+	  children.forEach(function (child) {
+	    if (child) {
+	      nextChildren.push(child);
+	    }
+	  });
+	  if (!root.isAbstract()) {
+	    // No need to wrap child nodes of a known concrete type.
+	    return nextChildren;
+	  }
+	  var identifyingArgKeys = [];
+	  forEachRootCallArg(root, function (_ref) {
+	    var identifyingArgKey = _ref.identifyingArgKey;
+
+	    identifyingArgKeys.push(identifyingArgKey);
+	  });
+	  var identifyingArgKey = identifyingArgKeys[0];
+	  var rootID = store.getDataID(root.getStorageKey(), identifyingArgKey);
+	  var rootType = rootID && store.getType(rootID);
+
+	  if (rootType != null) {
+	    return [RelayQuery.Fragment.build(root.getName(), rootType, nextChildren)];
+	  } else {
+	    var rootState = rootID != null ? store.getRecordState(rootID) : RelayRecordState.UNKNOWN;
+	     true ? warning(false, 'RelayQueryPath: No typename found for %s record `%s`. Generating a ' + 'possibly invalid query.', rootState.toLowerCase(), rootID) : undefined;
+	    return nextChildren;
+	  }
+	}
 
 	module.exports = RelayQueryPath;
 
 /***/ },
-/* 486 */
+/* 514 */
 /***/ function(module, exports) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
 	 * LICENSE file in the root directory of this source tree. An additional grant
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 *
-	 * @providesModule everyObject
 	 * 
 	 * @typechecks
 	 */
@@ -56843,11 +58624,11 @@
 	module.exports = everyObject;
 
 /***/ },
-/* 487 */
+/* 515 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -56869,7 +58650,7 @@
 	 */
 	'use strict';
 
-	var _toConsumableArray = __webpack_require__(470)['default'];
+	var _toConsumableArray = __webpack_require__(437)['default'];
 
 	function flattenSplitRelayQueries(splitQueries) {
 	  var flattenedQueries = [];
@@ -56893,11 +58674,11 @@
 	module.exports = flattenSplitRelayQueries;
 
 /***/ },
-/* 488 */
+/* 516 */
 /***/ function(module, exports) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -56926,111 +58707,17 @@
 	module.exports = generateForceIndex;
 
 /***/ },
-/* 489 */
+/* 517 */
 /***/ function(module, exports) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
 	 * LICENSE file in the root directory of this source tree. An additional grant
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 *
-	 * @providesModule mapObject
-	 */
-
-	'use strict';
-
-	var hasOwnProperty = Object.prototype.hasOwnProperty;
-
-	/**
-	 * Executes the provided `callback` once for each enumerable own property in the
-	 * object and constructs a new object from the results. The `callback` is
-	 * invoked with three arguments:
-	 *
-	 *  - the property value
-	 *  - the property name
-	 *  - the object being traversed
-	 *
-	 * Properties that are added after the call to `mapObject` will not be visited
-	 * by `callback`. If the values of existing properties are changed, the value
-	 * passed to `callback` will be the value at the time `mapObject` visits them.
-	 * Properties that are deleted before being visited are not visited.
-	 *
-	 * @grep function objectMap()
-	 * @grep function objMap()
-	 *
-	 * @param {?object} object
-	 * @param {function} callback
-	 * @param {*} context
-	 * @return {?object}
-	 */
-	function mapObject(object, callback, context) {
-	  if (!object) {
-	    return null;
-	  }
-	  var result = {};
-	  for (var name in object) {
-	    if (hasOwnProperty.call(object, name)) {
-	      result[name] = callback.call(context, object[name], name, object);
-	    }
-	  }
-	  return result;
-	}
-
-	module.exports = mapObject;
-
-/***/ },
-/* 490 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule resolveImmediate
-	 * 
-	 */
-
-	'use strict';
-
-	var Promise = __webpack_require__(356);
-
-	var resolvedPromise = Promise.resolve();
-
-	/**
-	 * An alternative to setImmediate based on Promise.
-	 */
-	function resolveImmediate(callback) {
-	  resolvedPromise.then(callback)['catch'](throwNext);
-	}
-
-	function throwNext(error) {
-	  setTimeout(function () {
-	    throw error;
-	  }, 0);
-	}
-
-	module.exports = resolveImmediate;
-
-/***/ },
-/* 491 */
-/***/ function(module, exports) {
-
-	/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule someObject
 	 * 
 	 * @typechecks
 	 */
@@ -57071,11 +58758,11 @@
 	module.exports = someObject;
 
 /***/ },
-/* 492 */
+/* 518 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -57089,7 +58776,7 @@
 
 	'use strict';
 
-	var _inherits = __webpack_require__(375)['default'];
+	var _inherits = __webpack_require__(376)['default'];
 
 	var _classCallCheck = __webpack_require__(355)['default'];
 
@@ -57098,10 +58785,10 @@
 	});
 	var QueryBuilder = __webpack_require__(395);
 	var RelayNodeInterface = __webpack_require__(396);
-	var RelayProfiler = __webpack_require__(409);
+	var RelayProfiler = __webpack_require__(415);
 	var RelayQuery = __webpack_require__(391);
-	var RelayQueryTransform = __webpack_require__(493);
-	var RelayRefQueryDescriptor = __webpack_require__(494);
+	var RelayQueryTransform = __webpack_require__(519);
+	var RelayRefQueryDescriptor = __webpack_require__(520);
 
 	var invariant = __webpack_require__(399);
 
@@ -57177,7 +58864,10 @@
 	  var identifyingArgValue = identifyingArg && identifyingArg.value || null;
 	  var metadata = {
 	    identifyingArgName: identifyingArgName,
-	    isDeferred: true
+	    identifyingArgType: RelayNodeInterface.ID_TYPE,
+	    isAbstract: true,
+	    isDeferred: true,
+	    isPlural: false
 	  };
 	  return RelayQuery.Root.build(node.getName(), node.getFieldName(), identifyingArgValue, node.getChildren(), metadata, node.getType());
 	}
@@ -57187,7 +58877,7 @@
 	 * no non-generated fields, and no ref query dependencies.
 	 */
 	function isEmpty(node) {
-	  if (node.isScalar()) {
+	  if (!node.canHaveSubselections()) {
 	    return node.isGenerated() && !node.isRefQueryDependency();
 	  } else {
 	    return node.getChildren().every(isEmpty);
@@ -57256,7 +58946,10 @@
 	  // Create the wrapper root query.
 	  var root = RelayQuery.Root.build(context.getName(), RelayNodeInterface.NODES, QueryBuilder.createBatchCallVariable(context.getID(), jsonPath.join('.')), [node], {
 	    identifyingArgName: RelayNodeInterface.ID,
-	    isDeferred: true
+	    identifyingArgType: RelayNodeInterface.ID_TYPE,
+	    isAbstract: true,
+	    isDeferred: true,
+	    isPlural: false
 	  }, RelayNodeInterface.NODE_TYPE);
 
 	  var result = root; // Flow
@@ -57359,11 +59052,11 @@
 	module.exports = RelayProfiler.instrument('splitDeferredRelayQueries', splitDeferredRelayQueries);
 
 /***/ },
-/* 493 */
+/* 519 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -57377,11 +59070,11 @@
 
 	'use strict';
 
-	var _inherits = __webpack_require__(375)['default'];
+	var _inherits = __webpack_require__(376)['default'];
 
 	var _classCallCheck = __webpack_require__(355)['default'];
 
-	var RelayQueryVisitor = __webpack_require__(454);
+	var RelayQueryVisitor = __webpack_require__(497);
 
 	/**
 	 * @internal
@@ -57427,22 +59120,20 @@
 	  }
 
 	  RelayQueryTransform.prototype.traverse = function traverse(node, nextState) {
-	    var _this = this;
-
-	    if (node.isScalar()) {
+	    if (!node.canHaveSubselections()) {
 	      return node;
 	    }
 	    var nextChildren = undefined;
 	    this.traverseChildren(node, nextState, function (child, index, children) {
 	      var prevChild = children[index];
-	      var nextChild = _this.visit(prevChild, nextState);
+	      var nextChild = this.visit(prevChild, nextState);
 	      if (nextChild !== prevChild) {
 	        nextChildren = nextChildren || children.slice(0, index);
 	      }
 	      if (nextChildren && nextChild) {
 	        nextChildren.push(nextChild);
 	      }
-	    });
+	    }, this);
 	    if (nextChildren) {
 	      if (!nextChildren.length) {
 	        return null;
@@ -57458,11 +59149,11 @@
 	module.exports = RelayQueryTransform;
 
 /***/ },
-/* 494 */
+/* 520 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -57503,11 +59194,11 @@
 	module.exports = RelayRefQueryDescriptor;
 
 /***/ },
-/* 495 */
+/* 521 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -57526,9 +59217,9 @@
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
-	var ErrorUtils = __webpack_require__(388);
+	var ErrorUtils = __webpack_require__(389);
 
-	var resolveImmediate = __webpack_require__(490);
+	var resolveImmediate = __webpack_require__(508);
 
 	/**
 	 * Asynchronous change emitter for nodes stored in the Relay cache.
@@ -57647,11 +59338,11 @@
 	module.exports = GraphQLStoreChangeEmitter;
 
 /***/ },
-/* 496 */
+/* 522 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -57666,8 +59357,8 @@
 
 	var _classCallCheck = __webpack_require__(355)['default'];
 
-	var callsFromGraphQL = __webpack_require__(413);
-	var serializeRelayQueryCall = __webpack_require__(417);
+	var callsFromGraphQL = __webpack_require__(419);
+	var serializeRelayQueryCall = __webpack_require__(423);
 
 	/**
 	 * Utilities used by GraphQLStore for storing ranges
@@ -57780,11 +59471,11 @@
 	module.exports = GraphQLStoreRangeUtils;
 
 /***/ },
-/* 497 */
+/* 523 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -57878,11 +59569,636 @@
 	module.exports = RelayChangeTracker;
 
 /***/ },
-/* 498 */
+/* 524 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule RelayDiskCacheReader
+	 * 
+	 * @typechecks
+	 */
+
+	'use strict';
+
+	var _classCallCheck = __webpack_require__(355)['default'];
+
+	var RelayChangeTracker = __webpack_require__(523);
+
+	var RelayProfiler = __webpack_require__(415);
+	var RelayQuery = __webpack_require__(391);
+
+	var RelayQueryPath = __webpack_require__(513);
+	var RelayRecord = __webpack_require__(426);
+
+	var findRelayQueryLeaves = __webpack_require__(525);
+
+	var forEachObject = __webpack_require__(413);
+	var forEachRootCallArg = __webpack_require__(398);
+	var invariant = __webpack_require__(399);
+	var isEmpty = __webpack_require__(526);
+
+	/**
+	 * @internal
+	 *
+	 * Retrieves data for queries or fragments from disk into `cachedRecords`.
+	 */
+	var RelayDiskCacheReader = {
+	  readFragment: function readFragment(dataID, fragment, path, store, cachedRecords, cachedRootCallMap, garbageCollector, cacheManager, changeTracker, callbacks) {
+	    var reader = new RelayCacheReader(store, cachedRecords, cachedRootCallMap, garbageCollector, cacheManager, changeTracker, callbacks);
+	    reader.readFragment(dataID, fragment, path);
+
+	    return {
+	      abort: function abort() {
+	        reader.abort();
+	      }
+	    };
+	  },
+
+	  readQueries: function readQueries(queries, store, cachedRecords, cachedRootCallMap, garbageCollector, cacheManager, changeTracker, callbacks) {
+	    var reader = new RelayCacheReader(store, cachedRecords, cachedRootCallMap, garbageCollector, cacheManager, changeTracker, callbacks);
+	    reader.read(queries);
+
+	    return {
+	      abort: function abort() {
+	        reader.abort();
+	      }
+	    };
+	  }
+	};
+
+	var RelayCacheReader = (function () {
+	  function RelayCacheReader(store, cachedRecords, cachedRootCallMap, garbageCollector, cacheManager, changeTracker, callbacks) {
+	    _classCallCheck(this, RelayCacheReader);
+
+	    this._store = store;
+	    this._cachedRecords = cachedRecords;
+	    this._cachedRootCallMap = cachedRootCallMap;
+	    this._cacheManager = cacheManager;
+	    this._callbacks = callbacks;
+	    this._changeTracker = changeTracker;
+	    this._garbageCollector = garbageCollector;
+
+	    this._pendingNodes = {};
+	    this._pendingRoots = {};
+	    this._state = 'PENDING';
+	  }
+
+	  RelayCacheReader.prototype.abort = function abort() {
+	    !(this._state === 'LOADING') ?  true ? invariant(false, 'RelayCacheReader: Can only abort an in-progress read operation.') : invariant(false) : undefined;
+	    this._state = 'COMPLETED';
+	  };
+
+	  RelayCacheReader.prototype.read = function read(queries) {
+	    var _this = this;
+
+	    !(this._state === 'PENDING') ?  true ? invariant(false, 'RelayCacheReader: A `read` is in progress.') : invariant(false) : undefined;
+	    this._state = 'LOADING';
+	    forEachObject(queries, function (query) {
+	      if (_this._state === 'COMPLETED') {
+	        return;
+	      }
+	      if (query) {
+	        (function () {
+	          var storageKey = query.getStorageKey();
+	          forEachRootCallArg(query, function (_ref) {
+	            var identifyingArgKey = _ref.identifyingArgKey;
+
+	            if (_this._state === 'COMPLETED') {
+	              return;
+	            }
+	            identifyingArgKey = identifyingArgKey || '';
+	            _this.visitRoot(storageKey, identifyingArgKey, query);
+	          });
+	        })();
+	      }
+	    });
+
+	    if (this._isDone()) {
+	      this._handleSuccess();
+	    }
+	  };
+
+	  RelayCacheReader.prototype.readFragment = function readFragment(dataID, fragment, path) {
+	    !(this._state === 'PENDING') ?  true ? invariant(false, 'RelayCacheReader: A `read` is in progress.') : invariant(false) : undefined;
+	    this._state = 'LOADING';
+	    this.visitNode(dataID, {
+	      node: fragment,
+	      path: path,
+	      rangeCalls: undefined
+	    });
+
+	    if (this._isDone()) {
+	      this._handleSuccess();
+	    }
+	  };
+
+	  RelayCacheReader.prototype.visitRoot = function visitRoot(storageKey, identifyingArgKey, query) {
+	    var dataID = this._store.getDataID(storageKey, identifyingArgKey);
+	    if (dataID == null) {
+	      if (this._cachedRootCallMap.hasOwnProperty(storageKey) && this._cachedRootCallMap[storageKey].hasOwnProperty(identifyingArgKey)) {
+	        // Already attempted to read this root from cache.
+	        this._handleFailed();
+	      } else {
+	        this.queueRoot(storageKey, identifyingArgKey, query);
+	      }
+	    } else {
+	      this.visitNode(dataID, {
+	        node: query,
+	        path: RelayQueryPath.create(query),
+	        rangeCalls: undefined
+	      });
+	    }
+	  };
+
+	  RelayCacheReader.prototype.queueRoot = function queueRoot(storageKey, identifyingArgKey, query) {
+	    var _this2 = this;
+
+	    var rootKey = storageKey + '*' + identifyingArgKey;
+	    if (this._pendingRoots.hasOwnProperty(rootKey)) {
+	      this._pendingRoots[rootKey].push(query);
+	    } else {
+	      this._pendingRoots[rootKey] = [query];
+	      this._cacheManager.readRootCall(storageKey, identifyingArgKey, function (error, value) {
+	        if (_this2._state === 'COMPLETED') {
+	          return;
+	        }
+	        if (error) {
+	          _this2._handleFailed();
+	          return;
+	        }
+	        var roots = _this2._pendingRoots[rootKey];
+	        delete _this2._pendingRoots[rootKey];
+
+	        _this2._cachedRootCallMap[storageKey] = _this2._cachedRootCallMap[storageKey] || {};
+	        _this2._cachedRootCallMap[storageKey][identifyingArgKey] = value;
+	        if (_this2._cachedRootCallMap[storageKey][identifyingArgKey] == null) {
+	          // Read from cache and we still don't have valid `dataID`.
+	          _this2._handleFailed();
+	        } else {
+	          (function () {
+	            var dataID = value;
+	            roots.forEach(function (root) {
+	              if (_this2._state === 'COMPLETED') {
+	                return;
+	              }
+	              _this2.visitNode(dataID, {
+	                node: root,
+	                path: RelayQueryPath.create(root),
+	                rangeCalls: undefined
+	              });
+	            });
+	          })();
+	        }
+	        if (_this2._isDone()) {
+	          _this2._handleSuccess();
+	        }
+	      });
+	    }
+	  };
+
+	  RelayCacheReader.prototype.visitNode = function visitNode(dataID, pendingItem) {
+	    var _this3 = this;
+
+	    var _findRelayQueryLeaves = findRelayQueryLeaves(this._store, this._cachedRecords, pendingItem.node, dataID, pendingItem.path, pendingItem.rangeCalls);
+
+	    var missingData = _findRelayQueryLeaves.missingData;
+	    var pendingNodes = _findRelayQueryLeaves.pendingNodes;
+
+	    if (missingData) {
+	      this._handleFailed();
+	      return;
+	    }
+	    forEachObject(pendingNodes, function (pendingItems, dataID) {
+	      _this3.queueNode(dataID, pendingItems);
+	    });
+	  };
+
+	  RelayCacheReader.prototype.queueNode = function queueNode(dataID, pendingItems) {
+	    var _this4 = this;
+
+	    if (this._pendingNodes.hasOwnProperty(dataID)) {
+	      var _pendingNodes$dataID;
+
+	      (_pendingNodes$dataID = this._pendingNodes[dataID]).push.apply(_pendingNodes$dataID, pendingItems);
+	    } else {
+	      this._pendingNodes[dataID] = pendingItems;
+	      this._cacheManager.readNode(dataID, function (error, value) {
+	        if (_this4._state === 'COMPLETED') {
+	          return;
+	        }
+	        if (error) {
+	          _this4._handleFailed();
+	          return;
+	        }
+	        if (value && RelayRecord.isClientID(dataID)) {
+	          value.__path__ = pendingItems[0].path;
+	        }
+	        // Mark records as created/updated as necessary. Note that if the
+	        // record is known to be deleted in the store then it will have been
+	        // been marked as created already. Further, it does not need to be
+	        // updated since no additional data can be read about a deleted node.
+	        var recordState = _this4._store.getRecordState(dataID);
+	        if (recordState === 'UNKNOWN' && value !== undefined) {
+	          // Register immediately in case anything tries to read and subscribe
+	          // to this record (which means incrementing reference counts).
+	          if (_this4._garbageCollector) {
+	            _this4._garbageCollector.register(dataID);
+	          }
+	          // Mark as created if the store did not have a value but disk cache
+	          // did (either a known value or known deletion).
+	          _this4._changeTracker.createID(dataID);
+	        } else if (recordState === 'EXISTENT' && value != null) {
+	          // Mark as updated only if a record exists in both the store and
+	          // disk cache.
+	          _this4._changeTracker.updateID(dataID);
+	        }
+	        _this4._cachedRecords[dataID] = value;
+	        var items = _this4._pendingNodes[dataID];
+	        delete _this4._pendingNodes[dataID];
+	        if (_this4._cachedRecords[dataID] === undefined) {
+	          // We are out of luck if disk doesn't have the node either.
+	          _this4._handleFailed();
+	        } else {
+	          items.forEach(function (item) {
+	            if (_this4._state === 'COMPLETED') {
+	              return;
+	            }
+	            _this4.visitNode(dataID, item);
+	          });
+	        }
+	        if (_this4._isDone()) {
+	          _this4._handleSuccess();
+	        }
+	      });
+	    }
+	  };
+
+	  RelayCacheReader.prototype._isDone = function _isDone() {
+	    return isEmpty(this._pendingRoots) && isEmpty(this._pendingNodes) && this._state === 'LOADING';
+	  };
+
+	  RelayCacheReader.prototype._handleFailed = function _handleFailed() {
+	    !(this._state !== 'COMPLETED') ?  true ? invariant(false, 'RelayStoreReader: Query set already failed/completed.') : invariant(false) : undefined;
+
+	    this._state = 'COMPLETED';
+	    this._callbacks.onFailure && this._callbacks.onFailure();
+	  };
+
+	  RelayCacheReader.prototype._handleSuccess = function _handleSuccess() {
+	    !(this._state !== 'COMPLETED') ?  true ? invariant(false, 'RelayStoreReader: Query set already failed/completed.') : invariant(false) : undefined;
+
+	    this._state = 'COMPLETED';
+	    this._callbacks.onSuccess && this._callbacks.onSuccess();
+	  };
+
+	  return RelayCacheReader;
+	})();
+
+	RelayProfiler.instrumentMethods(RelayCacheReader.prototype, {
+	  read: 'RelayCacheReader.read',
+	  readFragment: 'RelayCacheReader.readFragment',
+	  visitRoot: 'RelayCacheReader.visitRoot',
+	  queueRoot: 'RelayCacheReader.queueRoot',
+	  visitNode: 'RelayCacheReader.visitNode',
+	  queueNode: 'RelayCacheReader.queueNode'
+	});
+
+	module.exports = RelayDiskCacheReader;
+
+/***/ },
+/* 525 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule findRelayQueryLeaves
+	 * 
+	 * @typechecks
+	 */
+
+	'use strict';
+
+	var _inherits = __webpack_require__(376)['default'];
+
+	var _classCallCheck = __webpack_require__(355)['default'];
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	var RelayConnectionInterface = __webpack_require__(407);
+
+	var RelayProfiler = __webpack_require__(415);
+
+	var RelayQueryPath = __webpack_require__(513);
+	var RelayQueryVisitor = __webpack_require__(497);
+
+	var RelayRecordState = __webpack_require__(498);
+
+	var isCompatibleRelayFragmentType = __webpack_require__(499);
+
+	var EDGES = RelayConnectionInterface.EDGES;
+	var PAGE_INFO = RelayConnectionInterface.PAGE_INFO;
+
+	/**
+	 * @internal
+	 *
+	 * Traverses a query and data in the record store to determine if there are
+	 * additional nodes that needs to be read from disk cache. If it  ncounters
+	 * a node that is not in `cachedRecords`, it will queued that node by adding it
+	 * into the `pendingNodes` list. If it encounters a node that was already read
+	 * but still missing data, then it will short circuit the evaluation since
+	 * there is no way for us to satisfy this query even with additional data from
+	 * disk cache and resturn
+	 */
+	function findRelayQueryLeaves(store, cachedRecords, queryNode, dataID, path, rangeCalls) {
+	  var finder = new RelayQueryLeavesFinder(store, cachedRecords);
+
+	  var state = {
+	    dataID: dataID,
+	    missingData: false,
+	    path: path,
+	    rangeCalls: rangeCalls,
+	    rangeInfo: undefined
+	  };
+	  finder.visit(queryNode, state);
+	  return {
+	    missingData: state.missingData,
+	    pendingNodes: finder.getPendingNodes()
+	  };
+	}
+
+	var RelayQueryLeavesFinder = (function (_RelayQueryVisitor) {
+	  _inherits(RelayQueryLeavesFinder, _RelayQueryVisitor);
+
+	  function RelayQueryLeavesFinder(store) {
+	    var cachedRecords = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+
+	    _classCallCheck(this, RelayQueryLeavesFinder);
+
+	    _RelayQueryVisitor.call(this);
+	    this._store = store;
+	    this._cachedRecords = cachedRecords;
+	    this._pendingNodes = {};
+	  }
+
+	  RelayQueryLeavesFinder.prototype.getPendingNodes = function getPendingNodes() {
+	    return this._pendingNodes;
+	  };
+
+	  /**
+	   * Skip visiting children if missingData is already false.
+	   */
+
+	  RelayQueryLeavesFinder.prototype.traverse = function traverse(node, state) {
+	    var children = node.getChildren();
+	    for (var ii = 0; ii < children.length; ii++) {
+	      if (state.missingData) {
+	        return;
+	      }
+	      this.visit(children[ii], state);
+	    }
+	  };
+
+	  RelayQueryLeavesFinder.prototype.visitFragment = function visitFragment(fragment, state) {
+	    var dataID = state.dataID;
+	    var recordState = this._store.getRecordState(dataID);
+	    if (recordState === RelayRecordState.UNKNOWN) {
+	      this._handleMissingData(fragment, state);
+	      return;
+	    } else if (recordState === RelayRecordState.NONEXISTENT) {
+	      return;
+	    }
+
+	    if (isCompatibleRelayFragmentType(fragment, this._store.getType(dataID))) {
+	      this.traverse(fragment, state);
+	    }
+	  };
+
+	  RelayQueryLeavesFinder.prototype.visitField = function visitField(field, state) {
+	    var dataID = state.dataID;
+	    var recordState = this._store.getRecordState(dataID);
+	    if (recordState === RelayRecordState.UNKNOWN) {
+	      this._handleMissingData(field, state);
+	      return;
+	    } else if (recordState === RelayRecordState.NONEXISTENT) {
+	      return;
+	    }
+
+	    if (state.rangeCalls && !state.rangeInfo) {
+	      var metadata = this._store.getRangeMetadata(dataID, state.rangeCalls);
+	      if (metadata) {
+	        state.rangeInfo = metadata;
+	      }
+	    }
+	    var rangeInfo = state.rangeInfo;
+	    if (rangeInfo && field.getSchemaName() === EDGES) {
+	      this._visitEdges(field, state);
+	    } else if (rangeInfo && field.getSchemaName() === PAGE_INFO) {
+	      this._visitPageInfo(field, state);
+	    } else if (!field.canHaveSubselections()) {
+	      this._visitScalar(field, state);
+	    } else if (field.isPlural()) {
+	      this._visitPlural(field, state);
+	    } else if (field.isConnection()) {
+	      this._visitConnection(field, state);
+	    } else {
+	      this._visitLinkedField(field, state);
+	    }
+	  };
+
+	  RelayQueryLeavesFinder.prototype._visitScalar = function _visitScalar(field, state) {
+	    var fieldData = this._store.getField(state.dataID, field.getStorageKey());
+	    if (fieldData === undefined) {
+	      this._handleMissingData(field, state);
+	    }
+	  };
+
+	  RelayQueryLeavesFinder.prototype._visitPlural = function _visitPlural(field, state) {
+	    var dataIDs = this._store.getLinkedRecordIDs(state.dataID, field.getStorageKey());
+	    if (dataIDs === undefined) {
+	      this._handleMissingData(field, state);
+	      return;
+	    }
+	    if (dataIDs) {
+	      for (var ii = 0; ii < dataIDs.length; ii++) {
+	        if (state.missingData) {
+	          break;
+	        }
+	        var nextState = {
+	          dataID: dataIDs[ii],
+	          missingData: false,
+	          path: RelayQueryPath.getPath(state.path, field, dataIDs[ii]),
+	          rangeCalls: undefined,
+	          rangeInfo: undefined
+	        };
+	        this.traverse(field, nextState);
+	        state.missingData = nextState.missingData;
+	      }
+	    }
+	  };
+
+	  RelayQueryLeavesFinder.prototype._visitConnection = function _visitConnection(field, state) {
+	    var calls = field.getCallsWithValues();
+	    var dataID = this._store.getLinkedRecordID(state.dataID, field.getStorageKey());
+	    if (dataID === undefined) {
+	      this._handleMissingData(field, state);
+	      return;
+	    }
+	    if (dataID) {
+	      var nextState = {
+	        dataID: dataID,
+	        missingData: false,
+	        path: RelayQueryPath.getPath(state.path, field, dataID),
+	        rangeCalls: calls,
+	        rangeInfo: null
+	      };
+	      var metadata = this._store.getRangeMetadata(dataID, calls);
+	      if (metadata) {
+	        nextState.rangeInfo = metadata;
+	      }
+	      this.traverse(field, nextState);
+	      state.missingData = state.missingData || nextState.missingData;
+	    }
+	  };
+
+	  RelayQueryLeavesFinder.prototype._visitEdges = function _visitEdges(field, state) {
+	    var rangeInfo = state.rangeInfo;
+	    // Doesn't have  `__range__` loaded
+	    if (!rangeInfo) {
+	      this._handleMissingData(field, state);
+	      return;
+	    }
+	    if (rangeInfo.diffCalls.length) {
+	      state.missingData = true;
+	      return;
+	    }
+	    var edgeIDs = rangeInfo.requestedEdgeIDs;
+	    for (var ii = 0; ii < edgeIDs.length; ii++) {
+	      if (state.missingData) {
+	        break;
+	      }
+	      var nextState = {
+	        dataID: edgeIDs[ii],
+	        missingData: false,
+	        path: RelayQueryPath.getPath(state.path, field, edgeIDs[ii]),
+	        rangeCalls: undefined,
+	        rangeInfo: undefined
+	      };
+	      this.traverse(field, nextState);
+	      state.missingData = state.missingData || nextState.missingData;
+	    }
+	  };
+
+	  RelayQueryLeavesFinder.prototype._visitPageInfo = function _visitPageInfo(field, state) {
+	    var rangeInfo = state.rangeInfo;
+
+	    if (!rangeInfo || !rangeInfo.pageInfo) {
+	      this._handleMissingData(field, state);
+	      return;
+	    }
+	  };
+
+	  RelayQueryLeavesFinder.prototype._visitLinkedField = function _visitLinkedField(field, state) {
+	    var dataID = this._store.getLinkedRecordID(state.dataID, field.getStorageKey());
+	    if (dataID === undefined) {
+	      this._handleMissingData(field, state);
+	      return;
+	    }
+	    if (dataID) {
+	      var nextState = {
+	        dataID: dataID,
+	        missingData: false,
+	        path: RelayQueryPath.getPath(state.path, field, dataID),
+	        rangeCalls: undefined,
+	        rangeInfo: undefined
+	      };
+	      this.traverse(field, nextState);
+	      state.missingData = state.missingData || nextState.missingData;
+	    }
+	  };
+
+	  RelayQueryLeavesFinder.prototype._handleMissingData = function _handleMissingData(node, state) {
+	    var dataID = state.dataID;
+	    if (this._cachedRecords.hasOwnProperty(dataID)) {
+	      // We have read data for this `dataID` from disk, but
+	      // we still don't have data for the relevant field.
+	      state.missingData = true;
+	    } else {
+	      // Store node in `pendingNodes` because we have not read data for
+	      // this `dataID` from disk.
+	      this._pendingNodes[dataID] = this._pendingNodes[dataID] || [];
+	      this._pendingNodes[dataID].push({
+	        node: node,
+	        path: state.path,
+	        rangeCalls: state.rangeCalls
+	      });
+	    }
+	  };
+
+	  return RelayQueryLeavesFinder;
+	})(RelayQueryVisitor);
+
+	module.exports = RelayProfiler.instrument('findRelayQueryLeaves', findRelayQueryLeaves);
+
+/***/ },
+/* 526 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 */
+
+	/*eslint-disable no-unused-vars */
+
+	var invariant = __webpack_require__(399);
+
+	/**
+	 * Mimics empty from PHP.
+	 */
+	function isEmpty(obj) {
+	  !!(obj && obj[Symbol.iterator] && obj.size !== undefined) ?  true ? invariant(false, 'isEmpty does not support Map or Set') : invariant(false) : undefined;
+
+	  if (Array.isArray(obj)) {
+	    return obj.length === 0;
+	  } else if (typeof obj === 'object') {
+	    for (var i in obj) {
+	      return false;
+	    }
+	    return true;
+	  } else {
+	    return !obj;
+	  }
+	}
+
+	module.exports = isEmpty;
+
+/***/ },
+/* 527 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -57901,13 +60217,15 @@
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
-	var GraphQLRange = __webpack_require__(499);
-	var GraphQLStoreDataHandler = __webpack_require__(390);
+	var GraphQLRange = __webpack_require__(528);
 
-	var RelayQueryPath = __webpack_require__(485);
+	var RelayQueryPath = __webpack_require__(513);
+	var RelayRecord = __webpack_require__(426);
 
-	var forEachObject = __webpack_require__(407);
+	var forEachObject = __webpack_require__(413);
 	var invariant = __webpack_require__(399);
+	var resolveImmediate = __webpack_require__(508);
+	var warning = __webpack_require__(372);
 
 	/**
 	 * @internal
@@ -57923,6 +60241,7 @@
 	    this._activeHoldCount = 0;
 	    this._collectionQueue = [];
 	    this._isCollecting = false;
+	    this._isScheduled = false;
 	    this._refCounts = {};
 	    this._scheduler = scheduler;
 	    this._storeData = storeData;
@@ -57935,13 +60254,19 @@
 	  };
 
 	  RelayGarbageCollector.prototype.incrementReferenceCount = function incrementReferenceCount(dataID) {
-	    !this._refCounts.hasOwnProperty(dataID) ?  true ? invariant(false, 'RelayGarbageCollector: must register `%s` before referencing.', dataID) : invariant(false) : undefined;
+	    // Inlined `register` since this is a reasonably hot code path.
+	    if (!this._refCounts.hasOwnProperty(dataID)) {
+	      this._refCounts[dataID] = 0;
+	    }
 	    this._refCounts[dataID]++;
 	  };
 
 	  RelayGarbageCollector.prototype.decrementReferenceCount = function decrementReferenceCount(dataID) {
-	    !this._refCounts.hasOwnProperty(dataID) ?  true ? invariant(false, 'RelayGarbageCollector: must register `%s` before dereferencing.', dataID) : invariant(false) : undefined;
-	    !(this._refCounts[dataID] > 0) ?  true ? invariant(false, 'RelayGarbageCollector: cannot decrease references below zero for `%s`.', dataID) : invariant(false) : undefined;
+	    if (!this._refCounts.hasOwnProperty(dataID) || this._refCounts[dataID] <= 0) {
+	       true ? warning(false, 'RelayGarbageCollector: Expected id `%s` be referenced before being ' + 'unreferenced.', dataID) : undefined;
+	      this._refCounts[dataID] = 0;
+	      return;
+	    }
 	    this._refCounts[dataID]--;
 	  };
 
@@ -58005,6 +60330,19 @@
 	  RelayGarbageCollector.prototype._scheduleCollection = function _scheduleCollection() {
 	    var _this3 = this;
 
+	    if (this._isScheduled) {
+	      return;
+	    }
+	    this._isScheduled = true;
+	    resolveImmediate(function () {
+	      _this3._isScheduled = false;
+	      _this3._processQueue();
+	    });
+	  };
+
+	  RelayGarbageCollector.prototype._processQueue = function _processQueue() {
+	    var _this4 = this;
+
 	    if (this._isCollecting || this._activeHoldCount || !this._collectionQueue.length) {
 	      // already scheduled, active hold, or nothing to do
 	      return;
@@ -58014,57 +60352,67 @@
 	    var cachedRecords = this._storeData.getCachedData();
 	    var freshRecords = this._storeData.getNodeData();
 	    this._scheduler(function () {
-	      // handle async scheduling
-	      if (_this3._activeHoldCount || !_this3._collectionQueue.length) {
-	        return _this3._isCollecting = false;
+	      // exit if a hold was acquired since the last execution
+	      if (_this4._activeHoldCount) {
+	        _this4._isCollecting = false;
+	        return false;
 	      }
 
-	      var dataID = undefined;
-	      var refCount = undefined;
-	      // find the next record to collect
-	      do {
-	        dataID = _this3._collectionQueue.shift();
-	        refCount = _this3._refCounts[dataID];
-	      } while (dataID && refCount === undefined || refCount > 0);
-	      var cachedRecord = cachedRecords[dataID];
-	      if (cachedRecord) {
-	        _this3._traverseRecord(cachedRecord);
+	      var dataID = _this4._getNextUnreferencedID();
+	      if (dataID) {
+	        var cachedRecord = cachedRecords[dataID];
+	        if (cachedRecord) {
+	          _this4._traverseRecord(cachedRecord);
+	        }
+	        var freshRecord = freshRecords[dataID];
+	        if (freshRecord) {
+	          _this4._traverseRecord(freshRecord);
+	        }
+	        _this4._collectRecord(dataID);
 	      }
-	      var freshRecord = freshRecords[dataID];
-	      if (freshRecord) {
-	        _this3._traverseRecord(freshRecord);
-	      }
-	      _this3._collectRecord(dataID);
 
 	      // only allow new collections to be scheduled once the current one
 	      // is complete
-	      return _this3._isCollecting = !!_this3._collectionQueue.length;
+	      _this4._isCollecting = !!_this4._collectionQueue.length;
+	      return _this4._isCollecting;
 	    });
 	  };
 
+	  RelayGarbageCollector.prototype._getNextUnreferencedID = function _getNextUnreferencedID() {
+	    while (this._collectionQueue.length) {
+	      var dataID = this._collectionQueue.shift();
+	      if (this._refCounts.hasOwnProperty(dataID) && this._refCounts[dataID] === 0) {
+	        return dataID;
+	      }
+	    }
+	    return null;
+	  };
+
 	  RelayGarbageCollector.prototype._traverseRecord = function _traverseRecord(record) {
-	    var _this4 = this;
+	    var _this5 = this;
 
 	    forEachObject(record, function (value, storageKey) {
-	      if (value instanceof RelayQueryPath) {
+	      if (storageKey === RelayRecord.MetadataKey.PATH) {
 	        return;
 	      } else if (value instanceof GraphQLRange) {
 	        value.getEdgeIDs().forEach(function (id) {
-	          return _this4._collectionQueue.push(id);
+	          if (id != null) {
+	            _this5._collectionQueue.push(id);
+	          }
 	        });
 	      } else if (Array.isArray(value)) {
 	        value.forEach(function (item) {
 	          if (typeof item === 'object' && item !== null) {
-	            var linkedID = GraphQLStoreDataHandler.getID(item);
-	            if (linkedID) {
-	              _this4._collectionQueue.push(linkedID);
+	            var linkedID = RelayRecord.getDataID(item);
+	            if (linkedID != null) {
+	              _this5._collectionQueue.push(linkedID);
 	            }
 	          }
 	        });
 	      } else if (typeof value === 'object' && value !== null) {
-	        var linkedID = GraphQLStoreDataHandler.getID(value);
-	        if (linkedID) {
-	          _this4._collectionQueue.push(linkedID);
+	        var linkedID = RelayRecord.getDataID(value);
+	        if (linkedID != null) {
+	          _this5._collectionQueue.push(linkedID);
 	        }
 	      }
 	    });
@@ -58083,11 +60431,11 @@
 	module.exports = RelayGarbageCollector;
 
 /***/ },
-/* 499 */
+/* 528 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -58102,23 +60450,24 @@
 
 	var _classCallCheck = __webpack_require__(355)['default'];
 
-	var _defineProperty = __webpack_require__(500)['default'];
+	var _defineProperty = __webpack_require__(409)['default'];
 
 	var _extends = __webpack_require__(338)['default'];
 
-	var _slicedToArray = __webpack_require__(422)['default'];
+	var _slicedToArray = __webpack_require__(489)['default'];
 
-	var _toConsumableArray = __webpack_require__(470)['default'];
+	var _toConsumableArray = __webpack_require__(437)['default'];
 
-	var GraphQLMutatorConstants = __webpack_require__(503);
-	var GraphQLSegment = __webpack_require__(504);
-	var GraphQLStoreDataHandler = __webpack_require__(390);
-	var RelayConnectionInterface = __webpack_require__(404);
+	var GraphQLMutatorConstants = __webpack_require__(529);
+	var GraphQLSegment = __webpack_require__(530);
+	var RelayConnectionInterface = __webpack_require__(407);
+	var RelayRecord = __webpack_require__(426);
 
-	var forEachObject = __webpack_require__(407);
+	var forEachObject = __webpack_require__(413);
 	var invariant = __webpack_require__(399);
-	var serializeRelayQueryCall = __webpack_require__(417);
-	var warning = __webpack_require__(371);
+	var rangeOperationToMetadataKey = __webpack_require__(531);
+	var serializeRelayQueryCall = __webpack_require__(423);
+	var warning = __webpack_require__(372);
 
 	var END_CURSOR = RelayConnectionInterface.END_CURSOR;
 	var HAS_NEXT_PAGE = RelayConnectionInterface.HAS_NEXT_PAGE;
@@ -58205,7 +60554,7 @@
 	 * @param {object} edge
 	 */
 	function validateEdge(edge) {
-	  !(GraphQLStoreDataHandler.getID(edge) !== undefined) ?  true ? invariant(false, 'GraphQLStore: `edge` must have a data id') : invariant(false) : undefined;
+	  !(RelayRecord.getDataID(edge) !== undefined) ?  true ? invariant(false, 'GraphQLStore: `edge` must have a data id') : invariant(false) : undefined;
 	  !(edge.node !== undefined) ?  true ? invariant(false, 'GraphQLStore: `edge` must have `node` field') : invariant(false) : undefined;
 	}
 
@@ -58329,7 +60678,7 @@
 
 	    for (var ii = 0; ii < edges.length; ii++) {
 	      var edge = edges[ii];
-	      edgeIDsToStore.push(GraphQLStoreDataHandler.getID(edge));
+	      edgeIDsToStore.push(RelayRecord.getDataID(edge));
 	      cursorsToStore.push(edge.cursor);
 	    }
 
@@ -58506,7 +60855,7 @@
 	   */
 
 	  GraphQLRange.prototype._removeEdgeIfApplicable = function _removeEdgeIfApplicable(edge) {
-	    var id = GraphQLStoreDataHandler.getID(edge);
+	    var id = RelayRecord.getDataID(edge);
 	    var index = this._getSegmentIndexByID(id);
 	    if (index != null) {
 	      this._orderedSegments[index].removeEdge(id);
@@ -58620,7 +60969,7 @@
 	    }
 
 	    for (var ii = 0; ii < edgeIDs.length; ii++) {
-	      if (edgeIDs[ii] !== GraphQLStoreDataHandler.getID(edges[ii])) {
+	      if (edgeIDs[ii] !== RelayRecord.getDataID(edges[ii])) {
 	         true ? warning(false, 'Relay was unable to reconcile edges on a connection. This most ' + 'likely occurred while trying to handle a server response that ' + 'includes connection edges with nodes that lack an `id` field.') : undefined;
 	        return undefined;
 	      }
@@ -58721,7 +61070,7 @@
 	    }
 
 	    for (var ii = 1; ii <= edgeIDs.length; ii++) {
-	      if (edgeIDs[edgeIDs.length - ii] !== GraphQLStoreDataHandler.getID(edges[edges.length - ii])) {
+	      if (edgeIDs[edgeIDs.length - ii] !== RelayRecord.getDataID(edges[edges.length - ii])) {
 	         true ? warning(false, 'Relay was unable to reconcile edges on a connection. This most ' + 'likely occurred while trying to handle a server response that ' + 'includes connection edges with nodes that lack an `id` field.') : undefined;
 	        return undefined;
 	      }
@@ -58744,11 +61093,11 @@
 
 	  /**
 	   * @param {array<object>} queryCalls
-	   * @param {?object} optimisticData
+	   * @param {?object} queuedRecord
 	   * @return {object} includes fields: requestedEdgeIDs, diffCalls
 	   */
 
-	  GraphQLRange.prototype.retrieveRangeInfoForQuery = function retrieveRangeInfoForQuery(queryCalls, optimisticData) {
+	  GraphQLRange.prototype.retrieveRangeInfoForQuery = function retrieveRangeInfoForQuery(queryCalls, queuedRecord) {
 	    var calls = callsArrayToObject(queryCalls);
 
 	    if (isStaticCall(calls)) {
@@ -58782,9 +61131,9 @@
 	      };
 	    }
 	    if (calls.first) {
-	      return this._retrieveRangeInfoForFirstQuery(queryCalls, optimisticData);
+	      return this._retrieveRangeInfoForFirstQuery(queryCalls, queuedRecord);
 	    } else if (calls.last) {
-	      return this._retrieveRangeInfoForLastQuery(queryCalls, optimisticData);
+	      return this._retrieveRangeInfoForLastQuery(queryCalls, queuedRecord);
 	    }
 	  };
 
@@ -58817,23 +61166,49 @@
 	  };
 
 	  /**
+	   * @param {object} queuedRecord
+	   * @return {?array<string>}
+	   */
+
+	  GraphQLRange.prototype._getAppendedIDsForQueuedRecord = function _getAppendedIDsForQueuedRecord(queuedRecord) {
+	    return queuedRecord[rangeOperationToMetadataKey[GraphQLMutatorConstants.APPEND]];
+	  };
+
+	  /**
+	   * @param {object} queuedRecord
+	   * @return {?array<string>}
+	   */
+
+	  GraphQLRange.prototype._getRemovedIDsForQueuedRecord = function _getRemovedIDsForQueuedRecord(queuedRecord) {
+	    return queuedRecord[rangeOperationToMetadataKey[GraphQLMutatorConstants.REMOVE]];
+	  };
+
+	  /**
+	   * @param {object} queuedRecord
+	   * @return {?array<string>}
+	   */
+
+	  GraphQLRange.prototype._getPrependedIDsForQueuedRecord = function _getPrependedIDsForQueuedRecord(queuedRecord) {
+	    return queuedRecord[rangeOperationToMetadataKey[GraphQLMutatorConstants.PREPEND]];
+	  };
+
+	  /**
 	   * @param {array<object>} queryCalls
-	   * @param {?object} optimisticData
+	   * @param {?object} queuedRecord
 	   * @return {object} includes fields: requestedEdgeIDs, diffCalls
 	   */
 
-	  GraphQLRange.prototype._retrieveRangeInfoForFirstQuery = function _retrieveRangeInfoForFirstQuery(queryCalls, optimisticData) {
-	    var appendEdgeIDs = [];
-	    var prependEdgeIDs = [];
-	    var deleteIDs = [];
-	    if (optimisticData) {
-	      appendEdgeIDs = optimisticData[GraphQLMutatorConstants.APPEND] || [];
-	      prependEdgeIDs = optimisticData[GraphQLMutatorConstants.PREPEND] || [];
-	      deleteIDs = optimisticData[GraphQLMutatorConstants.REMOVE] || [];
+	  GraphQLRange.prototype._retrieveRangeInfoForFirstQuery = function _retrieveRangeInfoForFirstQuery(queryCalls, queuedRecord) {
+	    var appendEdgeIDs = undefined;
+	    var prependEdgeIDs = undefined;
+	    var removeIDs = undefined;
+	    if (queuedRecord) {
+	      appendEdgeIDs = this._getAppendedIDsForQueuedRecord(queuedRecord);
+	      prependEdgeIDs = this._getPrependedIDsForQueuedRecord(queuedRecord);
+	      removeIDs = this._getRemovedIDsForQueuedRecord(queuedRecord);
 	    }
-
 	    var calls = callsArrayToObject(queryCalls);
-	    var countNeeded = calls.first + deleteIDs.length;
+	    var countNeeded = calls.first + (removeIDs ? removeIDs.length : 0);
 	    var segment;
 	    var segmentIndex;
 	    var pageInfo = _extends({}, RelayConnectionInterface.getDefaultPageInfo());
@@ -58851,7 +61226,7 @@
 	      }
 	      segment = this._orderedSegments[segmentIndex];
 	    } else {
-	      var prependEdgesCount = prependEdgeIDs.length;
+	      var prependEdgesCount = prependEdgeIDs ? prependEdgeIDs.length : 0;
 	      countNeeded -= prependEdgesCount;
 
 	      segmentIndex = 0;
@@ -58895,16 +61270,16 @@
 	      }
 	    }
 
-	    if (optimisticData) {
-	      if (prependEdgeIDs.length && !calls.after) {
+	    if (queuedRecord) {
+	      if (prependEdgeIDs && prependEdgeIDs.length && !calls.after) {
 	        requestedEdgeIDs = prependEdgeIDs.concat(requestedEdgeIDs);
 	      }
-	      if (appendEdgeIDs.length && !pageInfo[HAS_NEXT_PAGE]) {
+	      if (appendEdgeIDs && appendEdgeIDs.length && !pageInfo[HAS_NEXT_PAGE]) {
 	        requestedEdgeIDs = requestedEdgeIDs.concat(appendEdgeIDs);
 	      }
-	      if (deleteIDs.length) {
+	      if (removeIDs && removeIDs.length) {
 	        requestedEdgeIDs = requestedEdgeIDs.filter(function (edgeID) {
-	          return deleteIDs.indexOf(edgeID) == -1;
+	          return removeIDs.indexOf(edgeID) == -1;
 	        });
 	      }
 	      if (requestedEdgeIDs.length > calls.first) {
@@ -58921,21 +61296,21 @@
 
 	  /**
 	   * @param {array<object>} queryCalls
-	   * @param {?object} optimisticData
+	   * @param {?object} queuedRecord
 	   * @return {object} includes fields: requestedEdgeIDs, diffCalls
 	   */
 
-	  GraphQLRange.prototype._retrieveRangeInfoForLastQuery = function _retrieveRangeInfoForLastQuery(queryCalls, optimisticData) {
-	    var appendEdgeIDs = [];
-	    var prependEdgeIDs = [];
-	    var deleteIDs = [];
-	    if (optimisticData) {
-	      appendEdgeIDs = optimisticData[GraphQLMutatorConstants.APPEND] || [];
-	      prependEdgeIDs = optimisticData[GraphQLMutatorConstants.PREPEND] || [];
-	      deleteIDs = optimisticData[GraphQLMutatorConstants.REMOVE] || [];
+	  GraphQLRange.prototype._retrieveRangeInfoForLastQuery = function _retrieveRangeInfoForLastQuery(queryCalls, queuedRecord) {
+	    var appendEdgeIDs = undefined;
+	    var prependEdgeIDs = undefined;
+	    var removeIDs = undefined;
+	    if (queuedRecord) {
+	      appendEdgeIDs = this._getAppendedIDsForQueuedRecord(queuedRecord);
+	      prependEdgeIDs = this._getPrependedIDsForQueuedRecord(queuedRecord);
+	      removeIDs = this._getRemovedIDsForQueuedRecord(queuedRecord);
 	    }
 	    var calls = callsArrayToObject(queryCalls);
-	    var countNeeded = calls.last + deleteIDs.length;
+	    var countNeeded = calls.last + (removeIDs ? removeIDs.length : 0);
 	    var segment;
 	    var segmentIndex;
 	    var pageInfo = _extends({}, RelayConnectionInterface.getDefaultPageInfo());
@@ -58953,7 +61328,7 @@
 	      }
 	      segment = this._orderedSegments[segmentIndex];
 	    } else {
-	      var appendEdgesCount = appendEdgeIDs.length;
+	      var appendEdgesCount = appendEdgeIDs ? appendEdgeIDs.length : 0;
 	      countNeeded -= appendEdgesCount;
 
 	      segmentIndex = this._orderedSegments.length - 1;
@@ -58997,16 +61372,16 @@
 	      }
 	    }
 
-	    if (optimisticData) {
-	      if (appendEdgeIDs.length && !calls.before) {
+	    if (queuedRecord) {
+	      if (appendEdgeIDs && appendEdgeIDs.length && !calls.before) {
 	        requestedEdgeIDs = requestedEdgeIDs.concat(appendEdgeIDs);
 	      }
-	      if (prependEdgeIDs.length && !pageInfo[HAS_PREV_PAGE]) {
+	      if (prependEdgeIDs && prependEdgeIDs.length && !pageInfo[HAS_PREV_PAGE]) {
 	        requestedEdgeIDs = prependEdgeIDs.concat(requestedEdgeIDs);
 	      }
-	      if (deleteIDs.length) {
+	      if (removeIDs && removeIDs.length) {
 	        requestedEdgeIDs = requestedEdgeIDs.filter(function (edgeID) {
-	          return deleteIDs.indexOf(edgeID) == -1;
+	          return removeIDs.indexOf(edgeID) == -1;
 	        });
 	      }
 	      if (requestedEdgeIDs.length > calls.last) {
@@ -59073,51 +61448,11 @@
 	module.exports = GraphQLRange;
 
 /***/ },
-/* 500 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var _Object$defineProperty = __webpack_require__(501)["default"];
-
-	exports["default"] = function (obj, key, value) {
-	  if (key in obj) {
-	    _Object$defineProperty(obj, key, {
-	      value: value,
-	      enumerable: true,
-	      configurable: true,
-	      writable: true
-	    });
-	  } else {
-	    obj[key] = value;
-	  }
-
-	  return obj;
-	};
-
-	exports.__esModule = true;
-
-/***/ },
-/* 501 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = { "default": __webpack_require__(502), __esModule: true };
-
-/***/ },
-/* 502 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var $ = __webpack_require__(348);
-	module.exports = function defineProperty(it, key, desc){
-	  return $.setDesc(it, key, desc);
-	};
-
-/***/ },
-/* 503 */
+/* 529 */
 /***/ function(module, exports) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -59165,11 +61500,11 @@
 	module.exports = GraphQLMutatorConstants;
 
 /***/ },
-/* 504 */
+/* 530 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -59184,13 +61519,13 @@
 
 	var _classCallCheck = __webpack_require__(355)['default'];
 
-	var _slicedToArray = __webpack_require__(422)['default'];
+	var _slicedToArray = __webpack_require__(489)['default'];
 
 	var _Object$assign = __webpack_require__(339)['default'];
 
-	var _Object$keys = __webpack_require__(384)['default'];
+	var _Object$keys = __webpack_require__(385)['default'];
 
-	var GraphQLStoreDataHandler = __webpack_require__(390);
+	var RelayRecord = __webpack_require__(426);
 
 	/**
 	 * Represents one contiguous segment of edges within a `GraphQLRange`. Has
@@ -59438,7 +61773,7 @@
 	   */
 
 	  GraphQLSegment.prototype._addEdgeAtIndex = function _addEdgeAtIndex(edge, index) {
-	    var edgeID = GraphQLStoreDataHandler.getID(edge);
+	    var edgeID = RelayRecord.getDataID(edge);
 	    var cursor = edge.cursor;
 
 	    var idIndex = this._getIndexForID(edgeID);
@@ -59540,6 +61875,9 @@
 	   */
 
 	  GraphQLSegment.prototype.addEdgesAfterCursor = function addEdgesAfterCursor(edges, cursor) {
+	    if (!edges.length) {
+	      return;
+	    }
 	    // Default adding after with no cursor to -1
 	    // So the first element in the segment is stored at index 0
 	    var index = -1;
@@ -59576,6 +61914,9 @@
 	   */
 
 	  GraphQLSegment.prototype.addEdgesBeforeCursor = function addEdgesBeforeCursor(edges, cursor) {
+	    if (!edges.length) {
+	      return;
+	    }
 	    // Default adding before with no cursor to 1
 	    // So the first element in the segment is stored at index 0
 	    var index = 1;
@@ -59797,11 +62138,50 @@
 	module.exports = GraphQLSegment;
 
 /***/ },
-/* 505 */
+/* 531 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule rangeOperationToMetadataKey
+	 * 
+	 * @typechecks
+	 */
+
+	'use strict';
+
+	var _Object$freeze = __webpack_require__(392)['default'];
+
+	var GraphQLMutatorConstants = __webpack_require__(529);
+	var mapObject = __webpack_require__(479);
+
+	var RANGE_OPERATION_METADATA_PREFIX = '__rangeOperation';
+	var RANGE_OPERATION_METADATA_SUFFIX = '__';
+
+	/**
+	 * A map from developer-friendly operation names ("append", "prepend", "remove")
+	 * to internal book-keeping keys used to store metadata on records
+	 * ("__rangeOperationAppend__" etc).
+	 */
+	var rangeOperationToMetadataKey = mapObject(GraphQLMutatorConstants.RANGE_OPERATIONS, function (value, key, object) {
+	  var capitalizedKey = key[0].toUpperCase() + key.slice(1);
+	  return RANGE_OPERATION_METADATA_PREFIX + capitalizedKey + RANGE_OPERATION_METADATA_SUFFIX;
+	});
+
+	module.exports = _Object$freeze(rangeOperationToMetadataKey);
+
+/***/ },
+/* 532 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -59819,23 +62199,25 @@
 
 	var _extends = __webpack_require__(338)['default'];
 
-	var _defineProperty = __webpack_require__(500)['default'];
+	var _defineProperty = __webpack_require__(409)['default'];
 
-	var ErrorUtils = __webpack_require__(388);
+	var ErrorUtils = __webpack_require__(389);
 	var QueryBuilder = __webpack_require__(395);
-	var RelayConnectionInterface = __webpack_require__(404);
-	var RelayMutationQuery = __webpack_require__(506);
-	var RelayMutationRequest = __webpack_require__(523);
-	var RelayMutationTransaction = __webpack_require__(462);
-	var RelayMutationTransactionStatus = __webpack_require__(463);
-	var RelayNetworkLayer = __webpack_require__(480);
+	var RelayConnectionInterface = __webpack_require__(407);
+	var RelayMutationQuery = __webpack_require__(533);
+	var RelayMutationRequest = __webpack_require__(539);
+	var RelayMutationTransaction = __webpack_require__(430);
+	var RelayMutationTransactionStatus = __webpack_require__(431);
+	var RelayNetworkLayer = __webpack_require__(506);
 
-	var base62 = __webpack_require__(416);
-	var flattenRelayQuery = __webpack_require__(508);
-	var fromGraphQL = __webpack_require__(527);
+	var RelayQuery = __webpack_require__(391);
+
+	var base62 = __webpack_require__(406);
+	var flattenRelayQuery = __webpack_require__(535);
+	var fromGraphQL = __webpack_require__(543);
 	var invariant = __webpack_require__(399);
-	var nullthrows = __webpack_require__(520);
-	var resolveImmediate = __webpack_require__(490);
+	var nullthrows = __webpack_require__(480);
+	var resolveImmediate = __webpack_require__(508);
 
 	var CLIENT_MUTATION_ID = RelayConnectionInterface.CLIENT_MUTATION_ID;
 
@@ -60091,7 +62473,12 @@
 
 	  PendingTransaction.prototype.getFatQuery = function getFatQuery() {
 	    if (!this._fatQuery) {
-	      this._fatQuery = nullthrows(flattenRelayQuery(fromGraphQL.Fragment(this.mutation.getFatQuery()), { shouldRemoveFragments: true }));
+	      var fragment = fromGraphQL.Fragment(this.mutation.getFatQuery());
+	      !(fragment instanceof RelayQuery.Fragment) ?  true ? invariant(false, 'RelayMutationQueue: Expected `getFatQuery` to return a GraphQL ' + 'Fragment') : invariant(false) : undefined;
+	      this._fatQuery = nullthrows(flattenRelayQuery(fragment, {
+	        preserveEmptyNodes: fragment.isPattern(),
+	        shouldRemoveFragments: true
+	      }));
 	    }
 	    return this._fatQuery;
 	  };
@@ -60189,11 +62576,11 @@
 	// Lazily computed and memoized private properties
 
 /***/ },
-/* 506 */
+/* 533 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -60207,23 +62594,25 @@
 
 	'use strict';
 
-	var _toConsumableArray = __webpack_require__(470)['default'];
+	var _toConsumableArray = __webpack_require__(437)['default'];
 
-	var GraphQLStoreDataHandler = __webpack_require__(390);
-	var RelayConnectionInterface = __webpack_require__(404);
+	var RelayConnectionInterface = __webpack_require__(407);
 
-	var RelayMetaRoute = __webpack_require__(408);
-	var RelayMutationType = __webpack_require__(507);
+	var RelayMetaRoute = __webpack_require__(414);
+	var RelayMutationType = __webpack_require__(534);
 	var RelayNodeInterface = __webpack_require__(396);
 	var RelayQuery = __webpack_require__(391);
 
-	var flattenRelayQuery = __webpack_require__(508);
-	var forEachObject = __webpack_require__(407);
-	var nullthrows = __webpack_require__(520);
-	var inferRelayFieldsFromData = __webpack_require__(521);
-	var intersectRelayQuery = __webpack_require__(522);
+	var RelayRecord = __webpack_require__(426);
+
+	var flattenRelayQuery = __webpack_require__(535);
+	var forEachObject = __webpack_require__(413);
+	var nullthrows = __webpack_require__(480);
+	var inferRelayFieldsFromData = __webpack_require__(537);
+	var intersectRelayQuery = __webpack_require__(538);
 	var invariant = __webpack_require__(399);
 
+	// This should probably use disjoint unions.
 	var CLIENT_MUTATION_ID = RelayConnectionInterface.CLIENT_MUTATION_ID;
 	var ANY_TYPE = RelayNodeInterface.ANY_TYPE;
 	var ID = RelayNodeInterface.ID;
@@ -60467,7 +62856,7 @@
 	              parentName: config.parentName,
 	              tracker: tracker
 	            }));
-	            children.push(RelayQuery.Field.build({
+	            children.push(Array.isArray(config.deletedIDFieldName) ? buildDeletedConnectionNodeIDField(config.deletedIDFieldName) : RelayQuery.Field.build({
 	              fieldName: config.deletedIDFieldName,
 	              type: 'String'
 	            }));
@@ -60480,6 +62869,9 @@
 	              tracker: tracker
 	            }));
 	            break;
+
+	          default:
+	             true ?  true ? invariant(false, 'RelayMutationQuery: Unrecognized config key `%s` for `%s`.', config.type, mutationName) : invariant(false) : undefined;
 	        }
 	      });
 
@@ -60505,6 +62897,24 @@
 	  return null;
 	}
 
+	function buildDeletedConnectionNodeIDField(fieldNames) {
+	  var field = RelayQuery.Field.build({
+	    fieldName: ID,
+	    type: 'String'
+	  });
+	  for (var ii = fieldNames.length - 1; ii >= 0; ii--) {
+	    field = RelayQuery.Field.build({
+	      fieldName: fieldNames[ii],
+	      type: ANY_TYPE,
+	      children: [field],
+	      metadata: {
+	        canHaveSubselections: true
+	      }
+	    });
+	  }
+	  return field;
+	}
+
 	function buildEdgeField(parentID, edgeName, edgeFields) {
 	  var fields = [RelayQuery.Field.build({
 	    fieldName: 'cursor',
@@ -60513,24 +62923,26 @@
 	    fieldName: TYPENAME,
 	    type: 'String'
 	  })];
-	  if (RelayConnectionInterface.EDGES_HAVE_SOURCE_FIELD && !GraphQLStoreDataHandler.isClientID(parentID)) {
+	  if (RelayConnectionInterface.EDGES_HAVE_SOURCE_FIELD && !RelayRecord.isClientID(parentID)) {
 	    fields.push(RelayQuery.Field.build({
-	      fieldName: 'source',
-	      type: ANY_TYPE,
 	      children: [RelayQuery.Field.build({
 	        fieldName: ID,
 	        type: 'String'
 	      }), RelayQuery.Field.build({
 	        fieldName: TYPENAME,
 	        type: 'String'
-	      })]
+	      })],
+	      fieldName: 'source',
+	      metadata: { canHaveSubselections: true },
+	      type: ANY_TYPE
 	    }));
 	  }
 	  fields.push.apply(fields, edgeFields);
 	  var edgeField = flattenRelayQuery(RelayQuery.Field.build({
+	    children: fields,
 	    fieldName: edgeName,
-	    type: ANY_TYPE,
-	    children: fields
+	    metadata: { canHaveSubselections: true },
+	    type: ANY_TYPE
 	  }));
 	  !(edgeField instanceof RelayQuery.Field) ?  true ? invariant(false, 'RelayMutationQuery: Expected a field.') : invariant(false) : undefined;
 	  return edgeField;
@@ -60588,18 +63000,12 @@
 
 	module.exports = RelayMutationQuery;
 
-	/* Previously each element of configs had the type mixed, which meant
-	 * that they couldn't be used in configs.forEach without being
-	 * inspected at runtime. I think this is probably a good use case for
-	 * disjoin unions (flowtype.org/blog/2015/07/03/Disjoint-Unions.html)
-	 */
-
 /***/ },
-/* 507 */
+/* 534 */
 /***/ function(module, exports) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -60624,11 +63030,11 @@
 	module.exports = RelayMutationType;
 
 /***/ },
-/* 508 */
+/* 535 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -60642,21 +63048,21 @@
 
 	'use strict';
 
-	var _inherits = __webpack_require__(375)['default'];
+	var _inherits = __webpack_require__(376)['default'];
 
 	var _classCallCheck = __webpack_require__(355)['default'];
 
-	var _Array$from = __webpack_require__(471)['default'];
+	var _Array$from = __webpack_require__(438)['default'];
 
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
-	var Map = __webpack_require__(509);
-	var RelayProfiler = __webpack_require__(409);
+	var Map = __webpack_require__(463);
+	var RelayProfiler = __webpack_require__(415);
+	var RelayQuery = __webpack_require__(391);
+	var RelayQueryVisitor = __webpack_require__(497);
 
-	var RelayQueryVisitor = __webpack_require__(454);
-
-	var sortTypeFirst = __webpack_require__(519);
+	var sortTypeFirst = __webpack_require__(536);
 
 	/**
 	 * @internal
@@ -60676,10 +63082,10 @@
 	    flattenedFragmentMap: new Map()
 	  };
 	  flattener.traverse(node, state);
-	  return toQuery(node, state);
+	  return toQuery(node, state, !!(options && options.preserveEmptyNodes));
 	}
 
-	function toQuery(node, _ref) {
+	function toQuery(node, _ref, preserveEmptyNodes) {
 	  var flattenedFieldMap = _ref.flattenedFieldMap;
 	  var flattenedFragmentMap = _ref.flattenedFragmentMap;
 
@@ -60688,15 +63094,20 @@
 	  aliases.forEach(function (alias) {
 	    var field = flattenedFieldMap.get(alias);
 	    if (field) {
-	      children.push(toQuery(field.node, field));
+	      children.push(toQuery(field.node, field, preserveEmptyNodes));
 	    }
 	  });
 	  _Array$from(flattenedFragmentMap.keys()).forEach(function (type) {
 	    var fragment = flattenedFragmentMap.get(type);
 	    if (fragment) {
-	      children.push(toQuery(fragment.node, fragment));
+	      children.push(toQuery(fragment.node, fragment, preserveEmptyNodes));
 	    }
 	  });
+	  // Pattern nodes may contain non-scalar fields without children that
+	  // should not be removed.
+	  if (preserveEmptyNodes && node.canHaveSubselections() && !children.length) {
+	    return node;
+	  }
 	  return node.clone(children);
 	}
 
@@ -60750,353 +63161,11 @@
 	module.exports = RelayProfiler.instrument('flattenRelayQuery', flattenRelayQuery);
 
 /***/ },
-/* 509 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule Map
-	 */
-
-	'use strict';
-
-	module.exports = __webpack_require__(510);
-
-/***/ },
-/* 510 */
-/***/ function(module, exports, __webpack_require__) {
-
-	__webpack_require__(511);
-	__webpack_require__(443);
-	__webpack_require__(425);
-	__webpack_require__(512);
-	module.exports = __webpack_require__(344).Map;
-
-/***/ },
-/* 511 */
-/***/ function(module, exports) {
-
-	
-
-/***/ },
-/* 512 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	var strong = __webpack_require__(513);
-
-	// 23.1 Map Objects
-	__webpack_require__(518)('Map', function(get){
-	  return function Map(){ return get(this, arguments.length > 0 ? arguments[0] : undefined); };
-	}, {
-	  // 23.1.3.6 Map.prototype.get(key)
-	  get: function get(key){
-	    var entry = strong.getEntry(this, key);
-	    return entry && entry.v;
-	  },
-	  // 23.1.3.9 Map.prototype.set(key, value)
-	  set: function set(key, value){
-	    return strong.def(this, key === 0 ? 0 : key, value);
-	  }
-	}, strong, true);
-
-/***/ },
-/* 513 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	var $            = __webpack_require__(348)
-	  , hide         = __webpack_require__(434)
-	  , redefineAll  = __webpack_require__(514)
-	  , ctx          = __webpack_require__(345)
-	  , strictNew    = __webpack_require__(515)
-	  , defined      = __webpack_require__(350)
-	  , forOf        = __webpack_require__(516)
-	  , $iterDefine  = __webpack_require__(431)
-	  , step         = __webpack_require__(428)
-	  , ID           = __webpack_require__(442)('id')
-	  , $has         = __webpack_require__(437)
-	  , isObject     = __webpack_require__(382)
-	  , setSpecies   = __webpack_require__(517)
-	  , DESCRIPTORS  = __webpack_require__(436)
-	  , isExtensible = Object.isExtensible || isObject
-	  , SIZE         = DESCRIPTORS ? '_s' : 'size'
-	  , id           = 0;
-
-	var fastKey = function(it, create){
-	  // return primitive with prefix
-	  if(!isObject(it))return typeof it == 'symbol' ? it : (typeof it == 'string' ? 'S' : 'P') + it;
-	  if(!$has(it, ID)){
-	    // can't set id to frozen object
-	    if(!isExtensible(it))return 'F';
-	    // not necessary to add id
-	    if(!create)return 'E';
-	    // add missing object id
-	    hide(it, ID, ++id);
-	  // return object id with prefix
-	  } return 'O' + it[ID];
-	};
-
-	var getEntry = function(that, key){
-	  // fast case
-	  var index = fastKey(key), entry;
-	  if(index !== 'F')return that._i[index];
-	  // frozen object case
-	  for(entry = that._f; entry; entry = entry.n){
-	    if(entry.k == key)return entry;
-	  }
-	};
-
-	module.exports = {
-	  getConstructor: function(wrapper, NAME, IS_MAP, ADDER){
-	    var C = wrapper(function(that, iterable){
-	      strictNew(that, C, NAME);
-	      that._i = $.create(null); // index
-	      that._f = undefined;      // first entry
-	      that._l = undefined;      // last entry
-	      that[SIZE] = 0;           // size
-	      if(iterable != undefined)forOf(iterable, IS_MAP, that[ADDER], that);
-	    });
-	    redefineAll(C.prototype, {
-	      // 23.1.3.1 Map.prototype.clear()
-	      // 23.2.3.2 Set.prototype.clear()
-	      clear: function clear(){
-	        for(var that = this, data = that._i, entry = that._f; entry; entry = entry.n){
-	          entry.r = true;
-	          if(entry.p)entry.p = entry.p.n = undefined;
-	          delete data[entry.i];
-	        }
-	        that._f = that._l = undefined;
-	        that[SIZE] = 0;
-	      },
-	      // 23.1.3.3 Map.prototype.delete(key)
-	      // 23.2.3.4 Set.prototype.delete(value)
-	      'delete': function(key){
-	        var that  = this
-	          , entry = getEntry(that, key);
-	        if(entry){
-	          var next = entry.n
-	            , prev = entry.p;
-	          delete that._i[entry.i];
-	          entry.r = true;
-	          if(prev)prev.n = next;
-	          if(next)next.p = prev;
-	          if(that._f == entry)that._f = next;
-	          if(that._l == entry)that._l = prev;
-	          that[SIZE]--;
-	        } return !!entry;
-	      },
-	      // 23.2.3.6 Set.prototype.forEach(callbackfn, thisArg = undefined)
-	      // 23.1.3.5 Map.prototype.forEach(callbackfn, thisArg = undefined)
-	      forEach: function forEach(callbackfn /*, that = undefined */){
-	        var f = ctx(callbackfn, arguments.length > 1 ? arguments[1] : undefined, 3)
-	          , entry;
-	        while(entry = entry ? entry.n : this._f){
-	          f(entry.v, entry.k, this);
-	          // revert to the last existing entry
-	          while(entry && entry.r)entry = entry.p;
-	        }
-	      },
-	      // 23.1.3.7 Map.prototype.has(key)
-	      // 23.2.3.7 Set.prototype.has(value)
-	      has: function has(key){
-	        return !!getEntry(this, key);
-	      }
-	    });
-	    if(DESCRIPTORS)$.setDesc(C.prototype, 'size', {
-	      get: function(){
-	        return defined(this[SIZE]);
-	      }
-	    });
-	    return C;
-	  },
-	  def: function(that, key, value){
-	    var entry = getEntry(that, key)
-	      , prev, index;
-	    // change existing entry
-	    if(entry){
-	      entry.v = value;
-	    // create new entry
-	    } else {
-	      that._l = entry = {
-	        i: index = fastKey(key, true), // <- index
-	        k: key,                        // <- key
-	        v: value,                      // <- value
-	        p: prev = that._l,             // <- previous entry
-	        n: undefined,                  // <- next entry
-	        r: false                       // <- removed
-	      };
-	      if(!that._f)that._f = entry;
-	      if(prev)prev.n = entry;
-	      that[SIZE]++;
-	      // add to index
-	      if(index !== 'F')that._i[index] = entry;
-	    } return that;
-	  },
-	  getEntry: getEntry,
-	  setStrong: function(C, NAME, IS_MAP){
-	    // add .keys, .values, .entries, [@@iterator]
-	    // 23.1.3.4, 23.1.3.8, 23.1.3.11, 23.1.3.12, 23.2.3.5, 23.2.3.8, 23.2.3.10, 23.2.3.11
-	    $iterDefine(C, NAME, function(iterated, kind){
-	      this._t = iterated;  // target
-	      this._k = kind;      // kind
-	      this._l = undefined; // previous
-	    }, function(){
-	      var that  = this
-	        , kind  = that._k
-	        , entry = that._l;
-	      // revert to the last existing entry
-	      while(entry && entry.r)entry = entry.p;
-	      // get next entry
-	      if(!that._t || !(that._l = entry = entry ? entry.n : that._t._f)){
-	        // or finish the iteration
-	        that._t = undefined;
-	        return step(1);
-	      }
-	      // return step by kind
-	      if(kind == 'keys'  )return step(0, entry.k);
-	      if(kind == 'values')return step(0, entry.v);
-	      return step(0, [entry.k, entry.v]);
-	    }, IS_MAP ? 'entries' : 'values' , !IS_MAP, true);
-
-	    // add [@@species], 23.1.2.2, 23.2.2.2
-	    setSpecies(NAME);
-	  }
-	};
-
-/***/ },
-/* 514 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var redefine = __webpack_require__(433);
-	module.exports = function(target, src){
-	  for(var key in src)redefine(target, key, src[key]);
-	  return target;
-	};
-
-/***/ },
-/* 515 */
-/***/ function(module, exports) {
-
-	module.exports = function(it, Constructor, name){
-	  if(!(it instanceof Constructor))throw TypeError(name + ": use the 'new' operator!");
-	  return it;
-	};
-
-/***/ },
-/* 516 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var ctx         = __webpack_require__(345)
-	  , call        = __webpack_require__(474)
-	  , isArrayIter = __webpack_require__(475)
-	  , anObject    = __webpack_require__(383)
-	  , toLength    = __webpack_require__(476)
-	  , getIterFn   = __webpack_require__(447);
-	module.exports = function(iterable, entries, fn, that){
-	  var iterFn = getIterFn(iterable)
-	    , f      = ctx(fn, that, entries ? 2 : 1)
-	    , index  = 0
-	    , length, step, iterator;
-	  if(typeof iterFn != 'function')throw TypeError(iterable + ' is not iterable!');
-	  // fast case for arrays with default iterator
-	  if(isArrayIter(iterFn))for(length = toLength(iterable.length); length > index; index++){
-	    entries ? f(anObject(step = iterable[index])[0], step[1]) : f(iterable[index]);
-	  } else for(iterator = iterFn.call(iterable); !(step = iterator.next()).done; ){
-	    call(iterator, f, step.value, entries);
-	  }
-	};
-
-/***/ },
-/* 517 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	var core        = __webpack_require__(344)
-	  , $           = __webpack_require__(348)
-	  , DESCRIPTORS = __webpack_require__(436)
-	  , SPECIES     = __webpack_require__(440)('species');
-
-	module.exports = function(KEY){
-	  var C = core[KEY];
-	  if(DESCRIPTORS && C && !C[SPECIES])$.setDesc(C, SPECIES, {
-	    configurable: true,
-	    get: function(){ return this; }
-	  });
-	};
-
-/***/ },
-/* 518 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	var $              = __webpack_require__(348)
-	  , global         = __webpack_require__(343)
-	  , $export        = __webpack_require__(342)
-	  , fails          = __webpack_require__(353)
-	  , hide           = __webpack_require__(434)
-	  , redefineAll    = __webpack_require__(514)
-	  , forOf          = __webpack_require__(516)
-	  , strictNew      = __webpack_require__(515)
-	  , isObject       = __webpack_require__(382)
-	  , setToStringTag = __webpack_require__(439)
-	  , DESCRIPTORS    = __webpack_require__(436);
-
-	module.exports = function(NAME, wrapper, methods, common, IS_MAP, IS_WEAK){
-	  var Base  = global[NAME]
-	    , C     = Base
-	    , ADDER = IS_MAP ? 'set' : 'add'
-	    , proto = C && C.prototype
-	    , O     = {};
-	  if(!DESCRIPTORS || typeof C != 'function' || !(IS_WEAK || proto.forEach && !fails(function(){
-	    new C().entries().next();
-	  }))){
-	    // create collection constructor
-	    C = common.getConstructor(wrapper, NAME, IS_MAP, ADDER);
-	    redefineAll(C.prototype, methods);
-	  } else {
-	    C = wrapper(function(target, iterable){
-	      strictNew(target, C, NAME);
-	      target._c = new Base;
-	      if(iterable != undefined)forOf(iterable, IS_MAP, target[ADDER], target);
-	    });
-	    $.each.call('add,clear,delete,forEach,get,has,set,keys,values,entries'.split(','),function(KEY){
-	      var IS_ADDER = KEY == 'add' || KEY == 'set';
-	      if(KEY in proto && !(IS_WEAK && KEY == 'clear'))hide(C.prototype, KEY, function(a, b){
-	        if(!IS_ADDER && IS_WEAK && !isObject(a))return KEY == 'get' ? undefined : false;
-	        var result = this._c[KEY](a === 0 ? 0 : a, b);
-	        return IS_ADDER ? this : result;
-	      });
-	    });
-	    if('size' in proto)$.setDesc(C.prototype, 'size', {
-	      get: function(){
-	        return this._c.size;
-	      }
-	    });
-	  }
-
-	  setToStringTag(C, NAME);
-
-	  O[NAME] = C;
-	  $export($export.G + $export.W + $export.F, O);
-
-	  if(!IS_WEAK)common.setStrong(C, NAME, IS_MAP);
-
-	  return C;
-	};
-
-/***/ },
-/* 519 */
+/* 536 */
 /***/ function(module, exports) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -61128,38 +63197,11 @@
 	module.exports = sortTypeFirst;
 
 /***/ },
-/* 520 */
-/***/ function(module, exports) {
-
-	/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule nullthrows
-	 * 
-	 */
-
-	"use strict";
-
-	var nullthrows = function (x) {
-	  if (x != null) {
-	    return x;
-	  }
-	  throw new Error("Got unexpected null or undefined");
-	};
-
-	module.exports = nullthrows;
-
-/***/ },
-/* 521 */
+/* 537 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -61173,16 +63215,16 @@
 
 	'use strict';
 
-	var _Object$keys = __webpack_require__(384)['default'];
+	var _Object$keys = __webpack_require__(385)['default'];
 
-	var GraphQLStoreDataHandler = __webpack_require__(390);
-	var RelayConnectionInterface = __webpack_require__(404);
+	var RelayConnectionInterface = __webpack_require__(407);
 	var RelayNodeInterface = __webpack_require__(396);
 	var RelayQuery = __webpack_require__(391);
+	var RelayRecord = __webpack_require__(426);
 
-	var forEachObject = __webpack_require__(407);
+	var forEachObject = __webpack_require__(413);
 	var invariant = __webpack_require__(399);
-	var warning = __webpack_require__(371);
+	var warning = __webpack_require__(372);
 
 	var ARGUMENTS = /^(\w+)(?:\((.+?)\))?$/;
 	var ARGUMENT_NAME = /(\w+)(?=\s*:)/;
@@ -61212,7 +63254,7 @@
 	function inferRelayFieldsFromData(data) {
 	  var fields = [];
 	  forEachObject(data, function (value, key) {
-	    if (!GraphQLStoreDataHandler.isMetadataKey(key)) {
+	    if (!RelayRecord.isMetadataKey(key)) {
 	      fields.push(inferField(value, key));
 	    }
 	  });
@@ -61221,6 +63263,7 @@
 
 	function inferField(value, key) {
 	  var metadata = {
+	    canHaveSubselections: true,
 	    isPlural: false
 	  };
 	  var children = undefined;
@@ -61229,12 +63272,14 @@
 	    if (element && typeof element === 'object') {
 	      children = inferRelayFieldsFromData(element);
 	    } else {
+	      metadata.canHaveSubselections = false;
 	      children = [];
 	    }
 	    metadata.isPlural = true;
 	  } else if (typeof value === 'object' && value !== null) {
 	    children = inferRelayFieldsFromData(value);
 	  } else {
+	    metadata.canHaveSubselections = false;
 	    children = [];
 	  }
 	  if (key === NODE) {
@@ -61293,11 +63338,11 @@
 	module.exports = inferRelayFieldsFromData;
 
 /***/ },
-/* 522 */
+/* 538 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -61311,13 +63356,13 @@
 
 	'use strict';
 
-	var _inherits = __webpack_require__(375)['default'];
+	var _inherits = __webpack_require__(376)['default'];
 
 	var _classCallCheck = __webpack_require__(355)['default'];
 
-	var RelayConnectionInterface = __webpack_require__(404);
+	var RelayConnectionInterface = __webpack_require__(407);
 	var RelayQuery = __webpack_require__(391);
-	var RelayQueryTransform = __webpack_require__(493);
+	var RelayQueryTransform = __webpack_require__(519);
 
 	var invariant = __webpack_require__(399);
 
@@ -61358,7 +63403,7 @@
 	  RelayQueryIntersector.prototype.traverse = function traverse(subjectNode, patternNode) {
 	    var _this = this;
 
-	    if (subjectNode.isScalar()) {
+	    if (!subjectNode.canHaveSubselections()) {
 	      // Since `patternNode` exists, `subjectNode` must be in the intersection.
 	      return subjectNode;
 	    }
@@ -61438,11 +63483,11 @@
 	module.exports = intersectRelayQuery;
 
 /***/ },
-/* 523 */
+/* 539 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -61456,13 +63501,13 @@
 
 	'use strict';
 
-	var _inherits = __webpack_require__(375)['default'];
+	var _inherits = __webpack_require__(376)['default'];
 
 	var _classCallCheck = __webpack_require__(355)['default'];
 
-	var Deferred = __webpack_require__(524);
+	var Deferred = __webpack_require__(540);
 
-	var printRelayQuery = __webpack_require__(525);
+	var printRelayQuery = __webpack_require__(541);
 
 	/**
 	 * @internal
@@ -61548,27 +63593,26 @@
 	module.exports = RelayMutationRequest;
 
 /***/ },
-/* 524 */
+/* 540 */
 /***/ function(module, exports, __webpack_require__) {
 
+	"use strict";
+
+	var Promise = __webpack_require__(356);
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
 	 * LICENSE file in the root directory of this source tree. An additional grant
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 *
-	 * @providesModule Deferred
 	 * @typechecks
 	 * 
 	 */
-
-	'use strict';
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-	var Promise = __webpack_require__(356);
 
 	/**
 	 * Deferred provides a Promise-like API that exposes methods to resolve and
@@ -61580,7 +63624,7 @@
 	 * the same semantics excluding those methods.
 	 */
 
-	var Deferred = (function () {
+	var Deferred = function () {
 	  function Deferred() {
 	    var _this = this;
 
@@ -61620,16 +63664,16 @@
 	  };
 
 	  return Deferred;
-	})();
+	}();
 
 	module.exports = Deferred;
 
 /***/ },
-/* 525 */
+/* 541 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -61641,14 +63685,14 @@
 
 	'use strict';
 
-	module.exports = __webpack_require__(526);
+	module.exports = __webpack_require__(542);
 
 /***/ },
-/* 526 */
+/* 542 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -61662,15 +63706,13 @@
 
 	'use strict';
 
-	var _toConsumableArray = __webpack_require__(470)['default'];
+	var Map = __webpack_require__(463);
 
-	var RelayProfiler = __webpack_require__(409);
+	var RelayProfiler = __webpack_require__(415);
 	var RelayQuery = __webpack_require__(391);
 
-	var base62 = __webpack_require__(416);
-	var forEachObject = __webpack_require__(407);
+	var base62 = __webpack_require__(406);
 	var invariant = __webpack_require__(399);
-	var mapObject = __webpack_require__(489);
 
 	/**
 	 * @internal
@@ -61679,34 +63721,35 @@
 	 * supplied `node` must be flattened (and not contain fragments).
 	 */
 	function printRelayOSSQuery(node) {
+	  var fragmentTexts = [];
+	  var variableMap = new Map();
 	  var printerState = {
 	    fragmentCount: 0,
 	    fragmentNameByHash: {},
 	    fragmentNameByText: {},
-	    fragmentTexts: [],
+	    fragmentTexts: fragmentTexts,
 	    variableCount: 0,
-	    variableMap: {}
+	    variableMap: variableMap
 	  };
 	  var queryText = null;
 	  if (node instanceof RelayQuery.Root) {
 	    queryText = printRoot(node, printerState);
 	  } else if (node instanceof RelayQuery.Mutation) {
 	    queryText = printMutation(node, printerState);
-	  } else {
-	    // NOTE: `node` shouldn't be a field or fragment except for debugging. There
-	    // is no guarantee that it would be a valid server request if printed.
-	    if (node instanceof RelayQuery.Fragment) {
-	      queryText = printFragment(node, printerState);
-	    } else if (node instanceof RelayQuery.Field) {
-	      queryText = printField(node, printerState);
-	    }
+	  } else if (node instanceof RelayQuery.Fragment) {
+	    queryText = printFragment(node, printerState);
 	  }
 	  !queryText ?  true ? invariant(false, 'printRelayOSSQuery(): Unsupported node type.') : invariant(false) : undefined;
+	  var variables = {};
+	  variableMap.forEach(function (_ref) {
+	    var value = _ref.value;
+	    var variableID = _ref.variableID;
+	    return variables[variableID] = value;
+	  });
+
 	  return {
-	    text: [queryText].concat(_toConsumableArray(printerState.fragmentTexts)).join(' '),
-	    variables: mapObject(printerState.variableMap, function (variable) {
-	      return variable.value;
-	    })
+	    text: [queryText].concat(fragmentTexts).join(' '),
+	    variables: variables
 	  };
 	}
 
@@ -61744,11 +63787,20 @@
 	  return 'mutation ' + mutationString + '{' + fieldName + children + '}';
 	}
 
-	function printVariableDefinitions(printerState) {
+	function printVariableDefinitions(_ref2) {
+	  var variableMap = _ref2.variableMap;
+
 	  var argStrings = null;
-	  forEachObject(printerState.variableMap, function (variable, variableID) {
+	  variableMap.forEach(function (_ref3) {
+	    var type = _ref3.type;
+	    var variableID = _ref3.variableID;
+
+	    // To ensure that the value can flow into a nullable or non-nullable
+	    // argument, print it as non-nullable. Note that variables are not created
+	    // for null values (the argument is omitted instead).
+	    var nonNullType = printNonNullType(type);
 	    argStrings = argStrings || [];
-	    argStrings.push('$' + variableID + ':' + variable.type);
+	    argStrings.push('$' + variableID + ':' + nonNullType);
 	  });
 	  if (argStrings) {
 	    return '(' + argStrings.join(',') + ')';
@@ -61756,101 +63808,95 @@
 	  return '';
 	}
 
+	function printNonNullType(type) {
+	  if (type.endsWith('!')) {
+	    return type;
+	  }
+	  return type + '!';
+	}
+
 	function printFragment(node, printerState) {
 	  var directives = printDirectives(node);
 	  return 'fragment ' + node.getDebugName() + ' on ' + node.getType() + directives + printChildren(node, printerState);
 	}
 
-	function printInlineFragment(node, printerState) {
-	  if (!node.getChildren().length) {
-	    return null;
-	  }
-	  var fragmentNameByHash = printerState.fragmentNameByHash;
-	  var fragmentNameByText = printerState.fragmentNameByText;
-	  var fragmentTexts = printerState.fragmentTexts;
-
-	  // Try not to print the same fragment more than once by using a cheap lookup
-	  // using the composite hash. (The composite hash will only be representative
-	  // of the fragment if it has not been cloned.)
-	  var fragmentHash = node.isCloned() ? null : node.getCompositeHash();
-
-	  var fragmentName = undefined;
-	  if (fragmentHash != null && fragmentNameByHash.hasOwnProperty(fragmentHash)) {
-	    fragmentName = fragmentNameByHash[fragmentHash];
-	  } else {
-	    // Never re-print a fragment that is identical when printed to a previously
-	    // printed fragment. Instead, re-use that previous fragment's name.
-	    var _fragmentText = node.getType() + printDirectives(node) + printChildren(node, printerState);
-	    if (fragmentNameByText.hasOwnProperty(_fragmentText)) {
-	      fragmentName = fragmentNameByText[_fragmentText];
-	    } else {
-	      fragmentName = 'F' + base62(printerState.fragmentCount++);
-	      if (fragmentHash != null) {
-	        fragmentNameByHash[fragmentHash] = fragmentName;
-	      }
-	      fragmentNameByText[_fragmentText] = fragmentName;
-	      fragmentTexts.push('fragment ' + fragmentName + ' on ' + _fragmentText);
-	    }
-	  }
-	  return '...' + fragmentName;
-	}
-
-	function printField(node, printerState) {
-	  !(node instanceof RelayQuery.Field) ?  true ? invariant(false, 'printRelayOSSQuery(): Query must be flattened before printing.') : invariant(false) : undefined;
-	  var schemaName = node.getSchemaName();
-	  var serializationKey = node.getSerializationKey();
-	  var callsWithValues = node.getCallsWithValues();
-	  var fieldString = schemaName;
-	  var argStrings = null;
-	  if (callsWithValues.length) {
-	    callsWithValues.forEach(function (_ref) {
-	      var name = _ref.name;
-	      var value = _ref.value;
-
-	      var argString = printArgument(name, value, node.getCallType(name), printerState);
-	      if (argString) {
-	        argStrings = argStrings || [];
-	        argStrings.push(argString);
-	      }
-	    });
-	    if (argStrings) {
-	      fieldString += '(' + argStrings.join(',') + ')';
-	    }
-	  }
-	  var directives = printDirectives(node);
-	  return (serializationKey !== schemaName ? serializationKey + ':' : '') + fieldString + directives + printChildren(node, printerState);
-	}
-
 	function printChildren(node, printerState) {
-	  var children = undefined;
+	  var childrenText = [];
+	  var children = node.getChildren();
 	  var fragments = undefined;
-	  node.getChildren().forEach(function (node) {
-	    if (node instanceof RelayQuery.Field) {
-	      children = children || [];
-	      children.push(printField(node, printerState));
-	    } else {
-	      !(node instanceof RelayQuery.Fragment) ?  true ? invariant(false, 'printRelayOSSQuery(): expected child node to be a `Field` or ' + '`Fragment`, got `%s`.', node.constructor.name) : invariant(false) : undefined;
-	      var printedFragment = printInlineFragment(node, printerState);
-	      if (printedFragment && !(fragments && fragments.hasOwnProperty(printedFragment))) {
-	        fragments = fragments || {};
-	        fragments[printedFragment] = true;
-	        children = children || [];
-	        children.push(printedFragment);
+	  for (var ii = 0; ii < children.length; ii++) {
+	    var child = children[ii];
+	    if (child instanceof RelayQuery.Field) {
+	      var fieldText = child.getSchemaName();
+	      var fieldCalls = child.getCallsWithValues();
+	      if (fieldCalls.length) {
+	        fieldText = child.getSerializationKey() + ':' + fieldText;
+	        var argTexts = [];
+	        for (var jj = 0; jj < fieldCalls.length; jj++) {
+	          var _fieldCalls$jj = fieldCalls[jj];
+	          var _name = _fieldCalls$jj.name;
+	          var _value = _fieldCalls$jj.value;
+
+	          var argText = printArgument(_name, _value, child.getCallType(_name), printerState);
+	          if (argText) {
+	            argTexts.push(argText);
+	          }
+	        }
+	        if (argTexts.length) {
+	          fieldText += '(' + argTexts.join(',') + ')';
+	        }
 	      }
+	      fieldText += printDirectives(child);
+	      if (child.getChildren().length) {
+	        fieldText += printChildren(child, printerState);
+	      }
+	      childrenText.push(fieldText);
+	    } else if (child instanceof RelayQuery.Fragment) {
+	      if (child.getChildren().length) {
+	        var _fragmentNameByHash = printerState.fragmentNameByHash;
+	        var _fragmentNameByText = printerState.fragmentNameByText;
+	        var _fragmentTexts = printerState.fragmentTexts;
+
+	        // Avoid walking fragments if we have printed the same one before.
+	        var _fragmentHash = child.getCompositeHash();
+
+	        var fragmentName = undefined;
+	        if (_fragmentNameByHash.hasOwnProperty(_fragmentHash)) {
+	          fragmentName = _fragmentNameByHash[_fragmentHash];
+	        } else {
+	          // Avoid reprinting a fragment that is identical to another fragment.
+	          var _fragmentText = child.getType() + printDirectives(child) + printChildren(child, printerState);
+	          if (_fragmentNameByText.hasOwnProperty(_fragmentText)) {
+	            fragmentName = _fragmentNameByText[_fragmentText];
+	          } else {
+	            fragmentName = 'F' + base62(printerState.fragmentCount++);
+	            _fragmentNameByHash[_fragmentHash] = fragmentName;
+	            _fragmentNameByText[_fragmentText] = fragmentName;
+	            _fragmentTexts.push('fragment ' + fragmentName + ' on ' + _fragmentText);
+	          }
+	        }
+	        if (!fragments || !fragments.hasOwnProperty(fragmentName)) {
+	          fragments = fragments || {};
+	          fragments[fragmentName] = true;
+	          childrenText.push('...' + fragmentName);
+	        }
+	      }
+	    } else {
+	       true ?  true ? invariant(false, 'printRelayOSSQuery(): Expected a field or fragment, got `%s`.', child.constructor.name) : invariant(false) : undefined;
 	    }
-	  });
-	  if (!children) {
+	  }
+	  if (!childrenText) {
 	    return '';
 	  }
-	  return '{' + children.join(',') + '}';
+	  return childrenText.length ? '{' + childrenText.join(',') + '}' : '';
 	}
 
 	function printDirectives(node) {
 	  var directiveStrings = undefined;
 	  node.getDirectives().forEach(function (directive) {
 	    var dirString = '@' + directive.name;
-	    if (directive.arguments.length) {
-	      dirString += '(' + directive.arguments.map(printDirective).join(',') + ')';
+	    if (directive.args.length) {
+	      dirString += '(' + directive.args.map(printDirective).join(',') + ')';
 	    }
 	    directiveStrings = directiveStrings || [];
 	    directiveStrings.push(dirString);
@@ -61861,9 +63907,9 @@
 	  return ' ' + directiveStrings.join(' ');
 	}
 
-	function printDirective(_ref2) {
-	  var name = _ref2.name;
-	  var value = _ref2.value;
+	function printDirective(_ref4) {
+	  var name = _ref4.name;
+	  var value = _ref4.value;
 
 	  !(typeof value === 'boolean' || typeof value === 'number' || typeof value === 'string') ?  true ? invariant(false, 'printRelayOSSQuery(): Relay only supports directives with scalar values ' + '(boolean, number, or string), got `%s: %s`.', name, value) : invariant(false) : undefined;
 	  return name + ':' + JSON.stringify(value);
@@ -61884,22 +63930,30 @@
 	}
 
 	function createVariable(name, value, type, printerState) {
-	  var variableID = name + '_' + base62(printerState.variableCount++);
-	  printerState.variableMap[variableID] = {
-	    type: type,
-	    value: value
-	  };
-	  return variableID;
+	  !(value != null) ?  true ? invariant(false, 'printRelayOSSQuery: Expected a non-null value for variable `%s`.', name) : invariant(false) : undefined;
+	  var valueKey = JSON.stringify(value);
+	  var existingVariable = printerState.variableMap.get(valueKey);
+	  if (existingVariable) {
+	    return existingVariable.variableID;
+	  } else {
+	    var _variableID2 = name + '_' + base62(printerState.variableCount++);
+	    printerState.variableMap.set(valueKey, {
+	      type: type,
+	      value: value,
+	      variableID: _variableID2
+	    });
+	    return _variableID2;
+	  }
 	}
 
 	module.exports = RelayProfiler.instrument('printRelayQuery', printRelayOSSQuery);
 
 /***/ },
-/* 527 */
+/* 543 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -61913,7 +63967,7 @@
 	'use strict';
 
 	var RelayQuery = __webpack_require__(391);
-	var RelayMetaRoute = __webpack_require__(408);
+	var RelayMetaRoute = __webpack_require__(414);
 
 	var invariant = __webpack_require__(399);
 
@@ -61950,12 +64004,12 @@
 	    return Fragment;
 	  })(function (query) {
 	    var node = createNode(query, RelayQuery.Fragment);
-	    !(node instanceof RelayQuery.Fragment) ?  true ? invariant(false, 'fromGraphQL.Field(): Expected a GraphQL fragment node.') : invariant(false) : undefined;
+	    !(node instanceof RelayQuery.Fragment) ?  true ? invariant(false, 'fromGraphQL.Fragment(): Expected a GraphQL fragment node.') : invariant(false) : undefined;
 	    return node;
 	  }),
 	  Query: function Query(query) {
 	    var node = createNode(query, RelayQuery.Root);
-	    !(node instanceof RelayQuery.Root) ?  true ? invariant(false, 'fromGraphQL.Operation(): Expected a root node.') : invariant(false) : undefined;
+	    !(node instanceof RelayQuery.Root) ?  true ? invariant(false, 'fromGraphQL.Query(): Expected a root node.') : invariant(false) : undefined;
 	    return node;
 	  },
 	  Operation: (function (_Operation) {
@@ -61984,14 +64038,14 @@
 	module.exports = fromGraphQL;
 
 /***/ },
-/* 528 */
+/* 544 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var _classCallCheck = __webpack_require__(355)['default'];
 
-	var _Object$keys = __webpack_require__(384)['default'];
+	var _Object$keys = __webpack_require__(385)['default'];
 
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
@@ -62000,7 +64054,7 @@
 	var Promise = __webpack_require__(356);
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -62014,17 +64068,17 @@
 
 	'use strict';
 
-	var Deferred = __webpack_require__(524);
-	var DliteFetchModeConstants = __webpack_require__(478);
-	var PromiseMap = __webpack_require__(529);
+	var Deferred = __webpack_require__(540);
+	var PromiseMap = __webpack_require__(545);
+	var RelayFetchMode = __webpack_require__(505);
 
-	var RelayTaskScheduler = __webpack_require__(481);
+	var RelayTaskScheduler = __webpack_require__(509);
 
-	var containsRelayQueryRootCall = __webpack_require__(530);
-	var everyObject = __webpack_require__(486);
-	var fetchRelayQuery = __webpack_require__(531);
+	var containsRelayQueryRootCall = __webpack_require__(546);
+	var everyObject = __webpack_require__(514);
+	var fetchRelayQuery = __webpack_require__(547);
 	var invariant = __webpack_require__(399);
-	var subtractRelayQuery = __webpack_require__(533);
+	var subtractRelayQuery = __webpack_require__(549);
 
 	/**
 	 * @internal
@@ -62107,7 +64161,7 @@
 	      this._storeData = storeData;
 
 	      var subtractedQuery;
-	      if (fetchMode === DliteFetchModeConstants.FETCH_MODE_PRELOAD) {
+	      if (fetchMode === RelayFetchMode.PRELOAD) {
 	        subtractedQuery = query;
 	        this._fetchSubtractedQueryPromise = this._preloadQueryMap.get(queryID);
 	      } else {
@@ -62289,38 +64343,37 @@
 	 * dependency's subtracted query. There may be more than one error. However,
 	 * `_resolvedDeferred` is rejected with the earliest encountered error.
 	 */
-	// babel-eslint issue
 
 /***/ },
-/* 529 */
+/* 545 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
 	 * LICENSE file in the root directory of this source tree. An additional grant
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 *
-	 * @providesModule PromiseMap
 	 * 
 	 */
+
+	'use strict';
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var Deferred = __webpack_require__(540);
+
+	var invariant = __webpack_require__(399);
 
 	/**
 	 * A map of asynchronous values that can be get or set in any order. Unlike a
 	 * normal map, setting the value for a particular key more than once throws.
 	 * Also unlike a normal map, a key can either be resolved or rejected.
 	 */
-	'use strict';
 
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-	var Deferred = __webpack_require__(524);
-
-	var invariant = __webpack_require__(399);
-
-	var PromiseMap = (function () {
+	var PromiseMap = function () {
 	  function PromiseMap() {
 	    _classCallCheck(this, PromiseMap);
 
@@ -62344,7 +64397,7 @@
 	  };
 
 	  return PromiseMap;
-	})();
+	}();
 
 	function getDeferred(entries, key) {
 	  if (!entries.hasOwnProperty(key)) {
@@ -62356,11 +64409,11 @@
 	module.exports = PromiseMap;
 
 /***/ },
-/* 530 */
+/* 546 */
 /***/ function(module, exports) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -62437,7 +64490,7 @@
 	module.exports = containsRelayQueryRootCall;
 
 /***/ },
-/* 531 */
+/* 547 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -62445,7 +64498,7 @@
 	var Promise = __webpack_require__(356);
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -62459,11 +64512,11 @@
 
 	'use strict';
 
-	var RelayNetworkLayer = __webpack_require__(480);
-	var RelayProfiler = __webpack_require__(409);
-	var RelayQueryRequest = __webpack_require__(532);
+	var RelayNetworkLayer = __webpack_require__(506);
+	var RelayProfiler = __webpack_require__(415);
+	var RelayQueryRequest = __webpack_require__(548);
 
-	var resolveImmediate = __webpack_require__(490);
+	var resolveImmediate = __webpack_require__(508);
 
 	var queue = null;
 
@@ -62519,11 +64572,11 @@
 	module.exports = fetchRelayQuery;
 
 /***/ },
-/* 532 */
+/* 548 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -62537,13 +64590,13 @@
 
 	'use strict';
 
-	var _inherits = __webpack_require__(375)['default'];
+	var _inherits = __webpack_require__(376)['default'];
 
 	var _classCallCheck = __webpack_require__(355)['default'];
 
-	var Deferred = __webpack_require__(524);
+	var Deferred = __webpack_require__(540);
 
-	var printRelayQuery = __webpack_require__(525);
+	var printRelayQuery = __webpack_require__(541);
 
 	/**
 	 * @internal
@@ -62630,11 +64683,11 @@
 	module.exports = RelayQueryRequest;
 
 /***/ },
-/* 533 */
+/* 549 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -62648,15 +64701,15 @@
 
 	'use strict';
 
-	var _inherits = __webpack_require__(375)['default'];
+	var _inherits = __webpack_require__(376)['default'];
 
 	var _classCallCheck = __webpack_require__(355)['default'];
 
-	var RelayProfiler = __webpack_require__(409);
+	var RelayProfiler = __webpack_require__(415);
 	var RelayQuery = __webpack_require__(391);
-	var RelayQueryTransform = __webpack_require__(493);
+	var RelayQueryTransform = __webpack_require__(519);
 
-	var areEqual = __webpack_require__(412);
+	var areEqual = __webpack_require__(418);
 	var invariant = __webpack_require__(399);
 
 	/**
@@ -62712,7 +64765,7 @@
 
 	  RelayQuerySubtractor.prototype.visitField = function visitField(node, state) {
 	    var diff;
-	    if (node.isScalar()) {
+	    if (!node.canHaveSubselections()) {
 	      diff = this._subtractScalar(node, state);
 	    } else if (node.isConnection()) {
 	      diff = this._subtractConnection(node, state);
@@ -62802,7 +64855,7 @@
 	})(RelayQueryTransform);
 
 	function isEmptyField(node) {
-	  if (node instanceof RelayQuery.Field && node.isScalar()) {
+	  if (node instanceof RelayQuery.Field && !node.canHaveSubselections()) {
 	    // Note: product-specific hacks use aliased cursors/ids to poll for data.
 	    // Without the alias check these queries would be considered empty.
 	    return node.isRequisite() && !node.isRefQueryDependency() && node.getApplicationName() === node.getSchemaName();
@@ -62867,11 +64920,11 @@
 	module.exports = RelayProfiler.instrument('subtractRelayQuery', subtractRelayQuery);
 
 /***/ },
-/* 534 */
+/* 550 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -62887,12 +64940,13 @@
 
 	var _classCallCheck = __webpack_require__(355)['default'];
 
-	var _toConsumableArray = __webpack_require__(470)['default'];
-
-	var GraphQLStoreDataHandler = __webpack_require__(390);
+	var _toConsumableArray = __webpack_require__(437)['default'];
 
 	var RelayNodeInterface = __webpack_require__(396);
 	var RelayQuery = __webpack_require__(391);
+
+	var RelayQueryPath = __webpack_require__(513);
+	var RelayRecord = __webpack_require__(426);
 
 	var invariant = __webpack_require__(399);
 
@@ -62908,9 +64962,9 @@
 	  RelayQueryTracker.prototype.trackNodeForID = function trackNodeForID(node, dataID, path) {
 	    // Non-refetchable nodes are tracked via their nearest-refetchable parent
 	    // (except for root call nodes)
-	    if (GraphQLStoreDataHandler.isClientID(dataID)) {
+	    if (RelayRecord.isClientID(dataID)) {
 	      !path ?  true ? invariant(false, 'RelayQueryTracker.trackNodeForID(): Expected `path` for client ID, ' + '`%s`.', dataID) : invariant(false) : undefined;
-	      if (!path.isRootPath()) {
+	      if (!RelayQueryPath.isRootPath(path)) {
 	        return;
 	      }
 	    }
@@ -62975,11 +65029,11 @@
 	module.exports = RelayQueryTracker;
 
 /***/ },
-/* 535 */
+/* 551 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -62993,7 +65047,7 @@
 
 	'use strict';
 
-	var _inherits = __webpack_require__(375)['default'];
+	var _inherits = __webpack_require__(376)['default'];
 
 	var _classCallCheck = __webpack_require__(355)['default'];
 
@@ -63001,17 +65055,19 @@
 
 	var RelayQuery = __webpack_require__(391);
 
-	var RelayConnectionInterface = __webpack_require__(404);
+	var RelayConnectionInterface = __webpack_require__(407);
 	var RelayNodeInterface = __webpack_require__(396);
 
-	var RelayQueryVisitor = __webpack_require__(454);
-	var RelayRecordState = __webpack_require__(455);
+	var RelayQueryPath = __webpack_require__(513);
 
-	var generateClientEdgeID = __webpack_require__(536);
-	var generateClientID = __webpack_require__(400);
+	var RelayQueryVisitor = __webpack_require__(497);
+	var RelayRecordState = __webpack_require__(498);
+
+	var generateClientEdgeID = __webpack_require__(552);
+	var generateClientID = __webpack_require__(401);
 	var invariant = __webpack_require__(399);
-	var isCompatibleRelayFragmentType = __webpack_require__(456);
-	var warning = __webpack_require__(371);
+	var isCompatibleRelayFragmentType = __webpack_require__(499);
+	var warning = __webpack_require__(372);
 
 	var ANY_TYPE = RelayNodeInterface.ANY_TYPE;
 	var ID = RelayNodeInterface.ID;
@@ -63019,6 +65075,7 @@
 	var EDGES = RelayConnectionInterface.EDGES;
 	var NODE = RelayConnectionInterface.NODE;
 	var PAGE_INFO = RelayConnectionInterface.PAGE_INFO;
+	var EXISTENT = RelayRecordState.EXISTENT;
 
 	/**
 	 * @internal
@@ -63030,7 +65087,7 @@
 	var RelayQueryWriter = (function (_RelayQueryVisitor) {
 	  _inherits(RelayQueryWriter, _RelayQueryVisitor);
 
-	  function RelayQueryWriter(store, queryTracker, changeTracker, options) {
+	  function RelayQueryWriter(store, writer, queryTracker, changeTracker, options) {
 	    _classCallCheck(this, RelayQueryWriter);
 
 	    _RelayQueryVisitor.call(this);
@@ -63040,10 +65097,15 @@
 	    this._store = store;
 	    this._queryTracker = queryTracker;
 	    this._updateTrackedQueries = !!(options && options.updateTrackedQueries);
+	    this._writer = writer;
 	  }
 
 	  RelayQueryWriter.prototype.getRecordStore = function getRecordStore() {
 	    return this._store;
+	  };
+
+	  RelayQueryWriter.prototype.getRecordWriter = function getRecordWriter() {
+	    return this._writer;
 	  };
 
 	  RelayQueryWriter.prototype.getRecordTypeName = function getRecordTypeName(node, recordID, payload) {
@@ -63052,8 +65114,12 @@
 	      return null;
 	    }
 	    var typeName = payload[TYPENAME];
-	    if (typeName == null && !node.isAbstract()) {
-	      typeName = node.getType();
+	    if (typeName == null) {
+	      if (!node.isAbstract()) {
+	        typeName = node.getType();
+	      } else {
+	        typeName = this._store.getType(recordID);
+	      }
 	    }
 	     true ? warning(typeName && typeName !== ANY_TYPE, 'RelayQueryWriter: Could not find a type name for record `%s`.', recordID) : undefined;
 	    return typeName || null;
@@ -63074,7 +65140,7 @@
 	      responseData: responseData
 	    };
 
-	    if (node instanceof RelayQuery.Field && !node.isScalar()) {
+	    if (node instanceof RelayQuery.Field && node.canHaveSubselections()) {
 	      // for non-scalar fields, the recordID is the parent
 	      node.getChildren().forEach(function (child) {
 	        _this.visit(child, state);
@@ -63123,10 +65189,11 @@
 	   * Helper to create a record and the corresponding notification.
 	   */
 
-	  RelayQueryWriter.prototype.createRecordIfMissing = function createRecordIfMissing(node, recordID, typeName, path) {
+	  RelayQueryWriter.prototype.createRecordIfMissing = function createRecordIfMissing(node, recordID, path, payload) {
 	    var recordState = this._store.getRecordState(recordID);
-	    if (recordState !== RelayRecordState.EXISTENT) {
-	      this._store.putRecord(recordID, typeName, path);
+	    var typeName = payload && this.getRecordTypeName(node, recordID, payload);
+	    this._writer.putRecord(recordID, typeName, path);
+	    if (recordState !== EXISTENT) {
 	      this.recordCreate(recordID);
 	    }
 	    if (this.isNewRecord(recordID) || this._updateTrackedQueries) {
@@ -63144,21 +65211,14 @@
 	    // GraphQL should never return undefined for a field
 	    if (responseData == null) {
 	      !(responseData !== undefined) ?  true ? invariant(false, 'RelayQueryWriter: Unexpectedly encountered `undefined` in payload. ' + 'Cannot set root record `%s` to undefined.', recordID) : invariant(false) : undefined;
-	      this._store.deleteRecord(recordID);
-	      if (recordState === RelayRecordState.EXISTENT) {
+	      this._writer.deleteRecord(recordID);
+	      if (recordState === EXISTENT) {
 	        this.recordUpdate(recordID);
 	      }
 	      return;
 	    }
 	    !(typeof responseData === 'object' && responseData !== null) ?  true ? invariant(false, 'RelayQueryWriter: Cannot update record `%s`, expected response to be ' + 'an array or object.', recordID) : invariant(false) : undefined;
-	    if (recordState !== RelayRecordState.EXISTENT) {
-	      var typeName = this.getRecordTypeName(root, recordID, responseData);
-	      this._store.putRecord(recordID, typeName, path);
-	      this.recordCreate(recordID);
-	    }
-	    if (this.isNewRecord(recordID) || this._updateTrackedQueries) {
-	      this._queryTracker.trackNodeForID(root, recordID, path);
-	    }
+	    this.createRecordIfMissing(root, recordID, path, responseData);
 	    this.traverse(root, state);
 	  };
 
@@ -63166,14 +65226,14 @@
 	    var recordID = state.recordID;
 
 	    if (fragment.isDeferred()) {
-	      this._store.setHasDeferredFragmentData(recordID, fragment.getCompositeHash());
+	      this._writer.setHasDeferredFragmentData(recordID, fragment.getCompositeHash());
 	      this.recordUpdate(recordID);
 	    }
 	    // Skip fragments that do not match the record's concrete type. Fragments
 	    // cannot be skipped for optimistic writes because optimistically created
 	    // records *may* have a default `Node` type.
 	    if (this._isOptimisticUpdate || isCompatibleRelayFragmentType(fragment, this._store.getType(recordID))) {
-	      var _path = state.path.getPath(fragment, recordID);
+	      var _path = RelayQueryPath.getPath(state.path, fragment, recordID);
 	      this.traverse(fragment, _extends({}, state, {
 	        path: _path
 	      }));
@@ -63184,7 +65244,7 @@
 	    var recordID = state.recordID;
 	    var responseData = state.responseData;
 
-	    !(this._store.getRecordState(recordID) === RelayRecordState.EXISTENT) ?  true ? invariant(false, 'RelayQueryWriter: Cannot update a non-existent record, `%s`.', recordID) : invariant(false) : undefined;
+	    !(this._writer.getRecordState(recordID) === EXISTENT) ?  true ? invariant(false, 'RelayQueryWriter: Cannot update a non-existent record, `%s`.', recordID) : invariant(false) : undefined;
 	    !(typeof responseData === 'object' && responseData !== null) ?  true ? invariant(false, 'RelayQueryWriter: Cannot update record `%s`, expected response to be ' + 'an object.', recordID) : invariant(false) : undefined;
 
 	    // handle missing data
@@ -63193,12 +65253,12 @@
 	      return;
 	    }
 	    if (fieldData === null) {
-	      this._store.deleteField(recordID, field.getStorageKey());
+	      this._writer.deleteField(recordID, field.getStorageKey());
 	      this.recordUpdate(recordID);
 	      return;
 	    }
 
-	    if (field.isScalar()) {
+	    if (!field.canHaveSubselections()) {
 	      this._writeScalar(field, state, recordID, fieldData);
 	    } else if (field.isConnection()) {
 	      this._writeConnection(field, state, recordID, fieldData);
@@ -63221,7 +65281,7 @@
 	    // always update the store to ensure the value is present in the appropriate
 	    // data sink (records/queuedRecords), but only record an update if the value
 	    // changed.
-	    this._store.putField(recordID, storageKey, nextValue);
+	    this._writer.putField(recordID, storageKey, nextValue);
 
 	    // TODO: Flow: `nextValue` is an array, array indexing should work
 	    if (Array.isArray(prevValue) && Array.isArray(nextValue) && prevValue.length === nextValue.length && prevValue.every(function (prev, ii) {
@@ -63248,14 +65308,14 @@
 
 	    var connectionRecordState = this._store.getRecordState(connectionID);
 	    var hasEdges = !!(field.getFieldByStorageKey(EDGES) || connectionData != null && typeof connectionData === 'object' && connectionData[EDGES]);
-	    var path = state.path.getPath(field, connectionID);
+	    var path = RelayQueryPath.getPath(state.path, field, connectionID);
 	    // always update the store to ensure the value is present in the appropriate
 	    // data sink (records/queuedRecords), but only record an update if the value
 	    // changed.
-	    this._store.putRecord(connectionID, null, path);
-	    this._store.putLinkedRecordID(recordID, storageKey, connectionID);
+	    this._writer.putRecord(connectionID, null, path);
+	    this._writer.putLinkedRecordID(recordID, storageKey, connectionID);
 	    // record the create/update only if something changed
-	    if (connectionRecordState !== RelayRecordState.EXISTENT) {
+	    if (connectionRecordState !== EXISTENT) {
 	      this.recordUpdate(recordID);
 	      this.recordCreate(connectionID);
 	    }
@@ -63266,7 +65326,7 @@
 	    // Only create a range if `edges` field is present
 	    // Overwrite an existing range only if the new force index is greater
 	    if (hasEdges && (!this._store.hasRange(connectionID) || this._forceIndex && this._forceIndex > this._store.getRangeForceIndex(connectionID))) {
-	      this._store.putRange(connectionID, field.getCallsWithValues(), this._forceIndex);
+	      this._writer.putRange(connectionID, field.getCallsWithValues(), this._forceIndex);
 	      this.recordUpdate(connectionID);
 	    }
 
@@ -63356,8 +65416,8 @@
 	      var nodeID = nodeData && nodeData[ID] || prevEdge && _this3._store.getLinkedRecordID(prevEdge.edgeID, NODE) || generateClientID();
 	      // TODO: Flow: `nodeID` is `string`
 	      var edgeID = generateClientEdgeID(connectionID, nodeID);
-	      var path = state.path.getPath(edges, edgeID);
-	      _this3.createRecordIfMissing(edges, edgeID, null, path);
+	      var path = RelayQueryPath.getPath(state.path, edges, edgeID);
+	      _this3.createRecordIfMissing(edges, edgeID, path, null);
 	      fetchedEdgeIDs.push(edgeID);
 
 	      // Write data for the edge, using `nodeID` as the id for direct descendant
@@ -63374,7 +65434,7 @@
 	    });
 
 	    var pageInfo = connectionData[PAGE_INFO] || RelayConnectionInterface.getDefaultPageInfo();
-	    this._store.putRangeEdges(connectionID, rangeCalls, pageInfo, fetchedEdgeIDs);
+	    this._writer.putRangeEdges(connectionID, rangeCalls, pageInfo, fetchedEdgeIDs);
 
 	    // Only broadcast an update to the range if an edge was added/changed.
 	    // Node-level changes will broadcast at the node ID.
@@ -63407,14 +65467,12 @@
 	      !(typeof nextRecord === 'object' && nextRecord) ?  true ? invariant(false, 'RelayQueryWriter: Expected elements for plural field `%s` to be ' + 'objects.', storageKey) : invariant(false) : undefined;
 
 	      // Reuse existing generated IDs if the node does not have its own `id`.
-	      // TODO: Flow: `nextRecord` is asserted as typeof === 'object'
 	      var prevLinkedID = prevLinkedIDs && prevLinkedIDs[nextIndex];
 	      var nextLinkedID = nextRecord[ID] || prevLinkedID || generateClientID();
 	      nextLinkedIDs.push(nextLinkedID);
 
-	      var path = state.path.getPath(field, nextLinkedID);
-	      var typeName = _this4.getRecordTypeName(field, nextLinkedID, nextRecord);
-	      _this4.createRecordIfMissing(field, nextLinkedID, typeName, path);
+	      var path = RelayQueryPath.getPath(state.path, field, nextLinkedID);
+	      _this4.createRecordIfMissing(field, nextLinkedID, path, nextRecord);
 	      isUpdate = isUpdate || nextLinkedID !== prevLinkedID || _this4.isNewRecord(nextLinkedID);
 
 	      _this4.traverse(field, {
@@ -63427,7 +65485,7 @@
 	      nextIndex++;
 	    });
 
-	    this._store.putLinkedRecordIDs(recordID, storageKey, nextLinkedIDs);
+	    this._writer.putLinkedRecordIDs(recordID, storageKey, nextLinkedIDs);
 
 	    // Check if length has changed
 	    isUpdate = isUpdate || !prevLinkedIDs || prevLinkedIDs.length !== nextLinkedIDs.length;
@@ -63454,17 +65512,15 @@
 	    // was already generated it is reused). `node`s within a connection are
 	    // a special case as the ID used here must match the one generated prior to
 	    // storing the parent `edge`.
-	    // TODO: Flow: `fieldData` is asserted as typeof === 'object'
 	    var prevLinkedID = this._store.getLinkedRecordID(recordID, storageKey);
 	    var nextLinkedID = field.getSchemaName() === NODE && nodeID || fieldData[ID] || prevLinkedID || generateClientID();
 
-	    var path = state.path.getPath(field, nextLinkedID);
-	    var typeName = this.getRecordTypeName(field, nextLinkedID, fieldData);
-	    this.createRecordIfMissing(field, nextLinkedID, typeName, path);
+	    var path = RelayQueryPath.getPath(state.path, field, nextLinkedID);
+	    this.createRecordIfMissing(field, nextLinkedID, path, fieldData);
 	    // always update the store to ensure the value is present in the appropriate
 	    // data sink (record/queuedRecords), but only record an update if the value
 	    // changed.
-	    this._store.putLinkedRecordID(recordID, storageKey, nextLinkedID);
+	    this._writer.putLinkedRecordID(recordID, storageKey, nextLinkedID);
 	    if (prevLinkedID !== nextLinkedID || this.isNewRecord(nextLinkedID)) {
 	      this.recordUpdate(recordID);
 	    }
@@ -63483,11 +65539,11 @@
 	module.exports = RelayQueryWriter;
 
 /***/ },
-/* 536 */
+/* 552 */
 /***/ function(module, exports) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -63514,11 +65570,11 @@
 	module.exports = generateClientEdgeID;
 
 /***/ },
-/* 537 */
+/* 553 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -63534,25 +65590,20 @@
 
 	var _classCallCheck = __webpack_require__(355)['default'];
 
-	var _Object$keys = __webpack_require__(384)['default'];
+	var _Object$keys = __webpack_require__(385)['default'];
 
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
-	var GraphQLMutatorConstants = __webpack_require__(503);
-	var GraphQLRange = __webpack_require__(499);
-	var GraphQLStoreDataHandler = __webpack_require__(390);
-	var RelayConnectionInterface = __webpack_require__(404);
+	var GraphQLRange = __webpack_require__(528);
+	var RelayConnectionInterface = __webpack_require__(407);
 
 	var RelayNodeInterface = __webpack_require__(396);
 
-	var RelayRecordStatusMap = __webpack_require__(538);
-
-	var forEachObject = __webpack_require__(407);
+	var forEachObject = __webpack_require__(413);
 	var invariant = __webpack_require__(399);
-	var warning = __webpack_require__(371);
+	var warning = __webpack_require__(372);
 
-	var CURSOR = RelayConnectionInterface.CURSOR;
 	var NODE = RelayConnectionInterface.NODE;
 
 	var EMPTY = '';
@@ -63560,11 +65611,7 @@
 	var FORCE_INDEX = '__forceIndex__';
 	var RANGE = '__range__';
 	var RESOLVED_FRAGMENT_MAP = '__resolvedFragmentMap__';
-	var RESOLVED_FRAGMENT_MAP_GENERATION = '__resolvedFragmentMapGeneration__';
 	var PATH = '__path__';
-	var APPEND = GraphQLMutatorConstants.APPEND;
-	var PREPEND = GraphQLMutatorConstants.PREPEND;
-	var REMOVE = GraphQLMutatorConstants.REMOVE;
 
 	/**
 	 * @internal
@@ -63577,13 +65624,11 @@
 	 */
 
 	var RelayRecordStore = (function () {
-	  function RelayRecordStore(records, rootCallMaps, nodeConnectionMap, cacheWriter, clientMutationID) {
+	  function RelayRecordStore(records, rootCallMaps, nodeConnectionMap) {
 	    _classCallCheck(this, RelayRecordStore);
 
-	    this._cacheWriter = cacheWriter;
 	    this._cachedRecords = records.cachedRecords;
 	    this._cachedRootCallMap = rootCallMaps && rootCallMaps.cachedRootCallMap || {};
-	    this._clientMutationID = clientMutationID;
 	    this._queuedRecords = records.queuedRecords;
 	    this._nodeConnectionMap = nodeConnectionMap || {};
 	    this._records = records.records;
@@ -63626,26 +65671,6 @@
 	  };
 
 	  /**
-	   * Associate a data ID with a storage key (and optionally an identifying
-	   * argument value) for a root query.
-	   */
-
-	  RelayRecordStore.prototype.putDataID = function putDataID(storageKey, identifyingArgValue, dataID) {
-	    if (RelayNodeInterface.isNodeRootCall(storageKey)) {
-	      !(identifyingArgValue != null) ?  true ? invariant(false, 'RelayRecordStore.putDataID(): Argument to `%s()` ' + 'cannot be null or undefined.', storageKey) : invariant(false) : undefined;
-	      return;
-	    }
-	    if (identifyingArgValue == null) {
-	      identifyingArgValue = EMPTY;
-	    }
-	    this._rootCallMap[storageKey] = this._rootCallMap[storageKey] || {};
-	    this._rootCallMap[storageKey][identifyingArgValue] = dataID;
-	    if (this._cacheWriter) {
-	      this._cacheWriter.writeRootCall(storageKey, identifyingArgValue, dataID);
-	    }
-	  };
-
-	  /**
 	   * Returns the status of the record stored at `dataID`.
 	   */
 
@@ -63657,37 +65682,6 @@
 	      return 'UNKNOWN';
 	    }
 	    return 'EXISTENT';
-	  };
-
-	  /**
-	   * Create an empty record at `dataID` if a record does not already exist.
-	   */
-
-	  RelayRecordStore.prototype.putRecord = function putRecord(dataID, typeName, path) {
-	    var target = this._queuedRecords || this._records;
-	    var prevRecord = target[dataID];
-	    if (prevRecord) {
-	      if (target === this._queuedRecords) {
-	        this._setClientMutationID(prevRecord);
-	      }
-	      return;
-	    }
-	    var nextRecord = {
-	      __dataID__: dataID,
-	      __typename: typeName
-	    };
-	    if (target === this._queuedRecords) {
-	      this._setClientMutationID(nextRecord);
-	    }
-	    if (GraphQLStoreDataHandler.isClientID(dataID)) {
-	      !path ?  true ? invariant(false, 'RelayRecordStore.putRecord(): Expected a path for non-refetchable ' + 'record `%s`.', dataID) : invariant(false) : undefined;
-	      nextRecord[PATH] = path;
-	    }
-	    target[dataID] = nextRecord;
-	    var cacheWriter = this._cacheWriter;
-	    if (!this._queuedRecords && cacheWriter) {
-	      cacheWriter.writeField(dataID, '__dataID__', dataID, typeName);
-	    }
 	  };
 
 	  /**
@@ -63721,30 +65715,6 @@
 	  };
 
 	  /**
-	   * Returns whether an error occurred during a mutation affecting the
-	   * given (queued) record.
-	   */
-
-	  RelayRecordStore.prototype.hasMutationError = function hasMutationError(dataID) {
-	    if (this._queuedRecords) {
-	      var record = this._queuedRecords[dataID];
-	      return !!(record && RelayRecordStatusMap.isErrorStatus(record.__status__));
-	    }
-	    return false;
-	  };
-
-	  /**
-	   * Sets the mutation status of a queued record to the given value.
-	   */
-
-	  RelayRecordStore.prototype.setMutationErrorStatus = function setMutationErrorStatus(dataID, hasError) {
-	    !this._queuedRecords ?  true ? invariant(false, 'RelayRecordStore.setMutationErrorStatus(): Can only set the ' + 'mutation status of queued records.') : invariant(false) : undefined;
-	    var record = this._queuedRecords[dataID];
-	    !record ?  true ? invariant(false, 'RelayRecordStore.setMutationErrorStatus(): Expected record `%s` to ' + 'exist before settings its mutation error status.', dataID) : invariant(false) : undefined;
-	    record.__status__ = RelayRecordStatusMap.setErrorStatus(record.__status__, hasError);
-	  };
-
-	  /**
 	   * Check whether a given record has received data for a deferred fragment.
 	   */
 
@@ -63752,43 +65722,6 @@
 	    var resolvedFragmentMap = this._getField(dataID, RESOLVED_FRAGMENT_MAP);
 	    !(typeof resolvedFragmentMap === 'object' || resolvedFragmentMap == null) ?  true ? invariant(false, 'RelayRecordStore.hasDeferredFragmentData(): Expected the map of ' + 'resolved deferred fragments associated with record `%s` to be null or ' + 'an object. Found a(n) `%s`.', dataID, typeof resolvedFragmentMap) : invariant(false) : undefined;
 	    return !!(resolvedFragmentMap && resolvedFragmentMap[fragmentID]);
-	  };
-
-	  /**
-	   * Mark a given record as having received data for a deferred fragment.
-	   */
-
-	  RelayRecordStore.prototype.setHasDeferredFragmentData = function setHasDeferredFragmentData(dataID, fragmentID) {
-	    var record = this._getRecord(dataID);
-	    !record ?  true ? invariant(false, 'RelayRecordStore.setHasDeferredFragmentData(): Expected record `%s` ' + 'to exist before marking it as having received data for the deferred ' + 'fragment with id `%s`.', dataID, fragmentID) : invariant(false) : undefined;
-	    var resolvedFragmentMap = record[RESOLVED_FRAGMENT_MAP];
-	    if (typeof resolvedFragmentMap !== 'object' || !resolvedFragmentMap) {
-	      resolvedFragmentMap = {};
-	    }
-	    resolvedFragmentMap[fragmentID] = true;
-	    record[RESOLVED_FRAGMENT_MAP] = resolvedFragmentMap;
-	    if (typeof record[RESOLVED_FRAGMENT_MAP_GENERATION] === 'number') {
-	      record[RESOLVED_FRAGMENT_MAP_GENERATION]++;
-	    } else {
-	      record[RESOLVED_FRAGMENT_MAP_GENERATION] = 0;
-	    }
-	  };
-
-	  /**
-	   * Delete the record at `dataID`, setting its value to `null`.
-	   */
-
-	  RelayRecordStore.prototype.deleteRecord = function deleteRecord(dataID) {
-	    var target = this._queuedRecords || this._records;
-	    target[dataID] = null;
-
-	    // Remove any links for this record
-	    if (!this._queuedRecords) {
-	      delete this._nodeConnectionMap[dataID];
-	      if (this._cacheWriter) {
-	        this._cacheWriter.writeNode(dataID, null);
-	      }
-	    }
 	  };
 
 	  RelayRecordStore.prototype.getType = function getType(dataID) {
@@ -63802,33 +65735,6 @@
 
 	  RelayRecordStore.prototype.getField = function getField(dataID, storageKey) {
 	    return this._getField(dataID, storageKey);
-	  };
-
-	  /**
-	   * Sets the value of a scalar field.
-	   */
-
-	  RelayRecordStore.prototype.putField = function putField(dataID, storageKey, value) {
-	    var record = this._getRecordForWrite(dataID);
-	    !record ?  true ? invariant(false, 'RelayRecordStore.putField(): Expected record `%s` to exist before ' + 'writing field `%s`.', dataID, storageKey) : invariant(false) : undefined;
-	    record[storageKey] = value;
-	    if (!this._queuedRecords && this._cacheWriter) {
-	      var typeName = record.__typename;
-	      this._cacheWriter.writeField(dataID, storageKey, value, typeName);
-	    }
-	  };
-
-	  /**
-	   * Clears the value of a field by setting it to null/undefined.
-	   */
-
-	  RelayRecordStore.prototype.deleteField = function deleteField(dataID, storageKey) {
-	    var record = this._getRecordForWrite(dataID);
-	    !record ?  true ? invariant(false, 'RelayRecordStore.deleteField(): Expected record `%s` to exist before ' + 'deleting field `%s`.', dataID, storageKey) : invariant(false) : undefined;
-	    record[storageKey] = null;
-	    if (!this._queuedRecords && this._cacheWriter) {
-	      this._cacheWriter.writeField(dataID, storageKey, null);
-	    }
 	  };
 
 	  /**
@@ -63846,24 +65752,6 @@
 	  };
 
 	  /**
-	   * Creates/updates a link between two records via the given field.
-	   */
-
-	  RelayRecordStore.prototype.putLinkedRecordID = function putLinkedRecordID(parentID, storageKey, recordID) {
-	    var parent = this._getRecordForWrite(parentID);
-	    !parent ?  true ? invariant(false, 'RelayRecordStore.putLinkedRecordID(): Expected record `%s` to exist ' + 'before linking to record `%s`.', parentID, recordID) : invariant(false) : undefined;
-	    var record = this._getRecord(recordID);
-	    !record ?  true ? invariant(false, 'RelayRecordStore.putLinkedRecordID(): Expected record `%s` to exist ' + 'before linking from record `%s`.', recordID, parentID) : invariant(false) : undefined;
-	    var fieldValue = {
-	      __dataID__: recordID
-	    };
-	    parent[storageKey] = fieldValue;
-	    if (!this._queuedRecords && this._cacheWriter) {
-	      this._cacheWriter.writeField(parentID, storageKey, fieldValue);
-	    }
-	  };
-
-	  /**
 	   * Returns an array of Data ID for a plural linked field (eg the actor IDs of
 	   * the `likers` in `story{likers}`).
 	   */
@@ -63878,28 +65766,6 @@
 	      !(typeof item === 'object' && item.__dataID__) ?  true ? invariant(false, 'RelayRecordStore.getLinkedRecordIDs(): Expected element at index %s ' + 'in field `%s` for record `%s` to be a linked record.', ii, storageKey, dataID) : invariant(false) : undefined;
 	      return item.__dataID__;
 	    });
-	  };
-
-	  /**
-	   * Creates/updates a one-to-many link between records via the given field.
-	   */
-
-	  RelayRecordStore.prototype.putLinkedRecordIDs = function putLinkedRecordIDs(parentID, storageKey, recordIDs) {
-	    var _this = this;
-
-	    var parent = this._getRecordForWrite(parentID);
-	    !parent ?  true ? invariant(false, 'RelayRecordStore.putLinkedRecordIDs(): Expected record `%s` to exist ' + 'before linking records.', parentID) : invariant(false) : undefined;
-	    var records = recordIDs.map(function (recordID) {
-	      var record = _this._getRecord(recordID);
-	      !record ?  true ? invariant(false, 'RelayRecordStore.putLinkedRecordIDs(): Expected record `%s` to ' + 'exist before linking from `%s`.', recordID, parentID) : invariant(false) : undefined;
-	      return {
-	        __dataID__: recordID
-	      };
-	    });
-	    parent[storageKey] = records;
-	    if (!this._queuedRecords && this._cacheWriter) {
-	      this._cacheWriter.writeField(parentID, storageKey, records);
-	    }
 	  };
 
 	  /**
@@ -63974,7 +65840,7 @@
 	   */
 
 	  RelayRecordStore.prototype.getRangeMetadata = function getRangeMetadata(connectionID, calls) {
-	    var _this2 = this;
+	    var _this = this;
 
 	    if (connectionID == null) {
 	      return connectionID;
@@ -64016,10 +65882,10 @@
 	      filteredEdges = requestedEdgeIDs.map(function (edgeID) {
 	        return {
 	          edgeID: edgeID,
-	          nodeID: _this2.getLinkedRecordID(edgeID, NODE)
+	          nodeID: _this.getLinkedRecordID(edgeID, NODE)
 	        };
 	      }).filter(function (edge) {
-	        return _this2._getRecord(edge.nodeID);
+	        return _this._getRecord(edge.nodeID);
 	      });
 	    } else {
 	      filteredEdges = [];
@@ -64034,29 +65900,6 @@
 	  };
 
 	  /**
-	   * Creates a range at `dataID` with an optional `forceIndex`.
-	   */
-
-	  RelayRecordStore.prototype.putRange = function putRange(connectionID, calls, forceIndex) {
-	    !!this._queuedRecords ?  true ? invariant(false, 'RelayRecordStore.putRange(): Cannot create a queued range.') : invariant(false) : undefined;
-	    var record = this._getRecord(connectionID);
-	    !record ?  true ? invariant(false, 'RelayRecordStore.putRange(): Expected record `%s` to exist before ' + 'adding a range.', connectionID) : invariant(false) : undefined;
-	    var range = new GraphQLRange();
-	    var filterCalls = getFilterCalls(calls);
-	    forceIndex = forceIndex || 0;
-	    record.__filterCalls__ = filterCalls;
-	    record.__forceIndex__ = forceIndex;
-	    record.__range__ = range;
-
-	    var cacheWriter = this._cacheWriter;
-	    if (!this._queuedRecords && cacheWriter) {
-	      cacheWriter.writeField(connectionID, FILTER_CALLS, filterCalls);
-	      cacheWriter.writeField(connectionID, FORCE_INDEX, forceIndex);
-	      cacheWriter.writeField(connectionID, RANGE, range);
-	    }
-	  };
-
-	  /**
 	   * Returns whether there is a range at `connectionID`.
 	   */
 
@@ -64065,40 +65908,8 @@
 	  };
 
 	  /**
-	   * Adds newly fetched edges to a range.
-	   */
-
-	  RelayRecordStore.prototype.putRangeEdges = function putRangeEdges(connectionID, calls, pageInfo, edges) {
-	    var _this3 = this;
-
-	    var range = this._getField(connectionID, RANGE);
-	    !range ?  true ? invariant(false, 'RelayRecordStore.putRangeEdges(): Expected record `%s` to exist and ' + 'have a range.', connectionID) : invariant(false) : undefined;
-	    var edgesData = [];
-	    edges.forEach(function (edgeID) {
-	      var edgeData = _this3._getRangeEdgeData(edgeID);
-	      edgesData.push(edgeData);
-	      _this3._addConnectionForNode(connectionID, edgeData.node.__dataID__);
-	    });
-	    range.addItems(calls, edgesData, pageInfo);
-	    if (!this._queuedRecords && this._cacheWriter) {
-	      this._cacheWriter.writeField(connectionID, RANGE, range);
-	    }
-	  };
-
-	  /**
-	   * Prepend, append, or delete edges to/from a range.
-	   */
-
-	  RelayRecordStore.prototype.applyRangeUpdate = function applyRangeUpdate(connectionID, edgeID, operation) {
-	    if (this._queuedRecords) {
-	      this._applyOptimisticRangeUpdate(connectionID, edgeID, operation);
-	    } else {
-	      this._applyServerRangeUpdate(connectionID, edgeID, operation);
-	    }
-	  };
-
-	  /**
-	   * Completely removes the record identified by `dataID` from the store
+	   * Completely removes the record identified by `dataID` from the store.
+	   * This is only used by garbage collection.
 	   */
 
 	  RelayRecordStore.prototype.removeRecord = function removeRecord(dataID) {
@@ -64113,36 +65924,484 @@
 	  };
 
 	  /**
+	   * Gets the first version of the record from the available caches.
+	   */
+
+	  RelayRecordStore.prototype._getRecord = function _getRecord(dataID) {
+	    if (this._queuedRecords && this._queuedRecords.hasOwnProperty(dataID)) {
+	      return this._queuedRecords[dataID];
+	    } else if (this._records.hasOwnProperty(dataID)) {
+	      return this._records[dataID];
+	    } else if (this._cachedRecords) {
+	      return this._cachedRecords[dataID];
+	    }
+	  };
+
+	  /**
+	   * Get the value of the field from the first version of the record for which
+	   * the field is defined, returning `null` if the record has been deleted or
+	   * `undefined` if the record has not been fetched.
+	   */
+
+	  RelayRecordStore.prototype._getField = function _getField(dataID, storageKey) {
+	    var storage = this._storage;
+	    for (var ii = 0; ii < storage.length; ii++) {
+	      var record = storage[ii][dataID];
+	      if (record === null) {
+	        return null;
+	      } else if (record && record.hasOwnProperty(storageKey)) {
+	        return record[storageKey];
+	      }
+	    }
+	    return undefined;
+	  };
+
+	  return RelayRecordStore;
+	})();
+
+	function getFilterCalls(calls) {
+	  return calls.filter(function (call) {
+	    return !RelayConnectionInterface.isConnectionCall(call);
+	  });
+	}
+
+	/**
+	 * Returns the field name based on the object key used to store the data in
+	 * nodeData. It returns the field name without any calls. For example, the
+	 * field name for 'profile_picture{size:"50"}' will be 'profile_picture'
+	 */
+	function getFieldNameFromKey(key) {
+	  // This is based on the GraphQL spec for what constitutes a valid field name.
+	  return key.split(/(?![_A-Za-z][_0-9A-Za-z]*)/, 1)[0];
+	}
+
+	module.exports = RelayRecordStore;
+
+/***/ },
+/* 554 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule RelayRecordWriter
+	 * 
+	 * @typechecks
+	 */
+
+	'use strict';
+
+	var _classCallCheck = __webpack_require__(355)['default'];
+
+	var _Object$keys = __webpack_require__(385)['default'];
+
+	var GraphQLMutatorConstants = __webpack_require__(529);
+	var GraphQLRange = __webpack_require__(528);
+	var RelayConnectionInterface = __webpack_require__(407);
+
+	var RelayNodeInterface = __webpack_require__(396);
+
+	var RelayRecord = __webpack_require__(426);
+
+	var RelayRecordStatusMap = __webpack_require__(435);
+
+	var invariant = __webpack_require__(399);
+	var rangeOperationToMetadataKey = __webpack_require__(531);
+
+	var CURSOR = RelayConnectionInterface.CURSOR;
+	var NODE = RelayConnectionInterface.NODE;
+
+	var EMPTY = '';
+	var FILTER_CALLS = '__filterCalls__';
+	var FORCE_INDEX = '__forceIndex__';
+	var RANGE = '__range__';
+	var RESOLVED_FRAGMENT_MAP = '__resolvedFragmentMap__';
+	var RESOLVED_FRAGMENT_MAP_GENERATION = '__resolvedFragmentMapGeneration__';
+	var PATH = '__path__';
+	var APPEND = GraphQLMutatorConstants.APPEND;
+	var PREPEND = GraphQLMutatorConstants.PREPEND;
+	var REMOVE = GraphQLMutatorConstants.REMOVE;
+
+	/**
+	 * @internal
+	 *
+	 * `RelayRecordWriter` is the helper module to write data into RelayRecordStore.
+	 */
+
+	var RelayRecordWriter = (function () {
+	  function RelayRecordWriter(records, rootCallMap, isOptimistic, nodeConnectionMap, cacheWriter, clientMutationID) {
+	    _classCallCheck(this, RelayRecordWriter);
+
+	    this._cacheWriter = cacheWriter;
+	    this._clientMutationID = clientMutationID;
+	    this._isOptimisticWrite = isOptimistic;
+	    this._nodeConnectionMap = nodeConnectionMap || {};
+	    this._records = records;
+	    this._rootCallMap = rootCallMap;
+	  }
+
+	  /**
+	   * Filter calls to only those that specify conditions on the returned results
+	   * (ex: `orderby(TOP_STORIES)`), removing generic calls (ex: `first`, `find`).
+	   */
+
+	  /**
+	   * Get the data ID associated with a storage key (and optionally an
+	   * identifying argument value) for a root query.
+	   */
+
+	  RelayRecordWriter.prototype.getDataID = function getDataID(storageKey, identifyingArgValue) {
+	    if (RelayNodeInterface.isNodeRootCall(storageKey)) {
+	      !(identifyingArgValue != null) ?  true ? invariant(false, 'RelayRecordWriter.getDataID(): Argument to `%s()` ' + 'cannot be null or undefined.', storageKey) : invariant(false) : undefined;
+	      return identifyingArgValue;
+	    }
+	    if (identifyingArgValue == null) {
+	      identifyingArgValue = EMPTY;
+	    }
+	    if (this._rootCallMap.hasOwnProperty(storageKey) && this._rootCallMap[storageKey].hasOwnProperty(identifyingArgValue)) {
+	      return this._rootCallMap[storageKey][identifyingArgValue];
+	    }
+	  };
+
+	  /**
+	   * Associate a data ID with a storage key (and optionally an identifying
+	   * argument value) for a root query.
+	   */
+
+	  RelayRecordWriter.prototype.putDataID = function putDataID(storageKey, identifyingArgValue, dataID) {
+	    if (RelayNodeInterface.isNodeRootCall(storageKey)) {
+	      !(identifyingArgValue != null) ?  true ? invariant(false, 'RelayRecordWriter.putDataID(): Argument to `%s()` ' + 'cannot be null or undefined.', storageKey) : invariant(false) : undefined;
+	      return;
+	    }
+	    if (identifyingArgValue == null) {
+	      identifyingArgValue = EMPTY;
+	    }
+	    this._rootCallMap[storageKey] = this._rootCallMap[storageKey] || {};
+	    this._rootCallMap[storageKey][identifyingArgValue] = dataID;
+	    if (this._cacheWriter) {
+	      this._cacheWriter.writeRootCall(storageKey, identifyingArgValue, dataID);
+	    }
+	  };
+
+	  /**
+	   * Returns the status of the record stored at `dataID`.
+	   */
+
+	  RelayRecordWriter.prototype.getRecordState = function getRecordState(dataID) {
+	    var record = this._records[dataID];
+	    if (record === null) {
+	      return 'NONEXISTENT';
+	    } else if (record === undefined) {
+	      return 'UNKNOWN';
+	    }
+	    return 'EXISTENT';
+	  };
+
+	  /**
+	   * Create an empty record at `dataID` if a record does not already exist.
+	   */
+
+	  RelayRecordWriter.prototype.putRecord = function putRecord(dataID, typeName, path) {
+	    var prevRecord = this._getRecordForWrite(dataID);
+	    if (prevRecord) {
+	      return;
+	    }
+	    var nextRecord = RelayRecord.createWithFields(dataID, {
+	      __typename: typeName
+	    });
+	    if (this._isOptimisticWrite) {
+	      this._setClientMutationID(nextRecord);
+	    }
+	    if (RelayRecord.isClientID(dataID)) {
+	      !path ?  true ? invariant(false, 'RelayRecordWriter.putRecord(): Expected a path for non-refetchable ' + 'record `%s`.', dataID) : invariant(false) : undefined;
+	      nextRecord[PATH] = path;
+	    }
+	    this._records[dataID] = nextRecord;
+	    var cacheWriter = this._cacheWriter;
+	    if (!this._isOptimisticWrite && cacheWriter) {
+	      cacheWriter.writeField(dataID, '__dataID__', dataID, typeName);
+	    }
+	  };
+
+	  /**
+	   * Returns the path to a non-refetchable record.
+	   */
+
+	  RelayRecordWriter.prototype.getPathToRecord = function getPathToRecord(dataID) {
+	    return this._getField(dataID, PATH);
+	  };
+
+	  /**
+	   * Check whether a given record has received data for a deferred fragment.
+	   */
+
+	  RelayRecordWriter.prototype.hasDeferredFragmentData = function hasDeferredFragmentData(dataID, fragmentID) {
+	    var resolvedFragmentMap = this._getField(dataID, RESOLVED_FRAGMENT_MAP);
+	    !(typeof resolvedFragmentMap === 'object' || resolvedFragmentMap == null) ?  true ? invariant(false, 'RelayRecordWriter.hasDeferredFragmentData(): Expected the map of ' + 'resolved deferred fragments associated with record `%s` to be null or ' + 'an object. Found a(n) `%s`.', dataID, typeof resolvedFragmentMap) : invariant(false) : undefined;
+	    return !!(resolvedFragmentMap && resolvedFragmentMap[fragmentID]);
+	  };
+
+	  /**
+	   * Mark a given record as having received data for a deferred fragment.
+	   */
+
+	  RelayRecordWriter.prototype.setHasDeferredFragmentData = function setHasDeferredFragmentData(dataID, fragmentID) {
+	    var record = this._getRecordForWrite(dataID);
+	    !record ?  true ? invariant(false, 'RelayRecordWriter.setHasDeferredFragmentData(): Expected record `%s` ' + 'to exist before marking it as having received data for the deferred ' + 'fragment with id `%s`.', dataID, fragmentID) : invariant(false) : undefined;
+	    var resolvedFragmentMap = record[RESOLVED_FRAGMENT_MAP];
+	    if (typeof resolvedFragmentMap !== 'object' || !resolvedFragmentMap) {
+	      resolvedFragmentMap = {};
+	    }
+	    resolvedFragmentMap[fragmentID] = true;
+	    record[RESOLVED_FRAGMENT_MAP] = resolvedFragmentMap;
+	    if (typeof record[RESOLVED_FRAGMENT_MAP_GENERATION] === 'number') {
+	      record[RESOLVED_FRAGMENT_MAP_GENERATION]++;
+	    } else {
+	      record[RESOLVED_FRAGMENT_MAP_GENERATION] = 0;
+	    }
+	  };
+
+	  /**
+	   * Delete the record at `dataID`, setting its value to `null`.
+	   */
+
+	  RelayRecordWriter.prototype.deleteRecord = function deleteRecord(dataID) {
+	    this._records[dataID] = null;
+
+	    // Remove any links for this record
+	    if (!this._isOptimisticWrite) {
+	      delete this._nodeConnectionMap[dataID];
+	      if (this._cacheWriter) {
+	        this._cacheWriter.writeNode(dataID, null);
+	      }
+	    }
+	  };
+
+	  RelayRecordWriter.prototype.getType = function getType(dataID) {
+	    // `__typename` property is typed as `string`
+	    return this._getField(dataID, '__typename');
+	  };
+
+	  /**
+	   * Returns the value of the field for the given dataID.
+	   */
+
+	  RelayRecordWriter.prototype.getField = function getField(dataID, storageKey) {
+	    return this._getField(dataID, storageKey);
+	  };
+
+	  /**
+	   * Sets the value of a scalar field.
+	   */
+
+	  RelayRecordWriter.prototype.putField = function putField(dataID, storageKey, value) {
+	    var record = this._getRecordForWrite(dataID);
+	    !record ?  true ? invariant(false, 'RelayRecordWriter.putField(): Expected record `%s` to exist before ' + 'writing field `%s`.', dataID, storageKey) : invariant(false) : undefined;
+	    record[storageKey] = value;
+	    if (!this._isOptimisticWrite && this._cacheWriter) {
+	      var typeName = record.__typename;
+	      this._cacheWriter.writeField(dataID, storageKey, value, typeName);
+	    }
+	  };
+
+	  /**
+	   * Clears the value of a field by setting it to null/undefined.
+	   */
+
+	  RelayRecordWriter.prototype.deleteField = function deleteField(dataID, storageKey) {
+	    var record = this._getRecordForWrite(dataID);
+	    !record ?  true ? invariant(false, 'RelayRecordWriter.deleteField(): Expected record `%s` to exist before ' + 'deleting field `%s`.', dataID, storageKey) : invariant(false) : undefined;
+	    record[storageKey] = null;
+	    if (!this._isOptimisticWrite && this._cacheWriter) {
+	      this._cacheWriter.writeField(dataID, storageKey, null);
+	    }
+	  };
+
+	  /**
+	   * Returns the Data ID of a linked record (eg the ID of the `address` record
+	   * in `actor{address}`).
+	   */
+
+	  RelayRecordWriter.prototype.getLinkedRecordID = function getLinkedRecordID(dataID, storageKey) {
+	    var field = this._getField(dataID, storageKey);
+	    if (field == null) {
+	      return field;
+	    }
+	    !(typeof field === 'object' && field !== null && !Array.isArray(field)) ?  true ? invariant(false, 'RelayRecordWriter.getLinkedRecordID(): Expected field `%s` for record ' + '`%s` to have a linked record.', storageKey, dataID) : invariant(false) : undefined;
+	    return field.__dataID__;
+	  };
+
+	  /**
+	   * Creates/updates a link between two records via the given field.
+	   */
+
+	  RelayRecordWriter.prototype.putLinkedRecordID = function putLinkedRecordID(parentID, storageKey, recordID) {
+	    var parent = this._getRecordForWrite(parentID);
+	    !parent ?  true ? invariant(false, 'RelayRecordWriter.putLinkedRecordID(): Expected record `%s` to exist ' + 'before linking to record `%s`.', parentID, recordID) : invariant(false) : undefined;
+	    var record = this._records[recordID];
+	    !record ?  true ? invariant(false, 'RelayRecordWriter.putLinkedRecordID(): Expected record `%s` to exist ' + 'before linking from record `%s`.', recordID, parentID) : invariant(false) : undefined;
+	    var fieldValue = RelayRecord.create(recordID);
+	    parent[storageKey] = fieldValue;
+	    if (!this._isOptimisticWrite && this._cacheWriter) {
+	      this._cacheWriter.writeField(parentID, storageKey, fieldValue);
+	    }
+	  };
+
+	  /**
+	   * Returns an array of Data ID for a plural linked field (eg the actor IDs of
+	   * the `likers` in `story{likers}`).
+	   */
+
+	  RelayRecordWriter.prototype.getLinkedRecordIDs = function getLinkedRecordIDs(dataID, storageKey) {
+	    var field = this._getField(dataID, storageKey);
+	    if (field == null) {
+	      return field;
+	    }
+	    !Array.isArray(field) ?  true ? invariant(false, 'RelayRecordWriter.getLinkedRecordIDs(): Expected field `%s` for ' + 'record `%s` to have an array of linked records.', storageKey, dataID) : invariant(false) : undefined;
+	    return field.map(function (item, ii) {
+	      !(typeof item === 'object' && item.__dataID__) ?  true ? invariant(false, 'RelayRecordWriter.getLinkedRecordIDs(): Expected element at index ' + '%s in field `%s` for record `%s` to be a linked record.', ii, storageKey, dataID) : invariant(false) : undefined;
+	      return item.__dataID__;
+	    });
+	  };
+
+	  /**
+	   * Creates/updates a one-to-many link between records via the given field.
+	   */
+
+	  RelayRecordWriter.prototype.putLinkedRecordIDs = function putLinkedRecordIDs(parentID, storageKey, recordIDs) {
+	    var _this = this;
+
+	    var parent = this._getRecordForWrite(parentID);
+	    !parent ?  true ? invariant(false, 'RelayRecordWriter.putLinkedRecordIDs(): Expected record `%s` to exist ' + 'before linking records.', parentID) : invariant(false) : undefined;
+	    var records = recordIDs.map(function (recordID) {
+	      var record = _this._records[recordID];
+	      !record ?  true ? invariant(false, 'RelayRecordWriter.putLinkedRecordIDs(): Expected record `%s` to ' + 'exist before linking from `%s`.', recordID, parentID) : invariant(false) : undefined;
+	      return RelayRecord.create(recordID);
+	    });
+	    parent[storageKey] = records;
+	    if (!this._isOptimisticWrite && this._cacheWriter) {
+	      this._cacheWriter.writeField(parentID, storageKey, records);
+	    }
+	  };
+
+	  /**
+	   * Get the force index associated with the range at `connectionID`.
+	   */
+
+	  RelayRecordWriter.prototype.getRangeForceIndex = function getRangeForceIndex(connectionID) {
+	    var forceIndex = this._getField(connectionID, FORCE_INDEX);
+	    if (forceIndex === null) {
+	      return -1;
+	    }
+	    // __forceIndex__ can only be a number
+	    return forceIndex || 0;
+	  };
+
+	  /**
+	   * Get the condition calls that were used to fetch the given connection.
+	   * Ex: for a field `photos.orderby(recent)`, this would be
+	   * [{name: 'orderby', value: 'recent'}]
+	   */
+
+	  RelayRecordWriter.prototype.getRangeFilterCalls = function getRangeFilterCalls(connectionID) {
+	    return this._getField(connectionID, FILTER_CALLS);
+	  };
+
+	  /**
+	   * Creates a range at `dataID` with an optional `forceIndex`.
+	   */
+
+	  RelayRecordWriter.prototype.putRange = function putRange(connectionID, calls, forceIndex) {
+	    !!this._isOptimisticWrite ?  true ? invariant(false, 'RelayRecordWriter.putRange(): Cannot create a queued range.') : invariant(false) : undefined;
+	    var record = this._getRecordForWrite(connectionID);
+	    !record ?  true ? invariant(false, 'RelayRecordWriter.putRange(): Expected record `%s` to exist before ' + 'adding a range.', connectionID) : invariant(false) : undefined;
+	    var range = new GraphQLRange();
+	    var filterCalls = getFilterCalls(calls);
+	    forceIndex = forceIndex || 0;
+	    record.__filterCalls__ = filterCalls;
+	    record.__forceIndex__ = forceIndex;
+	    record.__range__ = range;
+
+	    var cacheWriter = this._cacheWriter;
+	    if (!this._isOptimisticWrite && cacheWriter) {
+	      cacheWriter.writeField(connectionID, FILTER_CALLS, filterCalls);
+	      cacheWriter.writeField(connectionID, FORCE_INDEX, forceIndex);
+	      cacheWriter.writeField(connectionID, RANGE, range);
+	    }
+	  };
+
+	  /**
+	   * Returns whether there is a range at `connectionID`.
+	   */
+
+	  RelayRecordWriter.prototype.hasRange = function hasRange(connectionID) {
+	    return !!this._getField(connectionID, RANGE);
+	  };
+
+	  /**
+	   * Adds newly fetched edges to a range.
+	   */
+
+	  RelayRecordWriter.prototype.putRangeEdges = function putRangeEdges(connectionID, calls, pageInfo, edges) {
+	    var _this2 = this;
+
+	    var range = this._getField(connectionID, RANGE);
+	    !range ?  true ? invariant(false, 'RelayRecordWriter.putRangeEdges(): Expected record `%s` to exist and ' + 'have a range.', connectionID) : invariant(false) : undefined;
+	    var edgesData = [];
+	    edges.forEach(function (edgeID) {
+	      var edgeData = _this2._getRangeEdgeData(edgeID);
+	      edgesData.push(edgeData);
+	      _this2._addConnectionForNode(connectionID, edgeData.node.__dataID__);
+	    });
+	    range.addItems(calls, edgesData, pageInfo);
+	    if (!this._isOptimisticWrite && this._cacheWriter) {
+	      this._cacheWriter.writeField(connectionID, RANGE, range);
+	    }
+	  };
+
+	  /**
+	   * Prepend, append, or delete edges to/from a range.
+	   */
+
+	  RelayRecordWriter.prototype.applyRangeUpdate = function applyRangeUpdate(connectionID, edgeID, operation) {
+	    if (this._isOptimisticWrite) {
+	      this._applyOptimisticRangeUpdate(connectionID, edgeID, operation);
+	    } else {
+	      this._applyServerRangeUpdate(connectionID, edgeID, operation);
+	    }
+	  };
+
+	  /**
 	   * Get edge data in a format compatibile with `GraphQLRange`.
 	   * TODO: change `GraphQLRange` to accept `(edgeID, cursor, nodeID)` tuple
 	   */
 
-	  RelayRecordStore.prototype._getRangeEdgeData = function _getRangeEdgeData(edgeID) {
+	  RelayRecordWriter.prototype._getRangeEdgeData = function _getRangeEdgeData(edgeID) {
 	    var nodeID = this.getLinkedRecordID(edgeID, NODE);
-	    !nodeID ?  true ? invariant(false, 'RelayRecordStore: Expected edge `%s` to have a `node` record.', edgeID) : invariant(false) : undefined;
-	    return {
-	      __dataID__: edgeID,
+	    !nodeID ?  true ? invariant(false, 'RelayRecordWriter: Expected edge `%s` to have a `node` record.', edgeID) : invariant(false) : undefined;
+	    return RelayRecord.createWithFields(edgeID, {
 	      cursor: this.getField(edgeID, CURSOR),
-	      node: {
-	        __dataID__: nodeID
-	      }
-	    };
+	      node: RelayRecord.create(nodeID)
+	    });
 	  };
 
-	  RelayRecordStore.prototype._applyOptimisticRangeUpdate = function _applyOptimisticRangeUpdate(connectionID, edgeID, operation) {
-	    !this._queuedRecords ?  true ? invariant(false, 'RelayRecordStore: Expected queued records to exist for optimistic ' + '`%s` update to record `%s`.', operation, connectionID) : invariant(false) : undefined;
-	    var record = this._queuedRecords[connectionID];
+	  RelayRecordWriter.prototype._applyOptimisticRangeUpdate = function _applyOptimisticRangeUpdate(connectionID, edgeID, operation) {
+	    var record = this._getRecordForWrite(connectionID);
 	    if (!record) {
-	      // $FlowIssue: this fails with:
-	      // "property `append/prepend/remove` not found in object literal"
-	      record = { __dataID__: connectionID };
-	      this._queuedRecords[connectionID] = record;
+	      record = RelayRecord.create(connectionID);
+	      this._records[connectionID] = record;
 	    }
 	    this._setClientMutationID(record);
-	    var queue = record[operation];
+	    var key = rangeOperationToMetadataKey[operation];
+	    var queue = record[key];
 	    if (!queue) {
 	      queue = [];
-	      record[operation] = queue;
+	      record[key] = queue;
 	    }
 	    if (operation === PREPEND) {
 	      queue.unshift(edgeID);
@@ -64151,10 +66410,9 @@
 	    }
 	  };
 
-	  RelayRecordStore.prototype._applyServerRangeUpdate = function _applyServerRangeUpdate(connectionID, edgeID, operation) {
-	    !this._records ?  true ? invariant(false, 'RelayRecordStore: Expected base records to exist for `%s` update to ' + 'record `%s`.', operation, connectionID) : invariant(false) : undefined;
+	  RelayRecordWriter.prototype._applyServerRangeUpdate = function _applyServerRangeUpdate(connectionID, edgeID, operation) {
 	    var range = this._getField(connectionID, RANGE);
-	    !range ?  true ? invariant(false, 'RelayRecordStore: Cannot apply `%s` update to non-existent record `%s`.', operation, connectionID) : invariant(false) : undefined;
+	    !range ?  true ? invariant(false, 'RelayRecordWriter: Cannot apply `%s` update to non-existent record ' + '`%s`.', operation, connectionID) : invariant(false) : undefined;
 	    if (operation === REMOVE) {
 	      range.removeEdgeWithID(edgeID);
 	      var nodeID = this.getLinkedRecordID(edgeID, 'node');
@@ -64180,7 +66438,7 @@
 	   * Record that the node is contained in the connection.
 	   */
 
-	  RelayRecordStore.prototype._addConnectionForNode = function _addConnectionForNode(connectionID, nodeID) {
+	  RelayRecordWriter.prototype._addConnectionForNode = function _addConnectionForNode(connectionID, nodeID) {
 	    var connectionMap = this._nodeConnectionMap[nodeID];
 	    if (!connectionMap) {
 	      connectionMap = {};
@@ -64193,7 +66451,7 @@
 	   * Record that the given node is no longer part of the connection.
 	   */
 
-	  RelayRecordStore.prototype._removeConnectionForNode = function _removeConnectionForNode(connectionID, nodeID) {
+	  RelayRecordWriter.prototype._removeConnectionForNode = function _removeConnectionForNode(connectionID, nodeID) {
 	    var connectionMap = this._nodeConnectionMap[nodeID];
 	    if (connectionMap) {
 	      delete connectionMap[connectionID];
@@ -64204,41 +66462,16 @@
 	  };
 
 	  /**
-	   * Gets the first version of the record from the available caches.
-	   */
-
-	  RelayRecordStore.prototype._getRecord = function _getRecord(dataID) {
-	    if (this._queuedRecords && this._queuedRecords.hasOwnProperty(dataID)) {
-	      return this._queuedRecords[dataID];
-	    } else if (this._records.hasOwnProperty(dataID)) {
-	      return this._records[dataID];
-	    } else if (this._cachedRecords) {
-	      return this._cachedRecords[dataID];
-	    }
-	  };
-
-	  /**
-	   * If the record is in the store, gets or creates a version of the record
+	   * If the record is in the store, gets a version of the record
 	   * in the store being used for writes.
 	   */
 
-	  RelayRecordStore.prototype._getRecordForWrite = function _getRecordForWrite(dataID) {
-	    // Cannot write to non-existent records, so ensure the record exists first.
-	    // Returning null/undefined allows for local invariant checks at call sites
-	    // with specific error messaging.
-	    var record = this._getRecord(dataID);
+	  RelayRecordWriter.prototype._getRecordForWrite = function _getRecordForWrite(dataID) {
+	    var record = this._records[dataID];
 	    if (!record) {
 	      return record;
 	    }
-	    // Create an empty version of the record in the writable store if it does
-	    // not already exist there.
-	    var source = this._queuedRecords || this._records;
-	    if (!source[dataID]) {
-	      record = source[dataID] = {
-	        __dataID__: dataID
-	      };
-	    }
-	    if (source === this._queuedRecords) {
+	    if (this._isOptimisticWrite) {
 	      this._setClientMutationID(record);
 	    }
 	    return record;
@@ -64250,17 +66483,15 @@
 	   * `undefined` if the record has not been fetched.
 	   */
 
-	  RelayRecordStore.prototype._getField = function _getField(dataID, storageKey) {
-	    var storage = this._storage;
-	    for (var ii = 0; ii < storage.length; ii++) {
-	      var record = storage[ii][dataID];
-	      if (record === null) {
-	        return null;
-	      } else if (record && record.hasOwnProperty(storageKey)) {
-	        return record[storageKey];
-	      }
+	  RelayRecordWriter.prototype._getField = function _getField(dataID, storageKey) {
+	    var record = this._records[dataID];
+	    if (record === null) {
+	      return null;
+	    } else if (record && record.hasOwnProperty(storageKey)) {
+	      return record[storageKey];
+	    } else {
+	      return undefined;
 	    }
-	    return undefined;
 	  };
 
 	  /**
@@ -64268,9 +66499,9 @@
 	   * into the given record.
 	   */
 
-	  RelayRecordStore.prototype._setClientMutationID = function _setClientMutationID(record) {
+	  RelayRecordWriter.prototype._setClientMutationID = function _setClientMutationID(record) {
 	    var clientMutationID = this._clientMutationID;
-	    !clientMutationID ?  true ? invariant(false, 'RelayRecordStore: _clientMutationID cannot be null/undefined.') : invariant(false) : undefined;
+	    !clientMutationID ?  true ? invariant(false, 'RelayRecordWriter: _clientMutationID cannot be null/undefined.') : invariant(false) : undefined;
 	    var mutationIDs = record.__mutationIDs__ || [];
 	    if (mutationIDs.indexOf(clientMutationID) === -1) {
 	      mutationIDs.push(clientMutationID);
@@ -64279,7 +66510,7 @@
 	    record.__status__ = RelayRecordStatusMap.setOptimisticStatus(0, true);
 	  };
 
-	  return RelayRecordStore;
+	  return RelayRecordWriter;
 	})();
 
 	function getFilterCalls(calls) {
@@ -64288,640 +66519,14 @@
 	  });
 	}
 
-	/**
-	 * Returns the field name based on the object key used to store the data in
-	 * nodeData. It returns the field name without any calls. For example, the
-	 * field name for 'profile_picture{size:"50"}' will be 'profile_picture'
-	 */
-	function getFieldNameFromKey(key) {
-	  // This is based on the GraphQL spec for what constitutes a valid field name.
-	  return key.split(/(?![_A-Za-z][_0-9A-Za-z]*)/, 1)[0];
-	}
-
-	module.exports = RelayRecordStore;
+	module.exports = RelayRecordWriter;
 
 /***/ },
-/* 538 */
-/***/ function(module, exports) {
-
-	/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule RelayRecordStatusMap
-	 * 
-	 * @typechecks
-	 */
-
-	'use strict';
-	/**
-	 * Record might contain data from optimistic update.
-	 */
-	var OPTIMISTIC_MASK = 0x01;
-	/**
-	 * Record was part of a mutation that resulted in an error.
-	 */
-	var ERROR_MASK = 0x02;
-
-	function set(status, value, mask) {
-	  status = status || 0;
-	  if (value) {
-	    return status | mask;
-	  } else {
-	    return status & ~mask;
-	  }
-	}
-
-	function check(status, mask) {
-	  return ((status || 0) & mask) != 0;
-	}
-	/**
-	 * A set of functions for modifying `__status__` on records inside of
-	 * RelayStore.
-	 */
-	var RelayRecordStatusMap = {
-	  setOptimisticStatus: function setOptimisticStatus(status, value) {
-	    return set(status, value, OPTIMISTIC_MASK);
-	  },
-
-	  isOptimisticStatus: function isOptimisticStatus(status) {
-	    return check(status, OPTIMISTIC_MASK);
-	  },
-
-	  setErrorStatus: function setErrorStatus(status, value) {
-	    return set(status, value, ERROR_MASK);
-	  },
-
-	  isErrorStatus: function isErrorStatus(status) {
-	    return check(status, ERROR_MASK);
-	  }
-	};
-
-	module.exports = RelayRecordStatusMap;
-
-/***/ },
-/* 539 */
+/* 555 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule readRelayDiskCache
-	 * 
-	 * @typechecks
-	 */
-
-	'use strict';
-
-	var _classCallCheck = __webpack_require__(355)['default'];
-
-	var GraphQLStoreDataHandler = __webpack_require__(390);
-	var RelayChangeTracker = __webpack_require__(497);
-
-	var RelayQuery = __webpack_require__(391);
-	var RelayQueryPath = __webpack_require__(485);
-
-	var findRelayQueryLeaves = __webpack_require__(540);
-
-	var forEachObject = __webpack_require__(407);
-	var forEachRootCallArg = __webpack_require__(398);
-	var invariant = __webpack_require__(399);
-	var isEmpty = __webpack_require__(541);
-
-	/**
-	 * @internal
-	 *
-	 * Retrieves data for a query from disk into `cachedRecords` in RelayStore.
-	 */
-	function readRelayDiskCache(queries, store, cachedRecords, cachedRootCallMap, cacheManager, changeTracker, callbacks) {
-	  var reader = new RelayCacheReader(store, cachedRecords, cachedRootCallMap, cacheManager, changeTracker, callbacks);
-
-	  reader.read(queries);
-	}
-
-	var RelayCacheReader = (function () {
-	  function RelayCacheReader(store, cachedRecords, cachedRootCallMap, cacheManager, changeTracker, callbacks) {
-	    _classCallCheck(this, RelayCacheReader);
-
-	    this._store = store;
-	    this._cachedRecords = cachedRecords;
-	    this._cachedRootCallMap = cachedRootCallMap;
-	    this._cacheManager = cacheManager;
-	    this._callbacks = callbacks;
-	    this._changeTracker = changeTracker;
-
-	    this._hasFailed = false;
-	    this._pendingNodes = {};
-	    this._pendingRoots = {};
-	  }
-
-	  RelayCacheReader.prototype.read = function read(queries) {
-	    var _this = this;
-
-	    forEachObject(queries, function (query) {
-	      if (_this._hasFailed) {
-	        return;
-	      }
-	      if (query) {
-	        (function () {
-	          var storageKey = query.getStorageKey();
-	          forEachRootCallArg(query, function (identifyingArgValue) {
-	            if (_this._hasFailed) {
-	              return;
-	            }
-	            identifyingArgValue = identifyingArgValue || '';
-	            _this._visitRoot(storageKey, identifyingArgValue, query);
-	          });
-	        })();
-	      }
-	    });
-
-	    if (this._isDone()) {
-	      this._callbacks.onSuccess && this._callbacks.onSuccess();
-	    }
-	  };
-
-	  RelayCacheReader.prototype._visitRoot = function _visitRoot(storageKey, identifyingArgValue, query) {
-	    var dataID = this._store.getDataID(storageKey, identifyingArgValue);
-	    if (dataID == null) {
-	      if (this._cachedRootCallMap.hasOwnProperty(storageKey) && this._cachedRootCallMap[storageKey].hasOwnProperty(identifyingArgValue)) {
-	        // Already attempted to read this root from cache.
-	        this._handleFailed();
-	      } else {
-	        this._queueRoot(storageKey, identifyingArgValue, query);
-	      }
-	    } else {
-	      this._visitNode(dataID, {
-	        node: query,
-	        path: new RelayQueryPath(query),
-	        rangeCalls: undefined
-	      });
-	    }
-	  };
-
-	  RelayCacheReader.prototype._queueRoot = function _queueRoot(storageKey, identifyingArgValue, query) {
-	    var _this2 = this;
-
-	    var rootKey = storageKey + '*' + identifyingArgValue;
-	    if (this._pendingRoots.hasOwnProperty(rootKey)) {
-	      this._pendingRoots[rootKey].push(query);
-	    } else {
-	      this._pendingRoots[rootKey] = [query];
-	      this._cacheManager.readRootCall(storageKey, identifyingArgValue, function (error, value) {
-	        if (_this2._hasFailed) {
-	          return;
-	        }
-	        if (error) {
-	          _this2._handleFailed();
-	          return;
-	        }
-	        var roots = _this2._pendingRoots[rootKey];
-	        delete _this2._pendingRoots[rootKey];
-
-	        _this2._cachedRootCallMap[storageKey] = _this2._cachedRootCallMap[storageKey] || {};
-	        _this2._cachedRootCallMap[storageKey][identifyingArgValue] = value;
-	        if (_this2._cachedRootCallMap[storageKey][identifyingArgValue] == null) {
-	          // Read from cache and we still don't have valid `dataID`.
-	          _this2._handleFailed();
-	        } else {
-	          (function () {
-	            var dataID = value;
-	            roots.forEach(function (root) {
-	              if (_this2._hasFailed) {
-	                return;
-	              }
-	              _this2._visitNode(dataID, {
-	                node: root,
-	                path: new RelayQueryPath(root),
-	                rangeCalls: undefined
-	              });
-	            });
-	          })();
-	        }
-	        if (_this2._isDone()) {
-	          _this2._callbacks.onSuccess && _this2._callbacks.onSuccess();
-	        }
-	      });
-	    }
-	  };
-
-	  RelayCacheReader.prototype._visitNode = function _visitNode(dataID, pendingItem) {
-	    var _this3 = this;
-
-	    var _findRelayQueryLeaves = findRelayQueryLeaves(this._store, this._cachedRecords, pendingItem.node, dataID, pendingItem.path, pendingItem.rangeCalls);
-
-	    var missingData = _findRelayQueryLeaves.missingData;
-	    var pendingNodes = _findRelayQueryLeaves.pendingNodes;
-
-	    if (missingData) {
-	      this._handleFailed();
-	      return;
-	    }
-	    forEachObject(pendingNodes, function (pendingItems, dataID) {
-	      _this3._queueNode(dataID, pendingItems);
-	    });
-	  };
-
-	  RelayCacheReader.prototype._queueNode = function _queueNode(dataID, pendingItems) {
-	    var _this4 = this;
-
-	    if (this._pendingNodes.hasOwnProperty(dataID)) {
-	      var _pendingNodes$dataID;
-
-	      (_pendingNodes$dataID = this._pendingNodes[dataID]).push.apply(_pendingNodes$dataID, pendingItems);
-	    } else {
-	      this._pendingNodes[dataID] = pendingItems;
-	      this._cacheManager.readNode(dataID, function (error, value) {
-	        if (_this4._hasFailed) {
-	          return;
-	        }
-	        if (error) {
-	          _this4._handleFailed();
-	          return;
-	        }
-	        if (value && GraphQLStoreDataHandler.isClientID(dataID)) {
-	          value.__path__ = pendingItems[0].path;
-	        }
-	        // Mark records as created/updated as necessary. Note that if the
-	        // record is known to be deleted in the store then it will have been
-	        // been marked as created already. Further, it does not need to be
-	        // updated since no additional data can be read about a deleted node.
-	        var recordState = _this4._store.getRecordState(dataID);
-	        if (recordState === 'UNKNOWN' && value !== undefined) {
-	          // Mark as created if the store did not have a value but disk cache
-	          // did (either a known value or known deletion).
-	          _this4._changeTracker.createID(dataID);
-	        } else if (recordState === 'EXISTENT' && value != null) {
-	          // Mark as updated only if a record exists in both the store and
-	          // disk cache.
-	          _this4._changeTracker.updateID(dataID);
-	        }
-	        _this4._cachedRecords[dataID] = value;
-	        var items = _this4._pendingNodes[dataID];
-	        delete _this4._pendingNodes[dataID];
-	        if (_this4._cachedRecords[dataID] === undefined) {
-	          // We are out of luck if disk doesn't have the node either.
-	          _this4._handleFailed();
-	        } else {
-	          items.forEach(function (item) {
-	            if (_this4._hasFailed) {
-	              return;
-	            }
-	            _this4._visitNode(dataID, item);
-	          });
-	        }
-	        if (_this4._isDone()) {
-	          _this4._callbacks.onSuccess && _this4._callbacks.onSuccess();
-	        }
-	      });
-	    }
-	  };
-
-	  RelayCacheReader.prototype._isDone = function _isDone() {
-	    return isEmpty(this._pendingRoots) && isEmpty(this._pendingNodes) && !this._hasFailed;
-	  };
-
-	  RelayCacheReader.prototype._handleFailed = function _handleFailed() {
-	    !!this._hasFailed ?  true ? invariant(false, 'RelayStoreReader: Query set already failed') : invariant(false) : undefined;
-
-	    this._hasFailed = true;
-	    this._callbacks.onFailure && this._callbacks.onFailure();
-	  };
-
-	  return RelayCacheReader;
-	})();
-
-	module.exports = readRelayDiskCache;
-
-/***/ },
-/* 540 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule findRelayQueryLeaves
-	 * 
-	 * @typechecks
-	 */
-
-	'use strict';
-
-	var _inherits = __webpack_require__(375)['default'];
-
-	var _classCallCheck = __webpack_require__(355)['default'];
-
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-	var RelayConnectionInterface = __webpack_require__(404);
-
-	var RelayQueryVisitor = __webpack_require__(454);
-	var RelayRecordState = __webpack_require__(455);
-
-	var isCompatibleRelayFragmentType = __webpack_require__(456);
-
-	var EDGES = RelayConnectionInterface.EDGES;
-	var PAGE_INFO = RelayConnectionInterface.PAGE_INFO;
-
-	/**
-	 * @internal
-	 *
-	 * Traverses a query and data in the record store to determine if there are
-	 * additional nodes that needs to be read from disk cache. If it  ncounters
-	 * a node that is not in `cachedRecords`, it will queued that node by adding it
-	 * into the `pendingNodes` list. If it encounters a node that was already read
-	 * but still missing data, then it will short circuit the evaluation since
-	 * there is no way for us to satisfy this query even with additional data from
-	 * disk cache and resturn
-	 */
-	function findRelayQueryLeaves(store, cachedRecords, queryNode, dataID, path, rangeCalls) {
-	  var finder = new RelayQueryLeavesFinder(store, cachedRecords);
-
-	  var state = {
-	    dataID: dataID,
-	    missingData: false,
-	    path: path,
-	    rangeCalls: rangeCalls,
-	    rangeInfo: undefined
-	  };
-	  finder.visit(queryNode, state);
-	  return {
-	    missingData: state.missingData,
-	    pendingNodes: finder.getPendingNodes()
-	  };
-	}
-
-	var RelayQueryLeavesFinder = (function (_RelayQueryVisitor) {
-	  _inherits(RelayQueryLeavesFinder, _RelayQueryVisitor);
-
-	  function RelayQueryLeavesFinder(store) {
-	    var cachedRecords = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
-
-	    _classCallCheck(this, RelayQueryLeavesFinder);
-
-	    _RelayQueryVisitor.call(this);
-	    this._store = store;
-	    this._cachedRecords = cachedRecords;
-	    this._pendingNodes = {};
-	  }
-
-	  RelayQueryLeavesFinder.prototype.getPendingNodes = function getPendingNodes() {
-	    return this._pendingNodes;
-	  };
-
-	  /**
-	   * Skip visiting children if missingData is already false.
-	   */
-
-	  RelayQueryLeavesFinder.prototype.traverse = function traverse(node, state) {
-	    var children = node.getChildren();
-	    for (var ii = 0; ii < children.length; ii++) {
-	      if (state.missingData) {
-	        return;
-	      }
-	      this.visit(children[ii], state);
-	    }
-	  };
-
-	  RelayQueryLeavesFinder.prototype.visitFragment = function visitFragment(fragment, state) {
-	    var dataID = state.dataID;
-	    var recordState = this._store.getRecordState(dataID);
-	    if (recordState === RelayRecordState.UNKNOWN) {
-	      this._handleMissingData(fragment, state);
-	      return;
-	    } else if (recordState === RelayRecordState.NONEXISTENT) {
-	      return;
-	    }
-
-	    if (isCompatibleRelayFragmentType(fragment, this._store.getType(dataID))) {
-	      this.traverse(fragment, state);
-	    }
-	  };
-
-	  RelayQueryLeavesFinder.prototype.visitField = function visitField(field, state) {
-	    var dataID = state.dataID;
-	    var recordState = this._store.getRecordState(dataID);
-	    if (recordState === RelayRecordState.UNKNOWN) {
-	      this._handleMissingData(field, state);
-	      return;
-	    } else if (recordState === RelayRecordState.NONEXISTENT) {
-	      return;
-	    }
-
-	    if (state.rangeCalls && !state.rangeInfo) {
-	      var metadata = this._store.getRangeMetadata(dataID, state.rangeCalls);
-	      if (metadata) {
-	        state.rangeInfo = metadata;
-	      }
-	    }
-	    var rangeInfo = state.rangeInfo;
-	    if (rangeInfo && field.getSchemaName() === EDGES) {
-	      this._visitEdges(field, state);
-	    } else if (rangeInfo && field.getSchemaName() === PAGE_INFO) {
-	      this._visitPageInfo(field, state);
-	    } else if (field.isScalar()) {
-	      this._visitScalar(field, state);
-	    } else if (field.isPlural()) {
-	      this._visitPlural(field, state);
-	    } else if (field.isConnection()) {
-	      this._visitConnection(field, state);
-	    } else {
-	      this._visitLinkedField(field, state);
-	    }
-	  };
-
-	  RelayQueryLeavesFinder.prototype._visitScalar = function _visitScalar(field, state) {
-	    var fieldData = this._store.getField(state.dataID, field.getStorageKey());
-	    if (fieldData === undefined) {
-	      this._handleMissingData(field, state);
-	    }
-	  };
-
-	  RelayQueryLeavesFinder.prototype._visitPlural = function _visitPlural(field, state) {
-	    var dataIDs = this._store.getLinkedRecordIDs(state.dataID, field.getStorageKey());
-	    if (dataIDs === undefined) {
-	      this._handleMissingData(field, state);
-	      return;
-	    }
-	    if (dataIDs) {
-	      for (var ii = 0; ii < dataIDs.length; ii++) {
-	        if (state.missingData) {
-	          break;
-	        }
-	        var nextState = {
-	          dataID: dataIDs[ii],
-	          missingData: false,
-	          path: state.path.getPath(field, dataIDs[ii]),
-	          rangeCalls: undefined,
-	          rangeInfo: undefined
-	        };
-	        this.traverse(field, nextState);
-	        state.missingData = nextState.missingData;
-	      }
-	    }
-	  };
-
-	  RelayQueryLeavesFinder.prototype._visitConnection = function _visitConnection(field, state) {
-	    var calls = field.getCallsWithValues();
-	    var dataID = this._store.getLinkedRecordID(state.dataID, field.getStorageKey());
-	    if (dataID === undefined) {
-	      this._handleMissingData(field, state);
-	      return;
-	    }
-	    if (dataID) {
-	      var nextState = {
-	        dataID: dataID,
-	        missingData: false,
-	        path: state.path.getPath(field, dataID),
-	        rangeCalls: calls,
-	        rangeInfo: null
-	      };
-	      var metadata = this._store.getRangeMetadata(dataID, calls);
-	      if (metadata) {
-	        nextState.rangeInfo = metadata;
-	      }
-	      this.traverse(field, nextState);
-	      state.missingData = state.missingData || nextState.missingData;
-	    }
-	  };
-
-	  RelayQueryLeavesFinder.prototype._visitEdges = function _visitEdges(field, state) {
-	    var rangeInfo = state.rangeInfo;
-	    // Doesn't have  `__range__` loaded
-	    if (!rangeInfo) {
-	      this._handleMissingData(field, state);
-	      return;
-	    }
-	    if (rangeInfo.diffCalls.length) {
-	      state.missingData = true;
-	      return;
-	    }
-	    var edgeIDs = rangeInfo.requestedEdgeIDs;
-	    for (var ii = 0; ii < edgeIDs.length; ii++) {
-	      if (state.missingData) {
-	        break;
-	      }
-	      var nextState = {
-	        dataID: edgeIDs[ii],
-	        missingData: false,
-	        path: state.path.getPath(field, edgeIDs[ii]),
-	        rangeCalls: undefined,
-	        rangeInfo: undefined
-	      };
-	      this.traverse(field, nextState);
-	      state.missingData = state.missingData || nextState.missingData;
-	    }
-	  };
-
-	  RelayQueryLeavesFinder.prototype._visitPageInfo = function _visitPageInfo(field, state) {
-	    var rangeInfo = state.rangeInfo;
-
-	    if (!rangeInfo || !rangeInfo.pageInfo) {
-	      this._handleMissingData(field, state);
-	      return;
-	    }
-	  };
-
-	  RelayQueryLeavesFinder.prototype._visitLinkedField = function _visitLinkedField(field, state) {
-	    var dataID = this._store.getLinkedRecordID(state.dataID, field.getStorageKey());
-	    if (dataID === undefined) {
-	      this._handleMissingData(field, state);
-	      return;
-	    }
-	    if (dataID) {
-	      var nextState = {
-	        dataID: dataID,
-	        missingData: false,
-	        path: state.path.getPath(field, dataID),
-	        rangeCalls: undefined,
-	        rangeInfo: undefined
-	      };
-	      this.traverse(field, nextState);
-	      state.missingData = state.missingData || nextState.missingData;
-	    }
-	  };
-
-	  RelayQueryLeavesFinder.prototype._handleMissingData = function _handleMissingData(node, state) {
-	    var dataID = state.dataID;
-	    if (this._cachedRecords.hasOwnProperty(dataID)) {
-	      // We have read data for this `dataID` from disk, but
-	      // we still don't have data for the relevant field.
-	      state.missingData = true;
-	    } else {
-	      // Store node in `pendingNodes` because we have not read data for
-	      // this `dataID` from disk.
-	      this._pendingNodes[dataID] = this._pendingNodes[dataID] || [];
-	      this._pendingNodes[dataID].push({
-	        node: node,
-	        path: state.path,
-	        rangeCalls: state.rangeCalls
-	      });
-	    }
-	  };
-
-	  return RelayQueryLeavesFinder;
-	})(RelayQueryVisitor);
-
-	module.exports = findRelayQueryLeaves;
-
-/***/ },
-/* 541 */
-/***/ function(module, exports) {
-
-	/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule isEmpty
-	 */
-
-	/*eslint-disable no-unused-vars */
-
-	/**
-	 * Mimics empty from PHP.
-	 */
-	'use strict';
-
-	function isEmpty(obj) {
-	  if (Array.isArray(obj)) {
-	    return obj.length === 0;
-	  } else if (typeof obj === 'object') {
-	    for (var i in obj) {
-	      return false;
-	    }
-	    return true;
-	  } else {
-	    return !obj;
-	  }
-	}
-
-	module.exports = isEmpty;
-
-/***/ },
-/* 542 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -64942,17 +66547,22 @@
 	'use strict';
 
 	var RelayNodeInterface = __webpack_require__(396);
-	var RelayProfiler = __webpack_require__(409);
+	var RelayProfiler = __webpack_require__(415);
 
-	var RelayQueryPath = __webpack_require__(485);
+	var RelayQueryPath = __webpack_require__(513);
 	function writeRelayQueryPayload(writer, query, payload) {
 	  var store = writer.getRecordStore();
-	  var path = new RelayQueryPath(query);
+	  var recordWriter = writer.getRecordWriter();
+	  var path = RelayQueryPath.create(query);
 
 	  RelayNodeInterface.getResultsFromPayload(store, query, payload).forEach(function (_ref) {
 	    var dataID = _ref.dataID;
 	    var result = _ref.result;
+	    var rootCallInfo = _ref.rootCallInfo;
 
+	    if (rootCallInfo) {
+	      recordWriter.putDataID(rootCallInfo.storageKey, rootCallInfo.identifyingArgKey, dataID);
+	    }
 	    writer.writePayload(query, dataID, result, path);
 	  });
 	}
@@ -64960,11 +66570,11 @@
 	module.exports = RelayProfiler.instrument('writeRelayQueryPayload', writeRelayQueryPayload);
 
 /***/ },
-/* 543 */
+/* 556 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -64978,27 +66588,27 @@
 
 	'use strict';
 
-	var _defineProperty = __webpack_require__(500)['default'];
+	var _defineProperty = __webpack_require__(409)['default'];
 
 	var _extends = __webpack_require__(338)['default'];
 
-	var GraphQLMutatorConstants = __webpack_require__(503);
-	var RelayConnectionInterface = __webpack_require__(404);
+	var GraphQLMutatorConstants = __webpack_require__(529);
+	var RelayConnectionInterface = __webpack_require__(407);
 
-	var RelayMutationTracker = __webpack_require__(544);
-	var RelayMutationType = __webpack_require__(507);
+	var RelayMutationTracker = __webpack_require__(557);
+	var RelayMutationType = __webpack_require__(534);
 	var RelayNodeInterface = __webpack_require__(396);
 	var RelayQuery = __webpack_require__(391);
-	var RelayQueryPath = __webpack_require__(485);
+	var RelayQueryPath = __webpack_require__(513);
 
-	var RelayProfiler = __webpack_require__(409);
-	var RelayRecordState = __webpack_require__(455);
+	var RelayProfiler = __webpack_require__(415);
+	var RelayRecordState = __webpack_require__(498);
 
-	var generateClientEdgeID = __webpack_require__(536);
-	var generateClientID = __webpack_require__(400);
+	var generateClientEdgeID = __webpack_require__(552);
+	var generateClientID = __webpack_require__(401);
 	var invariant = __webpack_require__(399);
-	var serializeRelayQueryCall = __webpack_require__(417);
-	var warning = __webpack_require__(371);
+	var serializeRelayQueryCall = __webpack_require__(423);
+	var warning = __webpack_require__(372);
 
 	// TODO: Replace with enumeration for possible config types.
 	/* OperationConfig was originally typed such that each property had the type
@@ -65009,6 +66619,7 @@
 	var EDGES = RelayConnectionInterface.EDGES;
 	var ANY_TYPE = RelayNodeInterface.ANY_TYPE;
 	var ID = RelayNodeInterface.ID;
+	var ID_TYPE = RelayNodeInterface.ID_TYPE;
 	var NODE = RelayNodeInterface.NODE;
 	var NODE_TYPE = RelayNodeInterface.NODE_TYPE;
 	var APPEND = GraphQLMutatorConstants.APPEND;
@@ -65018,7 +66629,10 @@
 	var EDGES_FIELD = RelayQuery.Field.build({
 	  fieldName: EDGES,
 	  type: ANY_TYPE,
-	  metadata: { isPlural: true }
+	  metadata: {
+	    canHaveSubselections: true,
+	    isPlural: true
+	  }
 	});
 	var IGNORED_KEYS = _defineProperty({
 	  error: true
@@ -65085,6 +66699,7 @@
 	 */
 	function deleteRecord(writer, recordID) {
 	  var store = writer.getRecordStore();
+	  var recordWriter = writer.getRecordWriter();
 	  // skip if already deleted
 	  var status = store.getRecordState(recordID);
 	  if (status === RelayRecordState.NONEXISTENT) {
@@ -65096,7 +66711,7 @@
 	  if (connectionIDs) {
 	    connectionIDs.forEach(function (connectionID) {
 	      var edgeID = generateClientEdgeID(connectionID, recordID);
-	      store.applyRangeUpdate(connectionID, edgeID, REMOVE);
+	      recordWriter.applyRangeUpdate(connectionID, edgeID, REMOVE);
 	      writer.recordUpdate(edgeID);
 	      writer.recordUpdate(connectionID);
 	      // edges are never nodes, so this will not infinitely recurse
@@ -65105,7 +66720,7 @@
 	  }
 
 	  // delete the node
-	  store.deleteRecord(recordID);
+	  recordWriter.deleteRecord(recordID);
 	  writer.recordUpdate(recordID);
 	}
 
@@ -65166,11 +66781,17 @@
 	  var path = undefined;
 
 	  if (recordID != null) {
-	    path = new RelayQueryPath(RelayQuery.Root.build('writeRelayUpdatePayload', NODE, recordID, null, { identifyingArgName: ID }, NODE_TYPE));
+	    path = RelayQueryPath.createForID(recordID, 'writeRelayUpdatePayload');
 	  } else {
 	    recordID = store.getDataID(fieldName);
 	    // Root fields that do not accept arguments
-	    path = new RelayQueryPath(RelayQuery.Root.build('writeRelayUpdatePayload', fieldName, null, null, null, ANY_TYPE));
+	    path = RelayQueryPath.create(RelayQuery.Root.build('writeRelayUpdatePayload', fieldName, null, null, {
+	      identifyingArgName: null,
+	      identifyingArgType: null,
+	      isAbstract: true,
+	      isDeferred: false,
+	      isPlural: false
+	    }, ANY_TYPE));
 	  }
 	  !recordID ?  true ? invariant(false, 'writeRelayUpdatePayload(): Expected a record ID in the response payload ' + 'supplied to update the store.') : invariant(false) : undefined;
 
@@ -65183,9 +66804,8 @@
 	      } else if (child instanceof RelayQuery.Field && child.getSerializationKey() === fieldName) {
 	        // for flow: types are lost in closures
 	        if (path && recordID) {
-	          var typeName = writer.getRecordTypeName(child, recordID, payloadData);
 	          // ensure the record exists and then update it
-	          writer.createRecordIfMissing(child, recordID, typeName, path);
+	          writer.createRecordIfMissing(child, recordID, path, payloadData);
 	          writer.writePayload(child, recordID, payloadData, path);
 	        }
 	      }
@@ -65262,6 +66882,7 @@
 	 */
 	function addRangeNode(writer, operation, config, connectionID, nodeID, edgeData) {
 	  var store = writer.getRecordStore();
+	  var recordWriter = writer.getRecordWriter();
 	  var filterCalls = store.getRangeFilterCalls(connectionID);
 	  var rangeBehavior = filterCalls ? getRangeBehavior(config.rangeBehaviors, filterCalls) : null;
 
@@ -65273,11 +66894,10 @@
 	  var edgeID = generateClientEdgeID(connectionID, nodeID);
 	  var path = store.getPathToRecord(connectionID);
 	  !path ?  true ? invariant(false, 'writeRelayUpdatePayload(): Expected a path for connection record, `%s`.', connectionID) : invariant(false) : undefined;
-	  path = path.getPath(EDGES_FIELD, edgeID);
+	  path = RelayQueryPath.getPath(path, EDGES_FIELD, edgeID);
 
 	  // create the edge record
-	  var typeName = writer.getRecordTypeName(EDGES_FIELD, edgeID, edgeData);
-	  writer.createRecordIfMissing(EDGES_FIELD, edgeID, typeName, path);
+	  writer.createRecordIfMissing(EDGES_FIELD, edgeID, path, edgeData);
 
 	  // write data for all `edges` fields
 	  // TODO #7167718: more efficient mutation/subscription writes
@@ -65300,7 +66920,7 @@
 
 	  // append/prepend the item to the range.
 	  if (rangeBehavior in GraphQLMutatorConstants.RANGE_OPERATIONS) {
-	    store.applyRangeUpdate(connectionID, edgeID, rangeBehavior);
+	    recordWriter.applyRangeUpdate(connectionID, edgeID, rangeBehavior);
 	    if (writer.hasChangeToRecord(edgeID)) {
 	      writer.recordUpdate(connectionID);
 	    }
@@ -65315,12 +66935,13 @@
 	 * specifies the path within the payload that contains the connection ID.
 	 */
 	function handleRangeDelete(writer, payload, config) {
-	  var maybeRecordID = getString(payload, config.deletedIDFieldName);
-	  !(maybeRecordID != null) ?  true ? invariant(false, 'writeRelayUpdatePayload(): Missing ID for deleted record at field `%s`.', config.deletedIDFieldName) : invariant(false) : undefined;
-	  var recordID = maybeRecordID; // Flow loses type refinements in closures
+	  var store = writer.getRecordStore();
+
+	  var recordID = Array.isArray(config.deletedIDFieldName) ? getIDFromPath(store, config.deletedIDFieldName, payload) : getString(payload, config.deletedIDFieldName);
+
+	  !(recordID != null) ?  true ? invariant(false, 'writeRelayUpdatePayload(): Missing ID for deleted record at field `%s`.', config.deletedIDFieldName) : invariant(false) : undefined;
 
 	  // Extract the id of the node with the connection that we are deleting from.
-	  var store = writer.getRecordStore();
 	  var connectionName = config.pathToConnection.pop();
 	  var connectionParentID = getIDFromPath(store, config.pathToConnection, payload);
 	  // Restore pathToConnection to its original state
@@ -65341,9 +66962,9 @@
 	 * Removes an edge from a connection without modifying the node data.
 	 */
 	function deleteRangeEdge(writer, connectionID, nodeID) {
-	  var store = writer.getRecordStore();
+	  var recordWriter = writer.getRecordWriter();
 	  var edgeID = generateClientEdgeID(connectionID, nodeID);
-	  store.applyRangeUpdate(connectionID, edgeID, REMOVE);
+	  recordWriter.applyRangeUpdate(connectionID, edgeID, REMOVE);
 
 	  deleteRecord(writer, edgeID);
 	  if (writer.hasChangeToRecord(edgeID)) {
@@ -65418,11 +67039,11 @@
 	module.exports = RelayProfiler.instrument('writeRelayUpdatePayload', writeRelayUpdatePayload);
 
 /***/ },
-/* 544 */
+/* 557 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -65438,7 +67059,7 @@
 	// optimistically added nodes
 	'use strict';
 
-	var GraphQLStoreDataHandler = __webpack_require__(390);
+	var RelayRecord = __webpack_require__(426);
 
 	var clientIDToServerIDMap = {};
 
@@ -65465,7 +67086,7 @@
 	   * corresponding mapping in the client server id map.
 	   */
 	  isClientOnlyID: function isClientOnlyID(dataID) {
-	    return GraphQLStoreDataHandler.isClientID(dataID) && !clientIDToServerIDMap[dataID];
+	    return RelayRecord.isClientID(dataID) && !clientIDToServerIDMap[dataID];
 	  },
 
 	  /**
@@ -65548,596 +67169,11 @@
 	module.exports = RelayMutationTracker;
 
 /***/ },
-/* 545 */
+/* 558 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule buildRQL
-	 * 
-	 * @typechecks
-	 */
-
-	'use strict';
-
-	var _extends = __webpack_require__(338)['default'];
-
-	var _toConsumableArray = __webpack_require__(470)['default'];
-
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-
-	var Map = __webpack_require__(509);
-	var QueryBuilder = __webpack_require__(395);
-
-	var RelayProfiler = __webpack_require__(409);
-
-	var filterObject = __webpack_require__(546);
-	var invariant = __webpack_require__(399);
-	var mapObject = __webpack_require__(489);
-
-	// Cache results of executing fragment query builders.
-	var fragmentCache = new Map();
-
-	// Cache results of executing component-specific route query builders.
-	var queryCache = new Map();
-
-	function isDeprecatedCallWithArgCountGreaterThan(nodeBuilder, count) {
-	  var argLength = nodeBuilder.length;
-	  if (true) {
-	    var mockImpl = nodeBuilder;
-	    while (mockImpl && mockImpl._getMockImplementation) {
-	      mockImpl = mockImpl._getMockImplementation();
-	    }
-	    if (mockImpl) {
-	      argLength = mockImpl.length;
-	    }
-	  }
-	  return argLength > count;
-	}
-
-	/**
-	 * @internal
-	 *
-	 * Builds a static node representation using a supplied query or fragment
-	 * builder. This is used for routes, containers, and mutations.
-	 *
-	 * If the supplied fragment builder produces an invalid node (e.g. the wrong
-	 * node type), these will return `undefined`. This is not to be confused with
-	 * a return value of `null`, which may result from the lack of a node.
-	 */
-	var buildRQL = {
-	  Fragment: function Fragment(fragmentBuilder, values) {
-	    var node = fragmentCache.get(fragmentBuilder);
-	    if (!node) {
-	      var variables = toVariables(values);
-	      !!isDeprecatedCallWithArgCountGreaterThan(fragmentBuilder, 1) ?  true ? invariant(false, 'Relay.QL: Deprecated usage detected. If you are trying to define a ' + 'fragment, use `variables => Relay.QL`.') : invariant(false) : undefined;
-	      node = fragmentBuilder(variables);
-	      fragmentCache.set(fragmentBuilder, node);
-	    }
-	    if (node) {
-	      return QueryBuilder.getFragment(node);
-	    }
-	  },
-
-	  Query: function Query(queryBuilder, Component, queryName, values) {
-	    var componentCache = queryCache.get(queryBuilder);
-	    var node = undefined;
-	    if (!componentCache) {
-	      componentCache = new Map();
-	      queryCache.set(queryBuilder, componentCache);
-	    } else {
-	      node = componentCache.get(Component);
-	    }
-	    if (!node) {
-	      var _variables = toVariables(values);
-	      !!isDeprecatedCallWithArgCountGreaterThan(queryBuilder, 2) ?  true ? invariant(false, 'Relay.QL: Deprecated usage detected. If you are trying to define a ' + 'query, use `(Component, variables) => Relay.QL`.') : invariant(false) : undefined;
-	      if (isDeprecatedCallWithArgCountGreaterThan(queryBuilder, 0)) {
-	        node = queryBuilder(Component, _variables);
-	      } else {
-	        node = queryBuilder(Component, _variables);
-	        var query = QueryBuilder.getQuery(node);
-	        if (query) {
-	          (function () {
-	            var hasFragment = false;
-	            var hasScalarFieldsOnly = true;
-	            if (query.children) {
-	              query.children.forEach(function (child) {
-	                if (child) {
-	                  hasFragment = hasFragment || child.kind === 'Fragment';
-	                  hasScalarFieldsOnly = hasScalarFieldsOnly && child.kind === 'Field' && (!child.children || child.children.length === 0);
-	                }
-	              });
-	            }
-	            if (!hasFragment) {
-	              var children = query.children ? [].concat(_toConsumableArray(query.children)) : [];
-	              !hasScalarFieldsOnly ?  true ? invariant(false, 'Relay.QL: Expected query `%s` to be empty. For example, use ' + '`node(id: $id)`, not `node(id: $id) { ... }`.', query.fieldName) : invariant(false) : undefined;
-	              var fragmentVariables = filterObject(_variables, function (_, name) {
-	                return Component.hasVariable(name);
-	              });
-	              children.push(Component.getFragment(queryName, fragmentVariables));
-	              node = _extends({}, query, {
-	                children: children
-	              });
-	            }
-	          })();
-	        }
-	      }
-	      componentCache.set(Component, node);
-	    }
-	    if (node) {
-	      return QueryBuilder.getQuery(node) || undefined;
-	    }
-	    return null;
-	  }
-	};
-
-	function toVariables(variables) // ConcreteCallVariable should flow into mixed
-	{
-	  return mapObject(variables, function (_, name) {
-	    return QueryBuilder.createCallVariable(name);
-	  });
-	}
-
-	RelayProfiler.instrumentMethods(buildRQL, {
-	  Fragment: 'buildRQL.Fragment',
-	  Query: 'buildRQL.Query'
-	});
-
-	module.exports = buildRQL;
-
-/***/ },
-/* 546 */
-/***/ function(module, exports) {
-
-	/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule filterObject
-	 */
-
-	'use strict';
-
-	var hasOwnProperty = Object.prototype.hasOwnProperty;
-
-	/**
-	 * Executes the provided `callback` once for each enumerable own property in the
-	 * object and constructs a new object of all the values for which `callback`
-	 * returns a true value. The `callback` is invoked with three arguments:
-	 *
-	 *  - the property value
-	 *  - the property name
-	 *  - the object being traversed
-	 *
-	 * Properties that are added after the call to `filterObject` will not be
-	 * visited by `callback`. If the values of existing properties are changed, the
-	 * value passed to `callback` will be the value at the time `filterObject`
-	 * visits them. Properties that are deleted before being visited are not
-	 * visited.
-	 *
-	 * @grep function objectFilter()
-	 * @grep function objFilter()
-	 *
-	 * @param {?object} object
-	 * @param {function} callback
-	 * @param {*} context
-	 * @return {?object}
-	 */
-	function filterObject(object, callback, context) {
-	  if (!object) {
-	    return null;
-	  }
-	  var result = {};
-	  for (var name in object) {
-	    if (hasOwnProperty.call(object, name) && callback.call(context, object[name], name, object)) {
-	      result[name] = object[name];
-	    }
-	  }
-	  return result;
-	}
-
-	module.exports = filterObject;
-
-/***/ },
-/* 547 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule prepareRelayContainerProps
-	 */
-
-	'use strict';
-
-	module.exports = __webpack_require__(548);
-
-/***/ },
-/* 548 */
-/***/ function(module, exports) {
-
-	/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule prepareRelayOSSContainerProps
-	 * @typechecks
-	 * 
-	 */
-
-	'use strict';
-
-	/**
-	 * @internal
-	 *
-	 * Provides an opportunity for Relay to fork how RelayContainer props are spread
-	 * into the inner component.
-	 */
-	function prepareRelayOSSContainerProps(relayProps) {
-	  return { relay: relayProps };
-	}
-
-	module.exports = prepareRelayOSSContainerProps;
-
-/***/ },
-/* 549 */
-/***/ function(module, exports) {
-
-	/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule isReactComponent
-	 * @typechecks
-	 * 
-	 */
-
-	'use strict';
-
-	/**
-	 * @internal
-	 *
-	 * Helper for checking if this is a React Component
-	 * created with React.Component or React.createClass().
-	 */
-	function isReactComponent(component) {
-	  return !!(component && component.prototype && component.prototype.isReactComponent);
-	}
-
-	module.exports = isReactComponent;
-
-/***/ },
-/* 550 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule RelayMutation
-	 * @typechecks
-	 * 
-	 */
-
-	'use strict';
-
-	var _classCallCheck = __webpack_require__(355)['default'];
-
-	var _extends = __webpack_require__(338)['default'];
-
-	var _Object$keys = __webpack_require__(384)['default'];
-
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-
-	var RelayFragmentReference = __webpack_require__(406);
-
-	var RelayStore = __webpack_require__(466);
-
-	var buildRQL = __webpack_require__(545);
-
-	var forEachObject = __webpack_require__(407);
-	var fromGraphQL = __webpack_require__(527);
-	var invariant = __webpack_require__(399);
-	var warning = __webpack_require__(371);
-
-	/**
-	 * @public
-	 *
-	 * RelayMutation is the base class for modeling mutations of data.
-	 */
-
-	var RelayMutation = (function () {
-	  function RelayMutation(props) {
-	    _classCallCheck(this, RelayMutation);
-
-	    this._didShowFakeDataWarning = false;
-	    this._resolveProps(props);
-	  }
-
-	  /**
-	   * Wrapper around `buildRQL.Fragment` with contextual error messages.
-	   */
-
-	  /**
-	   * Each mutation has a server name which is used by clients to communicate the
-	   * type of mutation that should be executed on the server.
-	   */
-
-	  RelayMutation.prototype.getMutation = function getMutation() {
-	     true ?  true ? invariant(false, '%s: Expected abstract method `getMutation` to be implemented.', this.constructor.name) : invariant(false) : undefined;
-	  };
-
-	  /**
-	   * "Fat queries" represent a predetermined set of fields that may change as a
-	   * result of a mutation, and which should therefore be queried in order to get
-	   * a consistent view of the data after performing a mutation. In practice, we
-	   * query for a subset of those fields because we intersect the fat query with
-	   * the tracked query we have for a given node (ie. the pieces of data we've
-	   * previously queried for and have therefore written to the store).
-	   *
-	   * Fat queries can be written like normal graphql queries with one main
-	   * exception: fat queries use childless non-scalar fields to indicate that
-	   * anything under that field may change. For example, the fat query for
-	   * feedback_like contains the field `like_sentence` with no child fields.
-	   * This means that any field below `like_sentence` may change as a result of
-	   * feedback_like.
-	   *
-	   * When adding a fat query, consider *all* of the data that might change as a
-	   * result of the mutation - not just data that we currently use in Relay. We
-	   * don't need to worry about overfetching here (this query is never executed
-	   * on its own; the infrastructure always intersects it with what is actually
-	   * needed), and if we omit fields here we might get odd consistency behavior
-	   * in the future when we add new views or modify existing ones.
-	   */
-
-	  RelayMutation.prototype.getFatQuery = function getFatQuery() {
-	     true ?  true ? invariant(false, '%s: Expected abstract method `getFatQuery` to be implemented.', this.constructor.name) : invariant(false) : undefined;
-	  };
-
-	  /**
-	   * These configurations are used to generate the query for the mutation to be
-	   * sent to the server and to correctly write the server's response into the
-	   * client store.
-	   *
-	   * Possible configuration types:
-	   *
-	   * -  FIELDS_CHANGE provides configuration for mutation fields.
-	   *    {
-	   *      type: RelayMutationType.FIELDS_CHANGE;
-	   *      fieldIDs: {[fieldName: string]: DataID | Array<DataID>};
-	   *    }
-	   *    where fieldIDs map `fieldName`s from the fatQuery to a DataID or
-	   *    array of DataIDs to be updated in the store.
-	   *
-	   * -  RANGE_ADD provides configuration for adding a new edge to a range.
-	   *    {
-	   *      type: RelayMutationType.RANGE_ADD;
-	   *      parentName: string;
-	   *      parentID: string;
-	   *      connectionName: string;
-	   *      edgeName: string;
-	   *      rangeBehaviors:
-	   *        {[call: string]: GraphQLMutatorConstants.RANGE_OPERATIONS};
-	   *    }
-	   *    where `parentName` is the field in the fatQuery that contains the range,
-	   *    `parentID` is the DataID of `parentName` in the store, `connectionName`
-	   *    is the name of the range, `edgeName` is the name of the key in server
-	   *    response that contains the newly created edge, `rangeBehaviors` maps
-	   *    stringified representation of calls on the connection to
-	   *    GraphQLMutatorConstants.RANGE_OPERATIONS.
-	   *
-	   * -  NODE_DELETE provides configuration for deleting a node and the
-	   *    corresponding edge from a range.
-	   *    {
-	   *      type: RelayMutationType.NODE_DELETE;
-	   *      parentName: string;
-	   *      parentID: string;
-	   *      connectionName: string;
-	   *      deletedIDFieldName: string;
-	   *    }
-	   *    where `parentName`, `parentID` and `connectionName` refer to the same
-	   *    things as in RANGE_ADD, `deletedIDFieldName` is the name of the key in
-	   *    the server response that contains the DataID of the deleted node.
-	   *
-	   * -  RANGE_DELETE provides configuration for deleting an edge from a range
-	   *    but doesn't delete the node.
-	   *    {
-	   *      type: RelayMutationType.RANGE_DELETE;
-	   *      parentName: string;
-	   *      parentID: string;
-	   *      connectionName: string;
-	   *      deletedIDFieldName: string;
-	   *      pathToConnection: Array<string>;
-	   *    }
-	   *    where `parentName`, `parentID`, `connectionName` and
-	   *    `deletedIDFieldName` refer to the same things as in NODE_DELETE,
-	   *    `pathToConnection` provides a path from `parentName` to
-	   *    `connectionName`.
-	   *
-	   * -  REQUIRED_CHILDREN is used to append additional children (fragments or
-	   *    fields) to the mutation query. Any data fetched as a result of these
-	   *    children is not written to the client store. Please avoid using this.
-	   *    {
-	   *      type: RelayMutationType.REQUIRED_CHILDREN;
-	   *      children: Array<RelayQuery.Node>;
-	   *    }
-	   */
-
-	  RelayMutation.prototype.getConfigs = function getConfigs() {
-	     true ?  true ? invariant(false, '%s: Expected abstract method `getConfigs` to be implemented.', this.constructor.name) : invariant(false) : undefined;
-	  };
-
-	  /**
-	   * These variables form the "input" to the mutation query sent to the server.
-	   */
-
-	  RelayMutation.prototype.getVariables = function getVariables() {
-	     true ?  true ? invariant(false, '%s: Expected abstract method `getVariables` to be implemented.', this.constructor.name) : invariant(false) : undefined;
-	  };
-
-	  /**
-	   * These will be sent along with the mutation query to the server.
-	   */
-
-	  RelayMutation.prototype.getFiles = function getFiles() {
-	    return null;
-	  };
-
-	  /**
-	   * When a request is sent to the server, mutations can optionally construct an
-	   * optimistic response that has the same shape as the server response payload.
-	   * This optimistic response is used to pre-emptively update the client cache
-	   * to simulate an instantaneous response.
-	   *
-	   * The optimistic response may be a subset or superset of the actual response
-	   * payload. It can be a subset if certain fields are impossible to create on
-	   * the client (and if views are expected to handle the data inconsistency). It
-	   * can be a superset of the actual response payload if certain fields that are
-	   * affected have not been queried by the client, yet.
-	   */
-
-	  RelayMutation.prototype.getOptimisticResponse = function getOptimisticResponse() {
-	    return null;
-	  };
-
-	  /**
-	   * Optional. Similar to `getConfig`, this is used to create the query
-	   * corresponding to the `optimisticResponse`. If not provided, the query
-	   * will be inferred from the optimistic response. Most subclasses shouldn't
-	   * need to extend this method.
-	   */
-
-	  RelayMutation.prototype.getOptimisticConfigs = function getOptimisticConfigs() {
-	    return null;
-	  };
-
-	  /**
-	   * An optional collision key allows a mutation to identify itself with other
-	   * mutations that affect the same fields. Mutations with the same collision
-	   * are sent to the server serially and in-order to avoid unpredictable and
-	   * potentially incorrect behavior.
-	   */
-
-	  RelayMutation.prototype.getCollisionKey = function getCollisionKey() {
-	    return null;
-	  };
-
-	  RelayMutation.prototype._resolveProps = function _resolveProps(props) {
-	    var _this = this;
-
-	    var fragments = this.constructor.fragments;
-	    var initialVariables = this.constructor.initialVariables || {};
-
-	    var resolvedProps = _extends({}, props);
-	    forEachObject(fragments, function (fragmentBuilder, fragmentName) {
-	      var propValue = props[fragmentName];
-	       true ? warning(propValue !== undefined, 'RelayMutation: Expected data for fragment `%s` to be supplied to ' + '`%s` as a prop. Pass an explicit `null` if this is intentional.', fragmentName, _this.constructor.name) : undefined;
-
-	      if (!propValue) {
-	        return;
-	      }
-
-	      var fragment = fromGraphQL.Fragment(buildMutationFragment(_this.constructor.name, fragmentName, fragmentBuilder, initialVariables));
-	      var fragmentHash = fragment.getConcreteNodeHash();
-
-	      if (fragment.isPlural()) {
-	        !Array.isArray(propValue) ?  true ? invariant(false, 'RelayMutation: Invalid prop `%s` supplied to `%s`, expected an ' + 'array of records because the corresponding fragment is plural.', fragmentName, _this.constructor.name) : invariant(false) : undefined;
-	        var dataIDs = propValue.reduce(function (acc, item, ii) {
-	          var eachFragmentPointer = item[fragmentHash];
-	          !eachFragmentPointer ?  true ? invariant(false, 'RelayMutation: Invalid prop `%s` supplied to `%s`, ' + 'expected element at index %s to have query data.', fragmentName, _this.constructor.name, ii) : invariant(false) : undefined;
-	          return acc.concat(eachFragmentPointer.getDataIDs());
-	        }, []);
-
-	        resolvedProps[fragmentName] = RelayStore.readAll(fragment, dataIDs);
-	      } else {
-	        !!Array.isArray(propValue) ?  true ? invariant(false, 'RelayMutation: Invalid prop `%s` supplied to `%s`, expected a ' + 'single record because the corresponding fragment is not plural.', fragmentName, _this.constructor.name) : invariant(false) : undefined;
-	        var fragmentPointer = propValue[fragmentHash];
-	        if (fragmentPointer) {
-	          var dataID = fragmentPointer.getDataID();
-	          resolvedProps[fragmentName] = RelayStore.read(fragment, dataID);
-	        } else {
-	          if (true) {
-	            if (!_this._didShowFakeDataWarning) {
-	              _this._didShowFakeDataWarning = true;
-	               true ? warning(false, 'RelayMutation: Expected prop `%s` supplied to `%s` to ' + 'be data fetched by Relay. This is likely an error unless ' + 'you are purposely passing in mock data that conforms to ' + 'the shape of this mutation\'s fragment.', fragmentName, _this.constructor.name) : undefined;
-	            }
-	          }
-	        }
-	      }
-	    });
-	    this.props = resolvedProps;
-	  };
-
-	  RelayMutation.getFragment = function getFragment(fragmentName, variableMapping) {
-	    var _this2 = this;
-
-	    // TODO: Unify fragment API for containers and mutations, #7860172.
-	    var fragments = this.fragments;
-	    var fragmentBuilder = fragments[fragmentName];
-	    if (!fragmentBuilder) {
-	       true ?  true ? invariant(false, '%s.getFragment(): `%s` is not a valid fragment name. Available ' + 'fragments names: %s', this.name, fragmentName, _Object$keys(fragments).map(function (name) {
-	        return '`' + name + '`';
-	      }).join(', ')) : invariant(false) : undefined;
-	    }
-
-	    var initialVariables = this.initialVariables || {};
-	    var prepareVariables = this.prepareVariables;
-
-	    return RelayFragmentReference.createForContainer(function () {
-	      return buildMutationFragment(_this2.name, fragmentName, fragmentBuilder, initialVariables);
-	    }, initialVariables, variableMapping, prepareVariables);
-	  };
-
-	  return RelayMutation;
-	})();
-
-	function buildMutationFragment(mutationName, fragmentName, fragmentBuilder, variables) {
-	  var fragment = buildRQL.Fragment(fragmentBuilder, variables);
-	  !fragment ?  true ? invariant(false, 'Relay.QL defined on mutation `%s` named `%s` is not a valid fragment. ' + 'A typical fragment is defined using: Relay.QL`fragment on Type {...}`', mutationName, fragmentName) : invariant(false) : undefined;
-	  return fragment;
-	}
-
-	module.exports = RelayMutation;
-
-	/* $FlowIssue(>=0.20.0) #9410317 */
-
-/***/ },
-/* 551 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -66157,9 +67193,10 @@
 	  value: true
 	});
 	var QueryBuilder = __webpack_require__(395);
-	var RelayFragmentReference = __webpack_require__(406);
-	var RelayRouteFragment = __webpack_require__(411);
+	var RelayFragmentReference = __webpack_require__(412);
+	var RelayRouteFragment = __webpack_require__(417);
 
+	var generateConcreteFragmentID = __webpack_require__(405);
 	var invariant = __webpack_require__(399);
 
 	/**
@@ -66177,6 +67214,10 @@
 	   true ?  true ? invariant(false, 'RelayQL: Unexpected invocation at runtime. Either the Babel transform ' + 'was not set up, or it failed to identify this call site. Make sure it ' + 'is being used verbatim as `Relay.QL`.') : invariant(false) : undefined;
 	}
 
+	function assertValidFragment(substitution) {
+	  !(substitution instanceof RelayFragmentReference || QueryBuilder.getFragment(substitution) || QueryBuilder.getFragmentReference(substitution)) ?  true ? invariant(false, 'RelayQL: Invalid fragment composition, use ' + '`${Child.getFragment(\'name\')}`.') : invariant(false) : undefined;
+	}
+
 	/**
 	 * Private helper methods used by the transformed code.
 	 */
@@ -66187,7 +67228,11 @@
 	      return new RelayRouteFragment(substitution);
 	    }
 	    if (substitution != null) {
-	      !(substitution instanceof RelayFragmentReference || QueryBuilder.getFragment(substitution) || QueryBuilder.getFragmentReference(substitution)) ?  true ? invariant(false, 'RelayQL: Invalid fragment composition, use ' + '`${Child.getFragment(\'name\')}`.') : invariant(false) : undefined;
+	      if (Array.isArray(substitution)) {
+	        substitution.forEach(assertValidFragment);
+	      } else {
+	        assertValidFragment(substitution);
+	      }
 	    }
 	    return substitution;
 	  },
@@ -66198,23 +67243,19 @@
 	    }
 	    return QueryBuilder.createCallValue(expression);
 	  },
-	  __varDEPRECATED: function __varDEPRECATED(expression) {
-	    var variable = QueryBuilder.getCallVariable(expression);
-	    if (variable) {
-	       true ?  true ? invariant(false, 'RelayQL: Invalid argument `%s` supplied via template substitution. ' + 'Instead, use an inline variable (e.g. `comments(count: $count)`).', variable.callVariableName) : invariant(false) : undefined;
-	    }
-	    return expression;
+	  __id: function __id() {
+	    return generateConcreteFragmentID();
 	  }
 	});
 
 	module.exports = RelayQL;
 
 /***/ },
-/* 552 */
+/* 559 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -66230,9 +67271,9 @@
 
 	var React = __webpack_require__(2);
 
-	var RelayPropTypes = __webpack_require__(464);
+	var RelayPropTypes = __webpack_require__(432);
 
-	var RelayRenderer = __webpack_require__(553);
+	var RelayRenderer = __webpack_require__(560);
 
 	var PropTypes = React.PropTypes;
 
@@ -66302,7 +67343,7 @@
 	  var route = _ref.route;
 
 	  return React.createElement(RelayRenderer, {
-	    Component: Component,
+	    Container: Component,
 	    forceFetch: forceFetch,
 	    onReadyStateChange: onReadyStateChange,
 	    queryConfig: route,
@@ -66350,11 +67391,11 @@
 	module.exports = RelayRootContainer;
 
 /***/ },
-/* 553 */
+/* 560 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -66368,24 +67409,26 @@
 
 	'use strict';
 
-	var _inherits = __webpack_require__(375)['default'];
+	var _inherits = __webpack_require__(376)['default'];
 
 	var _classCallCheck = __webpack_require__(355)['default'];
 
 	var _extends = __webpack_require__(338)['default'];
 
-	var GraphQLFragmentPointer = __webpack_require__(389);
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	var RelayFragmentPointer = __webpack_require__(390);
 	var React = __webpack_require__(2);
 
-	var RelayPropTypes = __webpack_require__(464);
-	var RelayStore = __webpack_require__(466);
-	var RelayStoreData = __webpack_require__(468);
+	var RelayPropTypes = __webpack_require__(432);
+	var RelayStore = __webpack_require__(486);
 
-	var StaticContainer = __webpack_require__(554);
+	var StaticContainer = __webpack_require__(561);
 
-	var getRelayQueries = __webpack_require__(556);
+	var getRelayQueries = __webpack_require__(563);
 	var invariant = __webpack_require__(399);
-	var mapObject = __webpack_require__(489);
+	var mapObject = __webpack_require__(479);
 
 	var PropTypes = React.PropTypes;
 
@@ -66456,12 +67499,45 @@
 	    _classCallCheck(this, RelayRenderer);
 
 	    _React$Component.call(this, props, context);
+	    var garbageCollector = RelayStore.getStoreData().getGarbageCollector();
+	    this.gcHold = garbageCollector && garbageCollector.acquireHold();
 	    this.mounted = true;
-	    this.state = this._runQueries(this.props);
+	    this.pendingRequest = null;
+	    this.state = this._buildState(null, null, null, null);
 	  }
 
+	  /**
+	   * @private
+	   */
+
+	  RelayRenderer.prototype._buildState = function _buildState(activeContainer, activeQueryConfig, readyState, props) {
+	    var _this = this;
+
+	    return {
+	      activeContainer: activeContainer,
+	      activeQueryConfig: activeQueryConfig,
+	      readyState: readyState && _extends({}, readyState, { mounted: true }),
+	      renderArgs: {
+	        done: !!readyState && readyState.done,
+	        error: readyState && readyState.error,
+	        props: props,
+	        retry: function retry() {
+	          return _this._retry();
+	        },
+	        stale: !!readyState && readyState.stale
+	      }
+	    };
+	  };
+
 	  RelayRenderer.prototype.getChildContext = function getChildContext() {
-	    return { route: this.props.queryConfig };
+	    return {
+	      relay: RelayStore,
+	      route: this.props.queryConfig
+	    };
+	  };
+
+	  RelayRenderer.prototype.componentDidMount = function componentDidMount() {
+	    this._runQueries(this.props);
 	  };
 
 	  /**
@@ -66469,79 +67545,67 @@
 	   */
 
 	  RelayRenderer.prototype._runQueries = function _runQueries(_ref) {
-	    var _this = this;
+	    var _this2 = this;
 
-	    var Component = _ref.Component;
+	    var Container = _ref.Container;
 	    var forceFetch = _ref.forceFetch;
+	    var onForceFetch = _ref.onForceFetch;
+	    var onPrimeCache = _ref.onPrimeCache;
 	    var queryConfig = _ref.queryConfig;
 
-	    var querySet = getRelayQueries(Component, queryConfig);
+	    var querySet = getRelayQueries(Container, queryConfig);
 	    var onReadyStateChange = function onReadyStateChange(readyState) {
-	      if (!_this.mounted) {
-	        _this._handleReadyStateChange(_extends({}, readyState, { mounted: false }));
+	      if (!_this2.mounted) {
+	        _this2._handleReadyStateChange(_extends({}, readyState, { mounted: false }));
 	        return;
 	      }
-	      var _state = _this.state;
-	      var pendingRequest = _state.pendingRequest;
-	      var props = _state.renderArgs.props;
-
-	      if (request !== pendingRequest) {
+	      if (request !== _this2.pendingRequest) {
 	        // Ignore (abort) ready state if we have a new pending request.
 	        return;
 	      }
 	      if (readyState.aborted || readyState.done || readyState.error) {
-	        pendingRequest = null;
+	        _this2.pendingRequest = null;
 	      }
+	      var props = _this2.state.renderArgs.props;
+
 	      if (readyState.ready && !props) {
 	        props = _extends({}, queryConfig.params, mapObject(querySet, createFragmentPointerForRoot));
 	      }
-	      _this.setState({
-	        activeComponent: Component,
-	        activeQueryConfig: queryConfig,
-	        pendingRequest: pendingRequest,
-	        readyState: _extends({}, readyState, { mounted: true }),
-	        renderArgs: {
-	          done: readyState.done,
-	          error: readyState.error,
-	          props: props,
-	          retry: _this.state.renderArgs.retry,
-	          stale: readyState.stale
-	        }
-	      });
+	      _this2.setState(_this2._buildState(Container, queryConfig, readyState, props));
 	    };
 
-	    var request = forceFetch ? RelayStore.forceFetch(querySet, onReadyStateChange) : RelayStore.primeCache(querySet, onReadyStateChange);
+	    if (this.pendingRequest) {
+	      this.pendingRequest.abort();
+	    }
 
-	    return {
-	      activeComponent: this.state ? this.state.activeComponent : null,
-	      activeQueryConfig: this.state ? this.state.activeQueryConfig : null,
-	      pendingRequest: request,
-	      readyState: null,
-	      renderArgs: {
-	        done: false,
-	        error: null,
-	        props: null,
-	        retry: this._retry.bind(this),
-	        stale: false
-	      }
-	    };
+	    var request = this.pendingRequest = forceFetch ? onForceFetch ? onForceFetch(querySet, onReadyStateChange) : RelayStore.forceFetch(querySet, onReadyStateChange) : onPrimeCache ? onPrimeCache(querySet, onReadyStateChange) : RelayStore.primeCache(querySet, onReadyStateChange);
 	  };
 
 	  /**
 	   * Returns whether or not the view should be updated during the current render
 	   * pass. This is false between invoking `Relay.Store.{primeCache,forceFetch}`
 	   * and the first invocation of the `onReadyStateChange` callback if there is
-	   * an actively rendered component and query configuration.
+	   * an actively rendered container and query configuration.
 	   *
 	   * @private
 	   */
 
 	  RelayRenderer.prototype._shouldUpdate = function _shouldUpdate() {
-	    var _state2 = this.state;
-	    var activeComponent = _state2.activeComponent;
-	    var activeQueryConfig = _state2.activeQueryConfig;
+	    var _state = this.state;
+	    var activeContainer = _state.activeContainer;
+	    var activeQueryConfig = _state.activeQueryConfig;
+	    var Container = this.props.Container;
 
-	    return (!activeComponent || this.props.Component === activeComponent) && (!activeQueryConfig || this.props.queryConfig === activeQueryConfig);
+	    return (!activeContainer || Container === activeContainer) && (!activeQueryConfig || this.props.queryConfig === activeQueryConfig);
+	  };
+
+	  /**
+	   * @private
+	   */
+
+	  RelayRenderer.prototype._runQueriesAndSetState = function _runQueriesAndSetState(props) {
+	    this._runQueries(props);
+	    this.setState(this._buildState(this.state.activeContainer, this.state.activeQueryConfig, null, null));
 	  };
 
 	  /**
@@ -66552,15 +67616,12 @@
 	    var readyState = this.state.readyState;
 
 	    !(readyState && readyState.error) ?  true ? invariant(false, 'RelayRenderer: You tried to call `retry`, but the last request did ' + 'not fail. You can only call this when the last request has failed.') : invariant(false) : undefined;
-	    this.setState(this._runQueries(this.props));
+	    this._runQueriesAndSetState(this.props);
 	  };
 
 	  RelayRenderer.prototype.componentWillReceiveProps = function componentWillReceiveProps(nextProps) {
-	    if (nextProps.Component !== this.props.Component || nextProps.queryConfig !== this.props.queryConfig || nextProps.forceFetch && !this.props.forceFetch) {
-	      if (this.state.pendingRequest) {
-	        this.state.pendingRequest.abort();
-	      }
-	      this.setState(this._runQueries(nextProps));
+	    if (nextProps.Container !== this.props.Container || nextProps.queryConfig !== this.props.queryConfig || nextProps.forceFetch && !this.props.forceFetch) {
+	      this._runQueriesAndSetState(nextProps);
 	    }
 	  };
 
@@ -66588,9 +67649,13 @@
 	  };
 
 	  RelayRenderer.prototype.componentWillUnmount = function componentWillUnmount() {
-	    if (this.state.pendingRequest) {
-	      this.state.pendingRequest.abort();
+	    if (this.pendingRequest) {
+	      this.pendingRequest.abort();
 	    }
+	    if (this.gcHold) {
+	      this.gcHold.release();
+	    }
+	    this.gcHold = null;
 	    this.mounted = false;
 	  };
 
@@ -66599,14 +67664,14 @@
 	    var shouldUpdate = this._shouldUpdate();
 	    if (shouldUpdate) {
 	      var _props = this.props;
-	      var _Component = _props.Component;
+	      var _Container = _props.Container;
 	      var _render = _props.render;
 	      var _renderArgs = this.state.renderArgs;
 
 	      if (_render) {
 	        children = _render(_renderArgs);
 	      } else if (_renderArgs.props) {
-	        children = React.createElement(_Component, _renderArgs.props);
+	        children = React.createElement(_Container, _renderArgs.props);
 	      }
 	    }
 	    if (children === undefined) {
@@ -66624,11 +67689,11 @@
 	})(React.Component);
 
 	function createFragmentPointerForRoot(query) {
-	  return query ? GraphQLFragmentPointer.createForRoot(RelayStoreData.getDefaultInstance().getQueuedStore(), query) : null;
+	  return query ? RelayFragmentPointer.createForRoot(RelayStore.getStoreData().getQueuedStore(), query) : null;
 	}
 
 	RelayRenderer.propTypes = {
-	  Component: RelayPropTypes.Container,
+	  Container: RelayPropTypes.Container,
 	  forceFetch: PropTypes.bool,
 	  onReadyStateChange: PropTypes.func,
 	  queryConfig: RelayPropTypes.QueryConfig.isRequired,
@@ -66636,13 +67701,14 @@
 	};
 
 	RelayRenderer.childContextTypes = {
+	  relay: RelayPropTypes.Context,
 	  route: RelayPropTypes.QueryConfig.isRequired
 	};
 
 	module.exports = RelayRenderer;
 
 /***/ },
-/* 554 */
+/* 561 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -66654,11 +67720,11 @@
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 */
 
-	module.exports = __webpack_require__(555);
+	module.exports = __webpack_require__(562);
 
 
 /***/ },
-/* 555 */
+/* 562 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -66733,11 +67799,11 @@
 	module.exports = StaticContainer;
 
 /***/ },
-/* 556 */
+/* 563 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -66750,18 +67816,18 @@
 
 	'use strict';
 
-	var _Object$keys = __webpack_require__(384)['default'];
+	var _Object$keys = __webpack_require__(385)['default'];
 
-	var Map = __webpack_require__(509);
+	var Map = __webpack_require__(463);
 
-	var RelayMetaRoute = __webpack_require__(408);
-	var RelayProfiler = __webpack_require__(409);
+	var RelayMetaRoute = __webpack_require__(414);
+	var RelayProfiler = __webpack_require__(415);
 	var RelayQuery = __webpack_require__(391);
 
-	var buildRQL = __webpack_require__(545);
+	var buildRQL = __webpack_require__(436);
 	var invariant = __webpack_require__(399);
-	var stableStringify = __webpack_require__(420);
-	var warning = __webpack_require__(371);
+	var stableStringify = __webpack_require__(400);
+	var warning = __webpack_require__(372);
 
 	var queryCache = new Map();
 
@@ -66775,6 +67841,9 @@
 	    queryCache.set(Component, {});
 	  }
 	  var cacheKey = route.name + ':' + stableStringify(route.params);
+	  /* $FlowFixMe(>=0.22.0): Error discovered while adding Flow types
+	   * to Map and Set. This is often because .get() can return null.
+	   */
 	  var cache = queryCache.get(Component);
 	  if (cache.hasOwnProperty(cacheKey)) {
 	    return cache[cacheKey];
@@ -66810,11 +67879,11 @@
 	module.exports = RelayProfiler.instrument('Relay.getQueries', getRelayQueries);
 
 /***/ },
-/* 557 */
+/* 564 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -66828,7 +67897,7 @@
 
 	'use strict';
 
-	var _inherits = __webpack_require__(375)['default'];
+	var _inherits = __webpack_require__(376)['default'];
 
 	var _classCallCheck = __webpack_require__(355)['default'];
 
@@ -66836,9 +67905,9 @@
 	  value: true
 	});
 
-	var RelayQueryConfig = __webpack_require__(558);
+	var RelayQueryConfig = __webpack_require__(565);
 
-	var forEachObject = __webpack_require__(407);
+	var forEachObject = __webpack_require__(413);
 	var invariant = __webpack_require__(399);
 
 	var createURI = function createURI() {
@@ -66864,14 +67933,15 @@
 	    !(constructor !== RelayRoute) ?  true ? invariant(false, 'RelayRoute: Abstract class cannot be instantiated.') : invariant(false) : undefined;
 	    !routeName ?  true ? invariant(false, '%s: Subclasses of RelayRoute must define a `routeName`.', constructor.name || '<<anonymous>>') : invariant(false) : undefined;
 
-	    if (!uri && path) {
-	      uri = createURI(constructor, this.params);
-	    }
-
+	    // $FlowIssue #9905535 - Object.defineProperty doesn't understand getters
 	    Object.defineProperty(this, 'uri', {
 	      enumerable: true,
-	      value: uri,
-	      writable: false
+	      get: function get() {
+	        if (!uri && path) {
+	          uri = createURI(constructor, this.params);
+	        }
+	        return uri;
+	      }
 	    });
 	  }
 
@@ -66910,11 +67980,11 @@
 	module.exports = RelayRoute;
 
 /***/ },
-/* 558 */
+/* 565 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -66954,18 +68024,15 @@
 
 	    Object.defineProperty(this, 'name', {
 	      enumerable: true,
-	      value: this.constructor.routeName,
-	      writable: false
+	      value: this.constructor.routeName
 	    });
 	    Object.defineProperty(this, 'params', {
 	      enumerable: true,
-	      value: this.prepareVariables(_extends({}, initialVariables)) || {},
-	      writable: false
+	      value: this.prepareVariables(_extends({}, initialVariables)) || {}
 	    });
 	    Object.defineProperty(this, 'queries', {
 	      enumerable: true,
-	      value: _extends({}, this.constructor.queries),
-	      writable: false
+	      value: _extends({}, this.constructor.queries)
 	    });
 
 	    if (true) {
@@ -66991,11 +68058,11 @@
 	// TODO: Deprecate `routeName`, #8478719.
 
 /***/ },
-/* 559 */
+/* 566 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -67008,11 +68075,11 @@
 
 	'use strict';
 
-	var RelayNetworkLayer = __webpack_require__(480);
-	var RelayStoreData = __webpack_require__(468);
+	var RelayNetworkLayer = __webpack_require__(506);
+	var RelayStore = __webpack_require__(486);
 
-	var flattenRelayQuery = __webpack_require__(508);
-	var printRelayQuery = __webpack_require__(525);
+	var flattenRelayQuery = __webpack_require__(535);
+	var printRelayQuery = __webpack_require__(541);
 
 	/**
 	 * This module contains internal Relay modules that we expose for development
@@ -67022,7 +68089,7 @@
 	 */
 	var RelayInternals = {
 	  NetworkLayer: RelayNetworkLayer,
-	  DefaultStoreData: RelayStoreData.getDefaultInstance(),
+	  DefaultStoreData: RelayStore.getStoreData(),
 	  flattenRelayQuery: flattenRelayQuery,
 	  printRelayQuery: printRelayQuery
 	};
@@ -67030,11 +68097,11 @@
 	module.exports = RelayInternals;
 
 /***/ },
-/* 560 */
+/* 567 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Copyright 2013-2015, Facebook, Inc.
+	 * Copyright (c) 2013-present, Facebook, Inc.
 	 * All rights reserved.
 	 *
 	 * This source code is licensed under the BSD-style license found in the
@@ -67048,7 +68115,7 @@
 
 	'use strict';
 
-	var RelayMetaRoute = __webpack_require__(408);
+	var RelayMetaRoute = __webpack_require__(414);
 	var RelayQuery = __webpack_require__(391);
 
 	var invariant = __webpack_require__(399);

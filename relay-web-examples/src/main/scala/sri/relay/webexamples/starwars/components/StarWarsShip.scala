@@ -22,7 +22,6 @@ object StarWarsShip {
     }
   }
 
-
   @ScalaJSDefined
   class Props(val ship : js.Dynamic) extends RelayComponentProps
 
