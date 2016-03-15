@@ -5,7 +5,7 @@ import sri.mobile.ReactNative
 import sri.mobile.all._
 import sri.mobile.examples.uiexplorer.UIExplorerApp.UIExplorerDetails
 import sri.mobile.examples.uiexplorer.apis.android.{IntentAndroidExample, ToastAndroidExample}
-import sri.mobile.examples.uiexplorer.apis.{AlertIOSExample, AppStateIOSExample, AsyncStorageExample}
+import sri.mobile.examples.uiexplorer.apis.{GeolocationExample, AlertIOSExample, AppStateIOSExample, AsyncStorageExample}
 import sri.mobile.examples.uiexplorer.components._
 import sri.mobile.examples.uiexplorer.components.android.{SwitchAndroidExample, ToolbarAndroidExample}
 import sri.mobile.examples.uiexplorer.components.ios._
@@ -52,7 +52,7 @@ object UIExplorerListScreen {
 
 
   val APIS: List[UIExample] = List(
-    //    GeoLocationExample,
+        GeolocationExample
     //    NetInfoExample
   )
 
