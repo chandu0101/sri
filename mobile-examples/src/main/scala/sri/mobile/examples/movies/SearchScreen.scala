@@ -7,7 +7,7 @@ import sri.mobile.all._
 import sri.mobile.components.ios.ActivityIndicatorIOS
 import sri.mobile.examples.movies.android.SearchBarAndroid
 import sri.mobile.examples.movies.ios.SearchBarIOS
-import sri.universal.ReactEvent
+import sri.universal.{TextInputEvent, ReactEvent}
 import sri.universal.components._
 import sri.universal.styles.UniversalStyleSheet
 
@@ -179,15 +179,15 @@ object SearchScreen {
       else ActivityIndicatorIOS(style = styles.scrollSpinner)()
     }
 
-    def onSearchChange(event: ReactEvent) = {
-      val filterLocal = event.nativeEvent.text.toString.toLowerCase()
+    def onSearchChange(event: ReactEvent[TextInputEvent]) = {
+      val filterLocal = event.nativeEvent.text.toLowerCase()
       dom.window.clearTimeout(timeoutID)
       timeoutID = dom.window.setTimeout(() => searchMovies(filterLocal), 100)
     }
 
     def dude[T <: js.Object](name: String) = "dude".asInstanceOf[T]
 
-    def onSearchInputFocus(e: ReactEvent) = {
+    def onSearchInputFocus(e: ReactEvent[TextInputEvent]) = {
       if (listViewMounted != null) listViewMounted.getScrollResponder().scrollTo(0, 0)
     }
   }

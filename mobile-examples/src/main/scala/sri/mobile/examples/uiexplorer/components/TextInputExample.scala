@@ -3,7 +3,7 @@ package sri.mobile.examples.uiexplorer.components
 import sri.core.{ReactElement, ReactComponent, ReactNode}
 import sri.mobile.all._
 import sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
-import sri.universal.ReactEvent
+import sri.universal.{TextInputEvent, ReactEvent}
 import sri.universal.components._
 import sri.universal.styles.UniversalStyleSheet
 
@@ -45,11 +45,11 @@ object TextInputExample extends UIExample {
         TextInput(autoCapitalize = AutoCapitalize.NONE,
           placeholder = "Enter text to see events",
           autoCorrect = false,
-          onFocus = (e: ReactEvent) => upDateTex("onFocus"),
-          onBlur = (e: ReactEvent) => upDateTex("onBlur"),
-          onChange = (e: ReactEvent) => upDateTex(s"onChange text ${e.nativeEvent.text}"),
-          onEndEditing = (e: ReactEvent) => upDateTex(s"onEndEditing text ${e.nativeEvent.text}"),
-          onSubmitEditing = (e: ReactEvent) => upDateTex(s"onSubmitEditing text ${e.nativeEvent.text}"),
+          onFocus = (e: ReactEvent[TextInputEvent]) => upDateTex("onFocus"),
+          onBlur = (e: ReactEvent[TextInputEvent]) => upDateTex("onBlur"),
+          onChange = (e: ReactEvent[TextInputEvent]) => upDateTex(s"onChange text ${e.nativeEvent.text}"),
+          onEndEditing = (e: ReactEvent[TextInputEvent]) => upDateTex(s"onEndEditing text ${e.nativeEvent.text}"),
+          onSubmitEditing = (e: ReactEvent[TextInputEvent]) => upDateTex(s"onSubmitEditing text ${e.nativeEvent.text}"),
           style = styles.default
         )(),
         Text(style = styles.eventLabel)(
@@ -62,7 +62,7 @@ object TextInputExample extends UIExample {
         setState(state.copy(text, state.curText))
       }
 
-      def handleInputEvent(e: ReactEvent) = {
+      def handleInputEvent(e: ReactEvent[TextInputEvent]) = {
 
       }
     }

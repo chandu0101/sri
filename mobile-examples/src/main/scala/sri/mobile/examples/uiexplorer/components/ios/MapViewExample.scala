@@ -4,7 +4,7 @@ import sri.core._
 import sri.mobile.all._
 import sri.mobile.components.{MapView, MapViewAnnotation, MapViewRegion}
 import sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
-import sri.universal.ReactEvent
+import sri.universal.{TextInputEvent, ReactEvent}
 import sri.universal.components._
 import sri.universal.styles.UniversalStyleSheet
 
@@ -74,20 +74,20 @@ object MapViewExample extends UIExample {
         doubleOption.getOrElse(0.0)
       }
 
-      def onChangeLatitude(e: ReactEvent) = {
-        region = region.copy(latitude = getDouble(e.nativeEvent.text.toString))
+      def onChangeLatitude(e: ReactEvent[TextInputEvent]) = {
+        region = region.copy(latitude = getDouble(e.nativeEvent.text))
       }
 
-      def onChangeLongitude(e: ReactEvent) = {
-        region = region.copy(longitude = getDouble(e.nativeEvent.text.toString))
+      def onChangeLongitude(e: ReactEvent[TextInputEvent]) = {
+        region = region.copy(longitude = getDouble(e.nativeEvent.text))
       }
 
-      def onChangeLatitudeDelta(e: ReactEvent) = {
-        region = region.copy(latitudeDelta = getDouble(e.nativeEvent.text.toString))
+      def onChangeLatitudeDelta(e: ReactEvent[TextInputEvent]) = {
+        region = region.copy(latitudeDelta = getDouble(e.nativeEvent.text))
       }
 
-      def onChangeLongitudeDelta(e: ReactEvent) = {
-        region = region.copy(longitudeDelta = getDouble(e.nativeEvent.text.toString))
+      def onChangeLongitudeDelta(e: ReactEvent[TextInputEvent]) = {
+        region = region.copy(longitudeDelta = getDouble(e.nativeEvent.text))
       }
 
       def change: Unit = {

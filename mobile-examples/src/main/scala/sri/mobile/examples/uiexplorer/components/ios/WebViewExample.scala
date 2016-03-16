@@ -1,10 +1,11 @@
 package sri.mobile.examples.uiexplorer.components.ios
 
 import sri.core.ReactComponent
+import sri.mobile.WebViewEvent
 import sri.mobile.all._
 import sri.mobile.components.{NavigationState, WebView, WebViewM}
 import sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
-import sri.universal.ReactEvent
+import sri.universal.{TextInputEvent, ReactEvent}
 import sri.universal.components._
 import sri.universal.styles.UniversalStyleSheet
 
@@ -81,8 +82,8 @@ object WebViewExample extends UIExample {
     }
 
 
-    def handleTextInputChange(event: ReactEvent) = {
-      inputText = event.nativeEvent.text.toString
+    def handleTextInputChange(event: ReactEvent[TextInputEvent]) = {
+      inputText = event.nativeEvent.text
     }
 
     def goBack = if (webViewMounted != null) webViewMounted.goBack()
@@ -102,7 +103,7 @@ object WebViewExample extends UIExample {
       if (textInputMounted != null) textInputMounted.blur()
     }
 
-    def onSubmitEditing(event: ReactEvent) = pressGoButton
+    def onSubmitEditing(event: ReactEvent[TextInputEvent]) = pressGoButton
 
   }
 

@@ -2,7 +2,7 @@ package sri.mobile.components.android
 
 import chandu0101.macros.tojs.JSMacro
 import sri.core.{React, ReactElement, ReactNode}
-import sri.mobile.ReactNative
+import sri.mobile.{DrawerLayoutAndroidEvent, ReactNative}
 import sri.universal.ReactEvent
 
 import scala.scalajs.js
@@ -14,7 +14,7 @@ case class DrawerLayoutAndroid(key: U[String] = undefined,
                                ref: U[DrawerLayoutAndroidM => _] = undefined,
                                drawerPosition: U[DrawerPosition] = undefined,
                                drawerWidth: U[Double] = undefined,
-                               onDrawerSlide: U[ReactEvent => _] = undefined,
+                               onDrawerSlide: U[ReactEvent[DrawerLayoutAndroidEvent] => _] = undefined,
                                onDrawerStateChanged: U[String => _] = undefined,
                                onDrawerOpen: U[() => _] = undefined,
                                onDrawerClose: U[() => _] = undefined,

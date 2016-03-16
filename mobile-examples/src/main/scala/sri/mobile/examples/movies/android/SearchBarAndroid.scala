@@ -5,7 +5,7 @@ import sri.mobile.ReactNative
 import sri.mobile.all._
 import sri.mobile.components.android.{ProgressBarAndroid, ProgressBarAndroidStyle}
 import sri.mobile.components.{TouchableNativeFeedback, TouchableNativeFeedbackS}
-import sri.universal.ReactEvent
+import sri.universal.{TextInputEvent, ReactEvent}
 import sri.universal.components._
 import sri.universal.styles.UniversalStyleSheet
 
@@ -87,10 +87,10 @@ object SearchBarAndroid {
       marginHorizontal := 8)
   }
 
-  case class Props(onChange: ReactEvent => Unit, onFocus: ReactEvent => Unit, isLoading: Boolean)
+  case class Props(onChange: ReactEvent[TextInputEvent] => Unit, onFocus: ReactEvent[TextInputEvent] => Unit, isLoading: Boolean)
 
   val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
 
-  def apply(onChange: ReactEvent => Unit, onFocus: ReactEvent => Unit, isLoading: Boolean, key: UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElement(ctor, Props(onChange, onFocus, isLoading), key = key, ref = ref)
+  def apply(onChange: ReactEvent[TextInputEvent] => Unit, onFocus: ReactEvent[TextInputEvent] => Unit, isLoading: Boolean, key: UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElement(ctor, Props(onChange, onFocus, isLoading), key = key, ref = ref)
 
 }

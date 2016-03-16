@@ -3,7 +3,13 @@ package sri.universal
 import scala.scalajs.js
 
 @js.native
-trait ReactEvent extends js.Object{
+trait ReactEvent[T <: js.Object] extends js.Object{
 
-  val nativeEvent: js.Dynamic = js.native
+  val nativeEvent: T = js.native
+}
+
+@js.native
+trait TextInputEvent extends js.Object {
+
+  val text : String = js.native
 }

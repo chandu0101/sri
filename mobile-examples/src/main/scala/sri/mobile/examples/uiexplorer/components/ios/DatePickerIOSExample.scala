@@ -4,7 +4,7 @@ import sri.core.{ReactComponent, ReactElement}
 import sri.mobile.all._
 import sri.mobile.components.ios.{DatePickerIOS, DatePickerIOSMode, MinuteInterval}
 import sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
-import sri.universal.ReactEvent
+import sri.universal.{TextInputEvent, ReactEvent}
 import sri.universal.components._
 import sri.universal.styles.UniversalStyleSheet
 
@@ -90,8 +90,8 @@ object DatePickerIOSExample extends UIExample {
         setState(state.copy(date = date))
       }
 
-      def onTimezoneChange(event: ReactEvent) = {
-        val offset = Try(event.nativeEvent.text.toString.toInt).toOption
+      def onTimezoneChange(event: ReactEvent[TextInputEvent]) = {
+        val offset = Try(event.nativeEvent.text.toInt).toOption
         if (offset.isDefined) setState(state.copy(timeZoneOffsetInHours = offset.get))
       }
     }

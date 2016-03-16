@@ -1,8 +1,8 @@
 package sri.mobile.components.android
 
 import chandu0101.macros.tojs.JSMacro
-import sri.core.React
-import sri.mobile.ReactNative
+import sri.core.{ReactNode, React}
+import sri.mobile.{ViewPagerAndroidEvent, ReactNative}
 import sri.universal.ReactEvent
 
 import scala.scalajs.js
@@ -13,15 +13,15 @@ case class ViewPagerAndroid(key: U[String] = undefined,
                             style: U[js.Any] = undefined,
                             ref: U[ViewPagerAndroidM => _] = undefined,
                             initialPage: U[Int] = undefined,
-                            onPageScroll: U[ReactEvent => _] = undefined,
-                            onPageSelected: U[ReactEvent => _] = undefined,
-                            onPageScrollStateChanged: U[ReactEvent => _] = undefined,
+                            onPageScroll: U[ReactEvent[ViewPagerAndroidEvent] => _] = undefined,
+                            onPageSelected: U[ReactEvent[ViewPagerAndroidEvent] => _] = undefined,
+                            onPageScrollStateChanged: U[String => _] = undefined,
                             keyboardDismissMode: U[KeyboardDismissModeViewPager] = undefined
                              ) {
 
-  def apply() = {
+  def apply(children : ReactNode*) = {
     val props = JSMacro[ViewPagerAndroid](this)
-    React.createElement(ReactNative.ViewPagerAndroid, props)
+    React.createElement(ReactNative.ViewPagerAndroid, props,children :_ *)
   }
 
 }
@@ -30,6 +30,8 @@ case class ViewPagerAndroid(key: U[String] = undefined,
 trait ViewPagerAndroidM extends js.Object {
 
   def setPage(selectedPage: Int): Unit = js.native
+
+  def setPageWithoutAnimation(selectedPage: Int): Unit = js.native
 }
 
 class KeyboardDismissModeViewPager private(val value: String) extends AnyVal

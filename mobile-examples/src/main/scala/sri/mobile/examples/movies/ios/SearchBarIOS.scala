@@ -3,7 +3,7 @@ package sri.mobile.examples.movies.ios
 import sri.core._
 import sri.mobile.all._
 import sri.mobile.components.ios.ActivityIndicatorIOS
-import sri.universal.ReactEvent
+import sri.universal.{TextInputEvent, ReactEvent}
 import sri.universal.components.{AutoCapitalize, TextInput, View}
 import sri.universal.styles.UniversalStyleSheet
 
@@ -45,10 +45,10 @@ object SearchBarIOS {
     )
   }
 
-  case class Props(onChange: ReactEvent => Unit, onFocus: ReactEvent => Unit, isLoading: Boolean)
+  case class Props(onChange: ReactEvent[TextInputEvent] => Unit, onFocus: ReactEvent[TextInputEvent] => Unit, isLoading: Boolean)
 
   val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
 
-  def apply(onChange: ReactEvent => Unit, onFocus: ReactEvent => Unit, isLoading: Boolean, key: UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElement(ctor, Props(onChange, onFocus, isLoading), key = key, ref = ref)
+  def apply(onChange: ReactEvent[TextInputEvent] => Unit, onFocus: ReactEvent[TextInputEvent] => Unit, isLoading: Boolean, key: UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElement(ctor, Props(onChange, onFocus, isLoading), key = key, ref = ref)
 
 }

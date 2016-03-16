@@ -2,8 +2,10 @@ package sri.mobile.components
 
 import chandu0101.macros.tojs.{rename, JSMacro}
 import sri.core.{ReactElement, React}
-import sri.mobile.ReactNative
+import sri.mobile.{MapViewEvent, ReactNative}
 import sri.universal.ReactEvent
+
+
 import sri.universal.components.{ImageSource, EdgeInsets}
 
 import scala.scalajs.js
@@ -64,38 +66,38 @@ object MapViewRegion {
 
 @ScalaJSDefined
 class MapViewAnnotationJS(val latitude: Double,
-                        val longitude: Double,
-                        val title: UndefOr[String] = undefined,
-                        val subTitle: UndefOr[String] = undefined,
-                        val tintColor: js.UndefOr[String] = js.undefined,
-                        val animateDrop: js.UndefOr[Boolean] = js.undefined,
-                        val leftCalloutView: js.UndefOr[ReactElement] = js.undefined,
-                        val rightCalloutView: js.UndefOr[ReactElement] = js.undefined,
-                        val detailCalloutView: js.UndefOr[ReactElement] = js.undefined,
-                        val view: js.UndefOr[ReactElement] = js.undefined,
-                        val draggable: js.UndefOr[Boolean] = js.undefined,
-                        val onFocus: js.UndefOr[js.Function1[ReactEvent,_]] = js.undefined,
-                        val onBlur: js.UndefOr[js.Function1[ReactEvent,_]] = js.undefined,
-                        val onDragStateChange: js.UndefOr[js.Function1[js.Dynamic, _]] = js.undefined,
-                        val image: js.UndefOr[js.Dynamic] = undefined
-                         ) extends js.Object
+                          val longitude: Double,
+                          val title: UndefOr[String] = undefined,
+                          val subTitle: UndefOr[String] = undefined,
+                          val tintColor: js.UndefOr[String] = js.undefined,
+                          val animateDrop: js.UndefOr[Boolean] = js.undefined,
+                          val leftCalloutView: js.UndefOr[ReactElement] = js.undefined,
+                          val rightCalloutView: js.UndefOr[ReactElement] = js.undefined,
+                          val detailCalloutView: js.UndefOr[ReactElement] = js.undefined,
+                          val view: js.UndefOr[ReactElement] = js.undefined,
+                          val draggable: js.UndefOr[Boolean] = js.undefined,
+                          val onFocus: js.UndefOr[js.Function1[ReactEvent[MapViewEvent], _]] = js.undefined,
+                          val onBlur: js.UndefOr[js.Function1[ReactEvent[MapViewEvent], _]] = js.undefined,
+                          val onDragStateChange: js.UndefOr[js.Function1[js.Dynamic, _]] = js.undefined,
+                          val image: js.UndefOr[js.Dynamic] = undefined
+                           ) extends js.Object
 
 
 case class MapViewAnnotation(latitude: Double,
-                        longitude: Double,
-                        title: UndefOr[String] = undefined,
-                        subTitle: UndefOr[String] = undefined,
-                        tintColor: js.UndefOr[String] = js.undefined,
-                        animateDrop: js.UndefOr[Boolean] = js.undefined,
-                        leftCalloutView: js.UndefOr[ReactElement] = js.undefined,
-                        rightCalloutView: js.UndefOr[ReactElement] = js.undefined,
-                        detailCalloutView: js.UndefOr[ReactElement] = js.undefined,
-                        view: js.UndefOr[ReactElement] = js.undefined,
-                        draggable: js.UndefOr[Boolean] = js.undefined,
-                        onDragStateChange: js.UndefOr[js.Function1[js.Dynamic,_]] = js.undefined,
-                        image: js.UndefOr[ImageSource] = undefined,
-                        @rename("image") imageDynamic: js.UndefOr[js.Dynamic] = undefined
-                         )  {
+                             longitude: Double,
+                             title: UndefOr[String] = undefined,
+                             subTitle: UndefOr[String] = undefined,
+                             tintColor: js.UndefOr[String] = js.undefined,
+                             animateDrop: js.UndefOr[Boolean] = js.undefined,
+                             leftCalloutView: js.UndefOr[ReactElement] = js.undefined,
+                             rightCalloutView: js.UndefOr[ReactElement] = js.undefined,
+                             detailCalloutView: js.UndefOr[ReactElement] = js.undefined,
+                             view: js.UndefOr[ReactElement] = js.undefined,
+                             draggable: js.UndefOr[Boolean] = js.undefined,
+                             onDragStateChange: js.UndefOr[js.Function1[js.Dynamic, _]] = js.undefined,
+                             image: js.UndefOr[ImageSource] = undefined,
+                             @rename("image") imageDynamic: js.UndefOr[js.Dynamic] = undefined
+                              ) {
   val toJS = JSMacro[MapViewAnnotation](this)
 }
 

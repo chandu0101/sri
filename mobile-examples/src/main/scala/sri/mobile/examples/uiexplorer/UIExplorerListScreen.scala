@@ -7,7 +7,7 @@ import sri.mobile.examples.uiexplorer.UIExplorerApp.UIExplorerDetails
 import sri.mobile.examples.uiexplorer.apis.android.{IntentAndroidExample, ToastAndroidExample}
 import sri.mobile.examples.uiexplorer.apis.{GeolocationExample, AlertIOSExample, AppStateIOSExample, AsyncStorageExample}
 import sri.mobile.examples.uiexplorer.components._
-import sri.mobile.examples.uiexplorer.components.android.{SwitchAndroidExample, ToolbarAndroidExample}
+import sri.mobile.examples.uiexplorer.components.android.{ViewPagerAndroidExample, SwitchAndroidExample, ToolbarAndroidExample}
 import sri.mobile.examples.uiexplorer.components.ios._
 import sri.universal.components._
 import sri.universal.router
@@ -47,7 +47,9 @@ object UIExplorerListScreen {
     WebViewExample
   )
 
-  val ANDROID_COMPONENTS: List[UIExample] = List(ToolbarAndroidExample, ScrollViewSimpleExample, SwitchAndroidExample
+  val ANDROID_COMPONENTS: List[UIExample] = List(ToolbarAndroidExample,
+    ViewPagerAndroidExample,
+    ScrollViewSimpleExample, SwitchAndroidExample
   )
 
 
