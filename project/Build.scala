@@ -9,7 +9,7 @@ object Sri extends Build {
   import LauncherConfigs._
   import PublicationDetails._
 
-  val Scala211 = "2.11.7"
+  val Scala211 = "2.11.8"
 
   lazy val commonSettings =
     Seq(
