@@ -17,7 +17,7 @@ object RelayRootContainer {
             forceFetch: U[Boolean] = js.undefined,
             renderLoading: U[() => ReactElement] = js.undefined,
             renderFetched: U[(js.Dynamic, ComponentFetchState) => ReactElement] = js.undefined,
-            renderFailure: U[(js.Error, () => _) => ReactElement] = js.undefined,
+            renderFailure: U[(js.Error, js.Function0[_]) => ReactElement] = js.undefined,
             onReadyStateChange: U[ReadyState => _] = js.undefined) = {
 
     val props = json(Component = Component, route = query)
