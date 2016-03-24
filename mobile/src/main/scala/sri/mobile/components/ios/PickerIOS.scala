@@ -10,7 +10,7 @@ import scala.scalajs.js
 case class PickerIOS[T](style: js.UndefOr[js.Any] = js.undefined,
                         ref: js.UndefOr[js.Function1[PickerIOSM,_]] = js.undefined,
                         key: js.UndefOr[String] = js.undefined,
-                        onValueChange: js.UndefOr[js.Function1[T, _]] = js.undefined,
+                        onValueChange: js.UndefOr[js.Function2[T,Int, _]] = js.undefined,
                         selectedValue: js.UndefOr[T] = js.undefined) {
 
   def apply(children: ReactNode*) = {

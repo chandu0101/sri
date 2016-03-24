@@ -62,6 +62,7 @@ trait ReactNative extends ReactUniversal {
   val IntentAndroid: IntentAndroid = js.native
   val ToastAndroid: ToastAndroid = js.native
   val BackAndroid: BackAndroid = js.native
+  val UIManager: UIManager = js.native
 
   // native stuff
   val NativeModules: NativeModules = js.native

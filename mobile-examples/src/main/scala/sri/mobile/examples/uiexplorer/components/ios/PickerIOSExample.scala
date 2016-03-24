@@ -54,11 +54,11 @@ object PickerIOSExample extends UIExample {
       )
     }
 
-    val handleCarMakeChange: js.Function1[String, _] = (carMake: String) => {
+    val handleCarMakeChange: js.Function2[String,Int, _] = (carMake: String,position : Int) => {
       setState(state.copy(carMake = carMake, modelIndex = 0))
     }
 
-    val handleCarModelChange: js.Function1[Int, _] = (modelIndex: Int) => {
+    val handleCarModelChange: js.Function2[Int,Int, _] = (modelIndex: Int,position : Int) => {
       setState(state.copy(modelIndex = modelIndex))
     }
   }

@@ -22,6 +22,7 @@ case class TouchableHighlight(onPressIn: js.UndefOr[() => _] = js.undefined,
                               underlayColor: js.UndefOr[String] = js.undefined,
                               delayPressOut: js.UndefOr[Int] = js.undefined,
                               delayLongPress: js.UndefOr[Int] = js.undefined,
+                              disabled: js.UndefOr[Boolean] = js.undefined,
                               onShowUnderlay: js.UndefOr[() => _] = js.undefined,
                               activeOpacity: js.UndefOr[Double] = js.undefined,
                               accessible: js.UndefOr[Boolean] = js.undefined) {

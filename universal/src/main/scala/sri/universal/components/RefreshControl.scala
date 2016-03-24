@@ -28,7 +28,7 @@ case class RefreshControl(key: U[String] = undefined,
 
 }
 
-object RefreshControlS {
+object RefreshControl {
 
   val SIZE = ReactUniversal.RefreshControl.asInstanceOf[js.Dynamic].SIZE
 }
@@ -38,9 +38,9 @@ class RefreshControlSize private(val value: js.Dynamic) extends AnyVal
 
 object RefreshControlSize {
 
-  val DEFAULT = new RefreshControlSize(RefreshControlS.SIZE.DEFAULT)
+  val DEFAULT = new RefreshControlSize(RefreshControl.SIZE.DEFAULT)
 
-  val LARGE = new RefreshControlSize(RefreshControlS.SIZE.LARGE)
+  val LARGE = new RefreshControlSize(RefreshControl.SIZE.LARGE)
 
 }
 

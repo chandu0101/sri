@@ -15,7 +15,7 @@ package object mobile {
   trait MobileAll extends UniversalAll {
 
 
-    lazy val windowDimensions = ReactNative.Dimensions.get("window").asInstanceOf[WindowDimensions]
+    def windowDimensions = ReactNative.Dimensions.get("window").asInstanceOf[WindowDimensions]
 
 
     /**

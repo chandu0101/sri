@@ -16,6 +16,7 @@ case class TouchableWithoutFeedback(onPressIn: js.UndefOr[() => _] = js.undefine
                                     accessibilityTraits: js.UndefOr[String] = js.undefined,
                                     accessibilityComponentType: js.UndefOr[String] = js.undefined,
                                     key: js.UndefOr[String] = js.undefined,
+                                    disabled: js.UndefOr[Boolean] = js.undefined,
                                     onLongPress: js.UndefOr[() => _] = js.undefined,
                                     delayPressOut: js.UndefOr[Int] = js.undefined,
                                     delayLongPress: js.UndefOr[Int] = js.undefined,

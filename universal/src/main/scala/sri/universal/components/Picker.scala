@@ -14,7 +14,7 @@ case class Picker[T](style: js.UndefOr[js.Any] = js.undefined,
                      prompt: js.UndefOr[String] = js.undefined,
                      enabled: js.UndefOr[Boolean] = js.undefined,
                      mode: js.UndefOr[PickerMode] = js.undefined,
-                     onValueChange: js.UndefOr[js.Function1[T, _]] = js.undefined,
+                     onValueChange: js.UndefOr[js.Function2[T,Int, _]] = js.undefined,
                      selectedValue: js.UndefOr[T] = js.undefined,
                      testID: js.UndefOr[String] = js.undefined) {
 

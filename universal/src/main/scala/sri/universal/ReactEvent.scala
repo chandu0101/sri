@@ -13,3 +13,10 @@ trait TextInputEvent extends js.Object {
 
   val text : String = js.native
 }
+
+@js.native
+trait ImageEvent extends js.Object {
+
+}
+
+

@@ -56,3 +56,14 @@ object DrawerLayoutAndroidKeyBoardDismissMode {
 
   val ON_DRAG = new DrawerLayoutAndroidKeyBoardDismissMode("on-drag")
 }
+
+class DrawerLockMode private(val value: String) extends AnyVal
+
+object DrawerLockMode {
+
+  val UNLOCKED = new DrawerLockMode("unlocked")
+  val LOCKED_CLOSED = new DrawerLockMode("locked-closed")
+  val LOCKED_OPEN = new DrawerLockMode("locked-open")
+
+
+}

@@ -2,7 +2,7 @@ package sri.web.examples.uiexplorer.components
 
 import sri.core.ElementFactory._
 import sri.core.ReactComponent
-import sri.universal.ReactEvent
+import sri.universal.{TextInputEvent, ReactEvent}
 import sri.universal.components.{Text, TextInput, View}
 import sri.web.NEvent
 import sri.web.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
@@ -28,9 +28,9 @@ object TextInputExample extends UIExample {
       def render() = View()(
         TextInput(
           placeholder = "Enter text to see events",
-          onFocus = (e: ReactEvent) => upDateTex("onFocus"),
-          onBlur = (e: ReactEvent) => upDateTex("onBlur"),
-          onChange = (e: ReactEvent) => upDateTex(s"onChange text ${e.nativeEvent.text}"),
+          onFocus = (e: ReactEvent[TextInputEvent]) => upDateTex("onFocus"),
+          onBlur = (e: ReactEvent[TextInputEvent]) => upDateTex("onBlur"),
+          onChange = (e: ReactEvent[TextInputEvent]) => upDateTex(s"onChange text ${e.nativeEvent.text}"),
           style = styles.default
         )(),
         Text(style = styles.eventLabel)(

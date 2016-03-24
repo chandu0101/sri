@@ -71,7 +71,7 @@ object AsyncStorageExample extends UIExample {
       }.recover(saveError)
     }
 
-    val onValueChange: js.Function1[String, _] = (selectedValue: String) => {
+    val onValueChange: js.Function2[String, Int, _] = (selectedValue: String, position: Int) => {
       setState(state.copy(selectedValue = selectedValue))
       async {
         val result = await(AsyncStorage.setItem(STORAGE_KEY, selectedValue))
