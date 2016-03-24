@@ -27,6 +27,11 @@ object Sri extends Build {
     Project(if (id.isEmpty) name else id, file(name))
       .settings(commonSettings: _*)
       .enablePlugins(ScalaJSPlugin)
+        .settings(scalacOptions += {
+          val a = (baseDirectory in LocalRootProject).value.toURI.toString
+          val g = "https://raw.githubusercontent.com/chandu0101/sri/" + sys.process.Process("git rev-parse HEAD").lines_!.head
+          s"-P:scalajs:mapSourceURI:$a->$g/"
+        })
   }
 
 
