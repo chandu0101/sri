@@ -38,23 +38,42 @@ object LauncherConfigs {
       artifactPath in Compile in fullOptMobile :=
         baseDirectory.value / "index.ios.js",
       fullOptMobile in Compile := {
-        val outFile = (artifactPath in Compile in fullOptMobile).value
+        val outFileTemp = (artifactPath in Compile in fullOptMobile).value
 
         val loaderFile = (resourceDirectory in Compile).value / "loader.js"
 
-        IO.copyFile(loaderFile, outFile)
+        IO.copyFile(loaderFile, outFileTemp)
 
         val fullOutputCode = IO.read((fullOptJS in Compile).value.data)
 
-        IO.append(outFile, fullOutputCode)
+        IO.append(outFileTemp, fullOutputCode)
 
         val launcher = (scalaJSLauncher in Compile).value.data.content
-        IO.append(outFile, launcher)
+        IO.append(outFileTemp, launcher)
 
+        val outString = processRequireFunctions(outFileTemp)
+        IO.delete(outFileTemp)
+        val outFile = (artifactPath in Compile in fullOptMobile).value
+        IO.append(outFile, outString)
         IO.copyFile(outFile, baseDirectory.value / "index.android.js")
         outFile
       }
     )
+
+  /**
+   * react-native prod bundler needs require function without name spaces
+   * @param file
+   * @return
+   */
+  def processRequireFunctions(file: File): String = {
+    val text = IO.read(file)
+    val SJS_NAME_SPACE = "exportsNamespace:"
+    val i = text.indexOf(SJS_NAME_SPACE) + SJS_NAME_SPACE.length
+    val j = text.substring(i).indexOf(";") + i // TODO look for non valid identifier ![_$0-9a-zA-Z]
+    val nameSpace = text.substring(i,j)
+    text.replaceAll(s"$nameSpace.require\\(", "require\\(")
+  }
+
 
   val fullOptRelayMobile = Def.taskKey[File]("Generate the file given to react native relay")
 
@@ -103,45 +122,8 @@ object LauncherConfigs {
   )
 
 
-  def addCommandAliases(m: (String, String)*) = {
-    val s = m.map(p => addCommandAlias(p._1, p._2)).reduce(_ ++ _)
-    (_: Project).settings(s: _*)
-  }
 
 
-  //================================================= Desktop =================================//
-
-  val fastOptDesktop = Def.taskKey[File]("Generate desktop app bundles")
-
-  lazy val desktopLauncher =
-    Seq(
-      artifactPath in Compile in fastOptDesktop :=
-        baseDirectory.value / "main.js",
-      fastOptDesktop in Compile := {
-        val mainOutFile = (artifactPath in Compile in fastOptDesktop).value
-
-        val renderOutFile = (baseDirectory.value / "render-bundle.js")
-
-        val mainLoaderFile = (resourceDirectory in Compile).value / "mainLoader.js"
-
-        val renderLoaderFile = (resourceDirectory in Compile).value / "renderLoader.js"
-
-        IO.copyFile(mainLoaderFile, mainOutFile)
-
-        val fastOptCode = IO.read((fastOptJS in Compile).value.data)
-
-        IO.append(mainOutFile, fastOptCode)
-
-        IO.copyFile((fastOptJS in Compile).value.data, renderOutFile)
-
-        IO.append(renderOutFile, IO.read(renderLoaderFile))
-
-        val launcher = (scalaJSLauncher in Compile).value.data.content
-        IO.append(mainOutFile, launcher)
-
-        mainOutFile
-      }
-    )
 
 
 }
