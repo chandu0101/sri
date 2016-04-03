@@ -18,7 +18,7 @@ trait RelayRequest extends js.Object {
    *
    * Gets a string name used to refer to this request for printing debug output.
    */
-  def getDebugName: String = js.native
+  def getDebugName(): String = js.native
 
   /**
    * @public
