@@ -20,6 +20,7 @@ case class Image(
                  key: js.UndefOr[String] = js.undefined,
                  resizeMode: js.UndefOr[ImageResizeMode] = js.undefined,
                  testID: js.UndefOr[String] = js.undefined,
+                 blurRadius: js.UndefOr[Double] = js.undefined,
                  onLoadStart: js.UndefOr[ReactEvent[ImageEvent] => _] = js.undefined,
                  defaultSource: js.UndefOr[ImageSource] = js.undefined,
                  @rename("defaultSource") defaultSourceDynamic: js.UndefOr[js.Dynamic] = js.undefined,

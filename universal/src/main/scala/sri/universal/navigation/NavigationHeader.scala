@@ -12,12 +12,10 @@ import scala.scalajs.js.{UndefOr => U, undefined => undefined}
 
 case class NavigationHeader(key: U[String] = undefined,
                             style: U[js.Any] = undefined,
-                            position: Double,
-                            scenes: js.Array[NavigationScene],
-                            index: Int,
-                            renderTitleComponent: NavigationScene => ReactElement,
-                            renderLeftComponent: NavigationScene => ReactElement,
-                            renderRightComponent: NavigationScene => ReactElement,
+                            navigationProps: U[NavigationSceneRendererProps] = undefined,
+                            renderTitleComponent: U[(NavigationSceneRendererProps,NavigationScene) => ReactElement] = undefined,
+                            renderLeftComponent: U[(NavigationSceneRendererProps,NavigationScene) => ReactElement] = undefined,
+                            renderRightComponent: U[(NavigationSceneRendererProps,NavigationScene) => ReactElement] = undefined,
                             ref: U[NavigationHeaderM => _] = undefined) {
 
   def apply() = {

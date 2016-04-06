@@ -105,6 +105,22 @@ trait TextStyles {
     val center = this := "center"
   }
 
+  object textAlignVertical extends NativeStyle[String]("textAlignVertical") {
+    val auto = this := "auto"
+    val top = this := "top"
+    val bottom = this := "bottom"
+    val center = this := "center"
+  }
+
+  object lineBreakMode extends NativeStyle[String]("lineBreakMode") {
+    val clipping = this := "clipping"
+    val wordWrapping = this := "word-wrapping"
+    val charWrapping = this := "char-wrapping"
+    val truncatingHead = this := "truncating-head"
+    val truncatingMiddle = this := "truncating-middle"
+    val truncatingTail = this := "truncating-tail"
+  }
+
   object writingDirection extends NativeStyle[String]("writingDirection") {
     val auto = this := "auto"
     val ltr = this := "ltr"
