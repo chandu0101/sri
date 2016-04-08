@@ -34,6 +34,7 @@ object UIExplorerListScreen {
   )
 
   val IOS_COMPONENTS: List[UIExample] = List(
+  BoxShadowExample,
     TabBarIOSExample,
     SegmentedControlExample,
     SwitchIOSExample,
