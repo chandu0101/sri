@@ -41,7 +41,7 @@ object IntentAndroidExample extends UIExample {
     )
   }
 
-  val component = createStatelessFunctionElementNoProps(Component)
+  val component = () =>  createStatelessFunctionElementNoProps(Component)
 
   object styles extends UniversalStyleSheet {
     val container = style(flexOne,

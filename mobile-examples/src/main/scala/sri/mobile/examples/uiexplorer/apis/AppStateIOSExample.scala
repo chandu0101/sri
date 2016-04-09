@@ -59,7 +59,7 @@ object AppStateIOSExample extends UIExample {
     )
   }
 
-  val component = createStatelessFunctionElementNoProps(Component)
+  val component = () =>  createStatelessFunctionElementNoProps(Component)
 
 
   override def title: String = "AppStateIOS"

@@ -40,7 +40,7 @@ object SliderIOSExample extends UIExample {
 
   val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
 
-  val component = createElementNoProps(ctor)
+  val component = () =>  createElementNoProps(ctor)
 
 
   object styles extends UniversalStyleSheet {

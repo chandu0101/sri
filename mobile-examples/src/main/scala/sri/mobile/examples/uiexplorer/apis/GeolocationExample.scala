@@ -68,7 +68,7 @@ object GeolocationExample extends UIExample {
   val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
 
 
-  override def component: ReactElement = createElementNoProps(ctor)
+  override val component = () => createElementNoProps(ctor)
 
   override def title: String = "Geolocation"
 
