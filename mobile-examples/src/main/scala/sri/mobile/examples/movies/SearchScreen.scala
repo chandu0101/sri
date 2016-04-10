@@ -14,6 +14,7 @@ import sri.universal.styles.UniversalStyleSheet
 import scala.async.Async._
 import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 import scala.scalajs.js
+import scala.scalajs.js.`|`
 import scala.scalajs.js.annotation.ScalaJSDefined
 import scala.scalajs.js.{JSON, URIUtils, UndefOr}
 
@@ -170,7 +171,7 @@ object SearchScreen {
     }
 
 
-    def renderRow(movie: js.Dynamic, sectionID: String, rowID: String, highlightRow: js.Function2[String,String,_]): ReactElement = {
+    def renderRow(movie: js.Dynamic, sectionID: String | Int, rowID: String |  Int, highlightRow: js.Function2[String | Int,String | Int,_]): ReactElement = {
       MovieCell(movie = movie, key = movie.title.toString)
     }
 

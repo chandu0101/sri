@@ -3,7 +3,7 @@ package sri.mobile.examples.uiexplorer.components.ios
 import sri.core._
 import sri.mobile.all._
 import sri.mobile.components.{MapView, MapViewAnnotation, MapViewRegion}
-import sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
+import sri.mobile.examples.uiexplorer.{UIExplorerPageLazyLoad, UIExample, UIExplorerBlock, UIExplorerPage}
 import sri.universal.{TextInputEvent, ReactEvent}
 import sri.universal.components._
 import sri.universal.styles.UniversalStyleSheet
@@ -161,7 +161,7 @@ object MapViewExample extends UIExample {
   }
 
   val Component = () => {
-    UIExplorerPage(
+    UIExplorerPageLazyLoad(
       UIExplorerBlock("Map")(
         MapExample()
       ),

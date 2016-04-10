@@ -9,6 +9,7 @@ import sri.universal.components._
 import sri.universal.styles.UniversalStyleSheet
 
 import scala.scalajs.js
+import scala.scalajs.js.`|`
 import scala.scalajs.js.Dynamic.{literal => json}
 import scala.scalajs.js.UndefOr
 import scala.scalajs.js.annotation.ScalaJSDefined
@@ -61,9 +62,9 @@ object ListViewPagingExample extends UIExample {
 
 
   def getDataSource = {
-    val getSectionData = (dataBlob: js.Dictionary[String], sectionID: String) => dataBlob(sectionID)
+    val getSectionData = (dataBlob: js.Dictionary[String], sectionID: String | Int) => dataBlob(sectionID.toString)
 
-    val getRowData = (dataBlob: js.Dictionary[String], sectionID: String, rowID: String) => dataBlob(rowID)
+    val getRowData = (dataBlob: js.Dictionary[String], sectionID: String | Int, rowID: String | Int) => dataBlob(rowID.toString)
 
     val dataSource = createListViewDataSource[String, String](rowHasChanged = (r1: String, r2: String) => r1 != r2,
       getSectionHeaderData = getSectionData,
@@ -108,7 +109,7 @@ object ListViewPagingExample extends UIExample {
       scrollRenderAheadDistance = 2000
     )()
 
-    def renderRow(rowData: String, sectionID: String, rowID: String, highlightRow: js.Function2[String,String,_]) = {
+    def renderRow(rowData: String, sectionID: String | Int, rowID: String | Int, highlightRow: js.Function2[String | Int,String | Int,_]) = {
       THUMB()
     }
 

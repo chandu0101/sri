@@ -1,14 +1,15 @@
 package sri.universal.components
 
 import scala.scalajs.js
+import scala.scalajs.js.`|`
 import scala.scalajs.js.annotation.{ScalaJSDefined, JSName}
 import scala.scalajs.js.{Array => JArray, UndefOr}
 
 @ScalaJSDefined
 class ListViewDataSourceInput[R, H](val rowHasChanged: js.Function2[R, R, Boolean],
                                     val sectionHeaderHasChanged: js.UndefOr[js.Function2[H, H, Boolean]] = js.undefined,
-                                    val getRowData: js.UndefOr[js.Function3[_, String, String, _]] = js.undefined,
-                                    val getSectionHeaderData: js.UndefOr[js.Function2[_, String, _]] = js.undefined) extends js.Object
+                                    val getRowData: js.UndefOr[js.Function3[_, String | Int, String | Int, _]] = js.undefined,
+                                    val getSectionHeaderData: js.UndefOr[js.Function2[_, String | Int, _]] = js.undefined) extends js.Object
 
 
 @js.native

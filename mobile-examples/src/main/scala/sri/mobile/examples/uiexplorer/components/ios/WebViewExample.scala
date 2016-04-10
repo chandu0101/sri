@@ -4,7 +4,7 @@ import sri.core.ReactComponent
 import sri.mobile.WebViewEvent
 import sri.mobile.all._
 import sri.mobile.components.{NavigationState, WebView, WebViewM}
-import sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
+import sri.mobile.examples.uiexplorer.{UIExplorerPageLazyLoad, UIExample, UIExplorerBlock, UIExplorerPage}
 import sri.universal.{TextInputEvent, ReactEvent}
 import sri.universal.components._
 import sri.universal.styles.UniversalStyleSheet
@@ -30,7 +30,7 @@ object WebViewExample extends UIExample {
 
     initialState(State())
 
-    def render() = UIExplorerPage(
+    def render() = UIExplorerPageLazyLoad(
       UIExplorerBlock(title = "WebView")(
         View(style = styles.container)(
           View(style = styles.addressBarRow)(

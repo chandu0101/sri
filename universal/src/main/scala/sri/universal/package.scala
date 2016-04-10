@@ -4,6 +4,7 @@ import sri.core.CoreAll
 import sri.universal.components.{ListViewDataSourceInput, ListViewDataSource}
 
 import scala.scalajs.js
+import scala.scalajs.js.`|`
 import scala.scalajs.js.Dynamic.{literal => json}
 
 package object universal {
@@ -22,8 +23,8 @@ package object universal {
 
     def createListViewDataSource[R, H](rowHasChanged: js.Function2[R, R, Boolean],
                                        sectionHeaderHasChanged: js.Function2[H, H, Boolean] = null,
-                                       getRowData: js.Function3[_, String, String, _] = null,
-                                       getSectionHeaderData: js.Function2[_, String, _] = null
+                                       getRowData: js.Function3[_, String | Int, String | Int, _] = null,
+                                       getSectionHeaderData: js.Function2[_, String | Int, _] = null
                                         ): ListViewDataSource[R, H] = {
 
       new ListViewDataSource[R, H](new ListViewDataSourceInput[R, H](rowHasChanged = rowHasChanged,

@@ -13,19 +13,23 @@ object LauncherConfigs {
       artifactPath in Compile in fastOptMobile :=
         baseDirectory.value / "index.ios.js",
       fastOptMobile in Compile := {
-        val outFile = (artifactPath in Compile in fastOptMobile).value
+        val outFileTemp = (artifactPath in Compile in fastOptMobile).value
 
         val loaderFile = (resourceDirectory in Compile).value / "loader.js"
 
-        IO.copyFile(loaderFile, outFile)
+        IO.copyFile(loaderFile, outFileTemp)
 
-        val fastOutputCode = IO.read((fastOptJS in Compile).value.data)
+        val fullOutputCode = IO.read((fastOptJS in Compile).value.data)
 
-        IO.append(outFile, fastOutputCode)
+        IO.append(outFileTemp, fullOutputCode)
 
         val launcher = (scalaJSLauncher in Compile).value.data.content
-        IO.append(outFile, launcher)
+        IO.append(outFileTemp, launcher)
 
+        val outString = processRequireFunctionsInFastOpt(outFileTemp)
+        IO.delete(outFileTemp)
+        val outFile = (artifactPath in Compile in fastOptMobile).value
+        IO.append(outFile, outString)
         IO.copyFile(outFile, baseDirectory.value / "index.android.js")
         outFile
       }
@@ -74,6 +78,16 @@ object LauncherConfigs {
     text.replaceAll(s"$nameSpace.require\\(", "require\\(")
   }
 
+  /**
+   * react-native prod bundler needs require function without name spaces
+   * @param file
+   * @return
+   */
+  def processRequireFunctionsInFastOpt(file: File): String = {
+    val text = IO.read(file)
+     text.replaceAll("\\$g.require\\(", "require\\(")
+//     text
+  }
 
   val fullOptRelayMobile = Def.taskKey[File]("Generate the file given to react native relay")
 

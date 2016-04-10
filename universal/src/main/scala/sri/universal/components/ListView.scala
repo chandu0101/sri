@@ -5,6 +5,7 @@ import sri.core.{React, ReactElement}
 import sri.universal.ReactUniversal
 
 import scala.scalajs.js
+import scala.scalajs.js.`|`
 import scala.scalajs.js.Dynamic.{literal => json}
 
 
@@ -21,7 +22,7 @@ case class ListView[T, H](zoomScale: js.UndefOr[Int] = js.undefined,
                           renderHeader: js.UndefOr[() => ReactElement] = js.undefined,
                           keyboardDismissMode: js.UndefOr[keyboardDismissMode] = js.undefined,
                           style: js.UndefOr[js.Any] = js.undefined,
-                          renderRow: (T, String, String,js.Function2[String,String,_]) => ReactElement,
+                          renderRow: (T, String | Int, String | Int, js.Function2[String | Int, String | Int, _]) => ReactElement,
                           horizontal: js.UndefOr[Boolean] = js.undefined,
                           contentOffset: js.UndefOr[PointProp] = js.undefined,
                           centerContent: js.UndefOr[Boolean] = js.undefined,
@@ -57,7 +58,7 @@ case class ListView[T, H](zoomScale: js.UndefOr[Int] = js.undefined,
 
   def apply() = {
     val props = JSMacro[ListView[T, H]](this)
-    React.createElement(ReactUniversal.ListView,props)
+    React.createElement(ReactUniversal.ListView, props)
   }
 
 }
@@ -83,5 +84,5 @@ trait ListViewM extends js.Object {
 
   def getScrollResponder(): ScrollViewM = js.native
 
-  def scrollTo(destY : Double = 0,destX : Double = 0): Unit = js.native
+  def scrollTo(destY: Double = 0, destX: Double = 0): Unit = js.native
 }
