@@ -2,17 +2,17 @@ package sri.mobile.examples.uiexplorer.apis
 
 import sri.mobile.ReactNative
 import sri.mobile.all._
-import sri.mobile.components.TouchableNativeFeedback
 import sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
 import sri.universal.components._
 import sri.universal.styles.UniversalStyleSheet
 import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
+import scala.scalajs.js.Thenable.Implicits._
 
 
 object LinkingExample extends UIExample {
 
   override val title: String = "LinkingExample"
-  override val description: String = "Shows how to use Android Intents to open URLs."
+  override val description: String = "Shows how to use Linking to open URLs."
 
   object OpenURLButton {
 
@@ -23,7 +23,7 @@ object LinkingExample extends UIExample {
     )
 
     def handleClick(url: String): Unit = {
-      ReactNative.Linking.canOpenURL(url).toFuture.map(supported => {
+      ReactNative.Linking.canOpenURL(url).map(supported => {
         if (supported) ReactNative.Linking.openURL(url)
         else println(s"Dont know how to open this url ${url}")
       })
