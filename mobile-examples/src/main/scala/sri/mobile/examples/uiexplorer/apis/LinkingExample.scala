@@ -1,4 +1,4 @@
-package sri.mobile.examples.uiexplorer.apis.android
+package sri.mobile.examples.uiexplorer.apis
 
 import sri.mobile.ReactNative
 import sri.mobile.all._
@@ -6,23 +6,25 @@ import sri.mobile.components.TouchableNativeFeedback
 import sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
 import sri.universal.components._
 import sri.universal.styles.UniversalStyleSheet
+import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 
-object IntentAndroidExample extends UIExample {
 
-  override val title: String = "IntentAndroidExample"
+object LinkingExample extends UIExample {
+
+  override val title: String = "LinkingExample"
   override val description: String = "Shows how to use Android Intents to open URLs."
 
   object OpenURLButton {
 
-    val Component = (props: String) => TouchableNativeFeedback(onPress = () => handleClick(props))(
+    val Component = (props: String) => TouchableOpacity(onPress = () => handleClick(props))(
       View(style = styles.button)(
         Text(style = styles.text)(s"Open ${props}")
       )
     )
 
     def handleClick(url: String): Unit = {
-      ReactNative.IntentAndroid.canOpenURL(url, (supported: Boolean) => {
-        if (supported) ReactNative.IntentAndroid.openURL(url)
+      ReactNative.Linking.canOpenURL(url).toFuture.map(supported => {
+        if (supported) ReactNative.Linking.openURL(url)
         else println(s"Dont know how to open this url ${url}")
       })
     }
@@ -32,7 +34,7 @@ object IntentAndroidExample extends UIExample {
 
   val Component = () => {
     UIExplorerPage(
-      UIExplorerBlock("OPen external URLs")(
+      UIExplorerBlock("Open external URLs")(
         OpenURLButton("http://www.scala-js.org/"),
         OpenURLButton("https://www.facebook.com"),
         OpenURLButton("http://facebook.com"),

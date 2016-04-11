@@ -3,6 +3,7 @@ package sri.mobile
 import sri.core._
 import sri.mobile.apis._
 import sri.mobile.apis.android.{BackAndroid, IntentAndroid, ToastAndroid}
+import sri.mobile.apis.ios._
 import sri.mobile.components.android.{TimerPickerAndroid, DatePickerAndroid}
 import sri.mobile.modules.NativeModules
 import sri.universal.ReactUniversal
@@ -60,6 +61,7 @@ trait ReactNative extends ReactUniversal {
   val Dimensions: Dimensions = js.native
   val Animated: js.Dynamic = js.native
   val IntentAndroid: IntentAndroid = js.native
+  val Linking: Linking = js.native
   val ToastAndroid: ToastAndroid = js.native
   val BackAndroid: BackAndroid = js.native
   val UIManager: UIManager = js.native

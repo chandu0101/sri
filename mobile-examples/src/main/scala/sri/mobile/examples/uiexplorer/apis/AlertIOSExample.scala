@@ -3,7 +3,7 @@ package sri.mobile.examples.uiexplorer.apis
 import sri.core.ReactComponent
 import sri.mobile.ReactNative
 import sri.mobile.all._
-import sri.mobile.apis.AlertIOSButton
+import sri.mobile.apis.ios.AlertIOSButton
 import sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
 import sri.universal.components._
 import sri.universal.styles.UniversalStyleSheet

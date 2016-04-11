@@ -4,8 +4,8 @@ import org.scalajs.dom
 import sri.mobile.ReactNative
 import sri.mobile.all._
 import sri.mobile.examples.uiexplorer.UIExplorerApp.UIExplorerDetails
-import sri.mobile.examples.uiexplorer.apis.android.{IntentAndroidExample, ToastAndroidExample}
-import sri.mobile.examples.uiexplorer.apis.{GeolocationExample, AlertIOSExample, AppStateIOSExample, AsyncStorageExample}
+import sri.mobile.examples.uiexplorer.apis.android.ToastAndroidExample
+import sri.mobile.examples.uiexplorer.apis._
 import sri.mobile.examples.uiexplorer.components._
 import sri.mobile.examples.uiexplorer.components.android.{ViewPagerAndroidExample, SwitchAndroidExample, ToolbarAndroidExample}
 import sri.mobile.examples.uiexplorer.components.ios._
@@ -36,7 +36,7 @@ object UIExplorerListScreen {
   )
 
   val IOS_COMPONENTS: List[UIExample] = List(
-  BoxShadowExample,
+    BoxShadowExample,
     TabBarIOSExample,
     SegmentedControlExample,
     SwitchIOSExample,
@@ -57,7 +57,8 @@ object UIExplorerListScreen {
 
 
   val APIS: List[UIExample] = List(
-        GeolocationExample
+    GeolocationExample,
+    LinkingExample
     //    NetInfoExample
   )
 
@@ -68,8 +69,7 @@ object UIExplorerListScreen {
   )
 
   val ANDROID_APIS: List[UIExample] = List(
-    ToastAndroidExample,
-    IntentAndroidExample)
+    ToastAndroidExample)
 
 
   def getComponents() = {
@@ -130,7 +130,7 @@ object UIExplorerListScreen {
       setState(state.copy(datasource = ds.cloneWithRowsAndSections(json(componenets = filteredComponents, apis = filteredAPIS))))
     }
 
-    def renderRow(example: UIExample, sectionID: String | Int, rowId: String | Int,highlightRow : js.Function2[String | Int, String | Int,_]) = {
+    def renderRow(example: UIExample, sectionID: String | Int, rowId: String | Int, highlightRow: js.Function2[String | Int, String | Int, _]) = {
       println(s"rendering row $example")
       View(key = example.title)(
         TouchableHighlight(onPress = () => onPressRow(example))(
