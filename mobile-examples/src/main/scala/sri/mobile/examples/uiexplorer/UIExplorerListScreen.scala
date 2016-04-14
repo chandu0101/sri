@@ -57,6 +57,7 @@ object UIExplorerListScreen {
 
 
   val APIS: List[UIExample] = List(
+    AlertExample,
     GeolocationExample,
     LinkingExample
     //    NetInfoExample
