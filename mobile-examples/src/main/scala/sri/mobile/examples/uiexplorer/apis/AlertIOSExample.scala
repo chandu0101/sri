@@ -20,7 +20,7 @@ object AlertIOSExample extends UIExample {
 
   val Component = () => {
     val a1 = () => ReactNative.AlertIOS.alert("Foo title", "alert message")
-    val a2 = () => ReactNative.AlertIOS.alert(buttons = js.Array(AlertIOSButton("Button", () => println("Button Pressed")).toJson))
+    val a2 = () => ReactNative.AlertIOS.alert(title = "Foo Title", buttons = js.Array(AlertIOSButton("Button", () => println("Button Pressed")).toJson))
     val a3 = () => ReactNative.AlertIOS.alert(
       title = "Foo Title",
       message = "My Alert Msg",
