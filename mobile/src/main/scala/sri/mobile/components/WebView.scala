@@ -9,7 +9,7 @@ import sri.universal.components.EdgeInsets
 import scala.scalajs.js
 
 case class WebView(contentInset: js.UndefOr[EdgeInsets] = js.undefined,
-                   url: String,
+                   url: js.UndefOr[String] = js.undefined,
                    style: js.UndefOr[js.Any] = js.undefined,
                    javaScriptEnabled: js.UndefOr[Boolean] = js.undefined,
                    ref: js.UndefOr[WebViewM => _] = js.undefined,
