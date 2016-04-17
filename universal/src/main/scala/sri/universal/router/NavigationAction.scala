@@ -9,3 +9,5 @@ object NavigationAction {
   val REPLACE = new NavigationAction("REPLACE")
 
 }
+
+case class UniversalRouteNotFound(page : StaticPage,action : NavigationAction = NavigationAction.REPLACE)

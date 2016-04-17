@@ -37,7 +37,7 @@ object RouterExampleApp {
       println(s"did focus ${route.title}")
     }
 
-    override val notFound: (StaticPage, NavigatorRoute) = initialRoute
+    override val notFound = UniversalRouteNotFound(initialRoute._1)
 
     override def renderScene(route: NavigatorRoute): ReactElement = {
       View(style = UniversalStyleSheet.wholeContainer)(

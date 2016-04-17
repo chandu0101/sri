@@ -26,105 +26,54 @@ abstract class UniversalRouterComponent[P, S] extends ReactComponent[P, S] {
    * use this method to navigate to static pages ,it pushes new scene to the stack
    * @param page
    */
-  def navigateTo(page: StaticPage) = {
-    ctrl.config.routes.get(page) match {
-      case Some(route) => {
-        ctrl.navigator.push(route)
-      }
-      case None => handleNotFound()
-    }
-  }
+  def navigateTo(page: StaticPage) = ctrl.navigateTo(page)
 
-  def navigateTo[T](page: DynamicPage[T], props: T, title: String) = ctrl.config.routes.get(page) match {
-    case Some(route) => {
-      val obj = route.asInstanceOf[js.Dynamic]
-      obj.updateDynamic("props")(props.asInstanceOf[js.Any])
-      obj.updateDynamic("title")(title)
-      ctrl.navigator.push(obj.asInstanceOf[js.Object])
-    }
-    case None => handleNotFound()
-  }
+  def navigateTo[T](page: DynamicPage[T], props: T, title: String) = ctrl.navigateTo(page, props, title)
 
 
   /**
    * it will take you to initial route/home route
    */
-  def navigateToHome() = ctrl.navigator.popToTop()
+  def navigateToHome() = ctrl.navigateToHome()
 
   /**
    * navigates to previous route by unmounting current scene ,
    * if you call this on route stack on < 2 it will throw error so please us showbackButton() boolean as guard
    */
-  def navigateBack() = ctrl.navigator.pop()
+  def navigateBack() = ctrl.navigateBack()
 
   /**
    * it reloads the previous scene and pop current scene
    */
-  def navigateBackAndReloadPrevious() = ctrl.navigator.replacePreviousAndPop(previousRoute.get)
+  def navigateBackAndReloadPrevious() = ctrl.navigateBackAndReloadPrevious()
 
   /**
    * use this method to replace previous route with static route and go back
    */
-  def navigateBackAndReplacePrevious(page: StaticPage) = {
-    ctrl.config.routes.get(page) match {
-      case Some(route) => {
-        ctrl.navigator.replacePreviousAndPop(route)
-      }
-      case None => handleNotFound()
-    }
-  }
+  def navigateBackAndReplacePrevious(page: StaticPage) = ctrl.navigateBackAndReplacePrevious(page)
 
   /**
    * use this method to replace previous route with dynamic route and go back
    */
-  def navigateBackAndReplacePrevious[T](page: DynamicPage[T], props: T, title: String) = ctrl.config.routes.get(page) match {
-    case Some(route) => {
-      val obj = route.asInstanceOf[js.Dynamic]
-      obj.updateDynamic("props")(props.asInstanceOf[js.Any])
-      obj.updateDynamic("title")(title)
-      ctrl.navigator.replacePreviousAndPop(obj.asInstanceOf[js.Object])
-    }
-    case None => handleNotFound()
-  }
+  def navigateBackAndReplacePrevious[T](page: DynamicPage[T], props: T, title: String) = ctrl.navigateBackAndReplacePrevious(page,props,title)
 
 
   /**
    * use this method to replace the current scene with new scene
    * @param page
    */
-  def replace(page: StaticPage) = {
-    ctrl.config.routes.get(page) match {
-      case Some(route) => {
-        ctrl.navigator.replace(route)
-      }
-      case None => handleNotFound()
-    }
-  }
-
+  def replace(page: StaticPage) = ctrl.replace(page)
   /**
    * This is kinda hacky , use this method when you want to replace entire routestack with a new route
    * @param page
    */
-  def resetStackWithNewRoute(page: StaticPage) = {
-    ctrl.config.routes.get(page) match {
-      case Some(route) => {
-        ctrl.navigator.immediatelyResetRouteStack(js.Array(route))
-      }
-      case None => handleNotFound()
-    }
-  }
+  def resetStackWithNewRoute(page: StaticPage) = ctrl.resetStackWithNewRoute(page)
 
-  def getCurrentRoutes() = ctrl.navigator.getCurrentRoutes().toList.asInstanceOf[List[NavigatorRoute]]
+  def getCurrentRoutes() = ctrl.getCurrentRoutes()
 
-  @inline def currentRoute = ctrl.navigator.getCurrentRoutes().last.asInstanceOf[NavigatorRoute]
+  @inline def currentRoute = ctrl.currentRoute
 
-  @inline def previousRoute: js.UndefOr[NavigatorRoute] = if (ctrl.navigator.getCurrentRoutes().length > 1) ctrl.navigator.getCurrentRoutes().init.last.asInstanceOf[NavigatorRoute] else js.undefined
-
-
-  //TODO may be add strategy flag ? (replace/push)
-  private def handleNotFound() = {
-    ctrl.navigator.push(ctrl.config.notFound._2)
-  }
+  @inline def previousRoute: js.UndefOr[NavigatorRoute] = ctrl.previousRoute
 
 
 }
@@ -156,77 +105,53 @@ abstract class UniversalRouterComponentJS[P <: ReactJSProps, S] extends ReactCom
    * use this method to navigate to static pages ,it pushes new scene to the stack
    * @param page
    */
-  def navigateTo(page: StaticPage) = {
-    ctrl.config.routes.get(page) match {
-      case Some(route) => {
-        ctrl.navigator.push(route)
-      }
-      case None => handleNotFound()
-    }
-  }
+  def navigateTo(page: StaticPage) = ctrl.navigateTo(page)
 
-  def navigateTo[T](page: DynamicPage[T], props: T, title: String) = ctrl.config.routes.get(page) match {
-    case Some(route) => {
-      val obj = route.asInstanceOf[js.Dynamic]
-      obj.updateDynamic("props")(props.asInstanceOf[js.Any])
-      obj.updateDynamic("title")(title)
-      ctrl.navigator.push(obj.asInstanceOf[js.Object])
-    }
-    case None => handleNotFound()
-  }
+  def navigateTo[T](page: DynamicPage[T], props: T, title: String) = ctrl.navigateTo(page, props, title)
 
 
   /**
    * it will take you to initial route/home route
    */
-  def navigateToHome() = ctrl.navigator.popToTop()
+  def navigateToHome() = ctrl.navigateToHome()
 
   /**
    * navigates to previous route by unmounting current scene ,
    * if you call this on route stack on < 2 it will throw error so please us showbackButton() boolean as guard
    */
-  def navigateBack() = ctrl.navigator.pop()
+  def navigateBack() = ctrl.navigateBack()
 
   /**
    * it reloads the previous scene and pop current scene
    */
-  def navigateBackAndReloadPrevious() = ctrl.navigator.replacePreviousAndPop(previousRoute.get)
+  def navigateBackAndReloadPrevious() = ctrl.navigateBackAndReloadPrevious()
 
   /**
    * use this method to replace previous route with static route and go back
    */
-  def navigateBackAndReplacePrevious(page: StaticPage) = {
-    ctrl.config.routes.get(page) match {
-      case Some(route) => {
-        ctrl.navigator.replacePreviousAndPop(route)
-      }
-      case None => handleNotFound()
-    }
-  }
+  def navigateBackAndReplacePrevious(page: StaticPage) = ctrl.navigateBackAndReplacePrevious(page)
 
   /**
    * use this method to replace previous route with dynamic route and go back
    */
-  def navigateBackAndReplacePrevious[T](page: DynamicPage[T], props: T, title: String) = ctrl.config.routes.get(page) match {
-    case Some(route) => {
-      val obj = route.asInstanceOf[js.Dynamic]
-      obj.updateDynamic("props")(props.asInstanceOf[js.Any])
-      obj.updateDynamic("title")(title)
-      ctrl.navigator.replacePreviousAndPop(obj.asInstanceOf[js.Object])
-    }
-    case None => handleNotFound()
-  }
-
-  def getCurrentRoutes() = ctrl.navigator.getCurrentRoutes().toList.asInstanceOf[List[NavigatorRoute]]
-
-  @inline def currentRoute = ctrl.navigator.getCurrentRoutes().last.asInstanceOf[NavigatorRoute]
-
-  @inline def previousRoute: js.UndefOr[NavigatorRoute] = if (ctrl.navigator.getCurrentRoutes().length > 1) ctrl.navigator.getCurrentRoutes().init.last.asInstanceOf[NavigatorRoute] else js.undefined
+  def navigateBackAndReplacePrevious[T](page: DynamicPage[T], props: T, title: String) = ctrl.navigateBackAndReplacePrevious(page,props,title)
 
 
-  //TODO may be add strategy flag ? (replace/push)
-  private def handleNotFound() = {
-    ctrl.navigator.push(ctrl.config.notFound._2)
-  }
+  /**
+   * use this method to replace the current scene with new scene
+   * @param page
+   */
+  def replace(page: StaticPage) = ctrl.replace(page)
+  /**
+   * This is kinda hacky , use this method when you want to replace entire routestack with a new route
+   * @param page
+   */
+  def resetStackWithNewRoute(page: StaticPage) = ctrl.resetStackWithNewRoute(page)
+
+  def getCurrentRoutes() = ctrl.getCurrentRoutes()
+
+  @inline def currentRoute = ctrl.currentRoute
+
+  @inline def previousRoute: js.UndefOr[NavigatorRoute] = ctrl.previousRoute
 
 }

@@ -60,7 +60,7 @@ trait UniversalRouterConfig extends RouteDefinitions{
    * not found route
    * @return
    */
-  val notFound: (StaticPage, NavigatorRoute)
+  val notFound: UniversalRouteNotFound
 
   val onWillFocus: NavigatorRoute => _ = null
 

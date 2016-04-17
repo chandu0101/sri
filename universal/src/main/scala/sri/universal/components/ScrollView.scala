@@ -5,6 +5,7 @@ import sri.core.{React, ReactElement, ReactNode}
 import sri.universal.ReactUniversal
 
 import scala.scalajs.js
+import scala.scalajs.js.annotation.ScalaJSDefined
 
 
 case class ScrollView(zoomScale: js.UndefOr[Int] = js.undefined,
@@ -69,10 +70,13 @@ object ScrollViewIndicatorStyle {
   val WHITE = new ScrollViewIndicatorStyle("white")
 }
 
+@ScalaJSDefined
+class ScrollPosition(val x : Double = 0,val y : Double = 0,val animated: Boolean = false) extends js.Object
+
 
 @js.native
 trait ScrollViewM extends js.Object {
 
-  def scrollTo(x: Double = 0, y: Double = 0, animated: Boolean = false): Unit = js.native
+  def scrollTo(position : ScrollPosition): Unit = js.native
 }
      

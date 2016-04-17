@@ -33,9 +33,8 @@ object UIExplorerApp {
       println(s"did focus route ${route.title}")
     }
 
-    override val notFound: (StaticPage, NavigatorRoute) = initialRoute
+    override val notFound = UniversalRouteNotFound(initialRoute._1)
   }
-
 
 
   val router = UniversalRouter(Config)

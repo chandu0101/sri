@@ -189,7 +189,7 @@ object SearchScreen {
     def dude[T <: js.Object](name: String) = "dude".asInstanceOf[T]
 
     def onSearchInputFocus(e: ReactEvent[TextInputEvent]) = {
-      if (listViewMounted != null) listViewMounted.getScrollResponder().scrollTo(0, 0)
+      if (listViewMounted != null) listViewMounted.getScrollResponder().scrollTo(new ScrollPosition(0,0))
     }
   }
 
