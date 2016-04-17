@@ -1,8 +1,7 @@
 package sri.web.router
 
 import sri.core.{ReactComponent, ReactComponentJS, ReactJSProps}
-import sri.core._
-import sri.universal.router.NavigationAction
+
 import scala.scalajs.js
 import scala.scalajs.js.annotation.ScalaJSDefined
 
@@ -28,35 +27,18 @@ abstract class WebRouterComponent[P, S] extends ReactComponent[P, S] {
    * @param page
    */
   def navigateTo(page: WebStaticPage, action: WebNavigationAction = WebNavigationAction.PUSH, query: js.UndefOr[js.Object] = js.undefined, state: js.UndefOr[js.Object] = js.undefined) = {
-    ctrl.config.staticRoutes.get(page) match {
-      case Some(route) => {
-        val location = new Location(pathname = route.path, query = query, state = state)
-        if (action == WebNavigationAction.REPLACE) ctrl.history.replace(location)
-        else ctrl.history.push(location)
-      }
-      case None => handleNotFound()
-    }
+    ctrl.navigateTo(page, action, query, state)
   }
 
-  def navigateToDynamic[T](page: WebDynamicPage[T], placeholder: String, action: WebNavigationAction = WebNavigationAction.PUSH, query: js.UndefOr[js.Object] = js.undefined, state: js.UndefOr[js.Object] = js.undefined) = ctrl.config.dynamicRoutes.get(page) match {
-    case Some(route) => {
-      val location = new Location(pathname = s"${route.path}${placeholder.removeForwardSlashes}", query = query, state = state)
-      if (action == WebNavigationAction.REPLACE) ctrl.history.replace(location)
-      else ctrl.history.push(location)
-    }
-    case None => handleNotFound()
+  def navigateToDynamic[T](page: WebDynamicPage[T], placeholder: String, action: WebNavigationAction = WebNavigationAction.PUSH, query: js.UndefOr[js.Object] = js.undefined, state: js.UndefOr[js.Object] = js.undefined) = {
+    ctrl.navigateToDynamic(page, placeholder, action, query, state)
   }
 
-  def navigateBack() = ctrl.history.goBack()
 
-  def navigateForward() = ctrl.history.goForward()
+  def navigateBack() = ctrl.navigateBack()
 
+  def navigateForward() = ctrl.navigateForward()
 
-  private def handleNotFound() = {
-    val location = new Location(pathname = ctrl.config.staticRoutes.getOrElse(ctrl.config.notFound.page, ctrl.config.initialRoute._2).path)
-    if (ctrl.config.notFound.action == WebNavigationAction.REPLACE) ctrl.history.replace(location)
-    else ctrl.history.push(location)
-  }
 
   def currentRoute = ctrl.currentRoute
 
@@ -86,40 +68,26 @@ abstract class WebRouterComponentJS[P <: ReactJSProps, S] extends ReactComponent
     ctrl = context.routerctrl.asInstanceOf[WebRouterCtrl]
   }
 
-
   /**
    * use this method to navigate to static pages ,it pushes new scene to the stack
    * @param page
    */
   def navigateTo(page: WebStaticPage, action: WebNavigationAction = WebNavigationAction.PUSH, query: js.UndefOr[js.Object] = js.undefined, state: js.UndefOr[js.Object] = js.undefined) = {
-    ctrl.config.staticRoutes.get(page) match {
-      case Some(route) => {
-        val location = new Location(pathname = route.path, query = query, state = state)
-        if (action == WebNavigationAction.REPLACE) ctrl.history.replace(location)
-        else ctrl.history.push(location)
-      }
-      case None => handleNotFound()
-    }
+    ctrl.navigateTo(page, action, query, state)
   }
 
-  def navigateToDynamic[T](page: WebDynamicPage[T], placeholder: String, action: WebNavigationAction = WebNavigationAction.PUSH, query: js.UndefOr[js.Object] = js.undefined, state: js.UndefOr[js.Object] = js.undefined) = ctrl.config.dynamicRoutes.get(page) match {
-    case Some(route) => {
-      val location = new Location(pathname = s"${route.path}${placeholder.removeForwardSlashes}", query = query, state = state)
-      if (action == WebNavigationAction.REPLACE) ctrl.history.replace(location)
-      else ctrl.history.push(location)
-    }
-    case None => handleNotFound()
+  def navigateToDynamic[T](page: WebDynamicPage[T], placeholder: String, action: WebNavigationAction = WebNavigationAction.PUSH, query: js.UndefOr[js.Object] = js.undefined, state: js.UndefOr[js.Object] = js.undefined) = {
+    ctrl.navigateToDynamic(page, placeholder, action, query, state)
   }
 
-  def navigateBack() = ctrl.history.goBack()
 
-  def navigateForward() = ctrl.history.goForward()
+  def navigateBack() = ctrl.navigateBack()
+
+  def navigateForward() = ctrl.navigateForward()
 
 
-  private def handleNotFound() = {
-    val location = new Location(pathname = ctrl.config.staticRoutes.getOrElse(ctrl.config.notFound.page, ctrl.config.initialRoute._2).path)
-    if (ctrl.config.notFound.action == WebNavigationAction.REPLACE) ctrl.history.replace(location)
-    else ctrl.history.push(location)
-  }
+  def currentRoute = ctrl.currentRoute
+
+  def previousRoute = ctrl.previousRoute
 
 }
