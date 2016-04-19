@@ -28,6 +28,8 @@ trait ReactUniversal extends js.Object {
   val Incremental: ReactClass = js.native
   val IncrementalGroup: ReactClass = js.native
   val IncrementalPresenter: ReactClass = js.native
+  val WindowedListView: ReactClass = js.native
+  val Slider: ReactClass = js.native
 
 
   val NavigationExperimental: NavigationExperimental = js.native

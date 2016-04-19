@@ -3,7 +3,7 @@ package sri.mobile.examples.uiexplorer.components.ios
 import sri.core.ReactComponent
 import sri.mobile.WebViewEvent
 import sri.mobile.all._
-import sri.mobile.components.{NavigationState, WebView, WebViewM}
+import sri.mobile.components.{WebViewSource, NavigationState, WebView, WebViewM}
 import sri.mobile.examples.uiexplorer.{UIExplorerPageLazyLoad, UIExample, UIExplorerBlock, UIExplorerPage}
 import sri.universal.{TextInputEvent, ReactEvent}
 import sri.universal.components._
@@ -55,7 +55,7 @@ object WebViewExample extends UIExample {
           WebView(ref = storeWebViewRef _,
             automaticallyAdjustContentInsets = false,
             style = styles.webView,
-            url = state.url,
+            source = WebViewSource(state.url),
             onNavigationStateChange = onNavigationStateChange _,
             startInLoadingState = true
           )(),

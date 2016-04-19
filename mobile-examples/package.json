@@ -3,12 +3,10 @@
   "version": "0.3.0",
   "private": true,
   "scripts": {
-    "start": "node_modules/react-native/packager/packager.sh",
-    "clean:babelrc": "find ./node_modules -name react-packager -prune -o -name '.babelrc' -print | xargs rm -f",
-    "postinstall": "npm run clean:babelrc"
+    "start": "node_modules/react-native/packager/packager.sh"
   },
   "dependencies": {
-    "react-native": "0.23.1",
+    "react-native": "0.24.0",
     "react": "0.14.8"
   }
 }

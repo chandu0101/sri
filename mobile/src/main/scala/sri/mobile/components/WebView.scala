@@ -24,7 +24,7 @@ case class WebView(contentInset: js.UndefOr[EdgeInsets] = js.undefined,
                    automaticallyAdjustContentInsets: js.UndefOr[Boolean] = js.undefined,
                    onError: js.UndefOr[js.Dynamic => Unit] = js.undefined,
                    onLoadStart: js.UndefOr[js.Dynamic => Unit] = js.undefined,
-                   source: js.UndefOr[js.Object] = js.undefined,
+                   source: js.UndefOr[WebViewSource] = js.undefined,
                    onLoadEnd: js.UndefOr[() => _] = js.undefined,
                    onLoad: js.UndefOr[() => _] = js.undefined,
                    renderError: js.UndefOr[js.Function] = js.undefined,
@@ -72,4 +72,8 @@ trait WebViewM extends js.Object {
 
   def onLoadingFinish(event: ReactEvent[WebViewEvent]): Unit = js.native
 
+}
+
+case class WebViewSource(uri : String) {
+  val toJS = JSMacro[WebViewSource](this)
 }

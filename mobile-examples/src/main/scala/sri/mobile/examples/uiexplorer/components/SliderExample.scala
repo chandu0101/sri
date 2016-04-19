@@ -1,4 +1,4 @@
-package sri.mobile.examples.uiexplorer.components.ios
+package sri.mobile.examples.uiexplorer.components
 
 import sri.core.ElementFactory._
 import sri.core.ReactComponent
@@ -11,7 +11,7 @@ import scala.scalajs.js
 import scala.scalajs.js.annotation.ScalaJSDefined
 
 
-object SliderIOSExample extends UIExample {
+object SliderExample extends UIExample {
 
   case class State(value: Double = 0)
 
@@ -27,7 +27,8 @@ object SliderIOSExample extends UIExample {
           Text(style = styles.text)(
             state.value
           ),
-          SliderIOS(style = styles.slider,
+          Slider(style = styles.slider,
+            value = state.value,
             onValueChange = handleValueChnage _)()
         )
       )
@@ -38,9 +39,9 @@ object SliderIOSExample extends UIExample {
     }
   }
 
-  val ctor = getTypedConstructor(js.constructorOf[Component],classOf[Component])
+  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
 
-  val component = () =>  createElementNoProps(ctor)
+  val component = () => createElementNoProps(ctor)
 
 
   object styles extends UniversalStyleSheet {
@@ -55,7 +56,7 @@ object SliderIOSExample extends UIExample {
 
   }
 
-  override def title: String = "SliderIOS"
+  override def title: String = "Slider"
 
   override def description: String = "Slider Example"
 }
