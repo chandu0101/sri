@@ -1,6 +1,6 @@
 package sri
 
-import sri.core.CoreAll
+import sri.core.{React, ReactElementU, CoreAll}
 import sri.universal.components.{ListViewDataSourceInput, ListViewDataSource}
 
 import scala.scalajs.js
@@ -31,6 +31,15 @@ package object universal {
         sectionHeaderHasChanged = if (sectionHeaderHasChanged != null) sectionHeaderHasChanged else js.undefined,
         getRowData = if (getRowData != null) getRowData else js.undefined,
         getSectionHeaderData = if (getSectionHeaderData != null) getSectionHeaderData else js.undefined))
+    }
+
+    /**
+     * use this method to create root component of sri.mobile, use the output to register..
+     * @param rootComponent
+     * @return
+     */
+    def createReactNativeRoot[P, S](rootComponent: => ReactElementU[P, S], name: String = "SriMobileApp") = {
+      React.createClass(json(render = () => rootComponent, displayName = name))
     }
 
   }

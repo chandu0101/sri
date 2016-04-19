@@ -29,7 +29,7 @@ case class Navigator(navigator: js.UndefOr[js.Object] = js.undefined,
 
 }
 
-object NavigatorS {
+object Navigator {
 
   /**
    * react statistics
@@ -134,7 +134,7 @@ case class NavigatorNavigationBar(navigator: js.UndefOr[NavigatorM] = js.undefin
                                   navState: js.UndefOr[NavigationBarNavState] = js.undefined) {
   def apply() = {
     val props = JSMacro[NavigatorNavigationBar](this)
-    val f = React.createFactory(NavigatorS.NavigationBar)
+    val f = React.createFactory(Navigator.NavigationBar)
     f(props).asInstanceOf[ReactElement]
   }
 
@@ -156,7 +156,7 @@ case class NavigatorBreadcrumbNavigationBar(navigator: js.UndefOr[NavigatorM] = 
 
   def apply() = {
     val props = JSMacro[NavigatorBreadcrumbNavigationBar](this)
-    val f = React.createFactory(NavigatorS.BreadcrumbNavigationBar)
+    val f = React.createFactory(Navigator.BreadcrumbNavigationBar)
     f(props).asInstanceOf[ReactElement]
   }
 

@@ -13,11 +13,11 @@ import scala.scalajs.js.JSApp
 object MobileApp extends JSApp {
 
   def main() = {
-    val root = createMobileRoot(
-//                              HelloSriMobile()
-//            RouterExampleApp.router
+    val root = createReactNativeRoot(
+      //                              HelloSriMobile()
+      //            RouterExampleApp.router
       UIExplorerApp.router
-//                  MoviesApp.router
+      //                  MoviesApp.router
     )
 
     ReactNative.AppRegistry.registerComponent("SriMobile", () => root)

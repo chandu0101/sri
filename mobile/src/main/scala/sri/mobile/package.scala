@@ -17,15 +17,6 @@ package object mobile {
 
     def windowDimensions = ReactNative.Dimensions.get("window").asInstanceOf[WindowDimensions]
 
-
-    /**
-     * use this method to create root component of sri.mobile, use the output to register..
-     * @param rootComponent
-     * @return
-     */
-    def createMobileRoot[P, S](rootComponent: => ReactElementU[P, S], name: String = "SriMobileApp") = {
-      React.createClass(json(render = () => rootComponent, displayName = name))
-    }
   }
 
   object all extends MobileAll

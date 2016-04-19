@@ -125,8 +125,8 @@ object UniversalRouter {
     def configureScene(route: js.Dynamic) = {
       if (!js.isUndefined(route.sceneConfig)) route.sceneConfig.asInstanceOf[NavigatorSceneConfig]
       else if (props.sceneConfig.isDefined) props.sceneConfig.get
-      else if (isAndroidPlatform) NavigatorS.SceneConfigs.FadeAndroid
-      else NavigatorS.SceneConfigs.FloatFromRight
+      else if (isAndroidPlatform) Navigator.SceneConfigs.FadeAndroid
+      else Navigator.SceneConfigs.FloatFromRight
     }
 
     def renderScene(route: js.Dynamic, navigator: NavigatorM) = {

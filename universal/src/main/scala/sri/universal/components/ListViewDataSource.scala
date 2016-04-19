@@ -13,7 +13,7 @@ class ListViewDataSourceInput[R, H](val rowHasChanged: js.Function2[R, R, Boolea
 
 
 @js.native
-@JSName("React.ListView.DataSource")
+@JSName("ReactNative.ListView.DataSource")
 class ListViewDataSource[R, H] extends js.Object {
 
   def this(params: ListViewDataSourceInput[R, H]) = this()

@@ -86,7 +86,6 @@ object LauncherConfigs {
   def processRequireFunctionsInFastOpt(file: File): String = {
     val text = IO.read(file)
      text.replaceAll("\\$g.require\\(", "require\\(")
-//     text
   }
 
   val fullOptRelayMobile = Def.taskKey[File]("Generate the file given to react native relay")
@@ -134,10 +133,6 @@ object LauncherConfigs {
     artifactPath in(Compile, fastOptJS) := ((crossTarget in(Compile, fastOptJS)).value /
       ((moduleName in fastOptJS).value + "-opt.js"))
   )
-
-
-
-
 
 
 }

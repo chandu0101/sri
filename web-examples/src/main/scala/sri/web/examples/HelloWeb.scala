@@ -20,7 +20,7 @@ object HelloWeb {
     def render() = {
       View(style = styles.container)(
         Text(style = styles.text)(s"Welcome to Sri Web"),
-        TouchableHighlight(style = styles.button, onPress = onButtonPress _)(
+        TouchableOpacity(style = styles.button, onPress = onButtonPress _)(
           View()(
             Text()(s"Second Button")
           )

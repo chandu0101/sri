@@ -45,7 +45,6 @@ trait ReactNative extends ReactUniversal {
   val Alert: Alert = js.native
   val Clipboard: Clipboard = js.native
   val AlertIOS: AlertIOS = js.native
-  val AppRegistry: AppRegistry = js.native
   val StyleSheet: StyleSheet = js.native
   val AppStateIOS: AppStateIOS = js.native
   val AppState: AppState = js.native
@@ -79,6 +78,6 @@ trait ReactPlatForm extends js.Object {
 }
 
 @js.native
-@JSName("React")
+@JSName("ReactNative")
 object ReactNative extends ReactNative
 

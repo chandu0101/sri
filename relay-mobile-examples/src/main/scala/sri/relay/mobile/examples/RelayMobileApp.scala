@@ -23,7 +23,7 @@ object RelayMobileApp extends JSApp {
     Relay.injectNetworkLayer(new DefaultNetworkLayer("http://try-relay.sangria-graphql.org/graphql"))
     js.Dynamic.global.StarWarsShip = StarWarsShip.container
     val rc = RelayRootContainer(StarWarsApp.container, StarWarsAppHomeQuery(js.Array("empire", "rebels")))
-    val root = createMobileRoot(
+    val root = createReactNativeRoot(
       rc
     )
 

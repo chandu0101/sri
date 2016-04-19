@@ -52,7 +52,7 @@ object TopNav {
   object styles extends WebStyleSheet {
 
 
-    val navMenu = style(display.flex,
+    val navMenu = style(
       flexDirection.row,
       alignItems.center,
       backgroundColor := Colors.blue,
