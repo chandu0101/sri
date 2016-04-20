@@ -5,7 +5,7 @@ import sri.relay.container.{RelayContainer, RelayContainerSpec, RelayPropTypes}
 import sri.relay.mutation.RelayMutation
 import sri.relay.network.NetworkLayer
 import sri.relay.route.RelayQueryConfig
-import sri.relay.store.RelayContext
+import sri.relay.store.RelayEnvironment
 import sri.relay.tools.RelayInternalTypes.RelayQuerySet
 import sri.relay.tools.RelayTaskScheduler.TaskExecutor
 
@@ -15,6 +15,8 @@ import scala.scalajs.js.annotation.JSName
 @js.native
 object Relay extends js.Object {
   val RootContainer: ReactClass = js.native
+  val ReadyStateRenderer: ReactClass = js.native
+  val Renderer: ReactClass = js.native
 
   /**
    * Create a component given a specification. A component implements a render method which returns one single child.
@@ -26,7 +28,9 @@ object Relay extends js.Object {
   val Mutation: RelayMutation = js.native
   val PropTypes: RelayPropTypes = js.native
   val Route: RelayQueryConfig = js.native
-  val Store: RelayContext = js.native
+  val Store: RelayEnvironment = js.native
+
+  val Environment: RelayEnvironment = js.native
 
   def createContainer[P <: RelayComponentProps, S](component: RelayTypedConstructor[P, S], spec: RelayContainerSpec): RelayContainer[P, S] = js.native
 
@@ -37,4 +41,6 @@ object Relay extends js.Object {
   def injectTaskScheduler(scheduler: TaskExecutor): Unit = js.native
 
   def isContainer(component: js.Object): Boolean = js.native
+
+
 }

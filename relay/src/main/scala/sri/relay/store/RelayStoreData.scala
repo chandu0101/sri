@@ -1,6 +1,5 @@
 package sri.relay.store
 
-import sri.relay.tools.RelayInternalTypes
 import sri.relay.tools.RelayInternalTypes._
 
 import scala.scalajs.js

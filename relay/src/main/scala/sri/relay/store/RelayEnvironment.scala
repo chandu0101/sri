@@ -1,6 +1,7 @@
 package sri.relay.store
 
 import sri.relay.mutation.{RelayMutationTransaction, RelayMutation}
+import sri.relay.network.NetworkLayer
 import sri.relay.query.{RelayQueryNode, RelayQueryRoot}
 import sri.relay.tools.RelayInternalTypes.{DataID, RelayQuerySet}
 import sri.relay.tools.RelayTypes.{ReadyStateChangeCallback, StoreReaderData}
@@ -9,7 +10,13 @@ import sri.relay.tools._
 import scala.scalajs.js
 
 @js.native
-trait RelayContext extends js.Object {
+trait RelayEnvironment extends js.Object {
+
+  def injectDefaultNetworkLayer(networkLayer: NetworkLayer = ???): Unit = js.native
+
+  def injectNetworkLayer(networkLayer: NetworkLayer = ???): Unit = js.native
+
+  def injectTaskScheduler(scheduler: RelayTaskScheduler = ???): Unit = js.native
 
 
   def getStoreData(): RelayStoreData = js.native

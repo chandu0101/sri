@@ -15,7 +15,7 @@
   "devDependencies": {
     "babel": "5.8.21",
     "babel-loader": "5.3.2",
-    "babel-relay-plugin": "^0.7.3",
+    "babel-relay-plugin": "^0.8.0",
     "compression-webpack-plugin": "^0.2.0",
     "css-loader": "^0.14.5",
     "file-loader": "^0.8.4",
@@ -35,9 +35,9 @@
     "webpack-dev-server": "^1.9.0"
   },
   "dependencies": {
-    "react": "0.14.6",
-    "react-dom": "0.14.6",
-    "react-web": "^0.2.1",
-    "react-relay": "^0.7.3"
+    "react": "0.15.0",
+    "react-dom": "0.15.0",
+    "react-native-web": "0.0.22",
+    "react-relay": "^0.8.0"
   }
 }
