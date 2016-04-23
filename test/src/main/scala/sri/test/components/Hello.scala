@@ -13,7 +13,7 @@ object Hello {
 
   @ScalaJSDefined
   class Component extends ReactComponent[String, Unit] {
-    def render() = React.createElement(ReactUniversal.Text,json(hello = "hi" , key = "man"))
+    def render() = null
   }
 
   val factory = getTypedConstructor(js.constructorOf[Component], classOf[Component])

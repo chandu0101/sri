@@ -3,7 +3,6 @@ package sri.test.components
 import sri.core.ElementFactory._
 import sri.core.{React, ReactComponent}
 import sri.universal.ReactUniversal
-import sri.universal.components.Text
 
 import scala.scalajs.js
 import scala.scalajs.js.Dynamic.{literal => json}
@@ -54,7 +53,7 @@ object HelloLifeCycle {
 
     def render() = {
       rendered = true
-      Text()("Sample")
+      null
     }
 
 

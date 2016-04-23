@@ -2,7 +2,7 @@ package sri.test.components
 
 import sri.core.{ReactElement, ReactNode}
 import sri.universal.all._
-import sri.universal.components._
+//import sri.universal.components._
 
 
 object HelloStateless {

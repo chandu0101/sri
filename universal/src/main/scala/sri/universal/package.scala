@@ -11,15 +11,11 @@ package object universal {
 
   trait UniversalAll extends CoreAll {
 
-    val IOS_OS = "ios"
+    lazy val isIOSPlatform: Boolean = !js.isUndefined(ReactUniversal.Platform) && ReactUniversal.Platform.OS == "ios"
 
-    val ANDROID_OS = "android"
+    lazy val isAndroidPlatform: Boolean = !js.isUndefined(ReactUniversal.Platform) && ReactUniversal.Platform.OS == "android"
 
-    val isIOSPlatform: Boolean = !js.isUndefined(ReactUniversal.Platform) && ReactUniversal.Platform.OS == IOS_OS
-
-    val isAndroidPlatform: Boolean = !js.isUndefined(ReactUniversal.Platform) && ReactUniversal.Platform.OS == ANDROID_OS
-
-    val isWebPlatform: Boolean = !js.isUndefined(ReactUniversal.Platform) && ReactUniversal.Platform.OS == "web"
+    lazy val isWebPlatform: Boolean = !js.isUndefined(ReactUniversal.Platform) && ReactUniversal.Platform.OS == "web"
 
     def createListViewDataSource[R, H](rowHasChanged: js.Function2[R, R, Boolean],
                                        sectionHeaderHasChanged: js.Function2[H, H, Boolean] = null,

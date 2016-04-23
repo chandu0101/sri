@@ -1,4 +1,4 @@
-var React = require('react-native-for-web'),
+var React = require('react'),
     ReactDOM = require('react-dom'),
     ReactTestUtils = require('react-addons-test-utils');
 
