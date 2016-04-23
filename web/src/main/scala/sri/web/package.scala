@@ -11,7 +11,7 @@ package object web {
 
   type NEvent = js.Dynamic
 
-  trait WebAll extends UniversalAll
+  trait WebAll extends UniversalAll with ReactEventAliases
 
   object all extends WebAll
 }
