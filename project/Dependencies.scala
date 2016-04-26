@@ -1,3 +1,4 @@
+import org.scalajs.jsenv.nodejs.NodeJSEnv
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 import sbt.Keys._
 import sbt._
@@ -60,9 +61,9 @@ object Dependencies {
   val scalatestJSSettings = Seq(scalatestJS,
     scalaJSStage in Global := FastOptStage,
     jsDependencies += RuntimeDOM,
-    jsDependencies += ProvidedJS / "test-bundle.js" % Test
-    //    jsEnv in Test := new PhantomJS2Env(scalaJSPhantomJSClassLoader.value, addArgs = Seq("--web-security=no"))
-    //    jsEnv in Test := new NodeJSEnv()
+    jsDependencies += ProvidedJS / "test-bundle.js" % Test,
+    jsEnv in Test := new PhantomJS2Env(scalaJSPhantomJSClassLoader.value, addArgs = Seq("--web-security=no"))
+//        jsEnv in Test := new NodeJSEnv()
   )
 
 

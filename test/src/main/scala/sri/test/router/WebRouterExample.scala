@@ -1,4 +1,4 @@
-package sri.web.examples.routerexample
+package sri.test.router
 
 import sri.core.ReactElement
 import sri.universal.components.View
@@ -12,6 +12,8 @@ object WebRouterExample {
   object StaticQueryPage extends WebStaticPage
 
   object StaticStatePage extends WebStaticPage
+
+  object StaticStatePage2 extends WebStaticPage
 
   object DynamicPage extends WebDynamicPage[Int]
 
@@ -29,7 +31,7 @@ object WebRouterExample {
 
     staticRoute(page = StaticStatePage, path = "staticstate", component = (route: WebRoute) => StaticStateScreen(route))
 
-    dynamicRoute(page = DynamicPage, path = "dynamic", parser = DynamicScreen.parser, component = (id: Int, route: WebRoute) => DynamicScreen(id))
+    dynamicRoute(page = DynamicPage, path = "dynamic", parser = DynamicScreen.parser, component = (id: Int, route: WebRoute) => DynamicScreen(id, route))
 
     dynamicRoute(page = DynamicQueryPage, path = "dynamicquery", parser = DynamicQueryScreen.parser, component = (id: Int, route: WebRoute) => DynamicQueryScreen(id, route))
 
@@ -39,17 +41,6 @@ object WebRouterExample {
 
     override val notFound: WebRouteNotFound = WebRouteNotFound(HomePage)
 
-    /**
-     * this method is responsible for rendering components ,
-     * @param route current route that is pushed to stack
-     * @return
-     */
-    override def renderScene(route: WebRoute): ReactElement = {
-      View(style = WebStyleSheet.wholeContainer)(
-        TopNav(),
-        super.renderScene(route)
-      )
-    }
   }
 
 

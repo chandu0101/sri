@@ -70,7 +70,7 @@ lazy val relayMobileExamples = DefProject("relay-mobile-examples")
   .settings(preventPublication)
 
 lazy val test = DefProject("test")
-  .dependsOn(universal)
+  .dependsOn(web)
   .settings(scalatestJSSettings: _*)
 
 // workaround http://stackoverflow.com/questions/20931217/deprecation-and-feature-warnings-for-sbt-project-definition-files

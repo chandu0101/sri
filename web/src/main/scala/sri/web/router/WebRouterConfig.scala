@@ -32,8 +32,8 @@ abstract class WebRouterConfig extends WebRouteDefinitions with PathUtils {
    * @param component component that you want ot render on first load of your app
    * @return
    */
-  def defineInitialRoute(page: WebStaticPage, component: => ReactElement) = {
-    page -> WebRoute(path = "/", component = () => component, page = page)
+  def defineInitialRoute(page: WebStaticPage, component: WebRoute => ReactElement) = {
+    page -> WebRoute(path = "/", component = component, page = page)
   }
 
   /**
@@ -41,8 +41,8 @@ abstract class WebRouterConfig extends WebRouteDefinitions with PathUtils {
    * @param page a StaticPage
    * @param component static component that should be rendered when navigated to this route
    */
-  def staticRoute(page: WebStaticPage, path: String, component: => ReactElement) = {
-    _staticRoutes += page -> WebRoute(path = createStaticPath(path), component = () => component, page = page)
+  def staticRoute(page: WebStaticPage, path: String, component: WebRoute => ReactElement) = {
+    _staticRoutes += page -> WebRoute(path = createStaticPath(path), component = component, page = page)
   }
 
   /**
@@ -51,7 +51,7 @@ abstract class WebRouterConfig extends WebRouteDefinitions with PathUtils {
    * @param component dynamic component that should be rendered when navigated to this route
    * @tparam T
    */
-  def dynamicRoute[T](page: WebDynamicPage[T], path: String, component: T => ReactElement, parser: String => T) = {
+  def dynamicRoute[T](page: WebDynamicPage[T], path: String, component: (T, WebRoute) => ReactElement, parser: String => T) = {
     _dynamicRoutes += page -> WebRoute(path = createDynamicPath(path), component = component, page = page, parser = parser)
   }
 
@@ -82,8 +82,8 @@ abstract class WebRouterConfig extends WebRouteDefinitions with PathUtils {
    * @return
    */
   def renderScene(route: WebRoute): ReactElement = {
-    if (route.page.isInstanceOf[WebStaticPage]) route.component.asInstanceOf[() => ReactElement]()
-    else route.component.asInstanceOf[Any => ReactElement](route.parser.get(route.placeholder.get))
+    if (route.page.isInstanceOf[WebStaticPage]) route.component.asInstanceOf[(WebRoute) => ReactElement](route)
+    else route.component.asInstanceOf[(Any, WebRoute) => ReactElement](route.parser.get(route.placeholder.get), route)
   }
 }
 

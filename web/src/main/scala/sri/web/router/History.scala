@@ -37,6 +37,8 @@ object History extends js.Object {
 
   val createHashHistory: HistoryFunc = js.native
 
+  val createMemoryHistory: HistoryFunc = js.native
+
   def useQueries(history: HistoryFunc): HistoryFunc = js.native
 
   def useBasename(history: HistoryFunc): HistoryFunc = js.native

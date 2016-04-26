@@ -24,6 +24,7 @@
     "webpack-dev-server": "^1.9.0"
   },
   "dependencies": {
+    "history": "^2.1.0",
     "react": "^15.0.0",
     "react-addons-test-utils": "^15.0.0",
     "react-dom": "^15.0.0"

@@ -18,7 +18,7 @@ object AppRouter {
 
     override val history = HistoryFactory.browserHistory()
 
-    override val initialRoute = defineInitialRoute(HomePage, component = HelloWeb())
+    override val initialRoute = defineInitialRoute(HomePage, component = (route: WebRoute) => HelloWeb())
 
     override def renderScene(route: WebRoute): ReactElement = {
       View(style = UniversalStyleSheet.wholeContainer)(

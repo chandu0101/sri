@@ -23,7 +23,6 @@ object RouteUtils {
         placeholder = loc.pathname.replace(r.path, "").removeTrailingSlash
         result = r
       } else {
-        println(s"getting not found route")
         // if not found in dynamic routes also then get route from not found config
        result =  ctrl.config.staticRoutes.getOrElse(ctrl.config.notFound.page, ctrl.config.initialRoute._2)
       }

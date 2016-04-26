@@ -9,5 +9,6 @@ var React = require('react'),
 global.React = React;
 global.ReactDOM = ReactDOM;
 global.ReactTestUtils = ReactTestUtils;
+global.History = require('history');
 
 
