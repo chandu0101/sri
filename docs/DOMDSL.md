@@ -37,5 +37,5 @@ import sri.web.vdom.htmltags_<._
 
     or
     
-import sri.web.vdom.htmltagsInlinePrefix_<._
+import sri.web.vdom.htmltagsNoInlinePrefix_<._
 ```
