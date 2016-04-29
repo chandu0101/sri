@@ -60,6 +60,7 @@ object Dependencies {
 
   val scalatestJSSettings = Seq(scalatestJS,
     scalaJSStage in Global := FastOptStage,
+//    scalaJSStage in Global := FullOptStage,
     jsDependencies += RuntimeDOM,
     jsDependencies += ProvidedJS / "test-bundle.js" % Test,
     jsEnv in Test := new PhantomJS2Env(scalaJSPhantomJSClassLoader.value, addArgs = Seq("--web-security=no"))
