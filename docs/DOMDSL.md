@@ -33,7 +33,7 @@ Example :
 If you want prefixed versions( &lt;.div()() , &lt;.input(), ...) then import following
 
 ```scala
-import sri.web.vdom.htmltags_<._
+import sri.web.vdom.htmltagsPrefix_<._
 
     or
     
