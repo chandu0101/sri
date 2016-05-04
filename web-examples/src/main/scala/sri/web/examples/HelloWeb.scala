@@ -1,16 +1,13 @@
 package sri.web.examples
 
-import sri.universal.components._
-import sri.universal.styles.UniversalStyleSheet
 import sri.web.all._
-import sri.web.examples.AppRouter.{ContactPage, SecondPage}
 import sri.web.router
 import sri.web.router.WebRouterComponent
+import sri.web.styles.WebStyleSheet
+import sri.web.vdom.htmltags._
 
 import scala.scalajs.js
-import scala.scalajs.js.Dynamic.{literal => json}
 import scala.scalajs.js.annotation.ScalaJSDefined
-import scala.scalajs.js.{UndefOr => U}
 
 object HelloWeb {
 
@@ -18,43 +15,27 @@ object HelloWeb {
   @ScalaJSDefined
   class Component extends WebRouterComponent[Unit, Unit] {
     def render() = {
-      View(style = styles.container)(
-        Text(style = styles.text)(s"Welcome to Sri Web"),
-        TouchableOpacity(style = styles.button, onPress = onButtonPress _)(
-          View()(
-            Text()(s"Second Button")
-          )
-        ),
-        TouchableHighlight(style = styles.button, onPress = onButtonPress2 _)(
-          View()(
-            Text()(s"Contact Button Button")
-          )
-        ),
-        Image(style = styles.image, source = ImageSource(uri = "http://www.scala-js.org/images/scala-js-logo-256.png"))(),
-        Text(style = styles.text)("Scala.js - Future of app development!")
+      div(style = styles.container)(
+        span(style = styles.text)(s"Welcome to Sri Web"),
+        img(style = styles.image, src = "http://www.scala-js.org/images/scala-js-logo-256.png"),
+        span(style = styles.text)("Scala.js - Future of app development!")
       )
-    }
-
-    def onButtonPress() = {
-      navigateTo(SecondPage)
-    }
-
-    def onButtonPress2() = {
-      navigateToDynamic(ContactPage,"1")
     }
 
   }
 
-  object styles extends UniversalStyleSheet {
+  object styles extends WebStyleSheet {
 
-    val container = style(flexOne,
+    val container = style(flex := 1,
+       display.flex,
+       flexDirection.column,
       backgroundColor := "rgb(175, 9, 119)",
       justifyContent.center,
       alignItems.center)
 
     val image = style(width := 256, height := 256, margin := 20)
 
-    val text = style(fontWeight._500,
+    val text = style(fontWeight.bold,
       fontSize := 18,
       color := "white")
 

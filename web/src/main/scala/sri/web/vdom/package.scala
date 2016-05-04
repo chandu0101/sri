@@ -70,22 +70,22 @@ package object vdom {
  * (see https://github.com/scala-js/scala-js/pull/2070 )
  */
   //TODO We need to find a better solution here
-  private[vdom] implicit def UnionEvidence[A: ClassTag, B: ClassTag](ab: A | B)(implicit eva: A => js.Any, evb: B => js.Any): js.Any =
-    ab match {
-      case a: A => eva(a)
-      case b: B => evb(b)
-    }
+//  implicit def UnionEvidence[A: ClassTag, B: ClassTag](ab: A | B)(implicit eva: A => js.Any, evb: B => js.Any): js.Any =
+//    ab match {
+//      case a: A => eva(a)
+//      case b: B => evb(b)
+//    }
 
-  object htmltags extends HtmlTagsInline
+  object tags extends HtmlTags
 
-  object htmltagsPrefix_< {
-    @inline def < = htmltags
-  }
-
-  object htmltagsNoInline extends HtmlTags
-
-  object htmltagsNoInlinePrefix_< {
-    @inline def < = htmltagsNoInline
-  }
+//  object htmltagsPrefix_< {
+//    @inline def < = htmltags
+//  }
+//
+//  object htmltagsNoInline extends HtmlTags
+//
+//  object htmltagsNoInlinePrefix_< {
+//    @inline def < = htmltagsNoInline
+//  }
 
 }

@@ -1,13 +1,11 @@
 package sri.web.examples.routerexample
 
-import sri.universal.components._
 import sri.web.all._
 import sri.web.examples.styles.Theme
-import sri.web.router
-import sri.web.router.{WebRoute, WebRouterComponent}
+import sri.web.router.WebRoute
+import sri.web.vdom.htmltags._
 
 import scala.scalajs.js
-import scala.scalajs.js.annotation.ScalaJSDefined
 import scala.scalajs.js.{JSON, UndefOr => U}
 import scala.util.Try
 
@@ -16,8 +14,8 @@ object DynamicStateScreen {
 
 
   val Component = (props: Props) => {
-    View(style = Theme.flexOneAndCenter)(
-      Text(style = Theme.bigText)(s"Welcome to Dynamic State Screen, Passed Id : ${props.id}  and passed State  : ${JSON.stringify(props.route.state.getOrElse(js.Dictionary()))}")
+    div(style = Theme.flexOneAndCenter)(
+      span(style = Theme.bigText)(s"Welcome to Dynamic State Screen, Passed Id : ${props.id}  and passed State  : ${JSON.stringify(props.route.state.getOrElse(js.Dictionary()))}")
     )
   }
 

@@ -1,8 +1,8 @@
 package sri.web.examples.routerexample
 
-import sri.universal.components._
 import sri.web.all._
 import sri.web.examples.styles.Theme
+import sri.web.vdom.htmltags._
 
 import scala.scalajs.js.{UndefOr => U}
 import scala.util.Try
@@ -11,8 +11,8 @@ import scala.util.Try
 object DynamicScreen {
 
   val Component = (id: Int) => {
-    View(style = Theme.flexOneAndCenter)(
-      Text(style = Theme.bigText)(s"Dynamic id passed is  :: $id")
+    div(style = Theme.flexOneAndCenter)(
+      span(style = Theme.bigText)(s"Dynamic id passed is  :: $id")
     )
   }
 

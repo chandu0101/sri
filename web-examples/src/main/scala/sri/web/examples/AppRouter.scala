@@ -1,9 +1,9 @@
 package sri.web.examples
 
 import sri.core.ReactElement
-import sri.universal.components.View
-import sri.universal.styles.UniversalStyleSheet
+import sri.web.examples.styles.Theme
 import sri.web.router.{WebRouter, WebRouterConfig, _}
+import sri.web.vdom.htmltags._
 
 object AppRouter {
 
@@ -21,7 +21,7 @@ object AppRouter {
     override val initialRoute = defineInitialRoute(HomePage, component = (route: WebRoute) => HelloWeb())
 
     override def renderScene(route: WebRoute): ReactElement = {
-      View(style = UniversalStyleSheet.wholeContainer)(
+      div(style = Theme.flexOneAndDirectionVertical)(
         super.renderScene(route)
       )
     }

@@ -20,7 +20,7 @@ object Dependencies {
 
     val scalaJSDOM = "0.9.0"
 
-    val chandu0101Macros = "0.5.1"
+    val chandu0101Macros = "2016.5.0"
 
   }
 

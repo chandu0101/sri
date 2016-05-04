@@ -28,7 +28,6 @@
     "webpack": "^1.9.10",
     "express": "^4.13.1",
     "express-graphql": "^0.3.0",
-    "haste-resolver-webpack-plugin": "~0.1.2",
     "graphql": "^0.4.2",
     "graphql-relay": "^0.3.1",
     "cors": "^2.7.1",
@@ -37,7 +36,6 @@
   "dependencies": {
     "react": "0.15.0",
     "react-dom": "0.15.0",
-    "react-native-web": "0.0.22",
     "react-relay": "^0.8.0"
   }
 }

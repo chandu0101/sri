@@ -1,9 +1,9 @@
 package sri.web.examples.routerexample
 
 import sri.core.ReactElement
-import sri.universal.components.View
+import sri.web.examples.styles.Theme
 import sri.web.router._
-import sri.web.styles.WebStyleSheet
+import sri.web.vdom.htmltags._
 
 object WebRouterExample {
 
@@ -45,7 +45,7 @@ object WebRouterExample {
      * @return
      */
     override def renderScene(route: WebRoute): ReactElement = {
-      View(style = WebStyleSheet.wholeContainer)(
+      div(style = Theme.flexOneAndDirectionVertical)(
         TopNav(),
         super.renderScene(route)
       )

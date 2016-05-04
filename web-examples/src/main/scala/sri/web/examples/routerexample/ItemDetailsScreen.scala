@@ -1,20 +1,20 @@
 package sri.web.examples.routerexample
 
-import sri.universal.components._
 import sri.web.all._
 import sri.web.examples.styles.Theme
+import sri.web.vdom.htmltags._
 
-import scala.scalajs.js.{UndefOr => U, undefined}
+import scala.scalajs.js.{UndefOr => U}
 import scala.util.Try
 
 
 object ItemDetailsScreen {
 
   val Component = (id: Int) => {
-    View(style = Theme.flexOneAndDirectionRow)(
+    div(style = Theme.flexOneAndDirectionRow)(
       ItemsLeftNav(),
-      View(style = Theme.flexOneAndCenter)(
-        Text(style = Theme.bigText)(s"${if (id >= 0) s"Item details of :: $id" else "Item not found"}")
+      div(style = Theme.flexOneAndCenter)(
+        span(style = Theme.bigText)(s"${if (id >= 0) s"Item details of :: $id" else "Item not found"}")
       )
     )
   }

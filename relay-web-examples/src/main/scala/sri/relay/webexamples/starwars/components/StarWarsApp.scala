@@ -4,12 +4,9 @@ import sri.relay.RelayElementFactory._
 import sri.relay.container.{Fragments, RelayContainerSpec}
 import sri.relay.query.RelayQL
 import sri.relay.{RelayComponentProps, Relay, RelayComponent}
-import sri.universal.components.{Text, View}
-
+import sri.web.vdom.htmltags._
 import scala.scalajs.js
-import scala.scalajs.js.Dynamic.{literal => json}
 import scala.scalajs.js.annotation.ScalaJSDefined
-import scala.scalajs.js.{UndefOr => U}
 
 
 object StarWarsApp {
@@ -18,11 +15,11 @@ object StarWarsApp {
   class Component extends RelayComponent[Props, Unit] {
     def render() = {
       val factions = props.factions.asInstanceOf[js.Array[js.Dynamic]]
-      View()(
-        factions.map(faction => View()(
-          View()(Text()(s"${faction.name}")),
-          View()(
-            faction.ships.edges.asInstanceOf[js.Array[js.Dynamic]].map(edge => View()(StarWarsShip(edge.node)))
+      div()(
+        factions.map(faction => div()(
+          div()(span()(s"${faction.name}")),
+          div()(
+            faction.ships.edges.asInstanceOf[js.Array[js.Dynamic]].map(edge => div()(StarWarsShip(edge.node)))
           )
         ))
       )

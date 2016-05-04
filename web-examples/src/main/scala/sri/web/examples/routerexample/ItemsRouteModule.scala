@@ -1,9 +1,6 @@
 package sri.web.examples.routerexample
 
-import sri.web.router.{WebRoute, WebDynamicPage, WebRouterModuleConfig, WebStaticPage}
-
-import scala.scalajs.js
-import scala.scalajs.js.JSConverters.JSRichGenTraversableOnce
+import sri.web.router.{WebDynamicPage, WebRoute, WebRouterModuleConfig, WebStaticPage}
 
 object ItemsRouteModule extends WebRouterModuleConfig("items") {
 

@@ -1,14 +1,16 @@
 package sri.web.examples.routerexample
 
 import sri.core._
-import sri.universal.components._
 import sri.web.all._
+import sri.web.examples.Button
 import sri.web.router
-import sri.web.router.{WebDynamicPage, WebStaticPage, WebRouterComponent}
+import sri.web.router.{WebDynamicPage, WebRouterComponent}
 import sri.web.styles.WebStyleSheet
+import sri.web.vdom.htmltags._
+
 import scala.scalajs.js
 import scala.scalajs.js.annotation.ScalaJSDefined
-import scala.scalajs.js.{UndefOr => U, undefined => undefined}
+import scala.scalajs.js.{UndefOr => U, undefined}
 
 
 object ItemsLeftNav {
@@ -16,16 +18,16 @@ object ItemsLeftNav {
   @ScalaJSDefined
   class Component extends WebRouterComponent[Unit, Unit] {
     def render() = {
-      View(style = styles.container)(
+      div(style = styles.container)(
         (1 until 10).toSeq.map(i => getItem(i.toString, ItemsRouteModule.Details))
       )
     }
 
     def getItem(id: String, page: WebDynamicPage[Int]) = {
-      TouchableHighlight(style = styles.menuItem(id == currentRoute.placeholder.getOrElse("")),
+      Button(style = styles.menuItem(id == currentRoute.placeholder.getOrElse("")),
         key = id,
         onPress = () => navigateToDynamic(page, id))(
-          Text()(s"Item $id")
+          span()(s"Item $id")
         )
     }
 
@@ -34,6 +36,9 @@ object ItemsLeftNav {
   object styles extends WebStyleSheet {
     val container = style(width := 190,
       paddingTop := 40,
+      display.flex,
+      flexDirection.column,
+      border := 0,
       borderRightWidth := "1px",
       borderStyle := "solid",
       borderRightColor := "grey")
@@ -44,6 +49,8 @@ object ItemsLeftNav {
 
       style(height := 40,
         justifyContent.center,
+        display.flex,
+        flexDirection.column,
         cursor.pointer,
         backgroundColor := bg,
         alignItems.center)

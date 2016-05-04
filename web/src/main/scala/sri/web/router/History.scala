@@ -7,6 +7,8 @@ import scala.scalajs.js.annotation.{JSName, ScalaJSDefined}
 @js.native
 trait History extends js.Object {
 
+  def getCurrentLocation(): Location = js.native
+
   def listen(listener: js.Function1[Location, _]): js.Function0[_] = js.native
 
   def listenBefore(hook: js.Function1[Location, _]): js.Function0[_] = js.native

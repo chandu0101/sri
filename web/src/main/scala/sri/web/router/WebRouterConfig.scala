@@ -72,11 +72,6 @@ abstract class WebRouterConfig extends WebRouteDefinitions with PathUtils {
 
 
   /**
-   * Implement this to intercept routes before transition
-   */
-  val interceptTransition: WebRoute => Boolean | String = null
-
-  /**
    * this method is responsible for rendering components ,
    * @param route current route that is pushed to stack
    * @return

@@ -35,7 +35,9 @@ trait ReactElement extends js.Object {
 }
 
 @js.native
-trait ReactClass extends js.Object
+trait ReactClass extends js.Object {
+  def apply(props: js.Object, children: ReactNode*): ReactElement = js.native
+}
 
 @js.native
 trait JSProps[P] extends js.Object {

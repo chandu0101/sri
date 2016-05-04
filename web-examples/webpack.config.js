@@ -3,7 +3,6 @@
 var webpack = require('webpack');
 var path = require('path');
 var CommonsChunkPlugin = webpack.optimize.CommonsChunkPlugin;
-var HasteResolverPlugin = require('haste-resolver-webpack-plugin');
 var NODE_ENV = process.env.NODE_ENV;
 
 module.exports = {
@@ -18,10 +17,6 @@ module.exports = {
     },
     plugins: [
         new webpack.NoErrorsPlugin(),
-        new HasteResolverPlugin({
-            platform: 'web',
-            nodeModules: ['react-web']
-        }),
         new webpack.DefinePlugin({
             'process.env': {
                 'NODE_ENV': JSON.stringify('development'),

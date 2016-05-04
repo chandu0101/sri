@@ -4,10 +4,8 @@ import sri.relay.RelayElementFactory._
 import sri.relay.container.{Fragments, RelayContainerSpec}
 import sri.relay.query.RelayQL
 import sri.relay.{Relay, RelayComponent, RelayComponentProps}
-import sri.universal.components.{Text, View}
-
+import sri.web.vdom.htmltags._
 import scala.scalajs.js
-import scala.scalajs.js.Dynamic.{literal => json}
 import scala.scalajs.js.annotation.ScalaJSDefined
 import scala.scalajs.js.{UndefOr => U}
 
@@ -18,7 +16,7 @@ object StarWarsShip {
   class Component extends RelayComponent[Props, Unit] {
     def render() = {
       val ship = props.ship
-      View()(Text()(ship.name.toString))
+      div()(span()(ship.name.toString))
     }
   }
 

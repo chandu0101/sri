@@ -50,10 +50,7 @@ object WebRouter {
     override def componentWillMount(): Unit = {
       val history = props.config.history
       val ctrl = new WebRouterCtrl(history, props.config)
-      initialState(RouterState(ctrl, null))
-      unlistenBefore = history.listenBefore((location: Location) => {
-        if (props.config.interceptTransition == null) true else props.config.interceptTransition(RouteUtils.getRoute(location, ctrl))
-      })
+      initialState(RouterState(ctrl, history.getCurrentLocation()))
       unlisten = history.listen((loc: Location) => {
         setState(state.copy(location = loc))
       })
@@ -67,11 +64,9 @@ object WebRouter {
 
     override def componentWillUnmount(): Unit = {
       if (unlisten != null) unlisten()
-      if (unlistenBefore != null) unlistenBefore()
     }
 
     var unlisten: js.Function0[_] = null
-    var unlistenBefore: js.Function0[_] = null
 
 
   }
