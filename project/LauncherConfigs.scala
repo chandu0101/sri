@@ -13,23 +13,21 @@ object LauncherConfigs {
       artifactPath in Compile in fastOptMobile :=
         baseDirectory.value / "index.ios.js",
       fastOptMobile in Compile := {
-        val outFileTemp = (artifactPath in Compile in fastOptMobile).value
+        val outFile = (artifactPath in Compile in fastOptMobile).value
 
         val loaderFile = (resourceDirectory in Compile).value / "loader.js"
 
-        IO.copyFile(loaderFile, outFileTemp)
+        IO.copyFile(loaderFile, outFile)
 
         val fullOutputCode = IO.read((fastOptJS in Compile).value.data)
 
-        IO.append(outFileTemp, fullOutputCode)
+        val outString = processRequireFunctionsInFastOpt(fullOutputCode)
+
+        IO.write(baseDirectory.value / "mobile-example.js", outString)
 
         val launcher = (scalaJSLauncher in Compile).value.data.content
-        IO.append(outFileTemp, launcher)
+        IO.append(outFile, launcher)
 
-        val outString = processRequireFunctionsInFastOpt(outFileTemp)
-        IO.delete(outFileTemp)
-        val outFile = (artifactPath in Compile in fastOptMobile).value
-        IO.append(outFile, outString)
         IO.copyFile(outFile, baseDirectory.value / "index.android.js")
         outFile
       }
@@ -42,23 +40,21 @@ object LauncherConfigs {
       artifactPath in Compile in fullOptMobile :=
         baseDirectory.value / "index.ios.js",
       fullOptMobile in Compile := {
-        val outFileTemp = (artifactPath in Compile in fullOptMobile).value
+        val outFile = (artifactPath in Compile in fullOptMobile).value
 
         val loaderFile = (resourceDirectory in Compile).value / "loader.js"
 
-        IO.copyFile(loaderFile, outFileTemp)
+        IO.copyFile(loaderFile, outFile)
 
         val fullOutputCode = IO.read((fullOptJS in Compile).value.data)
 
-        IO.append(outFileTemp, fullOutputCode)
+        val outString = processRequireFunctions(fullOutputCode)
+
+        IO.write(baseDirectory.value / "mobile-example.js", outString)
 
         val launcher = (scalaJSLauncher in Compile).value.data.content
-        IO.append(outFileTemp, launcher)
+        IO.append(outFile, launcher)
 
-        val outString = processRequireFunctions(outFileTemp)
-        IO.delete(outFileTemp)
-        val outFile = (artifactPath in Compile in fullOptMobile).value
-        IO.append(outFile, outString)
         IO.copyFile(outFile, baseDirectory.value / "index.android.js")
         outFile
       }
@@ -66,11 +62,10 @@ object LauncherConfigs {
 
   /**
    * react-native prod bundler needs require function without name spaces
-   * @param file
+   * @param text
    * @return
    */
-  def processRequireFunctions(file: File): String = {
-    val text = IO.read(file)
+  def processRequireFunctions(text: String): String = {
     val SJS_NAME_SPACE = "exportsNamespace:"
     val i = text.indexOf(SJS_NAME_SPACE) + SJS_NAME_SPACE.length
     val j = text.substring(i).indexOf(";") + i // TODO look for non valid identifier ![_$0-9a-zA-Z]
@@ -80,12 +75,11 @@ object LauncherConfigs {
 
   /**
    * react-native prod bundler needs require function without name spaces
-   * @param file
+   * @param text
    * @return
    */
-  def processRequireFunctionsInFastOpt(file: File): String = {
-    val text = IO.read(file)
-     text.replaceAll("\\$g.require\\(", "require\\(")
+  def processRequireFunctionsInFastOpt(text: String): String = {
+    text.replaceAll("\\$g.require\\(", "require\\(")
   }
 
   val fullOptRelayMobile = Def.taskKey[File]("Generate the file given to react native relay")
