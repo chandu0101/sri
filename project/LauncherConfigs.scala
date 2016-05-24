@@ -23,7 +23,7 @@ object LauncherConfigs {
 
         val outString = processRequireFunctionsInFastOpt(fullOutputCode)
 
-        IO.write(baseDirectory.value / "mobile-example.js", outString)
+        IO.write(baseDirectory.value / "scalajs-output.js", outString)
 
         val launcher = (scalaJSLauncher in Compile).value.data.content
         IO.append(outFile, launcher)
@@ -50,7 +50,7 @@ object LauncherConfigs {
 
         val outString = processRequireFunctions(fullOutputCode)
 
-        IO.write(baseDirectory.value / "mobile-example.js", outString)
+        IO.write(baseDirectory.value / "scalajs-output.js", outString)
 
         val launcher = (scalaJSLauncher in Compile).value.data.content
         IO.append(outFile, launcher)

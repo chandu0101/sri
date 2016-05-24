@@ -1,4 +1,4 @@
 global.React = require('react');
 global.ReactNative = require('react-native');
 
-require('./mobile-example.js');
+require('./scalajs-output.js');
