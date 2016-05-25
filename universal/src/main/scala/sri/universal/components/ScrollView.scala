@@ -2,7 +2,7 @@ package sri.universal.components
 
 import chandu0101.macros.tojs.JSMacro
 import sri.core.{React, ReactElement, ReactNode}
-import sri.universal.ReactUniversal
+import sri.universal.{ReactEvent, ReactUniversal}
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.ScalaJSDefined
@@ -22,7 +22,7 @@ case class ScrollView(zoomScale: js.UndefOr[Int] = js.undefined,
                       centerContent: js.UndefOr[Boolean] = js.undefined,
                       removeClippedSubviews: js.UndefOr[Boolean] = js.undefined,
                       ref: js.UndefOr[ScrollViewM => _] = js.undefined,
-                      onScroll: js.UndefOr[() => Unit] = js.undefined,
+                      onScroll: js.UndefOr[(ReactEvent[ScrollEvent]) => Unit] = js.undefined,
                       scrollEventThrottle: js.UndefOr[Int] = js.undefined,
                       throttleScrollCallbackMS: js.UndefOr[Int] = js.undefined,
                       showsHorizontalScrollIndicator: js.UndefOr[Boolean] = js.undefined,
@@ -81,3 +81,43 @@ trait ScrollViewM extends js.Object {
   def scrollTo(position : ScrollPosition): Unit = js.native
 }
      
+@js.native
+trait ScrollEvent extends js.Object {
+
+  val contentInset: ContentInset = js.native
+
+  val contentOffset: ContentOffset = js.native
+
+  val layoutMeasurement: Size2d = js.native
+
+  val contentSize: Size2d = js.native
+
+  val zoomScale: Double = js.native
+}
+
+@js.native
+trait ContentInset extends js.Object {
+
+  val top: Double = js.native
+
+  val left: Double = js.native
+
+  val right: Double = js.native
+
+  val bottom: Double = js.native
+}
+@js.native
+trait ContentOffset extends js.Object {
+
+  val x: Double = js.native
+
+  val y: Double = js.native
+}
+
+@js.native
+trait Size2d extends js.Object {
+
+  val width: Double = js.native
+
+  val height: Double = js.native
+}
