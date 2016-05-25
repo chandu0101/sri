@@ -3,6 +3,7 @@ package sri.mobile.examples.uiexplorer.components
 import sri.core.ElementFactory._
 import sri.core.ReactComponent
 import sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
+import sri.universal.ReactEvent
 import sri.universal.components._
 import sri.universal.styles.UniversalStyleSheet
 
@@ -32,7 +33,7 @@ object ScrollViewExample extends UIExample {
         ScrollView(style = styles.scrollView,
           contentInset = EdgeInsets(top = -50.0),
           scrollEventThrottle = 16,
-          onScroll = () => println(s"on Scroll!"))(
+          onScroll = (e: ReactEvent[ScrollEvent]) => println(s"on Scroll: (${e.nativeEvent.contentOffset.x}, ${e.nativeEvent.contentOffset.y})"))(
             THUMBS.++(THUMBS).zipWithIndex.map {
               case (u, i) => THUMB(u, key = i.toString)
             }
@@ -43,7 +44,7 @@ object ScrollViewExample extends UIExample {
           horizontal = true,
           scrollEventThrottle = 16,
           contentInset = EdgeInsets(top = -50.0),
-          onScroll = () => println(s"on Scroll!"))(
+          onScroll = (e: ReactEvent[ScrollEvent]) => println(s"on Scroll: (${e.nativeEvent.contentOffset.x}, ${e.nativeEvent.contentOffset.y})"))(
             THUMBS.++(THUMBS).zipWithIndex.map {
               case (u, i) => THUMB(u, key = i.toString)
             }
