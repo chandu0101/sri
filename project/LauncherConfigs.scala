@@ -69,7 +69,7 @@ object LauncherConfigs {
     val SJS_NAME_SPACE = "exportsNamespace:"
     val i = text.indexOf(SJS_NAME_SPACE) + SJS_NAME_SPACE.length
     val j = text.substring(i).indexOf(";") + i // TODO look for non valid identifier ![_$0-9a-zA-Z]
-    val nameSpace = text.substring(i,j)
+    val nameSpace = text.substring(i, j)
     text.replaceAll(s"$nameSpace.require\\(", "require\\(")
   }
 
@@ -88,7 +88,7 @@ object LauncherConfigs {
     Seq(
       artifactPath in Compile in fullOptRelayMobile :=
         baseDirectory.value / "index.ios.js",
-      fullOptRelayMobile in Compile := {
+      fullOptMobile in Compile := {
         val outFile = (artifactPath in Compile in fullOptRelayMobile).value
 
         val loaderFile = (resourceDirectory in Compile).value / "loader.js"
@@ -97,7 +97,9 @@ object LauncherConfigs {
 
         val fullOutputCode = IO.read((fullOptJS in Compile).value.data)
 
-        IO.append(outFile, fullOutputCode)
+        val outString = processRequireFunctions(fullOutputCode)
+
+        IO.write(baseDirectory.value / "scalajs-output.js", outString)
 
         val launcher = (scalaJSLauncher in Compile).value.data.content
         IO.append(outFile, launcher)

@@ -14,7 +14,7 @@ object Dependencies {
 
     val upickle = "0.3.1"
 
-    val scalatest = "3.0.0-M6"
+    val scalatest = "3.0.0-M15"
 
     val utest = "0.3.0"
 
