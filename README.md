@@ -54,7 +54,7 @@ libraryDependencies += "com.github.chandu0101.sri" %%% "relay" % "0.5.0"
   - [Mobile Examples](/mobile-examples)
   - [Web Examples](/web-examples)
   - [Relay Web Examples](/relay-web-examples)
-  - [Sri Diode Example](https://github.com/chandu0101/sri-diode)
+  - [Sri Diode Example](https://github.com/chandu0101/sri-diode-example)
   - [Sangria-Graphql Example](https://github.com/chandu0101/sri-sangria-example)
 
 #Templates
