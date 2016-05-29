@@ -7,11 +7,11 @@
 
 ##### New Projects :
 
-- [sri-extra](https://github.com/chandu0101/sri-extra) - Reusable Sri Components
+- [sri-extra](http://chandu0101.github.io/sri-extra) - Reusable Sri Components
 
-- [sri-scalacss](https://github.com/chandu0101/sri-scalacss) - sri,[scalacss](https://github.com/japgolly/scalacss helpers
+- [sri-scalacss](https://github.com/chandu0101/sri-scalacss) - sri [scalacss](https://github.com/japgolly/scalacss) helpers
 
-- [sri-diode](https://github.com/chandu0101/sri-diode) - sri,[diode](https://github.com/ochrons/diode) helpers
+- [sri-diode](https://github.com/chandu0101/sri-diode) - sri [diode](https://github.com/ochrons/diode) helpers
 
 - [sri-diode-example](https://github.com/chandu0101/sri-diode-example)
 
