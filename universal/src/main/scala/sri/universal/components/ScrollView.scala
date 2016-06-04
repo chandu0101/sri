@@ -41,6 +41,7 @@ case class ScrollView(zoomScale: js.UndefOr[Int] = js.undefined,
                       directionalLockEnabled: js.UndefOr[Boolean] = js.undefined,
                       keyboardShouldPersistTaps: js.UndefOr[Boolean] = js.undefined,
                       pagingEnabled: js.UndefOr[Boolean] = js.undefined,
+                      scrollPerfTag: js.UndefOr[String] = js.undefined,
                       canCancelContentTouches: js.UndefOr[Boolean] = js.undefined,
                       showsVerticalScrollIndicator: js.UndefOr[Boolean] = js.undefined,
                       scrollIndicatorInsets: js.UndefOr[EdgeInsets] = js.undefined) {

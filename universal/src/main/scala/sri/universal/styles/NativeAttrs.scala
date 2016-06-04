@@ -92,6 +92,7 @@ trait TextStyles {
   val textShadowOffset = new NativeStyle[js.Dynamic]("textShadowOffset")
   val textShadowRadius = new NativeStyle[Double]("textShadowRadius")
   val textShadowColor = new NativeStyle[String]("textShadowColor")
+  val textDecorationLine = new NativeStyle[String]("textDecorationLine")
 
   object fontStyle extends NativeStyle[String]("fontStyle") {
     val normal = this := "normal"
@@ -193,6 +194,8 @@ trait ViewStyles {
   val transformMatrix = new NativeStyle[js.Array[Double]]("transformMatrix")
   val borderTopLeftRadius = new NativeStyle[Double]("borderTopLeftRadius")
   val borderTopRightRadius = new NativeStyle[Double]("borderTopRightRadius")
+  val borderBottomLeftRadius = new NativeStyle[Double]("borderTopRightRadius")
+  val borderBottomRightRadius = new NativeStyle[Double]("borderTopRightRadius")
 
 }
 

@@ -36,6 +36,7 @@ case class TextInput(onBlur: js.UndefOr[(ReactEvent[TextInputEvent]) => Unit] = 
                      onEndEditing: js.UndefOr[ReactEvent[TextInputEvent] => Unit] = js.undefined,
                      testID: js.UndefOr[String] = js.undefined,
                      returnKeyType: js.UndefOr[ReturnKeyType] = js.undefined,
+                     returnKeyLabel: js.UndefOr[String] = js.undefined,
                      onFocus: js.UndefOr[(ReactEvent[TextInputEvent]) => Unit] = js.undefined,
                      clearButtonMode: js.UndefOr[String] = js.undefined,
                      value: js.UndefOr[String] = js.undefined,

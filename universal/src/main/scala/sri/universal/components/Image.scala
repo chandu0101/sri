@@ -40,6 +40,7 @@ object Image {
 
   def getSize(uri: String, success: (Double, Double) => _, failure: js.Dynamic => _) = ReactUniversal.Image.asInstanceOf[js.Dynamic].getSize(uri, success, failure)
 
+  def prefetch(url: String):js.Promise[js.Dynamic]  = ReactUniversal.Image.asInstanceOf[js.Dynamic].prefetch(url).asInstanceOf[js.Promise[js.Dynamic]]
 }
 
 

@@ -18,6 +18,7 @@ case class RefreshControl(key: U[String] = undefined,
                           enabled: U[Boolean] = undefined,
                           colors: U[Seq[String]] = undefined,
                           progressBackgroundColor: U[String] = undefined,
+                          progressViewOffset: U[Double] = undefined,
                           size: U[RefreshControlSize] = undefined
                            ) {
 
