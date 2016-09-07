@@ -10,14 +10,14 @@ import scala.scalajs.js
 import scala.scalajs.js.UndefOr
 import scala.scalajs.js.annotation.ScalaJSDefined
 
-object AppStateIOSExample extends UIExample {
+object AppStateExample extends UIExample {
 
-  val AppSateIOS = ReactNative.AppStateIOS
+  val AppState = ReactNative.AppState
 
 
   object AppStateSubscription {
 
-    case class State(appState: String = AppSateIOS.currentState.get, previousAppSates: js.Array[String] = js.Array())
+    case class State(appState: String = AppState.currentState.get, previousAppSates: js.Array[String] = js.Array())
 
     @ScalaJSDefined
     class Component extends ReactComponent[Boolean, State] {
@@ -33,9 +33,9 @@ object AppStateIOSExample extends UIExample {
         setState(state.copy(appState, state.previousAppSates.+:(appState)))
       }
 
-      override def componentDidMount(): Unit = AppSateIOS.addEventListener("change", handleAppStateChange)
+      override def componentDidMount(): Unit = AppState.addEventListener("change", handleAppStateChange)
 
-      override def componentWillUnmount(): Unit = AppSateIOS.removeEventListener("change", handleAppStateChange)
+      override def componentWillUnmount(): Unit = AppState.removeEventListener("change", handleAppStateChange)
     }
 
 
@@ -47,10 +47,10 @@ object AppStateIOSExample extends UIExample {
 
   val Component = () => {
     UIExplorerPage(
-      UIExplorerBlock("AppStateIOS.currentState")(
-        Text()(AppSateIOS.currentState.get)
+      UIExplorerBlock("AppState.currentState")(
+        Text()(AppState.currentState.get)
       ),
-      UIExplorerBlock("Subscribed AppStateIOS:")(
+      UIExplorerBlock("Subscribed AppState:")(
         AppStateSubscription(true)
       ),
       UIExplorerBlock("Previous states:")(
@@ -62,7 +62,7 @@ object AppStateIOSExample extends UIExample {
   val component = () =>  createStatelessFunctionElementNoProps(Component)
 
 
-  override def title: String = "AppStateIOS"
+  override def title: String = "AppState"
 
-  override def description: String = "iOS app background status"
+  override def description: String = "app background status"
 }

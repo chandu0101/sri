@@ -1,9 +1,9 @@
-package sri.mobile.examples.uiexplorer.components.ios
+package sri.mobile.examples.uiexplorer.components
 
 import org.scalajs.dom
 import sri.core.ElementFactory._
 import sri.core.ReactComponent
-import sri.mobile.components.ios.{ActivityIndicatorIOS, ActivityIndicatorIOSSize}
+import sri.universal.components.{ActivityIndicator, ActivityIndicatorSize}
 import sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
 import sri.universal.components._
 import sri.universal.styles.UniversalStyleSheet
@@ -11,7 +11,7 @@ import sri.universal.styles.UniversalStyleSheet
 import scala.scalajs.js
 import scala.scalajs.js.annotation.ScalaJSDefined
 
-object ActivityIndicatorIOSExample extends UIExample {
+object ActivityIndicatorExample extends UIExample {
 
 
   object ToggleAnimatingActivityIndicator {
@@ -26,9 +26,9 @@ object ActivityIndicatorIOSExample extends UIExample {
 
       var timers: Seq[Int] = List()
 
-      def render() = ActivityIndicatorIOS(animating = state.animating,
+      def render() = ActivityIndicator(animating = state.animating,
         style = styles.animating,
-        size = ActivityIndicatorIOSSize.LARGE)()
+        size = ActivityIndicatorSize.LARGE)()
 
       override def componentDidMount() = {
         setToggleTimeout
@@ -57,22 +57,22 @@ object ActivityIndicatorIOSExample extends UIExample {
   class Component extends ReactComponent[Unit, Unit] {
     def render() = UIExplorerPage(
       UIExplorerBlock("Default white")(
-        ActivityIndicatorIOS(style = styles.default, color = "white")()
+        ActivityIndicator(style = styles.default, color = "white")()
       ),
       UIExplorerBlock("Gray")(
-        ActivityIndicatorIOS(style = styles.default)()
+        ActivityIndicator(style = styles.default)()
       ),
       UIExplorerBlock("Large")(
-        ActivityIndicatorIOS(style = styles.default,
+        ActivityIndicator(style = styles.default,
           color = "white",
-          size = ActivityIndicatorIOSSize.LARGE)()
+          size = ActivityIndicatorSize.LARGE)()
       ),
       UIExplorerBlock("Large custom colors")(
         View(style = styles.horizontal)(
-          ActivityIndicatorIOS(
+          ActivityIndicator(
             key = "3",
             color = "#00aa00",
-            size = ActivityIndicatorIOSSize.LARGE)()
+            size = ActivityIndicatorSize.LARGE)()
         )
       ),
       UIExplorerBlock("Start/Stop")(
@@ -103,7 +103,7 @@ object ActivityIndicatorIOSExample extends UIExample {
     val animating = styleE(centering)(height := 80)
   }
 
-  override def title: String = "ActivityIndicatorIOS"
+  override def title: String = "ActivityIndicator"
 
   override def description: String = "Animated loading indicators."
 }

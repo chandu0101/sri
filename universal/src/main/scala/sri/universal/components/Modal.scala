@@ -8,8 +8,9 @@ import scala.scalajs.js
 
 
 case class Modal(visible: js.UndefOr[Boolean] = js.undefined,
-                 animated: js.UndefOr[Boolean] = js.undefined,
+                 @deprecated("Use the animationType prop instead.") animated: js.UndefOr[Boolean] = js.undefined,
                  style: js.UndefOr[js.Any] = js.undefined,
+                 animationType: js.UndefOr[ModalAnimationType] = js.undefined,
                  onDismiss: js.UndefOr[() => _] = js.undefined,
                  ref: js.UndefOr[ModalM => _] = js.undefined,
                  key: js.UndefOr[String] = js.undefined,
@@ -24,3 +25,13 @@ case class Modal(visible: js.UndefOr[Boolean] = js.undefined,
 //mounted Modal methods/vars
 @js.native
 trait ModalM extends js.Object
+
+class ModalAnimationType private(val value : String) extends AnyVal
+
+object ModalAnimationType {
+
+  val SLIDE = new ModalAnimationType("slide")
+  val FADE = new ModalAnimationType("fade")
+  val NONE = new ModalAnimationType("none")
+
+}

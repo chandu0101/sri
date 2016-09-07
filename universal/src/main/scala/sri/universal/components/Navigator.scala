@@ -57,6 +57,8 @@ trait NavigatorM extends js.Object {
 
   def pop(): Unit = js.native
 
+  def popN(in:Int): Unit = js.native
+
   def replace(route: js.Object): Unit = js.native
 
   def replaceAtIndex(route: js.Object, index: Int): Unit = js.native

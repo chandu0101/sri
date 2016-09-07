@@ -52,6 +52,8 @@ object ImageResizeMode {
   val COVER = new ImageResizeMode("cover")
   val CONTAIN = new ImageResizeMode("contain")
   val STRETCH = new ImageResizeMode("stretch")
+  val REPEAT = new ImageResizeMode("repeat")
+  val CENTER = new ImageResizeMode("center")
 
   def newMode(mode: String) = new ImageResizeMode(mode)
 

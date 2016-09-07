@@ -12,6 +12,7 @@ import scala.scalajs.js.{UndefOr => U, undefined => undefined}
 
 case class NavigationHeader(key: U[String] = undefined,
                             style: U[js.Any] = undefined,
+                            statusBarHeight: U[Double] = undefined,
                             navigationProps: U[NavigationSceneRendererProps] = undefined,
                             renderTitleComponent: U[(NavigationSceneRendererProps,NavigationScene) => ReactElement] = undefined,
                             renderLeftComponent: U[(NavigationSceneRendererProps,NavigationScene) => ReactElement] = undefined,

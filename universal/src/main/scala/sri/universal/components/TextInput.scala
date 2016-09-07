@@ -38,24 +38,26 @@ case class TextInput(onBlur: js.UndefOr[(ReactEvent[TextInputEvent]) => Unit] = 
                      returnKeyType: js.UndefOr[ReturnKeyType] = js.undefined,
                      returnKeyLabel: js.UndefOr[String] = js.undefined,
                      onFocus: js.UndefOr[(ReactEvent[TextInputEvent]) => Unit] = js.undefined,
+                     onContentSizeChange: js.UndefOr[(ReactEvent[TextInputEvent]) => Unit] = js.undefined,
                      clearButtonMode: js.UndefOr[String] = js.undefined,
                      value: js.UndefOr[String] = js.undefined,
                      defaultValue: js.UndefOr[String] = js.undefined,
                      selectTextOnFocus: js.UndefOr[Boolean] = js.undefined,
+                     dataDetectorTypes: js.UndefOr[DataDetectorTypes] = js.undefined,
                      editable: js.UndefOr[Boolean] = js.undefined,
                      blurOnSubmit: js.UndefOr[Boolean] = js.undefined,
                      password: js.UndefOr[Boolean] = js.undefined) {
 
   def apply(children: ReactNode*) = {
     val props = JSMacro[TextInput](this)
-    React.createElement(ReactUniversal.TextInput,props,children :_*)
+    React.createElement(ReactUniversal.TextInput, props, children: _*)
   }
 }
 
 
 /**
- * mounted TextInput component methods
- */
+  * mounted TextInput component methods
+  */
 @js.native
 trait TextInputM extends js.Object {
 
@@ -79,6 +81,24 @@ object AutoCapitalize {
   val CHARACTERS = new AutoCapitalize("characters")
 
   def newType(name: String) = new AutoCapitalize(name)
+
+}
+
+class DataDetectorTypes private(val value: String) extends AnyVal
+
+object DataDetectorTypes {
+
+  val PHONE_NUMBER = new DataDetectorTypes("phoneNumber")
+
+  val LINK = new DataDetectorTypes("link")
+
+  val ADDRESS = new DataDetectorTypes("address")
+
+  val CALENDER_EVENT = new DataDetectorTypes("calendarEvent")
+
+  val NONE = new DataDetectorTypes("none")
+
+  val ALL = new DataDetectorTypes("all")
 
 }
 

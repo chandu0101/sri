@@ -32,7 +32,8 @@ object UIExplorerListScreen {
     RefreshControlExample,
     ListViewPagingExample,
     LayoutEventsExample,
-    ListViewGridLayoutExample
+    ListViewGridLayoutExample,
+    ActivityIndicatorExample
     //    NavigatorExample
   )
 
@@ -42,7 +43,6 @@ object UIExplorerListScreen {
     SegmentedControlExample,
     SwitchIOSExample,
     ScrollViewExample,
-    ActivityIndicatorIOSExample,
     PickerIOSExample,
     ModalExample,
     DatePickerIOSExample,
@@ -66,7 +66,7 @@ object UIExplorerListScreen {
   val IOS_APIS: List[UIExample] = List(
     AlertIOSExample,
     AsyncStorageExample,
-    AppStateIOSExample
+    AppStateExample
   )
 
   val ANDROID_APIS: List[UIExample] = List(

@@ -46,7 +46,7 @@ object ModalExample extends UIExample {
 
   }
 
-  case class State(animated: Boolean = true, modalVisible: Boolean = false, transparent: Boolean = false)
+  case class State(animationType: ModalAnimationType = ModalAnimationType.NONE, modalVisible: Boolean = false, transparent: Boolean = false)
 
   @ScalaJSDefined
   class Component extends ReactComponent[Unit, State] {
@@ -55,12 +55,12 @@ object ModalExample extends UIExample {
 
     def render() = {
       UIExplorerPage(
-        Modal(animated = state.animated,
+        Modal(animationType = state.animationType,
           transparent = state.transparent,
           visible = state.modalVisible)(
             View(style = styles.customContainer(state.transparent))(
               View(style = styles.customInnerContainer(state.transparent))(
-                Text()(s"This modal was presented ${if (state.animated) "with" else "without"} animation"),
+                Text()(s"This modal was presented ${if (state.animationType == ModalAnimationType.NONE) "without" else "with"} animation"),
                 Button(onPress = () => setModalVisible(false),
                   style = styles.modalButton)(
                     "Close"
@@ -69,8 +69,10 @@ object ModalExample extends UIExample {
             )
           ),
         View(style = styles.row)(
-          Text(style = styles.rowTitle)("Animated"),
-          Switch(value = state.animated, onValueChange = toggleAnimated _)()
+          Text(style = styles.rowTitle)("Animation Type"),
+          Button(onPress = () => setAnimationType(ModalAnimationType.NONE),style = if(state.animationType == ModalAnimationType.NONE) styles.activeButtonStyle else js.Dictionary())("None"),
+          Button(onPress = () => setAnimationType(ModalAnimationType.FADE),style = if(state.animationType == ModalAnimationType.FADE) styles.activeButtonStyle else js.Dictionary())("Fade"),
+          Button(onPress = () => setAnimationType(ModalAnimationType.SLIDE),style = if(state.animationType == ModalAnimationType.SLIDE) styles.activeButtonStyle else js.Dictionary())("Slide")
         ),
         View(style = styles.row)(
           Text(style = styles.rowTitle)("Transparent"),
@@ -84,8 +86,9 @@ object ModalExample extends UIExample {
       setState(state.copy(modalVisible = visible))
     }
 
-    def toggleAnimated(value: Boolean) = {
-      setState(state.copy(animated = !state.animated))
+
+    def setAnimationType(modalAnimationType: ModalAnimationType) = {
+      setState(state.copy(animationType = modalAnimationType))
     }
 
     def toggleTransparent(value: Boolean) = {
@@ -140,6 +143,8 @@ object ModalExample extends UIExample {
       val c = if (transparent) style(backgroundColor := "#fff", padding := 20) else style()
       styleE(innerContainer, c)()
     }
+
+    val activeButtonStyle = style(backgroundColor := "#ddd")
   }
 
   override def title: String = "Modal"

@@ -38,6 +38,7 @@ trait FlexBoxStyles {
   val right = new NativeStyle[Double]("right")
   val top = new NativeStyle[Double]("top")
   val width = new NativeStyle[Double]("width")
+  val zIndex = new NativeStyle[Double]("zIndex")
   val letterSpacing = new NativeStyle[Double]("letterSpacing")
 
   object position extends NativeStyle[String]("position") {

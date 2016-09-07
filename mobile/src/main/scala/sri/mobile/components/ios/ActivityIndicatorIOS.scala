@@ -7,6 +7,7 @@ import sri.mobile.ReactNative
 import scala.scalajs.js
 
 
+@deprecated("ActivityIndicatorIOS deprecated use ActivityIndicator instead")
 case class ActivityIndicatorIOS(size: js.UndefOr[ActivityIndicatorIOSSize] = js.undefined,
                                 hidesWhenStopped: js.UndefOr[Boolean] = js.undefined,
                                 style: js.UndefOr[js.Any] = js.undefined,

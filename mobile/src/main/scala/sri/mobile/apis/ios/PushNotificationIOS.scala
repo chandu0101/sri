@@ -1,7 +1,8 @@
 package sri.mobile.apis.ios
 
 import scala.scalajs.js
-import scala.scalajs.js.UndefOr
+import scala.scalajs.js.annotation.ScalaJSDefined
+import scala.scalajs.js.{Promise, UndefOr}
 
 @js.native
 trait PushNotificationIOS extends js.Object {
@@ -14,11 +15,13 @@ trait PushNotificationIOS extends js.Object {
 
   def getApplicationIconBadgeNumber(callback: js.Function): Unit = js.native
 
+  def getScheduledLocalNotifications(callback: js.Function): Unit = js.native
+
   def addEventListener(tpe: String, handler: js.Function): Unit = js.native
 
   def removeEventListener(tpe: String, handler: js.Function): Unit = js.native
 
-  def requestPermissions(): Unit = js.native
+  def requestPermissions(permissions: Permissions = ???): Promise[Permissions] = js.native
 
   def popInitialNotification(): js.Dynamic = js.native
 
@@ -33,4 +36,12 @@ trait PushNotificationIOS extends js.Object {
   def getBadgeCount(): UndefOr[Int] = js.native
 
 
+}
+
+
+@ScalaJSDefined
+abstract class Permissions extends js.Object {
+  val alert : js.UndefOr[Boolean] = js.undefined
+  val badge : js.UndefOr[Boolean] = js.undefined
+  val sound : js.UndefOr[Boolean] = js.undefined
 }

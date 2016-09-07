@@ -10,6 +10,14 @@ trait ToastAndroid extends js.Object {
 
   val LONG: Int = js.native
 
+  val TOP: Int = js.native
+
+  val BOTTOM: Int = js.native
+
+  val CENTER: Int = js.native
+
   def show(message: String, duration: Int): Unit = js.native
+
+  def showWithGravity(message: String, duration: Int, gravity: Int): Unit = js.native
 
 }

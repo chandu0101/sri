@@ -1,7 +1,7 @@
 package sri.universal
 
 import sri.core.ReactClass
-import sri.universal.apis.{AppRegistry, AsyncStorageJS, PixelRatio, ReactPlatForm}
+import sri.universal.apis._
 import sri.universal.navigation.NavigationExperimental
 
 import scala.scalajs.js
@@ -20,6 +20,7 @@ trait ReactUniversal extends js.Object {
   val Image: ReactClass = js.native
   val ScrollView: ReactClass = js.native
   val ListView: ReactClass = js.native
+  val SwipeableListView: ReactClass = js.native
   val Navigator: ReactClass = js.native
   val Picker: ReactClass = js.native
   val Modal: ReactClass = js.native
@@ -30,6 +31,7 @@ trait ReactUniversal extends js.Object {
   val IncrementalPresenter: ReactClass = js.native
   val WindowedListView: ReactClass = js.native
   val Slider: ReactClass = js.native
+  val ActivityIndicator: ReactClass = js.native
 
 
   val NavigationExperimental: NavigationExperimental = js.native
@@ -50,6 +52,7 @@ trait ReactUniversal extends js.Object {
   //  val NetInfo: NetInfo = js.native
   //  val LayoutAnimation: js.Dynamic = js.native
   val PixelRatio: PixelRatio = js.native
+  val DeviceEventEmitter:DeviceEventEmitter  = js.native
   //  val PushNotificationIOS: PushNotificationIOS = js.native
   //  val PanResponder: PanResponder = js.native
   //  val StatusBarIOS: js.Dynamic = js.native
