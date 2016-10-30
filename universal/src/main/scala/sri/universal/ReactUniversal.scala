@@ -1,6 +1,6 @@
 package sri.universal
 
-import sri.core.ReactClass
+import sri.core.{AppRegistry, ReactClass}
 import sri.universal.apis._
 import sri.universal.navigation.NavigationExperimental
 
