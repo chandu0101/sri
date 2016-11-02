@@ -13,6 +13,7 @@ trait ReactUniversal extends js.Object {
   //components
   val Text: ReactClass = js.native
   val View: ReactClass = js.native
+  val KeyboardAvoidingView: ReactClass = js.native
   val TextInput: ReactClass = js.native
   val TouchableWithoutFeedback: ReactClass = js.native
   val TouchableHighlight: ReactClass = js.native

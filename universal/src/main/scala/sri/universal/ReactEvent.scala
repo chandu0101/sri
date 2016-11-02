@@ -30,3 +30,8 @@ trait ImageEvent extends js.Object {
 }
 
 
+@js.native
+trait SyntheticEvent extends js.Object {
+
+}
+

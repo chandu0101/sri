@@ -26,6 +26,7 @@ object UIExplorerListScreen {
 
   val COMPONENTS: List[UIExample] = List(
     ViewExample,
+    KeyboardAvoidingViewExample,
     TouchableExample,
     TextInputExample,
     SliderExample,

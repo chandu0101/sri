@@ -2,14 +2,15 @@ package sri.universal.components
 
 import chandu0101.macros.tojs.JSMacro
 import sri.core.{React, ReactNode}
-import sri.universal.ReactUniversal
+import sri.universal.{ReactEvent, ReactUniversal, SyntheticEvent}
 import sri.universal.apis.LayoutEvent
 
 import scala.scalajs.js
 
 
 case class Text(suppressHighlighting: js.UndefOr[Boolean] = js.undefined,
-                onPress: js.UndefOr[() => Unit] = js.undefined,
+                onPress: js.UndefOr[ReactEvent[SyntheticEvent] => Unit] = js.undefined,
+                onLongPress: js.UndefOr[ReactEvent[SyntheticEvent] => Unit] = js.undefined,
                 style: js.UndefOr[js.Any] = js.undefined,
                 allowFontScaling: js.UndefOr[Boolean] = js.undefined,
                 selectable: js.UndefOr[Boolean] = js.undefined,

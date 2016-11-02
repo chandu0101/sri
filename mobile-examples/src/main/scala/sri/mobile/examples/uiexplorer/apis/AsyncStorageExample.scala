@@ -4,6 +4,7 @@ import sri.core.ElementFactory._
 import sri.core.ReactComponent
 import sri.mobile.components.ios.{PickerIOS, PickerItemIOS}
 import sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
+import sri.universal.{ReactEvent, SyntheticEvent}
 import sri.universal.apis.{AsyncStorage, AsyncStorageException}
 import sri.universal.components._
 import sri.universal.styles.UniversalStyleSheet
@@ -26,14 +27,14 @@ object AsyncStorageExample extends UIExample {
     initialState(State())
 
     def render() = {
-      println(s"In render result ${state.selectedValue} , setting info")
       UIExplorerPage(
         UIExplorerBlock("Basics - getItem, setItem, removeItem")(
           View()(
             PickerIOS(selectedValue = state.selectedValue, onValueChange = onValueChange)(
               COLORS.map(v => PickerItemIOS(key = v, value = v, label = v)())
             ),
-            Text()("Selected : ",
+            Text()(
+              "Selected : ",
               Text(style = styles.getColorStyle(state.selectedValue))(state.selectedValue)
             ),
             Text()(" "),
@@ -63,7 +64,6 @@ object AsyncStorageExample extends UIExample {
       async {
         val result = await(AsyncStorage.getItem(STORAGE_KEY))
         if (result != null) {
-          println(s"got result $result , setting info")
           setState(state.copy(selectedValue = result, messages = js.Array(s"Recovered selection from disk : ${result}")))
         } else {
           appendMessage(s"Initialized with no selection on disk")
@@ -79,7 +79,7 @@ object AsyncStorageExample extends UIExample {
       }.recover(saveError)
     }
 
-    def removeStorage: Unit = async {
+    def removeStorage(e: ReactEvent[SyntheticEvent]): Unit = async {
       val result = await(AsyncStorage.removeItem(STORAGE_KEY))
       appendMessage(s"Selection Removed from Disk")
     }.recover(saveError)
@@ -87,7 +87,7 @@ object AsyncStorageExample extends UIExample {
 
   val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
 
-  val component = () =>  createElementNoProps(ctor)
+  val component = () => createElementNoProps(ctor)
 
 
   object styles extends UniversalStyleSheet {

@@ -3,7 +3,7 @@ package sri.mobile.examples.router.components
 import sri.core.ElementFactory._
 import sri.core.ReactElement
 import sri.universal.components._
-import sri.universal.router
+import sri.universal.{ReactEvent, SyntheticEvent, router}
 import sri.universal.router.UniversalRouterComponent
 
 import scala.scalajs.js
@@ -17,7 +17,7 @@ object FourthScreen {
       Text(onPress = onTextClick _)(s"Fourth Screen : Person name is : ${props.name}")
     )
 
-    def onTextClick() = {
+    def onTextClick(e: ReactEvent[SyntheticEvent]) = {
       navigateToHome()
     }
   }

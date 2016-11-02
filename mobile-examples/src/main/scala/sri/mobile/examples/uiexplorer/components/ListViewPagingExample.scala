@@ -4,6 +4,7 @@ import sri.core.ReactComponent
 import sri.mobile.ReactNative
 import sri.mobile.all._
 import sri.mobile.examples.uiexplorer.UIExample
+import sri.universal.{ReactEvent, SyntheticEvent}
 import sri.universal.apis.LayoutConfig
 import sri.universal.components._
 import sri.universal.styles.UniversalStyleSheet
@@ -141,7 +142,7 @@ object ListViewPagingExample extends UIExample {
 
     def renderFooter = {
       View(style = styles.header)(
-        Text(style = styles.text, onPress = () => println("Footer"))(
+        Text(style = styles.text, onPress = (e: ReactEvent[SyntheticEvent]) => println("Footer"))(
           "Table Footer"
         )
       )

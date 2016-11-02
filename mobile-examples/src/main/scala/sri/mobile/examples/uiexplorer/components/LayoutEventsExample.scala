@@ -4,13 +4,15 @@ import org.scalajs.dom
 import sri.core._
 import sri.mobile.ReactNative
 import sri.mobile.all._
-import sri.universal.apis.{LayoutEvent, Layout}
-import sri.mobile.examples.uiexplorer.{UIExplorerPage, UIExample}
+import sri.universal.apis.{Layout, LayoutEvent}
+import sri.mobile.examples.uiexplorer.{UIExample, UIExplorerPage}
+import sri.universal.{ReactEvent, SyntheticEvent}
 import sri.universal.components._
 import sri.universal.styles.UniversalStyleSheet
+
 import scala.scalajs.js
 import scala.scalajs.js.annotation.ScalaJSDefined
-import scala.scalajs.js.{UndefOr => U, JSON, undefined}
+import scala.scalajs.js.{JSON, undefined, UndefOr => U}
 
 object LayoutEventsExample extends UIExample {
 
@@ -61,7 +63,7 @@ object LayoutEventsExample extends UIExample {
       setState(state.copy(imageLayout = e.nativeEvent.layout))
     }
 
-    def animateViewLayout() = {
+    def animateViewLayout(e: ReactEvent[SyntheticEvent]) = {
       ReactNative.LayoutAnimation.configureNext(ReactNative.LayoutAnimation.Presets.spring, () => {
         println(s"layout animation done")
         setState(state.copy(extraText = " And a bunch more text to wrap around a few lines", containerStyle = styles.containerStyle))

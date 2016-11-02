@@ -3,8 +3,8 @@ package sri.mobile.examples.uiexplorer.components.ios
 import sri.core._
 import sri.mobile.all._
 import sri.mobile.components.{MapView, MapViewAnnotation, MapViewRegion}
-import sri.mobile.examples.uiexplorer.{UIExplorerPageLazyLoad, UIExample, UIExplorerBlock, UIExplorerPage}
-import sri.universal.{TextInputEvent, ReactEvent}
+import sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage, UIExplorerPageLazyLoad}
+import sri.universal.{ReactEvent, SyntheticEvent, TextInputEvent}
 import sri.universal.components._
 import sri.universal.styles.UniversalStyleSheet
 
@@ -90,7 +90,7 @@ object MapViewExample extends UIExample {
         region = region.copy(longitudeDelta = getDouble(e.nativeEvent.text))
       }
 
-      def change: Unit = {
+      def change(e: ReactEvent[SyntheticEvent]): Unit = {
         setState(state.copy(region = region))
         props.onChange(state.region)
       }

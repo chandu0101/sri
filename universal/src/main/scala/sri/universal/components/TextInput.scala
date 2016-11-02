@@ -5,6 +5,7 @@ import chandu0101.macros.tojs.JSMacro
 import sri.core.{React, ReactNode}
 
 import scala.scalajs.js
+import scala.scalajs.js.annotation.ScalaJSDefined
 
 
 case class TextInput(onBlur: js.UndefOr[(ReactEvent[TextInputEvent]) => Unit] = js.undefined,
@@ -33,6 +34,7 @@ case class TextInput(onBlur: js.UndefOr[(ReactEvent[TextInputEvent]) => Unit] = 
                      autoCapitalize: js.UndefOr[AutoCapitalize] = js.undefined,
                      key: js.UndefOr[String] = js.undefined,
                      bufferDelay: js.UndefOr[Int] = js.undefined,
+                     selection: js.UndefOr[TextInputSelection] = js.undefined,
                      onEndEditing: js.UndefOr[ReactEvent[TextInputEvent] => Unit] = js.undefined,
                      testID: js.UndefOr[String] = js.undefined,
                      returnKeyType: js.UndefOr[ReturnKeyType] = js.undefined,
@@ -154,4 +156,18 @@ object TextAlignVertical {
   val TOP = new TextAlignVertical("top")
   val CENTER = new TextAlignVertical("center")
   val BOTTOM = new TextAlignVertical("bottom")
+}
+
+@ScalaJSDefined
+trait TextInputSelection extends js.Object {
+  val start: Double
+  val end: Double
+}
+
+object TextInputSelection {
+
+  def apply(start_v: Double, end_v: Double) = new TextInputSelection {
+    override val end: Double = start_v
+    override val start: Double = end_v
+  }
 }
