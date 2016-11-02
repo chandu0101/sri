@@ -11,6 +11,9 @@ object NativeAttrs extends NativeAttrs
 trait FlexBoxStyles {
 
   val flex = new NativeStyle[Double]("flex")
+  val flexBasis = new NativeStyle[Double]("flexBasis")
+  val flexShrink = new NativeStyle[Double]("flexShrink")
+  val flexGrow = new NativeStyle[Double]("flexGrow")
   val flexOne = flex := 1
 
   val borderBottomWidth = new NativeStyle[Double]("borderBottomWidth")
