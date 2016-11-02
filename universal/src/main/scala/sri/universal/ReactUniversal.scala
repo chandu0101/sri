@@ -47,6 +47,7 @@ trait ReactUniversal extends js.Object {
   //  val AppStateIOS: AppStateIOS = js.native
   val AsyncStorage: AsyncStorageJS = js.native
   val AppRegistry: AppRegistry = js.native
+  val Keyboard: Keyboard = js.native
   //  val CameraRoll: CameraRoll = js.native
   //  val InteractionManager: InteractionManager = js.native
   //  val LinkingIOS: LinkingIOS = js.native
