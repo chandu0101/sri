@@ -4,17 +4,16 @@ import PublicationDetails._
 import Dependencies._
 
 
-
 // ================================ Module definitions  ================================ //
 
 lazy val Sri = DefProject(".", "root")
-  .aggregate(core, addons, universal, web, mobile, relay, mobileExamples, webExamples, relayWebExamples, relayMobileExamples)
+  .aggregate(core, addons, universal, web, mobile, mobileExamples, webExamples)
   .configure(addCommandAliases(
-  "ct" -> "; test:compile ; core/test",
-  "wt" -> "; test:compile ; web/test",
-  "tt" -> "; test:compile ; test/test",
-  "T" -> "; clean ;t",
-  "TT" -> ";+clean ;tt"))
+    "ct" -> "; test:compile ; core/test",
+    "wt" -> "; test:compile ; web/test",
+    "tt" -> "; test:compile ; test/test",
+    "T" -> "; clean ;t",
+    "TT" -> ";+clean ;tt"))
   .settings(preventPublication)
 
 lazy val core = DefProject("core")
@@ -29,10 +28,6 @@ lazy val universal = DefProject("universal")
   .dependsOn(core)
   .settings(publicationSettings)
 
-lazy val relay = DefProject("relay")
-  .dependsOn(universal)
-  .settings(publicationSettings)
-  .settings(relayModuleDeps)
 
 lazy val web = DefProject("web")
   .dependsOn(universal)
@@ -47,26 +42,16 @@ lazy val mobile = DefProject("mobile")
 
 
 lazy val webExamples = DefProject("web-examples")
-  .dependsOn(web, relay)
+  .dependsOn(web)
   .settings(webExamplesLauncher)
   .settings(preventPublication)
 
-
-lazy val relayWebExamples = DefProject("relay-web-examples")
-  .dependsOn(web, relay)
-  .settings(relayWebExamplesLauncher)
-  .settings(preventPublication)
 
 lazy val mobileExamples = DefProject("mobile-examples")
   .dependsOn(mobile)
   .settings(mobilelauncherFull)
   .settings(mobileLauncherFast)
   .settings(mobileExamplesModuleDeps)
-  .settings(preventPublication)
-
-lazy val relayMobileExamples = DefProject("relay-mobile-examples")
-  .dependsOn(mobile, relay)
-  .settings(mobileRelayLauncher)
   .settings(preventPublication)
 
 lazy val test = DefProject("test")

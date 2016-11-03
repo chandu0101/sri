@@ -52,10 +52,8 @@ object Dependencies {
 
   )
 
-
   val mobileExamplesModuleDeps = Seq(scalaAsync)
 
-  val relayModuleDeps = Seq(scalaReflect)
 
 
   val scalatestJSSettings = Seq(scalatestJS,
