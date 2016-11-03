@@ -34,8 +34,8 @@ object HomeScreen {
         underlayColor = "grey",
         key = text,
         onPress = () => navigateTo(page))(
-          Text(style = styles.text)(text)
-        )
+        Text(style = styles.text)(text)
+      )
     }
 
     def getDynamicBlock(text: String) = {
@@ -43,8 +43,8 @@ object HomeScreen {
         underlayColor = "grey",
         key = text,
         onPress = () => navigateTo(Fourth, Person("Sri"), "Sri"))(
-          Text(style = styles.text)(text)
-        )
+        Text(style = styles.text)(text)
+      )
     }
 
     def onTextClick() = {
@@ -53,10 +53,9 @@ object HomeScreen {
   }
 
 
-  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
-  ctor.contextTypes = router.routerContextTypes
+  js.constructorOf[Component].contextTypes = router.routerContextTypes
 
-  def apply() = createElementNoProps(ctor)
+  def apply() = makeElement[Component]
 }
 
 object styles extends UniversalStyleSheet {

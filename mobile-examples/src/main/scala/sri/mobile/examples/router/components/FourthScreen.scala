@@ -22,10 +22,8 @@ object FourthScreen {
     }
   }
 
-  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
+  js.constructorOf[Component].contextTypes = router.routerContextTypes
 
-  ctor.contextTypes = router.routerContextTypes
-
-  def apply(person: Person) = createElement(ctor, person)
+  def apply(person: Person) = makeElement[Component](person)
 }
 

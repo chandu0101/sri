@@ -96,9 +96,7 @@ object SegmentedControlExample extends UIExample {
       def onValueChange(value: String) = setState(state.copy(value = value))
     }
 
-    val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
-
-    def apply(key: UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElementNoProps(ctor, key = key, ref = ref)
+    def apply(key: UndefOr[String] = js.undefined, ref: js.Function1[Component, Unit] = null) = makeElementNoProps[Component](key = key, ref = ref)
 
   }
 
@@ -128,7 +126,7 @@ object SegmentedControlExample extends UIExample {
     )
   }
 
-  val component = () =>  createStatelessFunctionElementNoProps(Component)
+  val component = () => createStatelessFunctionElementNoProps(Component)
 
   object styles extends UniversalStyleSheet {
 

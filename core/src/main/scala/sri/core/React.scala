@@ -164,9 +164,20 @@ private[core] class InternalReactJSComponent[P <: ReactJSProps, S] extends js.Ob
 
 }
 
+/**
+  * This trait exists so a component's props and state types
+  * can be accessed as type members rather than type parameters
+  */
+@ScalaJSDefined
+trait ReactComponentBase extends js.Any {
+  type Props
+  type State
+}
 
 @ScalaJSDefined
-abstract class ReactComponent[P, S] extends InternalReactComponent[P, S] {
+abstract class ReactComponent[P, S] extends InternalReactComponent[P, S] with ReactComponentBase {
+  type Props = P
+  type State = S
 
   if (js.isUndefined(jsState) || jsState == null) {
     jsState = js.Dictionary[Any]("sstate" -> null).asInstanceOf[JSState[S]]
@@ -246,10 +257,10 @@ abstract class ReactComponent[P, S] extends InternalReactComponent[P, S] {
 }
 
 /**
- * it uses reference(eq,ne) equality for shouldComponentUpdate logic
- * @tparam P
- * @tparam S
- */
+  * it uses reference(eq,ne) equality for shouldComponentUpdate logic
+  * @tparam P
+  * @tparam S
+  */
 @ScalaJSDefined
 abstract class ReactComponentPureRef[P <: AnyRef, S <: AnyRef] extends ReactComponent[P, S] {
   @JSName("sShouldComponentUpdate")
@@ -259,9 +270,9 @@ abstract class ReactComponentPureRef[P <: AnyRef, S <: AnyRef] extends ReactComp
 }
 
 /**
- * it uses reference(eq,ne) equality for shouldComponentUpdate logic
- * @tparam P
- */
+  * it uses reference(eq,ne) equality for shouldComponentUpdate logic
+  * @tparam P
+  */
 @ScalaJSDefined
 abstract class ReactComponentPureRefP[P <: AnyRef] extends ReactComponent[P, Unit] {
   @JSName("sShouldComponentUpdate")
@@ -271,9 +282,9 @@ abstract class ReactComponentPureRefP[P <: AnyRef] extends ReactComponent[P, Uni
 }
 
 /**
- * it uses reference(eq,ne) equality for shouldComponentUpdate logic
- * @tparam S
- */
+  * it uses reference(eq,ne) equality for shouldComponentUpdate logic
+  * @tparam S
+  */
 @ScalaJSDefined
 abstract class ReactComponentPureRefS[S <: AnyRef] extends ReactComponent[Unit, S] {
   @JSName("sShouldComponentUpdate")
@@ -283,10 +294,10 @@ abstract class ReactComponentPureRefS[S <: AnyRef] extends ReactComponent[Unit, 
 }
 
 /**
- * it uses value(==/equals) equality for shouldComponentUpdate logic
- * @tparam P
- * @tparam S
- */
+  * it uses value(==/equals) equality for shouldComponentUpdate logic
+  * @tparam P
+  * @tparam S
+  */
 @ScalaJSDefined
 abstract class ReactComponentPureValue[P, S] extends ReactComponent[P, S] {
   @JSName("sShouldComponentUpdate")
@@ -296,9 +307,9 @@ abstract class ReactComponentPureValue[P, S] extends ReactComponent[P, S] {
 }
 
 /**
- * it uses value(==/equals) equality for shouldComponentUpdate logic
- * @tparam P
- */
+  * it uses value(==/equals) equality for shouldComponentUpdate logic
+  * @tparam P
+  */
 @ScalaJSDefined
 abstract class ReactComponentPureValueP[P] extends ReactComponent[P, Unit] {
   @JSName("sShouldComponentUpdate")
@@ -308,9 +319,9 @@ abstract class ReactComponentPureValueP[P] extends ReactComponent[P, Unit] {
 }
 
 /**
- * it uses value(==/equals) equality for shouldComponentUpdate logic
- * @tparam S
- */
+  * it uses value(==/equals) equality for shouldComponentUpdate logic
+  * @tparam S
+  */
 @ScalaJSDefined
 abstract class ReactComponentPureValueS[S] extends ReactComponent[Unit, S] {
   @JSName("sShouldComponentUpdate")
@@ -397,10 +408,10 @@ trait ReactComponentFactory[P, S] extends ReactComponent[P, S] {
 trait ReactComponentConstructor[C <: ReactComponent[_, _]] extends js.Object
 
 /**
- * typed version of js.concstructorOf[ C <: ReactJSComponent]
- * @tparam P
- * @tparam S
- */
+  * typed version of js.concstructorOf[ C <: ReactJSComponent]
+  * @tparam P
+  * @tparam S
+  */
 @js.native
 trait ReactTypedConstructor[P, S] extends js.Object {
   var contextTypes: js.UndefOr[js.Any] = js.native

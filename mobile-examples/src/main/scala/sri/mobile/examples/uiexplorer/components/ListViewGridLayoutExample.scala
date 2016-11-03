@@ -69,10 +69,10 @@ object ListViewGridLayoutExample extends UIExample {
     def renderRow(rowData: String, sectionID: String | Int, rowID: String | Int, highlightRow: js.Function2[String | Int, String | Int, _]) = {
       val imageSource = THUMB_URLS(rowData.hashCode % THUMB_URLS.length)
       View()(
-       View(style = styles.row)(
-         Image(style = styles.thumb, sourceDynamic = imageSource)(),
-         Text(style = styles.text)(rowData)
-       )
+        View(style = styles.row)(
+          Image(style = styles.thumb, sourceDynamic = imageSource)(),
+          Text(style = styles.text)(rowData)
+        )
       )
     }
 
@@ -83,9 +83,8 @@ object ListViewGridLayoutExample extends UIExample {
 
   }
 
-  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
 
-  val component = () => createElementNoProps(ctor)
+  val component = () => makeElement[Component]
 
   object styles extends UniversalStyleSheet {
 

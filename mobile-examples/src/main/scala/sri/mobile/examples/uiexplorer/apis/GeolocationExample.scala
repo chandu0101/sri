@@ -42,7 +42,7 @@ object GeolocationExample extends UIExample {
     override def componentDidMount(): Unit = {
       val positionOptions = json(enableHighAccuracy = true,
         timeout = 20000,
-      maximumAge = 1000)
+        maximumAge = 1000)
 
       window.navigator.geolocation.getCurrentPosition(
         (position: Position) => setState(state.copy(initialPosition = JSON.stringify(position))),
@@ -65,10 +65,8 @@ object GeolocationExample extends UIExample {
     val title = style(fontWeight._500)
   }
 
-  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
 
-
-  override val component = () => createElementNoProps(ctor)
+  override val component = () => makeElement[Component]
 
   override def title: String = "Geolocation"
 

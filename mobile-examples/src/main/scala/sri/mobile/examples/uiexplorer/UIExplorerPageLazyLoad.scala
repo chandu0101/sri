@@ -40,8 +40,7 @@ object UIExplorerPageLazyLoad {
     marginTop := 40)
   }
 
-  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
 
-  def apply(children: ReactNode*) = createElementNoPropsWithChildren(ctor)(children: _*)
+  def apply(children: ReactNode*) = makeElementNoPropsWithChildren[Component]()(children: _*)
 
 }

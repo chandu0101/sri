@@ -1,10 +1,7 @@
 package sri.test.components
 
 import sri.core.ElementFactory._
-import sri.core.{React, ReactComponent}
-import sri.universal.ReactUniversal
-import scalajs.js.Dynamic.{literal => json}
-import sri.universal.components.View
+import sri.core.ReactComponent
 import scala.scalajs.js
 import scala.scalajs.js.annotation.ScalaJSDefined
 
@@ -16,7 +13,5 @@ object Hello {
     def render() = null
   }
 
-  val factory = getTypedConstructor(js.constructorOf[Component], classOf[Component])
-
-  def apply(key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElement(factory,"hi", key = "hkey", ref = ref)
+  def apply(key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component, Unit] = null) = makeElement[Component]("hi", key = "hkey", ref = ref)
 }

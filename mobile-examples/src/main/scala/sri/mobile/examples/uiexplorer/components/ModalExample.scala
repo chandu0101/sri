@@ -28,8 +28,8 @@ object ModalExample extends UIExample {
           onShowUnderlay = onHighlight _,
           style = styles.buttonStyle(props.style),
           underlayColor = "#a9d9d4")(
-            Text(style = styles.buttonTextStyle(state.active))(children)
-          )
+          Text(style = styles.buttonTextStyle(state.active))(children)
+        )
       }
 
       def onHighlight() = setState(state.copy(active = true))
@@ -40,9 +40,7 @@ object ModalExample extends UIExample {
 
     case class Props(onPress: () => Unit, style: js.Dictionary[Any])
 
-    val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
-
-    def apply(onPress: () => Unit, style: js.Dictionary[Any] = js.Dictionary(), key: UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null)(children: ReactNode) = createElementWithChildren(ctor, Props(onPress, style), key = key, ref = ref)(children)
+    def apply(onPress: () => Unit, style: js.Dictionary[Any] = js.Dictionary(), key: UndefOr[String] = js.undefined, ref: js.Function1[Component, Unit] = null)(children: ReactNode) = makeElementWithChildren[Component](Props(onPress, style), key = key, ref = ref)(children)
 
   }
 
@@ -58,21 +56,21 @@ object ModalExample extends UIExample {
         Modal(animationType = state.animationType,
           transparent = state.transparent,
           visible = state.modalVisible)(
-            View(style = styles.customContainer(state.transparent))(
-              View(style = styles.customInnerContainer(state.transparent))(
-                Text()(s"This modal was presented ${if (state.animationType == ModalAnimationType.NONE) "without" else "with"} animation"),
-                Button(onPress = () => setModalVisible(false),
-                  style = styles.modalButton)(
-                    "Close"
-                  )
+          View(style = styles.customContainer(state.transparent))(
+            View(style = styles.customInnerContainer(state.transparent))(
+              Text()(s"This modal was presented ${if (state.animationType == ModalAnimationType.NONE) "without" else "with"} animation"),
+              Button(onPress = () => setModalVisible(false),
+                style = styles.modalButton)(
+                "Close"
               )
             )
-          ),
+          )
+        ),
         View(style = styles.row)(
           Text(style = styles.rowTitle)("Animation Type"),
-          Button(onPress = () => setAnimationType(ModalAnimationType.NONE),style = if(state.animationType == ModalAnimationType.NONE) styles.activeButtonStyle else js.Dictionary())("None"),
-          Button(onPress = () => setAnimationType(ModalAnimationType.FADE),style = if(state.animationType == ModalAnimationType.FADE) styles.activeButtonStyle else js.Dictionary())("Fade"),
-          Button(onPress = () => setAnimationType(ModalAnimationType.SLIDE),style = if(state.animationType == ModalAnimationType.SLIDE) styles.activeButtonStyle else js.Dictionary())("Slide")
+          Button(onPress = () => setAnimationType(ModalAnimationType.NONE), style = if (state.animationType == ModalAnimationType.NONE) styles.activeButtonStyle else js.Dictionary())("None"),
+          Button(onPress = () => setAnimationType(ModalAnimationType.FADE), style = if (state.animationType == ModalAnimationType.FADE) styles.activeButtonStyle else js.Dictionary())("Fade"),
+          Button(onPress = () => setAnimationType(ModalAnimationType.SLIDE), style = if (state.animationType == ModalAnimationType.SLIDE) styles.activeButtonStyle else js.Dictionary())("Slide")
         ),
         View(style = styles.row)(
           Text(style = styles.rowTitle)("Transparent"),
@@ -97,9 +95,7 @@ object ModalExample extends UIExample {
 
   }
 
-  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
-
-  val component = () =>  createElementNoProps(ctor)
+  val component = () => makeElement[Component]
 
 
   object styles extends UniversalStyleSheet {

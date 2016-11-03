@@ -21,14 +21,13 @@ object UIExplorerPage {
     def render() = {
       ScrollView(style = UniversalStyleSheet.wholeContainer, keyboardShouldPersistTaps = true,
         keyboardDismissMode = keyboardDismissMode.INTERACTIVE)(
-          children
-        )
+        children
+      )
     }
 
   }
 
-  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
 
-  def apply(children: ReactNode*) = createElementNoPropsWithChildren(ctor)(children: _*)
+  def apply(children: ReactNode*) = makeElementNoPropsWithChildren[Component]()(children: _*)
 
 }

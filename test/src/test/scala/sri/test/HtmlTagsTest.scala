@@ -1,19 +1,18 @@
 package sri.test
 
 import org.scalajs.dom
-import sri.core.{React, ReactElement}
+import sri.core.ReactElement
 import sri.test.components.RefsTestComponent
-import sri.web.{SyntheticEvent, ReactDOM}
-//import sri.web.vdom.htmltags._
+import sri.web.ReactDOM
 import sri.web.all._
 import sri.web.vdom.htmltagsNoInline._
-import scala.scalajs.js.{UndefOr => U, undefined => undefined}
-import scala.scalajs.js.Dynamic.{literal => json}
 
 
 class HtmlTagsTest extends BaseTest {
 
   var rootNode: dom.Element = null
+
+  def html = rootNode.innerHTML
 
   def render(element: ReactElement) = ReactDOM.render(element, rootNode)
 
@@ -47,7 +46,11 @@ class HtmlTagsTest extends BaseTest {
 
   test("menuitem") {
     render(menuitem(id = "sri-web"))
-    assert(rootNode.innerHTML == "<menuitem data-reactroot=\"\" id=\"sri-web\"></menuitem>")
+    val prefix = """<menuitem data-reactroot="" id="sri-web""""
+    assert(
+      html == prefix + "></menuitem>" ||
+        html == prefix + "/>"
+    )
   }
 
   test("article") {
@@ -87,7 +90,8 @@ class HtmlTagsTest extends BaseTest {
 
   test("meta") {
     render(meta(id = "sri-web"))
-    assert(rootNode.innerHTML == "<meta data-reactroot=\"\" id=\"sri-web\">")
+    val prefix = """<meta data-reactroot="" id="sri-web""""
+    assert(html == prefix + ">" || html == prefix + "/>")
   }
 
   test("s") {
@@ -117,7 +121,8 @@ class HtmlTagsTest extends BaseTest {
 
   test("hr") {
     render(hr(id = "sri-web"))
-    assert(rootNode.innerHTML == "<hr data-reactroot=\"\" id=\"sri-web\">")
+    val prefix = """<hr data-reactroot="" id="sri-web""""
+    assert(html == prefix + ">" || html == prefix + "/>")
   }
 
   test("menu") {
@@ -147,7 +152,8 @@ class HtmlTagsTest extends BaseTest {
 
   test("embed") {
     render(embed(id = "sri-web"))
-    assert(rootNode.innerHTML == "<embed data-reactroot=\"\" id=\"sri-web\">")
+    val prefix = """<embed data-reactroot="" id="sri-web""""
+    assert(html == prefix + ">" || html == prefix + "/>")
   }
 
   test("canvas") {
@@ -177,7 +183,8 @@ class HtmlTagsTest extends BaseTest {
 
   test("track") {
     render(track(id = "sri-web"))
-    assert(rootNode.innerHTML == "<track data-reactroot=\"\" id=\"sri-web\"></track>")
+    val prefix = """<track data-reactroot="" id="sri-web""""
+    assert(html == prefix + ">" || html == prefix + "/>" || html == prefix + "></track>")
   }
 
   test("nav") {
@@ -187,7 +194,8 @@ class HtmlTagsTest extends BaseTest {
 
   test("link") {
     render(link(id = "sri-web"))
-    assert(rootNode.innerHTML == "<link data-reactroot=\"\" id=\"sri-web\">")
+    val prefix = """<link data-reactroot="" id="sri-web""""
+    assert(html == prefix + ">" || html == prefix + "/>")
   }
 
   test("button") {
@@ -287,12 +295,14 @@ class HtmlTagsTest extends BaseTest {
 
   test("br") {
     render(br(id = "sri-web"))
-    assert(rootNode.innerHTML == "<br data-reactroot=\"\" id=\"sri-web\">")
+    val prefix = """<br data-reactroot="" id="sri-web""""
+    assert(html == prefix + ">" || html == prefix + "/>")
   }
 
   test("base") {
     render(base(id = "sri-web"))
-    assert(rootNode.innerHTML == "<base data-reactroot=\"\" id=\"sri-web\">")
+    val prefix = """<base data-reactroot="" id="sri-web""""
+    assert(html == prefix + ">" || html == prefix + "/>")
   }
 
   test("noscript") {
@@ -342,12 +352,14 @@ class HtmlTagsTest extends BaseTest {
 
   test("input") {
     render(input(id = "sri-web"))
-    assert(rootNode.innerHTML == "<input data-reactroot=\"\" id=\"sri-web\">")
+    val prefix = "<input data-reactroot=\"\" id=\"sri-web\""
+    assert(html == prefix + ">" || html == prefix + "/>")
   }
 
   test("param") {
     render(param(id = "sri-web"))
-    assert(rootNode.innerHTML == "<param data-reactroot=\"\" id=\"sri-web\">")
+    val prefix = "<param data-reactroot=\"\" id=\"sri-web\""
+    assert(html == prefix + ">" || html == prefix + "/>")
   }
 
   test("h4") {
@@ -367,7 +379,8 @@ class HtmlTagsTest extends BaseTest {
 
   test("img") {
     render(img(id = "sri-web"))
-    assert(rootNode.innerHTML == "<img data-reactroot=\"\" id=\"sri-web\">")
+    val prefix = "<img data-reactroot=\"\" id=\"sri-web\""
+    assert(html == prefix + ">" || html == prefix + "/>")
   }
 
   test("q") {
@@ -382,7 +395,8 @@ class HtmlTagsTest extends BaseTest {
 
   test("source") {
     render(source(id = "sri-web"))
-    assert(rootNode.innerHTML == "<source data-reactroot=\"\" id=\"sri-web\">")
+    val prefix = "<source data-reactroot=\"\" id=\"sri-web\""
+    assert(html == prefix + ">" || html == prefix + "/>")
   }
 
   test("summary") {
@@ -392,7 +406,8 @@ class HtmlTagsTest extends BaseTest {
 
   test("wbr") {
     render(wbr(id = "sri-web"))
-    assert(rootNode.innerHTML == "<wbr data-reactroot=\"\" id=\"sri-web\">")
+    val prefix = "<wbr data-reactroot=\"\" id=\"sri-web\""
+    assert(html == prefix + ">" || html == prefix + "/>")
   }
 
   test("pre") {
@@ -407,7 +422,7 @@ class HtmlTagsTest extends BaseTest {
 
   test("area") {
     render(area(id = "sri-web"))
-    assert(rootNode.innerHTML == "<area data-reactroot=\"\" id=\"sri-web\">")
+    assert(rootNode.innerHTML matches """<area data-reactroot="" id="sri-web"/?>""")
   }
 
   //  test("html") {
@@ -447,7 +462,12 @@ class HtmlTagsTest extends BaseTest {
 
   test("keygen") {
     render(keygen(id = "sri-web"))
-    assert(rootNode.innerHTML == "<keygen data-reactroot=\"\" id=\"sri-web\"></keygen>")
+    val prefix = """<keygen data-reactroot="" id="sri-web""""
+    assert(
+      html == prefix + ">" ||
+        html == prefix + "/>" ||
+        html == prefix + "></keygen>"
+    )
   }
 
   test("style") {
@@ -547,7 +567,7 @@ class HtmlTagsTest extends BaseTest {
 
   test("table,caption,colgroup,col,thead,tr,th,td,tbody,tfoot") {
     render(table()(caption()("caption"), colgroup()(col()), thead()(tr()(th()("th"))), tbody()(tr()(td()("td"))), tfoot()("foot")))
-    assert(rootNode.innerHTML == """<table data-reactroot=""><caption>caption</caption><colgroup><col></colgroup><thead><tr><th>th</th></tr></thead><tbody><tr><td>td</td></tr></tbody><tfoot>foot</tfoot></table>""")
+    assert(rootNode.innerHTML matches """<table data-reactroot=""><caption>caption</caption><colgroup><col/?></colgroup><thead><tr><th>th</th></tr></thead><tbody><tr><td>td</td></tr></tbody><tfoot>foot</tfoot></table>""")
   }
 
   test("refs") {

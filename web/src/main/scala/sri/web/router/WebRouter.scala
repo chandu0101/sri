@@ -33,11 +33,9 @@ object WebRouter {
 
     case class Props(ctrl: WebRouterCtrl)
 
-    val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
+    js.constructorOf[Component].childContextTypes = routerContextTypes
 
-    ctor.childContextTypes = routerContextTypes
-
-    def apply(props: RouterState, key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElement(ctor, props, key = key, ref = ref)
+    def apply(props: RouterState, key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component, Unit] = null) = makeElement[Component](props, key = key, ref = ref)
 
   }
 
@@ -68,15 +66,11 @@ object WebRouter {
 
     var unlisten: js.Function0[_] = null
 
-
   }
-
 
   case class Props(config: WebRouterConfig)
 
-  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
-
-  def apply(routerConfig: WebRouterConfig) = createElement(ctor, Props(routerConfig))
+  def apply(routerConfig: WebRouterConfig) = makeElement[Component](Props(routerConfig))
 
 }
 

@@ -8,8 +8,8 @@ object CommonUtils {
 
   lazy val commonSettings =
     Seq(
-      organization := "com.github.chandu0101.sri",
-      version := "0.5.0",
+      organization := "com.github.chandu0101",
+      version := "0.6.0-SNAPSHOT",
       homepage := Some(url("https://github.com/chandu0101/sri")),
       licenses +=("Apache-2.0", url("http://opensource.org/licenses/Apache-2.0")),
       scalaVersion := Dependencies.Version.scala211,
@@ -18,9 +18,12 @@ object CommonUtils {
         "-language:higherKinds", "-language:existentials"))
 
 
-  def DefProject(name: String, id: String = "") = {
-    Project(if (id.isEmpty) name else id, file(name))
+
+  def DefProject(dir: String, _id: String = "") = {
+    val id = if (_id.isEmpty) dir else _id
+    Project(id, file(dir))
       .settings(commonSettings: _*)
+      .settings(Keys.name := "sri-" + id)
       .enablePlugins(ScalaJSPlugin)
   }
 

@@ -6,12 +6,12 @@ react 0.14 supports two types of refs( string based and callback). In future str
 >The next big (and probably most invasive change for a while) will be replacing string refs. Most can be automatically converted. #reactjs
  Use callback refs e.g.
  this.node = n} /> to avoid having to do any upgrade work. Allows you to move work from life-cycles too
- 
+
 so Sri only supports callback refs.
 
-## Refs to Scala Components 
+## Refs to Scala Components
 
-Let say we have a Child component which has public method `hideMe()`, In Parent component we're rendering child component ,after render if we want to invoke childs `hideMe()` method then we must get reference to child component.
+Let's say we have a Child component which has public method `hideMe()`, and in Parent component we're rendering child component, after render if we want to invoke childs `hideMe()` method then we must get reference to child component.
 
 ```scala
 object Parent {
@@ -24,8 +24,8 @@ object Parent {
       childRef.hideMe() // invoke actions
     }
   }
-  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
-  def apply(key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElementNoProps(ctor, key = key, ref = ref)
+  def apply(key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component, Unit] = null) =
+    makeElementNoProps[Component](key, ref)
 }
 
 object Child {
@@ -36,11 +36,7 @@ object Child {
       println(s"Ok done!.")
     }
   }
-  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
-  def apply(key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElementNoProps(ctor, key = key, ref = ref)
+  def apply(key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component, Unit] = null) =
+    makeElementNoProps[Component](key, ref)
 }
-
-
 ```
-
-

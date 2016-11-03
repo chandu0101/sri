@@ -171,7 +171,7 @@ object SearchScreen {
     }
 
 
-    def renderRow(movie: js.Dynamic, sectionID: String | Int, rowID: String |  Int, highlightRow: js.Function2[String | Int,String | Int,_]): ReactElement = {
+    def renderRow(movie: js.Dynamic, sectionID: String | Int, rowID: String | Int, highlightRow: js.Function2[String | Int, String | Int, _]): ReactElement = {
       MovieCell(movie = movie, key = movie.title.toString)
     }
 
@@ -189,15 +189,13 @@ object SearchScreen {
     def dude[T <: js.Object](name: String) = "dude".asInstanceOf[T]
 
     def onSearchInputFocus(e: ReactEvent[TextInputEvent]) = {
-      if (listViewMounted != null) listViewMounted.getScrollResponder().scrollTo(new ScrollPosition(0,0))
+      if (listViewMounted != null) listViewMounted.getScrollResponder().scrollTo(new ScrollPosition(0, 0))
     }
   }
 
 
-  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
-
-  def apply(key: UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElementNoProps(ctor, key = key, ref = ref)
-
+  def apply(key: UndefOr[String] = js.undefined, ref: js.Function1[Component, Unit] = null) =
+    makeElementNoProps[Component](key = key, ref = ref)
 
   object styles extends UniversalStyleSheet {
 

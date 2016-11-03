@@ -117,8 +117,8 @@ def render() = View(key= "1")(AwesomeJSCmpWrapper(numberOfLines = 3,testID = "id
       childRef.hideMe() // invoke actions
     }
   }
-  val factory = getComponentFactory(js.constructorOf[Component], classOf[Component])
-  def apply(key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) = createElementNoProps(factory, key = key, ref = ref)
+  def apply(key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component,_] = null) =
+    makeElementNoProps[Component](key = key, ref = ref)
 }
 
 

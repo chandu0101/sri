@@ -89,8 +89,6 @@ object SearchBarAndroid {
 
   case class Props(onChange: ReactEvent[TextInputEvent] => Unit, onFocus: ReactEvent[TextInputEvent] => Unit, isLoading: Boolean)
 
-  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
-
-  def apply(onChange: ReactEvent[TextInputEvent] => Unit, onFocus: ReactEvent[TextInputEvent] => Unit, isLoading: Boolean, key: UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElement(ctor, Props(onChange, onFocus, isLoading), key = key, ref = ref)
+  def apply(onChange: ReactEvent[TextInputEvent] => Unit, onFocus: ReactEvent[TextInputEvent] => Unit, isLoading: Boolean, key: UndefOr[String] = js.undefined, ref: js.Function1[Component, Unit] = null) = makeElement[Component](Props(onChange, onFocus, isLoading), key = key, ref = ref)
 
 }

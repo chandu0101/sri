@@ -12,8 +12,8 @@ import scala.scalajs.js.annotation.ScalaJSDefined
 object HomeScreen {
 
   /**
-   *  this hack is only for testing don't do this in real world :)
-   */
+    * this hack is only for testing don't do this in real world :)
+    */
   var ctrl: WebRouterCtrl = null
 
 
@@ -26,11 +26,8 @@ object HomeScreen {
     }
   }
 
-  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
+  js.constructorOf[Component].contextTypes = sri.web.router.routerContextTypes
 
-  ctor.contextTypes = sri.web.router.routerContextTypes
-
-  def apply(key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElementNoProps(ctor, key = key, ref = ref)
-
+  def apply(key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component, Unit] = null) = makeElementNoProps[Component](key = key, ref = ref)
 
 }

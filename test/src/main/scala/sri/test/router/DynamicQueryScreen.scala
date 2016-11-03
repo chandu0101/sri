@@ -21,11 +21,9 @@ object DynamicQueryScreen {
 
   }
 
-  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
-
   case class Props(id: Int, route: WebRoute)
 
   def parser(placeholder: String) = Try(placeholder.toInt).getOrElse(-1)
 
-  def apply(id: Int, route: WebRoute, key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElement(ctor, Props(id, route), key = key, ref = ref)
+  def apply(id: Int, route: WebRoute, key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component, Unit] = null) = makeElement[Component](Props(id, route), key = key, ref = ref)
 }

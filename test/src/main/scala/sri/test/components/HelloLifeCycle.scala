@@ -77,7 +77,6 @@ object HelloLifeCycle {
     }
   }
 
-  val factory = getTypedConstructor(js.constructorOf[Component], classOf[Component])
 
-  def apply(props : String = "hi",key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElement(factory, props, key = "hkey", ref = ref)
+  def apply(props : String = "hi",key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component, Unit] = null) = makeElement[Component](props, key = "hkey", ref = ref)
 }

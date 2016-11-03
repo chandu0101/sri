@@ -96,9 +96,7 @@ object DatePickerIOSExample extends UIExample {
       }
     }
 
-    val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
-
-    def apply(props: js.Date, key: UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElement(ctor, props)
+    def apply(props: js.Date, key: UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = makeElement[Component](props)
   }
 
 
@@ -110,7 +108,7 @@ object DatePickerIOSExample extends UIExample {
     )
   }
 
-  val component = () =>  createStatelessFunctionElementNoProps(Component)
+  val component = () => createStatelessFunctionElementNoProps(Component)
 
 
   object styles extends UniversalStyleSheet {

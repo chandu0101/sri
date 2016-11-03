@@ -56,9 +56,7 @@ object ListViewPagingExample extends UIExample {
       }
     }
 
-    val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
-
-    def apply(key: UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElementNoProps(ctor)
+    def apply(key: UndefOr[String] = js.undefined, ref: js.Function1[Component, Unit] = null) = makeElement[Component]
   }
 
 
@@ -110,7 +108,7 @@ object ListViewPagingExample extends UIExample {
       scrollRenderAheadDistance = 2000
     )()
 
-    def renderRow(rowData: String, sectionID: String | Int, rowID: String | Int, highlightRow: js.Function2[String | Int,String | Int,_]) = {
+    def renderRow(rowData: String, sectionID: String | Int, rowID: String | Int, highlightRow: js.Function2[String | Int, String | Int, _]) = {
       THUMB()
     }
 
@@ -150,9 +148,8 @@ object ListViewPagingExample extends UIExample {
 
   }
 
-  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
 
-  val component = () =>  createElementNoProps(ctor)
+  val component = () => makeElement[Component]
 
   object styles extends UniversalStyleSheet {
 

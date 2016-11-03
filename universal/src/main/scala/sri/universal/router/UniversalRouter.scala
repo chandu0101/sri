@@ -73,11 +73,10 @@ object UniversalRouter {
 
     case class Props(ctrl: UniversalRouterCtrl)
 
-    val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
 
-    ctor.childContextTypes = routerContextTypes
+    js.constructorOf[Component].childContextTypes = routerContextTypes
 
-    def apply(ctrl: UniversalRouterCtrl, key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null)(children: ReactNode*) = createElementWithChildren(ctor, Props(ctrl), key = key, ref = ref)(children: _*)
+    def apply(ctrl: UniversalRouterCtrl, key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component, Unit] = null)(children: ReactNode*) = makeElementWithChildren[Component](Props(ctrl), key = key, ref = ref)(children: _*)
 
   }
 
@@ -139,12 +138,9 @@ object UniversalRouter {
     }
   }
 
-
   case class Props(config: UniversalRouterConfig, sceneConfig: js.UndefOr[NavigatorSceneConfig], style: js.UndefOr[js.Dictionary[Any]], sceneStyle: js.UndefOr[js.Dictionary[Any]])
 
-  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
-
-  def apply(routerConfig: UniversalRouterConfig, sceneConfig: js.UndefOr[NavigatorSceneConfig] = js.undefined, style: js.UndefOr[js.Dictionary[Any]] = js.undefined, sceneStyle: js.UndefOr[js.Dictionary[Any]] = js.undefined) = createElement(ctor, Props(routerConfig, sceneConfig, style, sceneStyle))
+  def apply(routerConfig: UniversalRouterConfig, sceneConfig: js.UndefOr[NavigatorSceneConfig] = js.undefined, style: js.UndefOr[js.Dictionary[Any]] = js.undefined, sceneStyle: js.UndefOr[js.Dictionary[Any]] = js.undefined) = makeElement[Component](Props(routerConfig, sceneConfig, style, sceneStyle))
 
 }
 

@@ -59,10 +59,7 @@ object ViewPagerAndroidExample extends UIExample {
 
     }
 
-    val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
-
-    def apply(key: UndefOr[String] = js.undefined, ref: Function1[Component, _] = null) = createElementNoProps(ctor, key = key, ref = ref)
-
+    def apply(key: UndefOr[String] = js.undefined, ref: Function1[Component, Unit] = null) = makeElementNoProps[Component](key = key, ref = ref)
 
   }
 
@@ -175,10 +172,7 @@ object ViewPagerAndroidExample extends UIExample {
 
   }
 
-  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
-
-  val component = () =>  createElementNoProps(ctor)
-
+  val component = () => makeElement[Component]
 
   object styles extends UniversalStyleSheet {
 

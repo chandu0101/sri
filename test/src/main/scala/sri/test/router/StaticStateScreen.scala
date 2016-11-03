@@ -21,9 +21,5 @@ object StaticStateScreen {
     }
   }
 
-
-  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
-
-
-  def apply(route: WebRoute, key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElement(ctor, route, key = key, ref = ref)
+  def apply(route: WebRoute, key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component, Unit] = null) = makeElement[Component](route, key = key, ref = ref)
 }

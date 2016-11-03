@@ -27,7 +27,6 @@ object RefsTestComponent {
 
   }
 
-  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
 
-  def apply(key: U[String] = js.undefined, ref: Function1[Component, _] = null) = createElementNoProps(ctor, key = key, ref = ref)
+  def apply(key: U[String] = js.undefined, ref: Function1[Component, Unit] = null) = makeElementNoProps[Component](key = key, ref = ref)
 }

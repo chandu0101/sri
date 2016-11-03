@@ -47,9 +47,7 @@ object ActivityIndicatorExample extends UIExample {
       }
     }
 
-    val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
-
-    def apply(key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElementNoProps(ctor)
+    def apply(key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component, Unit] = null) = makeElement[Component]
   }
 
 
@@ -82,10 +80,7 @@ object ActivityIndicatorExample extends UIExample {
 
   }
 
-  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
-
-  val component = () =>  createElementNoProps(ctor)
-
+  val component = () =>  makeElement[Component]
 
   object styles extends UniversalStyleSheet {
 

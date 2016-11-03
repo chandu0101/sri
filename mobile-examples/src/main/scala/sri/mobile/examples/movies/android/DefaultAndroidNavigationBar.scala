@@ -2,9 +2,7 @@ package sri.mobile.examples.movies.android
 
 import sri.mobile.ReactNative
 import sri.mobile.all._
-import sri.mobile.apis.android.BackAndroid
 import sri.mobile.components.android.ToolbarAndroid
-import sri.universal.components._
 import sri.universal.router
 import sri.universal.router.{NavigatorRoute, UniversalRouterComponent, UniversalRouterCtrl}
 import sri.universal.styles.UniversalStyleSheet
@@ -42,8 +40,8 @@ object DefaultAndroidNavigationBar {
   }
 
   /**
-   * style for navigation bar
-   */
+    * style for navigation bar
+    */
   trait Style extends UniversalStyleSheet {
 
     def toolbar = style(
@@ -59,10 +57,8 @@ object DefaultAndroidNavigationBar {
 
   case class Props(route: NavigatorRoute, style: Style)
 
-  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
+  js.constructorOf[Component].contextTypes = router.routerContextTypes
 
-  ctor.contextTypes = router.routerContextTypes
-
-  def apply(route: NavigatorRoute, style: Style = DefaultTheme, key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElement(ctor, props = Props(route, style), key = key, ref = ref)
+  def apply(route: NavigatorRoute, style: Style = DefaultTheme, key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component, Unit] = null) = makeElement[Component](props = Props(route, style), key = key, ref = ref)
 
 }

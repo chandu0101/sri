@@ -112,12 +112,8 @@ object DefaultNavigationBar {
 
   case class Props(style: Style, leftButton: ReactElement = null, rightButton: ReactElement = null)
 
+  js.constructorOf[Component].contextTypes = router.routerContextTypes
 
-  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
-  ctor.contextTypes = router.routerContextTypes
-
-
-
-  def apply(style: Style = defaultTheme, leftButton: ReactElement = null, rightButton: ReactElement = null, key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElement(ctor, props = Props(style, leftButton, rightButton), key = key, ref = ref)
+  def apply(style: Style = defaultTheme, leftButton: ReactElement = null, rightButton: ReactElement = null, key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component, Unit] = null) = makeElement[Component](props = Props(style, leftButton, rightButton), key = key, ref = ref)
 
 }

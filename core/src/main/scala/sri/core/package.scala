@@ -37,7 +37,7 @@ package object core {
     def removeTrailingSlash = if (value != null) value.replaceAll("/$", "") else value
   }
 
-  trait CoreAll extends ElementFactory {
+  trait CoreAll extends ElementFactory with ElementFactoryLegacy {
     @inline def load[T](lib: String): T = g.require(lib).asInstanceOf[T]
 
     @inline def loadDynamic(lib: String): js.Dynamic = load[js.Dynamic](lib)

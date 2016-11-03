@@ -20,7 +20,7 @@ object RightButton {
     def render() = {
       TouchableOpacity(onPress = onRightPress _,
         style = styles.rightButton)(
-          Text(style = styles.text)(s"Press Me"))
+        Text(style = styles.text)(s"Press Me"))
     }
 
     def onRightPress() = {
@@ -37,10 +37,8 @@ object RightButton {
     val text = style(color := "white")
   }
 
-  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
+  js.constructorOf[Component].contextTypes = router.routerContextTypes
 
-  ctor.contextTypes = router.routerContextTypes
-
-  def apply(key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElementNoProps(ctor, key = key, ref = ref)
+  def apply(key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component, Unit] = null) = makeElementNoProps[Component](key = key, ref = ref)
 
 }

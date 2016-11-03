@@ -211,8 +211,7 @@ object UIExplorerListScreen {
     )
   }
 
-  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
-  ctor.contextTypes = router.routerContextTypes
+  js.constructorOf[Component].contextTypes = router.routerContextTypes
 
-  def apply(key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElementNoProps(ctor)
+  def apply(key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component, Unit] = null) = makeElement[Component]
 }

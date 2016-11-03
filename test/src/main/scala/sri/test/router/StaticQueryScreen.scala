@@ -17,16 +17,11 @@ object StaticQueryScreen {
   @ScalaJSDefined
   class Component extends ReactComponent[WebRoute, Unit] {
     def render() = {
-
       Text()(s"Welcome to StaticQuery Screen, Query you passed is : ${JSON.stringify(props.query.getOrElse(js.Dictionary()))}")
-
     }
   }
 
+  js.constructorOf[Component].contextTypes = router.routerContextTypes
 
-  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
-
-  ctor.contextTypes = router.routerContextTypes
-
-  def apply(route: WebRoute, key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component, _] = null) = createElement(ctor, route, key = key, ref = ref)
+  def apply(route: WebRoute, key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component, Unit] = null) = makeElement[Component](route, key = key, ref = ref)
 }

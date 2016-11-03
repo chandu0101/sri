@@ -12,7 +12,7 @@ class PhantomJS2Env(jettyClassLoader: ClassLoader,
   override protected def vmName: String = "PhantomJS2"
 
   private val consoleNuker = new MemVirtualJSFile("consoleNuker.js")
-    .withContent("console.error = undefined;")
+    .withContent("console.error = console.log;")
 
   override protected def customInitFiles(): Seq[VirtualJSFile] =
     super.customInitFiles() :+ consoleNuker

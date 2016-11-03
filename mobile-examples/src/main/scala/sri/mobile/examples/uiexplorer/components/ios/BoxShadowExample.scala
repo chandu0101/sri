@@ -1,16 +1,13 @@
 package sri.mobile.examples.uiexplorer.components.ios
 
-import org.scalajs.dom
 import sri.core.ElementFactory._
 import sri.core.ReactComponent
-import sri.mobile.components.ios.{ActivityIndicatorIOS, ActivityIndicatorIOSSize}
 import sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
 import sri.universal.components._
 import sri.universal.styles.UniversalStyleSheet
 
-import scala.scalajs.js
-import scala.scalajs.js.annotation.ScalaJSDefined
 import scala.scalajs.js.Dynamic.{literal => json}
+import scala.scalajs.js.annotation.ScalaJSDefined
 
 object BoxShadowExample extends UIExample {
 
@@ -31,10 +28,7 @@ object BoxShadowExample extends UIExample {
 
   }
 
-  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
-
-  val component = () =>  createElementNoProps(ctor)
-
+  val component = () => makeElement[Component]
 
   object styles extends UniversalStyleSheet {
 

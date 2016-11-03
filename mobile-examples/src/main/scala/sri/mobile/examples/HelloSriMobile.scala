@@ -1,13 +1,12 @@
 package sri.mobile.examples
 
+import scala.scalajs.js.annotation.ScalaJSDefined
+
 import sri.core.ElementFactory._
 import sri.core.ReactComponent
 import sri.mobile.ReactNative
 import sri.universal.components._
 import sri.universal.styles.UniversalStyleSheet
-
-import scala.scalajs.js
-import scala.scalajs.js.annotation.ScalaJSDefined
 
 
 object HelloSriMobile {
@@ -39,9 +38,5 @@ object HelloSriMobile {
 
   }
 
-  val ctor = getTypedConstructor(js.constructorOf[Component], classOf[Component])
-
-  def apply() = createElementNoProps(ctor)
-
+  def apply() = makeElement[Component]
 }
-
