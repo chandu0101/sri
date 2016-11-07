@@ -3,7 +3,6 @@ package sri.mobile.examples.uiexplorer
 import sri.core.ElementFactory._
 import sri.core.{ReactComponent, _}
 import sri.mobile.ReactNative
-import sri.mobile.examples.Spinner
 import sri.universal.components._
 import sri.universal.styles.UniversalStyleSheet
 
@@ -20,11 +19,11 @@ object UIExplorerPageLazyLoad {
     initialState(State())
 
     def render() = {
-      if (state.isLoading) View(style = styles.spinner)(Spinner())
+      if (state.isLoading) View(style = styles.spinner)(ActivityIndicator(size = ActivityIndicatorSize.LARGE, color = "black")())
       else ScrollView(style = UniversalStyleSheet.wholeContainer, keyboardShouldPersistTaps = true,
         keyboardDismissMode = keyboardDismissMode.INTERACTIVE)(
-          children
-        )
+        children
+      )
     }
 
     override def componentDidMount(): Unit = {
@@ -36,8 +35,8 @@ object UIExplorerPageLazyLoad {
 
   object styles extends UniversalStyleSheet {
     val spinner = style(justifyContent.center,
-    alignItems.center,
-    marginTop := 40)
+      alignItems.center,
+      marginTop := 40)
   }
 
 

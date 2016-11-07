@@ -3,7 +3,6 @@ package sri.mobile.examples.uiexplorer
 import sri.core.ElementFactory._
 import sri.core.{ReactComponent, _}
 import sri.mobile.ReactNative
-import sri.mobile.examples.Spinner
 import sri.universal.components._
 import sri.universal.styles.UniversalStyleSheet
 

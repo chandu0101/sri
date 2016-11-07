@@ -37,6 +37,7 @@ lazy val web = DefProject("web")
 
 lazy val mobile = DefProject("mobile")
   .dependsOn(universal)
+  .settings(scalaJSModuleKind := ModuleKind.CommonJSModule)
   .settings(mobileModuleDeps)
   .settings(publicationSettings)
 

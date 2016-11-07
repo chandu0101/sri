@@ -12,7 +12,7 @@ object CommonUtils {
       version := "0.6.0-SNAPSHOT",
       homepage := Some(url("https://github.com/chandu0101/sri")),
       licenses +=("Apache-2.0", url("http://opensource.org/licenses/Apache-2.0")),
-      scalaVersion := Dependencies.Version.scala212,
+      scalaVersion := Dependencies.Version.scala211,
       crossScalaVersions := Seq(Dependencies.Version.scala211,Dependencies.Version.scala212),
       scalacOptions ++= Seq("-deprecation", "-unchecked", "-feature",
         "-language:postfixOps", "-language:implicitConversions",
