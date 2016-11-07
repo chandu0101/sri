@@ -1,4 +1,3 @@
-import org.scalajs.jsenv.nodejs.NodeJSEnv
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 import sbt.Keys._
 import sbt._
@@ -10,17 +9,19 @@ object Dependencies {
 
     val scala211 = "2.11.8"
 
-    val scalaAsync = "0.9.2"
+    val scala212 = "2.12.0"
+
+    val scalaAsync = "0.9.6"
 
     val upickle = "0.3.1"
 
-    val scalatest = "3.0.0-M15"
+    val scalatest = "3.0.0"
 
     val utest = "0.3.0"
 
-    val scalaJSDOM = "0.9.0"
+    val scalaJSDOM = "0.9.1"
 
-    val chandu0101Macros = "2016.5.0"
+    val chandu0101Macros = "2016.11.0"
 
   }
 
