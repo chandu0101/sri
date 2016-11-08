@@ -70,11 +70,19 @@ package object vdom {
  * (see https://github.com/scala-js/scala-js/pull/2070 )
  */
   //TODO We need to find a better solution here
-  implicit def UnionEvidence[A: ClassTag, B: ClassTag](ab: A | B)(implicit eva: A => js.Any, evb: B => js.Any): js.Any =
-    ab match {
-      case a: A => eva(a)
-      case b: B => evb(b)
-    }
+  implicit def UnionEvidence[A: ClassTag, B: ClassTag](ab: A | B)(implicit eva: A => js.Any, evb: B => js.Any): js.Any =  ab.asInstanceOf[js.Any]
+
+  @js.native
+  sealed trait InputValue extends js.Any
+
+  object InputValue {
+   implicit def strToIV(str : String) = str.asInstanceOf[js.UndefOr[InputValue]]
+
+   implicit def intToIV(in : Int) = in.asInstanceOf[js.UndefOr[InputValue]]
+
+   implicit def doubleToIV(in : Double) = in.asInstanceOf[js.UndefOr[InputValue]]
+
+  }
 
   object htmltags extends HtmlTagsInline
 
