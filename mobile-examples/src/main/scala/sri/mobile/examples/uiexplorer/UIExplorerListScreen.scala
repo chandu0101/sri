@@ -7,7 +7,7 @@ import sri.mobile.examples.uiexplorer.UIExplorerApp.UIExplorerDetails
 import sri.mobile.examples.uiexplorer.apis.android.ToastAndroidExample
 import sri.mobile.examples.uiexplorer.apis._
 import sri.mobile.examples.uiexplorer.components._
-import sri.mobile.examples.uiexplorer.components.android.{ViewPagerAndroidExample, SwitchAndroidExample, ToolbarAndroidExample}
+import sri.mobile.examples.uiexplorer.components.android.{ViewPagerAndroidExample, ToolbarAndroidExample}
 import sri.mobile.examples.uiexplorer.components.ios._
 import sri.universal.components._
 import sri.universal.router
@@ -29,7 +29,9 @@ object UIExplorerListScreen {
     KeyboardAvoidingViewExample,
     TouchableExample,
     TextInputExample,
+    ButtonExample,
     SliderExample,
+    SwitchExample,
     RefreshControlExample,
     ListViewPagingExample,
     LayoutEventsExample,
@@ -42,7 +44,6 @@ object UIExplorerListScreen {
     BoxShadowExample,
     TabBarIOSExample,
     SegmentedControlExample,
-    SwitchIOSExample,
     ScrollViewExample,
     PickerIOSExample,
     ModalExample,
@@ -53,7 +54,7 @@ object UIExplorerListScreen {
 
   val ANDROID_COMPONENTS: List[UIExample] = List(ToolbarAndroidExample,
     ViewPagerAndroidExample,
-    ScrollViewSimpleExample, SwitchAndroidExample
+    ScrollViewSimpleExample
   )
 
 

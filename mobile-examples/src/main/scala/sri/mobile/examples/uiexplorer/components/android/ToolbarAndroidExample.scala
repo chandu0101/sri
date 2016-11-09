@@ -2,9 +2,9 @@ package sri.mobile.examples.uiexplorer.components.android
 
 import sri.core._
 import sri.mobile.all._
-import sri.mobile.components.android.{SwitchAndroid, ToolbarAndroid, ToolbarAndroidAction, ToolbarAndroidActionShow}
+import sri.mobile.components.android.{ToolbarAndroid, ToolbarAndroidAction, ToolbarAndroidActionShow}
 import sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
-import sri.universal.components.{ImageSource, Text, View}
+import sri.universal.components.{Switch, Text, View}
 import sri.universal.styles.UniversalStyleSheet
 
 import scala.scalajs.js
@@ -52,7 +52,7 @@ object ToolbarAndroidExample extends UIExample {
         UIExplorerBlock("Toolbar with logo & custom title view (a View with Switch+Text)")(
           ToolbarAndroid(logoDynamic = launcherImage, style = styles.toolbar)(
             View(style = styles.view1)(
-              SwitchAndroid(value = state.toolbarSwitch, onValueChange = handleSwitchChange _)(),
+              Switch(value = state.toolbarSwitch, onValueChange = handleSwitchChange _)(),
               Text()(s"a switch")
             )
           )

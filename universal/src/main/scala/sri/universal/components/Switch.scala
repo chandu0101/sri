@@ -14,10 +14,10 @@ case class Switch(key: U[String] = undefined,
                   value: U[Boolean] = undefined,
                   disabled: U[Boolean] = undefined,
                   onValueChange: U[Boolean => _] = undefined,
-                  testID: U[String => _] = undefined,
-                  tintColor: U[String => _] = undefined,
-                  onTintColor: U[String => _] = undefined,
-                  thumbTintColor: U[String => _] = undefined
+                  testID: U[String] = undefined,
+                  tintColor: U[String] = undefined,
+                  onTintColor: U[String] = undefined,
+                  thumbTintColor: U[String] = undefined
                    ) {
   def apply() = {
     val props = JSMacro[Switch](this)

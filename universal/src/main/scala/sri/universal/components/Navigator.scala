@@ -105,6 +105,8 @@ trait NavigatorSceneConfigs extends js.Object {
 
   val PushFromLeft: NavigatorSceneConfig = js.native
 
+  val HorizontalSwipeJumpFromLeft: NavigatorSceneConfig = js.native
+
 }
 
 @js.native

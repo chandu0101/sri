@@ -29,6 +29,11 @@ trait ImageEvent extends js.Object {
 
 }
 
+@js.native
+trait WebViewEvent extends js.Object {
+  val data: String = js.native
+}
+
 
 @js.native
 trait SyntheticEvent extends js.Object {

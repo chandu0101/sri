@@ -7,7 +7,7 @@ trait NetInfo extends NetInfoMethods {
 
   def isConnected: NetInfoMethods = js.native
 
-  def isConnectionExpensive(callback: js.Function2[js.UndefOr[Boolean], js.UndefOr[String], _]): Unit = js.native
+  def isConnectionExpensive(): js.Promise[Boolean] = js.native
 
 }
 
@@ -19,7 +19,7 @@ trait NetInfoMethods extends js.Object {
 
   def removeEventListener(eventName: String, handler: js.Function1[Boolean, _]): Unit = js.native
 
-  def fetch(): js.Dynamic = js.native
+  def fetch(): js.Promise[js.Dynamic] = js.native
 
 }
 

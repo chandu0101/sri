@@ -45,3 +45,4 @@ abstract class Permissions extends js.Object {
   val badge : js.UndefOr[Boolean] = js.undefined
   val sound : js.UndefOr[Boolean] = js.undefined
 }
+

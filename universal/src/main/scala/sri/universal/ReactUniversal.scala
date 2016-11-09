@@ -26,6 +26,7 @@ trait ReactUniversal extends js.Object {
   val Picker: ReactClass = js.native
   val Modal: ReactClass = js.native
   val Switch: ReactClass = js.native
+  val Button: ReactClass = js.native
   val RefreshControl: ReactClass = js.native
   val Incremental: ReactClass = js.native
   val IncrementalGroup: ReactClass = js.native

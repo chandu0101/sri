@@ -1,8 +1,7 @@
-package sri.mobile.examples.uiexplorer.components.ios
+package sri.mobile.examples.uiexplorer.components
 
 import sri.core.ElementFactory._
 import sri.core.ReactComponent
-import sri.mobile.components.ios.SwitchIOS
 import sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
 import sri.universal.components._
 import sri.universal.styles.UniversalStyleSheet
@@ -11,7 +10,7 @@ import scala.scalajs.js
 import scala.scalajs.js.UndefOr
 import scala.scalajs.js.annotation.ScalaJSDefined
 
-object SwitchIOSExample extends UIExample {
+object SwitchExample extends UIExample {
 
   case class BasicState(trueSwitchIsOn: Boolean = true, falseSwitchIsOn: Boolean = false)
 
@@ -23,10 +22,10 @@ object SwitchIOSExample extends UIExample {
       initialState(BasicState())
 
       def render() = View()(
-        SwitchIOS(onValueChange = handleFalseSwitch _,
+        Switch(onValueChange = handleFalseSwitch _,
           style = styles.basicFalseSwitch,
           value = state.falseSwitchIsOn)(),
-        SwitchIOS(onValueChange = handleTrueSwitch _,
+        Switch(onValueChange = handleTrueSwitch _,
           value = state.trueSwitchIsOn)()
       )
 
@@ -49,8 +48,8 @@ object SwitchIOSExample extends UIExample {
     @ScalaJSDefined
     class Component extends ReactComponent[Unit, Unit] {
       def render() = View()(
-        SwitchIOS(disabled = true, style = styles.basicFalseSwitch, value = true)(),
-        SwitchIOS(disabled = true,
+        Switch(disabled = true, style = styles.basicFalseSwitch, value = true)(),
+        Switch(disabled = true,
           value = false)()
       )
     }
@@ -68,12 +67,12 @@ object SwitchIOSExample extends UIExample {
       initialState(BasicState())
 
       def render() = View()(
-        SwitchIOS(onValueChange = handleFalseSwitch _,
+        Switch(onValueChange = handleFalseSwitch _,
           style = styles.basicFalseSwitch,
           onTintColor = "#00ff00",
           tintColor = "#ff0000",
           value = state.falseSwitchIsOn)(),
-        SwitchIOS(onValueChange = handleTrueSwitch _,
+        Switch(onValueChange = handleTrueSwitch _,
           onTintColor = "#00ff00",
           tintColor = "#ff0000",
           value = state.trueSwitchIsOn)()
@@ -105,19 +104,19 @@ object SwitchIOSExample extends UIExample {
 
       def render() = View(style = styles.eventsContainer)(
         View()(
-          SwitchIOS(onValueChange = handleEventSwitch _,
+          Switch(onValueChange = handleEventSwitch _,
             style = styles.basicFalseSwitch,
             value = state.eventSwitchIsOn)(),
-          SwitchIOS(onValueChange = handleEventSwitch _,
+          Switch(onValueChange = handleEventSwitch _,
             style = styles.basicFalseSwitch,
             value = state.eventSwitchIsOn)(),
           Text()(if (state.eventSwitchIsOn) "On" else "Off")
         ),
         View()(
-          SwitchIOS(onValueChange = handleEventSwitchRegression _,
+          Switch(onValueChange = handleEventSwitchRegression _,
             style = styles.basicFalseSwitch,
             value = state.eventSwitchRegressionIsOn)(),
-          SwitchIOS(onValueChange = handleEventSwitchRegression _,
+          Switch(onValueChange = handleEventSwitchRegression _,
             style = styles.basicFalseSwitch,
             value = state.eventSwitchRegressionIsOn)(),
           Text()(if (state.eventSwitchRegressionIsOn) "On" else "Off")
@@ -167,7 +166,7 @@ object SwitchIOSExample extends UIExample {
       justifyContent.spaceAround)
   }
 
-  override def title: String = "SwitchIOSExample"
+  override def title: String = "Switch"
 
   override def description: String = "Native boolean input"
 }

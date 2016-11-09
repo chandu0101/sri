@@ -27,6 +27,7 @@ case class WebView(contentInset: js.UndefOr[EdgeInsets] = js.undefined,
                    source: js.UndefOr[WebViewSource] = js.undefined,
                    onLoadEnd: js.UndefOr[() => _] = js.undefined,
                    onLoad: js.UndefOr[() => _] = js.undefined,
+                   onMessage: js.UndefOr[ReactEvent[WebViewEvent] => _] = js.undefined,
                    renderError: js.UndefOr[js.Function] = js.undefined,
                    html: js.UndefOr[String] = js.undefined,
                    startInLoadingState: js.UndefOr[Boolean] = js.undefined) {

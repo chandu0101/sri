@@ -4,7 +4,6 @@ import org.scalajs.dom
 import org.scalajs.dom.ext.{Ajax, AjaxException}
 import sri.core.{ReactComponent, ReactElement}
 import sri.mobile.all._
-import sri.mobile.components.ios.ActivityIndicatorIOS
 import sri.mobile.examples.movies.android.SearchBarAndroid
 import sri.mobile.examples.movies.ios.SearchBarIOS
 import sri.universal.{TextInputEvent, ReactEvent}
@@ -177,7 +176,7 @@ object SearchScreen {
 
     def renderFooter = {
       if (!hasMore || !state.isLoadingTail) View(style = styles.scrollSpinner)()
-      else ActivityIndicatorIOS(style = styles.scrollSpinner)()
+      else ActivityIndicator(style = styles.scrollSpinner)()
     }
 
     def onSearchChange(event: ReactEvent[TextInputEvent]) = {

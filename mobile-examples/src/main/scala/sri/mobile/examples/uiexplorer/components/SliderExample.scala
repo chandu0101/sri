@@ -2,12 +2,9 @@ package sri.mobile.examples.uiexplorer.components
 
 import sri.core.ElementFactory._
 import sri.core.ReactComponent
-import sri.mobile.components.ios.SliderIOS
 import sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
 import sri.universal.components._
 import sri.universal.styles.UniversalStyleSheet
-
-import scala.scalajs.js
 import scala.scalajs.js.annotation.ScalaJSDefined
 
 

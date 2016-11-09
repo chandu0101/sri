@@ -2,9 +2,8 @@ package sri.mobile.examples.movies.ios
 
 import sri.core._
 import sri.mobile.all._
-import sri.mobile.components.ios.ActivityIndicatorIOS
-import sri.universal.{TextInputEvent, ReactEvent}
-import sri.universal.components.{AutoCapitalize, TextInput, View}
+import sri.universal.{ReactEvent, TextInputEvent}
+import sri.universal.components.{ActivityIndicator, AutoCapitalize, TextInput, View}
 import sri.universal.styles.UniversalStyleSheet
 
 import scala.scalajs.js
@@ -21,7 +20,7 @@ object SearchBarIOS {
       TextInput(autoCapitalize = AutoCapitalize.NONE, autoCorrect = false,
         onChange = props.onChange, onFocus = props.onFocus, placeholder = "Search a movie..", style = styles.searchBarInput
       )(),
-      ActivityIndicatorIOS(animating = props.isLoading, style = styles.spinner)()
+      ActivityIndicator(animating = props.isLoading, style = styles.spinner)()
     )
   }
 

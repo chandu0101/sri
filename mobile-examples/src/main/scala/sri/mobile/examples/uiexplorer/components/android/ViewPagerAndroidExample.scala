@@ -1,20 +1,17 @@
 package sri.mobile.examples.uiexplorer.components.android
 
-import sri.mobile.ViewPagerAndroidEvent
-import sri.mobile.components.android.{ViewPagerAndroid, ViewPagerAndroidM, SwitchAndroid}
-import sri.mobile.examples.uiexplorer.{UIExample, UIExplorerBlock, UIExplorerPage}
-import sri.universal.ReactEvent
-import sri.universal.styles.UniversalStyleSheet
 import sri.core._
-import sri.universal.components._
+import sri.mobile.ViewPagerAndroidEvent
 import sri.mobile.all._
-import scala.scalajs.js
-import scala.scalajs.js.annotation.ScalaJSDefined
-import scala.scalajs.js.{UndefOr => U, undefined => undefined}
+import sri.mobile.components.android.{ViewPagerAndroid, ViewPagerAndroidM}
+import sri.mobile.examples.uiexplorer.UIExample
+import sri.universal.ReactEvent
+import sri.universal.components._
+import sri.universal.styles.UniversalStyleSheet
 
 import scala.scalajs.js
-import scala.scalajs.js.{Function1, UndefOr}
 import scala.scalajs.js.annotation.ScalaJSDefined
+import scala.scalajs.js.{Function1, UndefOr}
 
 object ViewPagerAndroidExample extends UIExample {
 
