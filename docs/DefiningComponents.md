@@ -19,7 +19,7 @@ class HelloMessage extends ReactComponent[Unit,Unit] {
   }
 }
 ```
-***If component don't need lifecycle methods/refs(true for many cases) then use [stateless functions](StatelessFunctionComponents.md)***
+
 
 ## Component with Props and No State
 
@@ -89,3 +89,5 @@ case class State(count: Int = 0)
 
 `Note: @ScalaJSDefined  is not needed in future versions of scala.js`
 
+
+***Now let's [makeElements](CreatingElements.md) from these components***

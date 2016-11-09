@@ -12,18 +12,175 @@ Sri comes with a few helpers methods to achieve this.  [ElementFactory](https://
 
 ## Examples
 
-Let's say we have a react component `HelloMessge`. To construct element for this component, first we need to create a reusable factory and then we can use that factory to create elements by passing props and children.
+
+#### Component with No Props 
+
 
 ```scala
-import sri.core.ElementFactory._
-@ScalaJSDefined
-class HelloMessage extends ReactComponent[Unit,Unit] {
-  def render() = {
-   View(...view_props)("Hello Sri")
+
+object HelloMessage {
+
+  @ScalaJSDefined
+  class Component extends ReactComponent[Unit, Unit] {
+    def render() = {
+      View(...view_props)("Hello Sri")
+    }
   }
+
+  def apply() = makeElementNoProps[Component]()
+  or
+  def apply() = makeElement[Component]
 }
-val element = makeElement[HelloMessage]
+
 ```
 
-Please check the source code of [ElementFactory](core/src/main/scala/sri/core/ElementFactory.scala) for all helper methods documentation.
+#### Component with No Props and with Children
+
+
+```scala
+
+object HelloMessage {
+
+  @ScalaJSDefined
+  class Component extends ReactComponent[Unit, Unit] {
+    def render() = {
+      View(...view_props)("Hello Sri", children)
+    }
+  }
+
+  def apply(children: ReactNode*) = makeElementNoPropsWithChildren[Component]()(children: _*)
+
+}
+
+```
+
+#### Component with No Props and with Key/Ref
+
+
+```scala
+
+object HelloMessage {
+
+  @ScalaJSDefined
+  class Component extends ReactComponent[Unit, Unit] {
+    def render() = {
+      View(...view_props)("Hello Sri")
+    }
+  }
+
+  def apply(key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component, Unit] = null) = makeElementNoProps[Component](key = key, ref = ref)
+
+}
+
+```
+
+#### Component with No Props and with Key/Ref,Children
+
+
+```scala
+
+object HelloMessage {
+
+  @ScalaJSDefined
+  class Component extends ReactComponent[Unit,Unit] {
+    def render() = {
+      View(...view_props)("Hello Sri",children)
+    }
+  }
+
+  def apply(key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component, Unit] = null)(children: ReactNode*) = makeElementNoPropsWithChildren[Component](key = key, ref = ref)(children: _*)
+
+}
+
+```
+
+#### Component with Props 
+
+
+```scala
+
+object HelloMessage {
+
+  case class Props(name: String)
+
+  @ScalaJSDefined
+  class Component extends ReactComponent[Props,Unit] {
+    def render() = {
+      View(...view_props)(s"Hello ${props.name}")
+    }
+  }
+
+  def apply(name: String) = makeElement[Component](Props(name)
+
+}
+
+
+```
+
+#### Component with  Props and Children
+
+
+```scala
+
+object HelloMessage {
+
+  case class Props(name: String)
+
+  @ScalaJSDefined
+  class Component extends ReactComponent[Props,Unit] {
+    def render() = {
+      View(...view_props)(s"Hello ${props.name}",children)
+    }
+  }
+
+  def apply(name: String)(children: ReactNode*) = makeElementWithChildren[Component](Props(name))(children: _*)
+
+}
+
+```
+
+#### Component with  Props and  Key/Ref
+
+
+```scala
+
+object HelloMessage {
+
+  case class Props(name: String)
+
+  @ScalaJSDefined
+  class Component extends ReactComponent[Props,Unit] {
+    def render() = {
+      View(...view_props)(s"Hello ${props.name}")
+    }
+  }
+
+  def apply(name: String,key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component, Unit] = null) = makeElement[Component](Props(name),key = key, ref = ref)
+
+}
+
+```
+
+#### Component with Props and  Key/Ref,Children
+
+
+```scala
+
+object HelloMessage {
+
+  case class Props(name: String)
+
+  @ScalaJSDefined
+  class Component extends ReactComponent[Props,Unit] {
+    def render() = {
+      View(...view_props)(s"Hello ${props.name}",children)
+    }
+  }
+
+  def apply(name: String,key: js.UndefOr[String] = js.undefined, ref: js.Function1[Component, Unit] = null)(children: ReactNode*) = makeElementWithChildren[Component](Props(name),key = key, ref = ref)(children: _*)
+
+}
+
+```
+
 
