@@ -18,6 +18,25 @@ Sri comes with a few helpers methods to achieve this.  [ElementFactory](https://
 
 ```scala
 
+// 1) using companion object
+
+@ScalaJSDefined
+class HelloMessage extends ReactComponent[Unit, Unit] {
+  def render() = {
+    View(...view_props)("Hello Sri")
+  }
+}
+
+object HelloMessage {
+  def apply() = makeElementNoProps[HelloMessage]()
+  or
+  def apply() = makeElement[HelloMessage]
+}
+
+
+or
+
+// 2) enclosing component in a singleton
 object HelloMessage {
 
   @ScalaJSDefined
@@ -31,6 +50,12 @@ object HelloMessage {
   or
   def apply() = makeElement[Component]
 }
+
+
+//usage
+HelloMessage()
+
+//both 1&2 results same,choose whatever you like. I'll be using (2) in rest of the examples.
 
 ```
 
