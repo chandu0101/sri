@@ -13,10 +13,10 @@ Sri (Scala React interface) is a scalajs library to build truly native cross pla
 - [Mobile](#mobile)
 - [Web](#web)
 - [Documentation](#documentation)
-- [Related Projects](#RelatedProjects)
+- [Related Projects](#relatedprojects)
 - [Examples](#examples)
 - [Templates](#templates)
-- [Apps Built Using Sri](#Apps)
+- [Apps Built Using Sri](#apps)
 
 #Mobile
 Use this module to build iOS/Android mobile applications:
