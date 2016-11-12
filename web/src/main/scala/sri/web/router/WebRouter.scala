@@ -48,8 +48,8 @@ object WebRouter {
     override def componentWillMount(): Unit = {
       val history = props.config.history
       val ctrl = new WebRouterCtrl(history, props.config)
-      initialState(RouterState(ctrl, history.getCurrentLocation()))
-      unlisten = history.listen((loc: Location) => {
+      initialState(RouterState(ctrl, history.location))
+      unlisten = history.listen((loc: Location,action:String) => {
         setState(state.copy(location = loc))
       })
 

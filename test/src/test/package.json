@@ -11,22 +11,12 @@
     "build": "webpack --watch"
   },
   "devDependencies": {
-    "compression-webpack-plugin": "^0.2.0",
-    "css-loader": "^0.14.5",
-    "file-loader": "^0.8.4",
-    "image-webpack-loader": "^1.6.1",
-    "imagemin": "^3.2.0",
-    "lodash": "^3.9.3",
-    "node-libs-browser": "^0.5.2",
-    "style-loader": "^0.12.3",
-    "url-loader": "^0.5.6",
-    "webpack": "^1.9.10",
-    "webpack-dev-server": "^1.9.0"
+    "webpack": "^1.9.10"
   },
   "dependencies": {
-    "history": "^3.0.0-2",
-    "react": "^15.0.0",
-    "react-addons-test-utils": "^15.0.0",
-    "react-dom": "^15.0.0"
+    "history": "^4.4.0",
+    "react": "^15.3.2",
+    "react-addons-test-utils": "^15.3.2",
+    "react-dom": "^15.3.2"
   }
 }

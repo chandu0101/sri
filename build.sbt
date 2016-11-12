@@ -58,6 +58,9 @@ lazy val mobileExamples = DefProject("mobile-examples")
 lazy val test = DefProject("test")
   .dependsOn(web)
   .settings(scalatestJSSettings: _*)
+//  .settings(npmDependencies in Test += "history" -> "4.4.0")
+//  .enablePlugins(ScalaJSBundlerPlugin)
+  .settings(preventPublication)
 
 // workaround http://stackoverflow.com/questions/20931217/deprecation-and-feature-warnings-for-sbt-project-definition-files
 

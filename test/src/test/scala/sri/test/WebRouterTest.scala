@@ -38,10 +38,10 @@ class WebRouterTest extends BaseTest {
   test("static page with query") {
     render()
     HomeScreen.ctrl.navigateTo(StaticQueryPage, query = json(sort = 1)) // navigate using WebRouter ctrl
-    assert(rootNode.textContent == """Welcome to StaticQuery Screen, Query you passed is : {"sort":"1"}""")
+    assert(rootNode.textContent == """Welcome to StaticQuery Screen, Query you passed is : {"sort":1}""")
 
     WebRouterExample.Config.history.push(new Location(pathname = "/staticquery", query = json(sort = -1))) // navigate using history
-    assert(rootNode.textContent == """Welcome to StaticQuery Screen, Query you passed is : {"sort":"-1"}""")
+    assert(rootNode.textContent == """Welcome to StaticQuery Screen, Query you passed is : {"sort":-1}""")
   }
 
   test("Dyanmic page") {
@@ -73,13 +73,13 @@ class WebRouterTest extends BaseTest {
   test("Dyanmic page with query") {
     render()
     HomeScreen.ctrl.navigateToDynamic(DynamicQueryPage, placeholder = "1", query = json(x = 1)) // navigate using WebRouter ctrl
-    assert(rootNode.textContent == """Welcome to Dynamic Query Screen, Passed Id : 1  and passed Query  : {"x":"1"}""")
+    assert(rootNode.textContent == """Welcome to Dynamic Query Screen, Passed Id : 1  and passed Query  : {"x":1}""")
 
     WebRouterExample.Config.history.push(new Location(pathname = "/dynamicquery/2",query = json(x = 2))) // navigate using history
-    assert(rootNode.textContent == """Welcome to Dynamic Query Screen, Passed Id : 2  and passed Query  : {"x":"2"}""")
+    assert(rootNode.textContent == """Welcome to Dynamic Query Screen, Passed Id : 2  and passed Query  : {"x":2}""")
 
     WebRouterExample.Config.history.push(new Location(pathname = "/dynamicquery/2hfgh",query = json(x = 3))) // navigate using history
-    assert(rootNode.textContent == """Welcome to Dynamic Query Screen, Passed Id : -1  and passed Query  : {"x":"3"}""")
+    assert(rootNode.textContent == """Welcome to Dynamic Query Screen, Passed Id : -1  and passed Query  : {"x":3}""")
 
   }
 

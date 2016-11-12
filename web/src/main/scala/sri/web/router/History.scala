@@ -7,11 +7,13 @@ import scala.scalajs.js.annotation.{JSName, ScalaJSDefined}
 @js.native
 trait History extends js.Object {
 
-  def getCurrentLocation(): Location = js.native
+//  def getCurrentLocation(): Location = js.native
 
-  def listen(listener: js.Function1[Location, _]): js.Function0[_] = js.native
+  def listen(listener: js.Function2[Location,String, _]): js.Function0[_] = js.native
 
-  def listenBefore(hook: js.Function1[Location, _]): js.Function0[_] = js.native
+  def block(listener: js.Function2[Location,String, _]): js.Function0[_] = js.native
+
+  def block(message : String): js.Function0[_] = js.native
 
   def push(location: Location): Unit = js.native
 
@@ -23,11 +25,19 @@ trait History extends js.Object {
 
   def go(n: Int): Unit = js.native
 
+  def canGo(n: Int): Unit = js.native
+
   def createHref(location: js.Object): String = js.native
 
   def createPath(location: js.Object): String = js.native
 
   def createKey(): String = js.native
+
+  val location: Location = js.native
+
+  val action : String = js.native
+
+  val length: Int = js.native
 }
 
 @js.native
@@ -35,7 +45,7 @@ object History extends js.Object {
 
   type HistoryFunc = js.Function1[js.UndefOr[HistoryOptions], History]
 
-  val createHistory: HistoryFunc = js.native
+ @JSName("createBrowserHistory") val createHistory: HistoryFunc = js.native
 
   val createHashHistory: HistoryFunc = js.native
 
@@ -60,7 +70,10 @@ class Location(val pathname: String,
 }
 
 @ScalaJSDefined
-class HistoryOptions(val getCurrentLocation: js.UndefOr[js.Function0[Location]] = js.undefined, val queryKey: js.UndefOr[String | Boolean] = js.undefined, val basename: js.UndefOr[String] = js.undefined) extends js.Object
+class HistoryOptions(val getUserConfirmation: js.UndefOr[js.Function] = js.undefined,
+                     val hashType: js.UndefOr[String] = js.undefined,
+                     val forceRefresh: js.UndefOr[Boolean] = js.undefined,
+                     val basename: js.UndefOr[String] = js.undefined) extends js.Object
 
 object HistoryFactory {
 
@@ -69,16 +82,14 @@ object HistoryFactory {
    * @param options
    * @return
    */
-  def browserHistory(options: js.UndefOr[HistoryOptions] = js.undefined) = if (options.isDefined && options.get.basename.isDefined) History.useQueries(History.useBasename(History.createHistory))(options)
-  else History.useQueries(History.createHistory)(options)
+  def browserHistory(options: js.UndefOr[HistoryOptions] = js.undefined) = History.createHistory(options)
 
   /**
-   * use this only development purpose
+   * use this only for development purpose
    * @param options
    * @return
    */
-  def hashHistory(options: js.UndefOr[HistoryOptions] = new HistoryOptions(queryKey = false)) = if (options.isDefined && options.get.basename.isDefined) History.useQueries(History.useBasename(History.createHashHistory))(options)
-  else History.useQueries(History.createHashHistory)(options)
+  def hashHistory(options: js.UndefOr[HistoryOptions] = js.undefined) = History.createHashHistory(options)
 
 
 }
