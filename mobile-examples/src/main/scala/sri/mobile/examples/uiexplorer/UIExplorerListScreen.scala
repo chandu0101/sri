@@ -48,7 +48,6 @@ object UIExplorerListScreen {
     PickerIOSExample,
     ModalExample,
     DatePickerIOSExample,
-    MapViewExample,
     WebViewExample
   )
 

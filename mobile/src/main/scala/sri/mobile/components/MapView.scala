@@ -13,7 +13,7 @@ import scala.scalajs.js.Dynamic.{literal => json}
 import scala.scalajs.js.annotation.ScalaJSDefined
 import scala.scalajs.js.{UndefOr, undefined}
 
-
+@deprecated("MapView is now deprecated and will be removed from React Native in version 0.42,Please use https://github.com/airbnb/react-native-maps")
 case class MapView(maxDelta: js.UndefOr[Int] = js.undefined,
                    pitchEnabled: js.UndefOr[Boolean] = js.undefined,
                    mapType: js.UndefOr[MapType] = js.undefined,
