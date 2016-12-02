@@ -2,8 +2,8 @@ package sri.universal.components
 
 import scala.scalajs.js
 import scala.scalajs.js.`|`
-import scala.scalajs.js.annotation.{ScalaJSDefined, JSName}
-import scala.scalajs.js.{Array => JArray, UndefOr}
+import scala.scalajs.js.annotation.{JSImport, JSName, ScalaJSDefined}
+import scala.scalajs.js.{UndefOr, Array => JArray}
 
 @ScalaJSDefined
 class ListViewDataSourceInput[R, H](val rowHasChanged: js.Function2[R, R, Boolean],
@@ -13,7 +13,7 @@ class ListViewDataSourceInput[R, H](val rowHasChanged: js.Function2[R, R, Boolea
 
 
 @js.native
-@JSName("ReactNative.ListView.DataSource")
+@JSImport("react-native", "ListView.DataSource")
 class ListViewDataSource[R, H] extends js.Object {
 
   def this(params: ListViewDataSourceInput[R, H]) = this()

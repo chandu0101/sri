@@ -3,7 +3,7 @@ package sri.test
 import org.scalajs.dom
 import sri.core.ReactElement
 import sri.test.components.RefsTestComponent
-import sri.web.ReactDOM
+import sri.web.{ReactDOM, ReactDOMServer}
 import sri.web.all._
 import sri.web.vdom.htmltagsNoInline._
 
@@ -45,12 +45,10 @@ class HtmlTagsTest extends BaseTest {
   }
 
   test("menuitem") {
-    render(menuitem(id = "sri-web"))
-    val prefix = """<menuitem data-reactroot="" id="sri-web""""
-    assert(
-      html == prefix + "></menuitem>" ||
-        html == prefix + "/>"
-    )
+    // Do not rely on jsdom to render this tag (see https://github.com/facebook/react/pull/3783)
+    val html = ReactDOMServer.renderToString(menuitem(id = "sri-web"))
+    val prefix = """<menuitem id="sri-web" data-reactroot="" """
+    assert(html.startsWith(prefix) && html.endsWith("></menuitem>"))
   }
 
   test("article") {

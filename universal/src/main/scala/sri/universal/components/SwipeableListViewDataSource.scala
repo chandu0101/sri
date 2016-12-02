@@ -2,11 +2,12 @@ package sri.universal.components
 
 import scala.scalajs.js
 import scala.scalajs.js.`|`
-import scala.scalajs.js.annotation.{ScalaJSDefined, JSName}
-import scala.scalajs.js.{Array => JArray, UndefOr}
+import scala.scalajs.js.annotation.{JSImport, JSName, ScalaJSDefined}
+import scala.scalajs.js.{UndefOr, Array => JArray}
 
 
 @js.native
+@JSImport("react-native", "SwipeableListViewDataSource")
 class SwipeableListViewDataSource[R, H] extends js.Object {
 
   def this(params: ListViewDataSourceInput[R, H]) = this()

@@ -1,4 +1,5 @@
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
+import scalajsbundler.ScalaJSBundlerPlugin.autoImport._
 import sbt.Keys._
 import sbt._
 
@@ -23,6 +24,8 @@ object Dependencies {
 
     val chandu0101Macros = "2016.11.0"
 
+    val react = "^15.3.2"
+
   }
 
 
@@ -42,11 +45,26 @@ object Dependencies {
 
   val coreModuleDeps = Seq(
     scalaJSDOM,
-    chandu0101Macros
+    chandu0101Macros,
+    npmDependencies in Compile += "react" -> Version.react
+  )
+
+  val universalModuleDeps = Seq(
+    npmDependencies in Compile ++= Seq(
+      "react" -> "15.4.0-rc.4",
+      "react-native" -> "0.38.0"
+    )
+  )
+
+  val addonsModuleDeps = Seq(
+    npmDependencies in Compile += "react-addons-perf" -> Version.react
   )
 
   val webModuleDeps = Seq(
-
+    npmDependencies in Compile ++= Seq(
+      "react-dom" -> Version.react,
+      "history" -> "4.4.0"
+    )
   )
 
   val mobileModuleDeps = Seq(
@@ -60,18 +78,17 @@ object Dependencies {
   val scalatestJSSettings = Seq(scalatestJS,
     scalaJSStage in Global := FastOptStage,
 //    scalaJSStage in Global := FullOptStage,
-    jsDependencies += RuntimeDOM,
-    jsDependencies += ProvidedJS / "test-bundle.js" % Test,
-    jsEnv in Test := new PhantomJS2Env(scalaJSPhantomJSClassLoader.value, addArgs = Seq("--web-security=no"))
-//        jsEnv in Test := new NodeJSEnv()
+    requiresDOM := true,
+    npmDependencies in Compile ++= Seq(
+      "react-addons-test-utils" -> Version.react
+    )
   )
 
 
   val utestSettings = Seq(utestJS,
     scalaJSStage in Global := FastOptStage,
-    jsDependencies += RuntimeDOM,
-    testFrameworks += new TestFramework("utest.runner.Framework"),
-    jsEnv in Test := new PhantomJS2Env(scalaJSPhantomJSClassLoader.value, addArgs = Seq("--web-security=no"))
+    requiresDOM := true,
+    testFrameworks += new TestFramework("utest.runner.Framework")
   )
 
 }

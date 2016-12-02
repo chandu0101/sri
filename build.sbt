@@ -7,7 +7,7 @@ import Dependencies._
 // ================================ Module definitions  ================================ //
 
 lazy val Sri = DefProject(".", "root")
-  .aggregate(core, addons, universal, web, mobile, mobileExamples, webExamples)
+  .aggregate(core, addons, universal, web, mobile, mobileExamples, webExamplesServer)
   .configure(addCommandAliases(
     "ct" -> "; test:compile ; core/test",
     "wt" -> "; test:compile ; web/test",
@@ -22,10 +22,12 @@ lazy val core = DefProject("core")
 
 lazy val addons = DefProject("addons")
   .dependsOn(core)
+  .settings(addonsModuleDeps)
   .settings(publicationSettings)
 
 lazy val universal = DefProject("universal")
   .dependsOn(core)
+  .settings(universalModuleDeps)
   .settings(publicationSettings)
 
 
@@ -37,15 +39,24 @@ lazy val web = DefProject("web")
 
 lazy val mobile = DefProject("mobile")
   .dependsOn(universal)
-  .settings(scalaJSModuleKind := ModuleKind.CommonJSModule)
   .settings(mobileModuleDeps)
   .settings(publicationSettings)
 
-
-lazy val webExamples = DefProject("web-examples")
+lazy val webExamplesClient = DefProject("web-examples/client", "web-examples-client")
+  .enablePlugins(ScalaJSWeb)
   .dependsOn(web)
-  .settings(webExamplesLauncher)
   .settings(preventPublication)
+
+lazy val webExamplesServer = Project("web-examples-server", file("web-examples/server"))
+  .settings(commonSettings ++ preventPublication: _*)
+  .enablePlugins(WebScalaJSBundlerPlugin)
+  .settings(
+    scalaJSProjects := Seq(webExamplesClient),
+    pipelineStages in Assets := Seq(scalaJSPipeline),
+    libraryDependencies += "com.typesafe.play" %% "play-netty-server" % "2.5.10",
+    WebKeys.packagePrefix in Assets := "public/",
+    (managedClasspath in Runtime) += (packageBin in Assets).value
+  )
 
 
 lazy val mobileExamples = DefProject("mobile-examples")
@@ -58,8 +69,6 @@ lazy val mobileExamples = DefProject("mobile-examples")
 lazy val test = DefProject("test")
   .dependsOn(web)
   .settings(scalatestJSSettings: _*)
-//  .settings(npmDependencies in Test += "history" -> "4.4.0")
-//  .enablePlugins(ScalaJSBundlerPlugin)
   .settings(preventPublication)
 
 // workaround http://stackoverflow.com/questions/20931217/deprecation-and-feature-warnings-for-sbt-project-definition-files

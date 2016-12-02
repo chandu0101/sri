@@ -1,4 +1,5 @@
 import org.scalajs.sbtplugin.ScalaJSPlugin.AutoImport._
+import scalajsbundler.ScalaJSBundlerPlugin.autoImport._
 import sbt.Keys._
 import sbt._
 
@@ -110,16 +111,6 @@ object LauncherConfigs {
     )
 
   //=============================== Web =========================================/
-
-  val webExamplesAssets = "web-examples/assets"
-
-  lazy val webExamplesLauncher = Seq(crossTarget in(Compile, fullOptJS) := file(webExamplesAssets),
-    crossTarget in(Compile, fastOptJS) := file(webExamplesAssets),
-    crossTarget in(Compile, packageScalaJSLauncher) := file(webExamplesAssets),
-    artifactPath in(Compile, fastOptJS) := ((crossTarget in(Compile, fastOptJS)).value /
-      ((moduleName in fastOptJS).value + "-opt.js"))
-  )
-
 
   val relayWebExamplesAssets = "relay-web-examples/assets"
 

@@ -5,7 +5,7 @@ import sri.universal.apis._
 import sri.universal.navigation.NavigationExperimental
 
 import scala.scalajs.js
-import scala.scalajs.js.annotation.JSName
+import scala.scalajs.js.annotation.JSImport
 
 
 @js.native
@@ -68,6 +68,6 @@ trait ReactUniversal extends js.Object {
 }
 
 @js.native
-@JSName("ReactNative")
+@JSImport("react-native", JSImport.Namespace)
 object ReactUniversal extends ReactUniversal
 

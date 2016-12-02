@@ -2,7 +2,7 @@ package sri.core
 
 
 import scala.scalajs.js
-import scala.scalajs.js.annotation.{JSName, ScalaJSDefined}
+import scala.scalajs.js.annotation.{JSImport, JSName, ScalaJSDefined}
 import scala.scalajs.js.{UndefOr, undefined}
 
 @js.native
@@ -25,6 +25,7 @@ trait React extends js.Object {
 
 
 @js.native
+@JSImport("react", JSImport.Namespace)
 object React extends React
 
 @js.native
@@ -94,7 +95,7 @@ trait ReactElementM[P, S] extends ReactComponent[P, S] with ReactElement
 
 
 @js.native
-@JSName("React.Component")
+@JSImport("react", "Component")
 private[core] class InternalReactComponent[P, S] extends js.Object {
 
 
@@ -130,7 +131,7 @@ private[core] class InternalReactComponent[P, S] extends js.Object {
 
 
 @js.native
-@JSName("React.Component")
+@JSImport("react", "Component")
 private[core] class InternalReactJSComponent[P <: ReactJSProps, S] extends js.Object {
 
 

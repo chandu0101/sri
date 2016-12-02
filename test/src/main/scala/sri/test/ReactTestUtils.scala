@@ -1,11 +1,12 @@
 package sri.test
 
-import sri.core.{ReactComponent, JSProps, ReactElement}
+import sri.core.{ReactComponent, ReactElement}
 
 import scala.scalajs.js
-import scala.scalajs.js.annotation.JSName
+import scala.scalajs.js.annotation.{JSImport, JSName}
 
 @js.native
+@JSImport("react-addons-test-utils", JSImport.Namespace)
 object ReactTestUtils  extends js.Object{
 
   val Simulate : js.Dynamic = js.native
