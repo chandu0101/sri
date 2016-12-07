@@ -4,6 +4,6 @@
 
 ```
 //root(sri) directory
-sbt web-examples-server/run
-//open http://localhost:9000 in a browser
+sbt "~web-examples/fastOptJS::webpack"
+// open index.html file in your browser
 ```

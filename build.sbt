@@ -7,7 +7,7 @@ import Dependencies._
 // ================================ Module definitions  ================================ //
 
 lazy val Sri = DefProject(".", "root")
-  .aggregate(core, addons, universal, web, mobile, mobileExamples, webExamplesServer)
+  .aggregate(core, addons, universal, web, webExamples, mobile, mobileExamples)
   .configure(addCommandAliases(
     "ct" -> "; test:compile ; core/test",
     "wt" -> "; test:compile ; web/test",
@@ -42,22 +42,9 @@ lazy val mobile = DefProject("mobile")
   .settings(mobileModuleDeps)
   .settings(publicationSettings)
 
-lazy val webExamplesClient = DefProject("web-examples/client", "web-examples-client")
-  .enablePlugins(ScalaJSWeb)
+lazy val webExamples = DefProject("web-examples")
   .dependsOn(web)
   .settings(preventPublication)
-
-lazy val webExamplesServer = Project("web-examples-server", file("web-examples/server"))
-  .settings(commonSettings ++ preventPublication: _*)
-  .enablePlugins(WebScalaJSBundlerPlugin)
-  .settings(
-    scalaJSProjects := Seq(webExamplesClient),
-    pipelineStages in Assets := Seq(scalaJSPipeline),
-    libraryDependencies += "com.typesafe.play" %% "play-netty-server" % "2.5.10",
-    WebKeys.packagePrefix in Assets := "public/",
-    (managedClasspath in Runtime) += (packageBin in Assets).value
-  )
-
 
 lazy val mobileExamples = DefProject("mobile-examples")
   .dependsOn(mobile)

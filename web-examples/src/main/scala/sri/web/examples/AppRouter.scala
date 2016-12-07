@@ -16,7 +16,7 @@ object AppRouter {
 
   object Config extends WebRouterConfig {
 
-    override val history = HistoryFactory.browserHistory()
+    override val history = HistoryFactory.hashHistory()
 
     override val initialRoute = defineInitialRoute(HomePage, component = (route: WebRoute) => HelloWeb())
 
