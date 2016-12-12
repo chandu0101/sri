@@ -21,7 +21,7 @@ object WebRouterExample {
 
   object Config extends WebRouterConfig {
 
-    override val history: History = HistoryFactory.browserHistory()
+    override val history: History = HistoryFactory.hashHistory()
 
     override val initialRoute: (WebStaticPage, WebRoute) = defineInitialRoute(HomePage, (route: WebRoute) => HomeScreen())
 

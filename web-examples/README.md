@@ -4,11 +4,6 @@
 
 ```
 //root(sri) directory
-sbt ~fastOptJS
-//open new  terminal
-cd web-examples
-npm install
-npm start
-//open localhost:8090 in u r browser
+sbt "~web-examples/fastOptJS::webpack"
+// open index.html file in your browser
 ```
-

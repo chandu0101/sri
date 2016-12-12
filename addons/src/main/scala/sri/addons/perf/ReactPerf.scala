@@ -1,6 +1,7 @@
 package sri.addons.perf
 
 import scala.scalajs.js
+import scala.scalajs.js.annotation.JSImport
 
 /**
  * wrapper for react-addons-perf
@@ -23,5 +24,6 @@ trait ReactPerf extends js.Object {
 
 }
 
+@JSImport("react-addons-perf", JSImport.Namespace)
 @js.native
 object ReactPerf extends ReactPerf

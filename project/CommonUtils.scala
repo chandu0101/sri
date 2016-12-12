@@ -1,6 +1,7 @@
-import org.scalajs.sbtplugin.ScalaJSPlugin
 import sbt.Keys._
 import sbt._
+
+import scalajsbundler.ScalaJSBundlerPlugin
 
 object CommonUtils {
 
@@ -25,7 +26,7 @@ object CommonUtils {
     Project(id, file(dir))
       .settings(commonSettings: _*)
       .settings(Keys.name := "sri-" + id)
-      .enablePlugins(ScalaJSPlugin)
+      .enablePlugins(ScalaJSBundlerPlugin)
   }
 
   def addCommandAliases(m: (String, String)*) = {

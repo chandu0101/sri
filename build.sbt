@@ -7,7 +7,7 @@ import Dependencies._
 // ================================ Module definitions  ================================ //
 
 lazy val Sri = DefProject(".", "root")
-  .aggregate(core, addons, universal, web, mobile, mobileExamples, webExamples)
+  .aggregate(core, addons, universal, web, webExamples, mobile, mobileExamples)
   .configure(addCommandAliases(
     "ct" -> "; test:compile ; core/test",
     "wt" -> "; test:compile ; web/test",
@@ -22,10 +22,12 @@ lazy val core = DefProject("core")
 
 lazy val addons = DefProject("addons")
   .dependsOn(core)
+  .settings(addonsModuleDeps)
   .settings(publicationSettings)
 
 lazy val universal = DefProject("universal")
   .dependsOn(core)
+  .settings(universalModuleDeps)
   .settings(publicationSettings)
 
 
@@ -37,16 +39,12 @@ lazy val web = DefProject("web")
 
 lazy val mobile = DefProject("mobile")
   .dependsOn(universal)
-  .settings(scalaJSModuleKind := ModuleKind.CommonJSModule)
   .settings(mobileModuleDeps)
   .settings(publicationSettings)
 
-
 lazy val webExamples = DefProject("web-examples")
   .dependsOn(web)
-  .settings(webExamplesLauncher)
   .settings(preventPublication)
-
 
 lazy val mobileExamples = DefProject("mobile-examples")
   .dependsOn(mobile)
@@ -58,8 +56,6 @@ lazy val mobileExamples = DefProject("mobile-examples")
 lazy val test = DefProject("test")
   .dependsOn(web)
   .settings(scalatestJSSettings: _*)
-//  .settings(npmDependencies in Test += "history" -> "4.4.0")
-//  .enablePlugins(ScalaJSBundlerPlugin)
   .settings(preventPublication)
 
 // workaround http://stackoverflow.com/questions/20931217/deprecation-and-feature-warnings-for-sbt-project-definition-files
