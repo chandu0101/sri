@@ -96,4 +96,16 @@ package object vdom {
     @inline def < = htmltagsNoInline
   }
 
+
+  object svgtags extends SvgTagsInline
+
+  object svgtagsPrefix_< {
+    @inline def < = svgtags
+  }
+
+  object svgtagsNoInline extends SvgTags
+
+  object svgtagsNoInlinePrefix_< {
+    @inline def < = svgtagsNoInline
+  }
 }
