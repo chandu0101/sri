@@ -131,7 +131,7 @@ private[core] class InternalReactComponent[P, S] extends js.Object {
 
 
 @js.native
-@JSName("React.Component")
+@JSImport("react","Component")
 private[core] class InternalReactJSComponent[P <: ReactJSProps, S] extends js.Object {
 
 
@@ -395,7 +395,7 @@ abstract class ReactComponentJS[P <: ReactJSProps, S] extends InternalReactJSCom
 @ScalaJSDefined
 abstract class ReactJSProps extends js.Object {
   val key: js.UndefOr[String] = js.undefined
-  val ref: js.UndefOr[_ <: ReactComponentJS[_, _] => _] = js.undefined
+  val ref: UndefOr[js.Function] = js.undefined
   val children: js.UndefOr[PropsChildren] = undefined
 }
 
