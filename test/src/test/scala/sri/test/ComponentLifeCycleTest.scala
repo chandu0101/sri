@@ -15,7 +15,7 @@ class ComponentLifeCycleTest extends BaseTest {
     willReceiveProps = false
   }
 
-  test("test life cycles") {
+  test("test life cycles1") {
     val instance = getMountedInstance[HelloLifeCycle.Component](HelloLifeCycle())
     assert(willMount)
     //    assert(didMount == DID_MOUNT) TODO check didMount not called in shallowRender

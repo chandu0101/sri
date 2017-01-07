@@ -1,6 +1,7 @@
 package sri.mobile.examples.uiexplorer
 
 import sri.core.ElementFactory._
+import sri.core._
 import sri.core.{ReactElement, ReactNode}
 import sri.universal.components._
 import sri.universal.styles.UniversalStyleSheet
@@ -8,10 +9,13 @@ import sri.universal.styles.UniversalStyleSheet
 
 object UIExplorerBlock {
 
-  val Component = (props: String, children: ReactElement) => {
+  case class Props(title:String,description: String)
+
+  val Component = (props: Props, children: ReactElement) => {
     View(style = styles.container)(
       View(style = styles.titleContainer)(
-        Text(style = styles.titleText)(props)
+        Text(style = styles.titleText)(props.title),
+        props.description.nonEmpty ?= Text(style = styles.descriptionText)(props.description)
       ),
       View(style = styles.children)(
         children
@@ -41,9 +45,11 @@ object UIExplorerBlock {
 
     val titleText = style(fontSize := 14, fontWeight._500)
 
+    val descriptionText = style(fontSize := 14)
+
     val children = style(padding := 10)
   }
 
-  def apply(title: String)(children: ReactNode*) = createStatelessFunctionElementWithChildren(Component, title)(children: _*)
+  def apply(title: String,description:String = "")(children: ReactNode*) = createStatelessFunctionElementWithChildren(Component, Props(title,description))(children: _*)
 
 }

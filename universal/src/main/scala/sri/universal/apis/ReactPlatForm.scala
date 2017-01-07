@@ -7,8 +7,12 @@ import scala.scalajs.js.annotation.ScalaJSDefined
 trait ReactPlatForm extends js.Object {
   val OS: String = js.native
   val Version: Double = js.native
-  def select(obj : PlatformSelect) : js.Object = js.native
+
+  def select(obj: PlatformSelect): js.Object = js.native
 }
 
 @ScalaJSDefined
-class PlatformSelect(val ios : js.Object,val android : js.Object) extends js.Object
+trait PlatformSelect extends js.Object {
+  var ios: js.UndefOr[js.Object] = js.undefined
+  var android: js.UndefOr[js.Object] = js.undefined
+}

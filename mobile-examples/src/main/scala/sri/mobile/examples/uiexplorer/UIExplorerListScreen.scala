@@ -30,6 +30,7 @@ object UIExplorerListScreen {
     TouchableExample,
     TextInputExample,
     ButtonExample,
+    AnimatedExample,
     SliderExample,
     SwitchExample,
     RefreshControlExample,

@@ -3,7 +3,7 @@ package sri.test.components
 import org.scalajs.dom
 import sri.core._
 import sri.web.all._
-import sri.web.vdom.htmltagsNoInline._
+import sri.web.vdom.htmltags._
 import scala.scalajs.js
 import scala.scalajs.js.annotation.ScalaJSDefined
 import scala.scalajs.js.{UndefOr => U, Function1, undefined => undefined}

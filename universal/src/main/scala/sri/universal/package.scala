@@ -23,10 +23,10 @@ package object universal {
                                        getSectionHeaderData: js.Function2[_, String | Int, _] = null
                                         ): ListViewDataSource[R, H] = {
 
-      new ListViewDataSource[R, H](new ListViewDataSourceInput[R, H](rowHasChanged = rowHasChanged,
-        sectionHeaderHasChanged = if (sectionHeaderHasChanged != null) sectionHeaderHasChanged else js.undefined,
-        getRowData = if (getRowData != null) getRowData else js.undefined,
-        getSectionHeaderData = if (getSectionHeaderData != null) getSectionHeaderData else js.undefined))
+      new ListViewDataSource[R, H](new ListViewDataSourceInput[R, H]{ rowHasChangedF = rowHasChanged;
+        sectionHeaderHasChangedF = if (sectionHeaderHasChanged != null) sectionHeaderHasChanged else js.undefined;
+        getRowDataF = if (getRowDataF != null) getRowData else js.undefined;
+        getSectionHeaderDataF = if (getSectionHeaderData != null) getSectionHeaderData else js.undefined})
     }
 
     /**

@@ -44,7 +44,10 @@ lazy val mobile = DefProject("mobile")
 
 lazy val webExamples = DefProject("web-examples")
   .dependsOn(web)
-  .settings(webExamplesLauncher)
+  .settings(testModuleDeps)
+  .settings(webExamplesModuleDeps)
+  .settings(fastWebLauncher)
+  .settings(fullWebLauncher)
   .settings(preventPublication)
 
 
@@ -55,11 +58,15 @@ lazy val mobileExamples = DefProject("mobile-examples")
   .settings(mobileExamplesModuleDeps)
   .settings(preventPublication)
 
+lazy val tools = project
+  .settings(commonSettings)
+  .settings(name := "sri-tools")
+  .settings(preventPublication)
+
 lazy val test = DefProject("test")
   .dependsOn(web)
+  .settings(testModuleDeps)
   .settings(scalatestJSSettings: _*)
-//  .settings(npmDependencies in Test += "history" -> "4.4.0")
-//  .enablePlugins(ScalaJSBundlerPlugin)
   .settings(preventPublication)
 
 // workaround http://stackoverflow.com/questions/20931217/deprecation-and-feature-warnings-for-sbt-project-definition-files

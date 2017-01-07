@@ -1,9 +1,10 @@
+import org.scalajs.core.tools.linker.backend.ModuleKind
 import org.scalajs.sbtplugin.ScalaJSPlugin
+import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 import sbt.Keys._
 import sbt._
 
 object CommonUtils {
-
 
 
   lazy val commonSettings =
@@ -11,13 +12,12 @@ object CommonUtils {
       organization := "com.github.chandu0101",
       version := "0.7.0-SNAPSHOT",
       homepage := Some(url("https://github.com/chandu0101/sri")),
-      licenses +=("Apache-2.0", url("http://opensource.org/licenses/Apache-2.0")),
+      licenses += ("Apache-2.0", url("http://opensource.org/licenses/Apache-2.0")),
       scalaVersion := Dependencies.Version.scala211,
-      crossScalaVersions := Seq(Dependencies.Version.scala211,Dependencies.Version.scala212),
+      crossScalaVersions := Seq(Dependencies.Version.scala211, Dependencies.Version.scala212),
       scalacOptions ++= Seq("-deprecation", "-unchecked", "-feature",
         "-language:postfixOps", "-language:implicitConversions",
         "-language:higherKinds", "-language:existentials"))
-
 
 
   def DefProject(dir: String, _id: String = "") = {
@@ -25,6 +25,7 @@ object CommonUtils {
     Project(id, file(dir))
       .settings(commonSettings: _*)
       .settings(Keys.name := "sri-" + id)
+      .settings(scalaJSModuleKind := ModuleKind.CommonJSModule)
       .enablePlugins(ScalaJSPlugin)
   }
 

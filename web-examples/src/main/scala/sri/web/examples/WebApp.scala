@@ -17,7 +17,8 @@ object WebApp extends JSApp {
     //    ReactNativeWeb.AppRegistry.registerComponent("MyApp", () => root)
     //    ReactNativeWeb.AppRegistry.runApplication("MyApp", json(rootTag = dom.document.getElementById("react-root")))
     ReactDOM.render(WebRouterExample.router, dom.document.getElementById("react-root"))
-//    ReactDOM.render(AppRouter.router, dom.document.getElementById("react-root"))
+
+    //    ReactDOM.render(AppRouter.router, dom.document.getElementById("react-root"))
   }
 
 

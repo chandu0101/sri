@@ -63,22 +63,22 @@ object KeyboardAvoidingViewBehaviour {
 
 @ScalaJSDefined
 trait ScreenRect extends js.Object {
-  val screenX: Double
-  val screenY: Double
-  val width: Double
-  val height: Double
+  var screenX: js.UndefOr[Double] = js.undefined
+  var screenY: js.UndefOr[Double] = js.undefined
+  var width: js.UndefOr[Double] = js.undefined
+  var height: js.UndefOr[Double] = js.undefined
 }
 
 @ScalaJSDefined
-abstract class KeyboardChangeEvent extends js.Object {
+trait  KeyboardChangeEvent extends js.Object {
 
-  val startCoordinates: js.UndefOr[ScreenRect] = js.undefined
+  var startCoordinates: js.UndefOr[ScreenRect] = js.undefined
 
-  val endCoordinates: ScreenRect
+  var endCoordinates: ScreenRect
 
-  val duration: js.UndefOr[Double] = js.undefined
+  var duration: js.UndefOr[Double] = js.undefined
 
-  val easing: js.UndefOr[String] = js.undefined
+  var easing: js.UndefOr[String] = js.undefined
 
 }
 

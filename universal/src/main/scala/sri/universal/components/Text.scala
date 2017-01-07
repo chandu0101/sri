@@ -1,6 +1,6 @@
 package sri.universal.components
 
-import chandu0101.macros.tojs.JSMacro
+import chandu0101.macros.tojs.{JSMacro, exclude}
 import sri.core.{React, ReactNode}
 import sri.universal.{ReactEvent, ReactUniversal, SyntheticEvent}
 import sri.universal.apis.LayoutEvent
@@ -15,16 +15,19 @@ case class Text(suppressHighlighting: js.UndefOr[Boolean] = js.undefined,
                 allowFontScaling: js.UndefOr[Boolean] = js.undefined,
                 selectable: js.UndefOr[Boolean] = js.undefined,
                 adjustsFontSizeToFit: js.UndefOr[Boolean] = js.undefined,
+                includeFontPadding: js.UndefOr[Boolean] = js.undefined,
                 onLayout: js.UndefOr[LayoutEvent => _] = js.undefined,
                 numberOfLines: js.UndefOr[Int] = js.undefined,
                 ref: js.UndefOr[TextM => _] = js.undefined,
                 key: js.UndefOr[String] = js.undefined,
+                @exclude animatedText: Boolean = false,
                 lineBreakMode: js.UndefOr[LineBreakMode] = js.undefined,
                 testID: js.UndefOr[String] = js.undefined) {
 
   def apply(children: ReactNode*) = {
     val props = JSMacro[Text](this)
-    React.createElement(ReactUniversal.Text, props, children: _*)
+    val ctor = if(animatedText) ReactUniversal.Animated.Text else ReactUniversal.Text
+    React.createElement(ctor, props, children: _*)
   }
 }
 

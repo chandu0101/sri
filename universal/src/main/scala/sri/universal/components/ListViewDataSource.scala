@@ -1,19 +1,22 @@
 package sri.universal.components
 
+import chandu0101.macros.tojs.FunctionMacro
+
 import scala.scalajs.js
 import scala.scalajs.js.`|`
-import scala.scalajs.js.annotation.{ScalaJSDefined, JSName}
-import scala.scalajs.js.{Array => JArray, UndefOr}
+import scala.scalajs.js.annotation.{JSImport, JSName, ScalaJSDefined}
+import scala.scalajs.js.{UndefOr, Array => JArray}
 
 @ScalaJSDefined
-class ListViewDataSourceInput[R, H](val rowHasChanged: js.Function2[R, R, Boolean],
-                                    val sectionHeaderHasChanged: js.UndefOr[js.Function2[H, H, Boolean]] = js.undefined,
-                                    val getRowData: js.UndefOr[js.Function3[_, String | Int, String | Int, _]] = js.undefined,
-                                    val getSectionHeaderData: js.UndefOr[js.Function2[_, String | Int, _]] = js.undefined) extends js.Object
-
+trait ListViewDataSourceInput[R, H] extends js.Object {
+  @JSName("rowHasChanged") var rowHasChangedF: js.UndefOr[js.Function2[R, R, Boolean]] = js.undefined
+  @JSName("sectionHeaderHasChanged") var sectionHeaderHasChangedF: js.UndefOr[js.Function2[H, H, Boolean]] = js.undefined
+  @JSName("getRowData") var getRowDataF: js.UndefOr[js.Function3[_, String | Int, String | Int, _]] = js.undefined
+  @JSName("getSectionHeaderData") var getSectionHeaderDataF: js.UndefOr[js.Function2[_, String | Int, _]] = js.undefined
+}
 
 @js.native
-@JSName("ReactNative.ListView.DataSource")
+@JSImport("react-native", "ListView.DataSource")
 class ListViewDataSource[R, H] extends js.Object {
 
   def this(params: ListViewDataSourceInput[R, H]) = this()

@@ -3,6 +3,7 @@ package sri.mobile.examples.movies.android
 import sri.mobile.ReactNative
 import sri.mobile.all._
 import sri.mobile.components.android.ToolbarAndroid
+import sri.mobile.examples.images.AndroidBackWhiteImage
 import sri.universal.router
 import sri.universal.router.{NavigatorRoute, UniversalRouterComponent, UniversalRouterCtrl}
 import sri.universal.styles.UniversalStyleSheet
@@ -24,7 +25,7 @@ object DefaultAndroidNavigationBar {
   @ScalaJSDefined
   class Component extends UniversalRouterComponent[Props, Unit] {
     def render() = {
-      val androidback: js.UndefOr[js.Dynamic] = if (previousRoute.isDefined) load[js.Dynamic]("./images/android_back_white.png") else js.undefined
+      val androidback: js.UndefOr[js.Any] = if (previousRoute.isDefined) AndroidBackWhiteImage else js.undefined
       ToolbarAndroid(
         style = props.style.toolbar,
         actions = Seq(),

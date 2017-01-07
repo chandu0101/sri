@@ -6,24 +6,25 @@ object LauncherConfigs {
 
   /** ================ React_native task   ================ */
 
+  val SJS_OUTPUT_PATH = "assets/scalajs-output.js"
+
   val fastOptMobile = Def.taskKey[File]("Generate mobile output file for fastOptJS")
 
   lazy val mobileLauncherFast =
     Seq(
+      artifactPath in Compile in fastOptJS :=
+        baseDirectory.value / SJS_OUTPUT_PATH,
       artifactPath in Compile in fastOptMobile :=
         baseDirectory.value / "index.ios.js",
       fastOptMobile in Compile := {
+        (artifactPath in Compile in fastOptMobile).value.delete()
         val outFile = (artifactPath in Compile in fastOptMobile).value
 
-        val loaderFile = (resourceDirectory in Compile).value / "loader.js"
+        val fastoptOutputCode = IO.read((fastOptJS in Compile).value.data)
 
-        IO.copyFile(loaderFile, outFile)
+        val outString = fastoptOutputCode.replace("this[\"__ScalaJSExportsNamespace\"] = $e;", "") //TODO we don't need this in scala.js 0.6.15
 
-        val fullOutputCode = IO.read((fastOptJS in Compile).value.data)
-
-        val outString = processRequireFunctionsInFastOpt(fullOutputCode)
-
-        IO.write(baseDirectory.value / "scalajs-output.js", outString)
+        IO.write(baseDirectory.value / SJS_OUTPUT_PATH, outString)
 
         val launcher = (scalaJSLauncher in Compile).value.data.content
         IO.append(outFile, launcher)
@@ -33,24 +34,22 @@ object LauncherConfigs {
       }
     )
 
-  val fullOptMobile = Def.taskKey[File]("Generate the file given to react native")
+  val fullOptMobile = Def.taskKey[File]("Generate mobile output file for fullOptJS")
 
   lazy val mobilelauncherFull =
     Seq(
+      artifactPath in Compile in fullOptJS :=
+        baseDirectory.value / SJS_OUTPUT_PATH,
       artifactPath in Compile in fullOptMobile :=
         baseDirectory.value / "index.ios.js",
       fullOptMobile in Compile := {
+        (artifactPath in Compile in fullOptMobile).value.delete()
+
         val outFile = (artifactPath in Compile in fullOptMobile).value
 
-        val loaderFile = (resourceDirectory in Compile).value / "loader.js"
+        val fulloptOutputCode = IO.read((fullOptJS in Compile).value.data)
 
-        IO.copyFile(loaderFile, outFile)
-
-        val fullOutputCode = IO.read((fullOptJS in Compile).value.data)
-
-        val outString = processRequireFunctions(fullOutputCode)
-
-        IO.write(baseDirectory.value / "scalajs-output.js", outString)
+        IO.write(baseDirectory.value / SJS_OUTPUT_PATH, fulloptOutputCode)
 
         val launcher = (scalaJSLauncher in Compile).value.data.content
         IO.append(outFile, launcher)
@@ -60,75 +59,32 @@ object LauncherConfigs {
       }
     )
 
-  /**
-   * react-native prod bundler needs require function without name spaces
-   * @param text
-   * @return
-   */
-  def processRequireFunctions(text: String): String = {
-    val SJS_NAME_SPACE = "exportsNamespace:"
-    val i = text.indexOf(SJS_NAME_SPACE) + SJS_NAME_SPACE.length
-    val j = text.substring(i).indexOf(";") + i // TODO look for non valid identifier ![_$0-9a-zA-Z]
-    val nameSpace = text.substring(i, j)
-    text.replaceAll(s"$nameSpace.require\\(", "require\\(")
-  }
-
-  /**
-   * react-native prod bundler needs require function without name spaces
-   * @param text
-   * @return
-   */
-  def processRequireFunctionsInFastOpt(text: String): String = {
-    text.replaceAll("\\$g.require\\(", "require\\(")
-  }
-
-  val fullOptRelayMobile = Def.taskKey[File]("Generate the file given to react native relay")
-
-  lazy val mobileRelayLauncher =
-    Seq(
-      artifactPath in Compile in fullOptRelayMobile :=
-        baseDirectory.value / "index.ios.js",
-      fullOptMobile in Compile := {
-        val outFile = (artifactPath in Compile in fullOptRelayMobile).value
-
-        val loaderFile = (resourceDirectory in Compile).value / "loader.js"
-
-        IO.copyFile(loaderFile, outFile)
-
-        val fullOutputCode = IO.read((fullOptJS in Compile).value.data)
-
-        val outString = processRequireFunctions(fullOutputCode)
-
-        IO.write(baseDirectory.value / "scalajs-output.js", outString)
-
-        val launcher = (scalaJSLauncher in Compile).value.data.content
-        IO.append(outFile, launcher)
-
-        IO.copyFile(outFile, baseDirectory.value / "index.android.js")
-        outFile
-      }
-    )
 
   //=============================== Web =========================================/
 
-  val webExamplesAssets = "web-examples/assets"
+  val fastOptWeb = Def.taskKey[Unit]("Generate web output file for fastOptJS")
 
-  lazy val webExamplesLauncher = Seq(crossTarget in(Compile, fullOptJS) := file(webExamplesAssets),
-    crossTarget in(Compile, fastOptJS) := file(webExamplesAssets),
-    crossTarget in(Compile, packageScalaJSLauncher) := file(webExamplesAssets),
-    artifactPath in(Compile, fastOptJS) := ((crossTarget in(Compile, fastOptJS)).value /
-      ((moduleName in fastOptJS).value + "-opt.js"))
-  )
+  lazy val fastWebLauncher =
+    Seq(
+      artifactPath in Compile in fastOptJS :=
+        baseDirectory.value / SJS_OUTPUT_PATH,
+      fastOptWeb in Compile := {
+        val launcher = (scalaJSLauncher in Compile).value.data.content
+        IO.write(baseDirectory.value / "assets/scalajs-output-launcher.js", launcher)
+      }
+    )
 
+  val fullOptWeb = Def.taskKey[Unit]("Generate web output file for fullOptJS")
 
-  val relayWebExamplesAssets = "relay-web-examples/assets"
-
-  lazy val relayWebExamplesLauncher = Seq(crossTarget in(Compile, fullOptJS) := file(relayWebExamplesAssets),
-    crossTarget in(Compile, fastOptJS) := file(relayWebExamplesAssets),
-    crossTarget in(Compile, packageScalaJSLauncher) := file(relayWebExamplesAssets),
-    artifactPath in(Compile, fastOptJS) := ((crossTarget in(Compile, fastOptJS)).value /
-      ((moduleName in fastOptJS).value + "-opt.js"))
-  )
-
+  lazy val fullWebLauncher =
+    Seq(
+      artifactPath in Compile in fullOptJS :=
+        baseDirectory.value / SJS_OUTPUT_PATH,
+      fullOptWeb in Compile := {
+        (fullOptJS in Compile).value
+        val launcher = (scalaJSLauncher in Compile).value.data.content
+        IO.write(baseDirectory.value / "assets/scalajs-output-launcher.js", launcher)
+      }
+    )
 
 }

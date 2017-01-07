@@ -1,11 +1,12 @@
 package sri.universal.components
 
-import chandu0101.macros.tojs.JSMacro
+import chandu0101.macros.tojs.{JSMacro, exclude}
 import sri.core.{React, ReactElement, ReactNode}
 import sri.universal.{ReactEvent, ReactUniversal}
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.ScalaJSDefined
+import scala.scalajs.js.|
 
 
 case class ScrollView(zoomScale: js.UndefOr[Int] = js.undefined,
@@ -34,12 +35,13 @@ case class ScrollView(zoomScale: js.UndefOr[Int] = js.undefined,
                       bouncesZoom: js.UndefOr[Boolean] = js.undefined,
                       alwaysBounceHorizontal: js.UndefOr[Boolean] = js.undefined,
                       bounces: js.UndefOr[Boolean] = js.undefined,
+                      @exclude animatedScrollView: Boolean = false,
                       maximumZoomScale: js.UndefOr[Double] = js.undefined,
                       automaticallyAdjustContentInsets: js.UndefOr[Boolean] = js.undefined,
                       onScrollAnimationEnd: js.UndefOr[() => Unit] = js.undefined,
                       stickyHeaderIndices: js.UndefOr[js.Array[Int]] = js.undefined,
                       directionalLockEnabled: js.UndefOr[Boolean] = js.undefined,
-                      keyboardShouldPersistTaps: js.UndefOr[Boolean] = js.undefined,
+                      keyboardShouldPersistTaps: js.UndefOr[ScrollViewKeyboardPersistTaps] = js.undefined,
                       pagingEnabled: js.UndefOr[Boolean] = js.undefined,
                       scrollPerfTag: js.UndefOr[String] = js.undefined,
                       canCancelContentTouches: js.UndefOr[Boolean] = js.undefined,
@@ -48,8 +50,19 @@ case class ScrollView(zoomScale: js.UndefOr[Int] = js.undefined,
 
   def apply(children: ReactNode*): ReactElement = {
     val props = JSMacro[ScrollView](this)
-    React.createElement(ReactUniversal.ScrollView, props, children: _*)
+    val ctor = if (animatedScrollView) ReactUniversal.Animated.ScrollView else ReactUniversal.ScrollView
+    React.createElement(ctor, props, children: _*)
   }
+}
+
+
+@js.native
+trait ScrollViewKeyboardPersistTaps extends js.Object
+
+object ScrollViewKeyboardPersistTaps {
+  val ALWAYS = "always".asInstanceOf[ScrollViewKeyboardPersistTaps]
+  val NEVER = "never".asInstanceOf[ScrollViewKeyboardPersistTaps]
+  val HANDLED = "handled".asInstanceOf[ScrollViewKeyboardPersistTaps]
 }
 
 class keyboardDismissMode private(val value: String) extends AnyVal
@@ -73,15 +86,19 @@ object ScrollViewIndicatorStyle {
 }
 
 @ScalaJSDefined
-class ScrollPosition(val x : Double = 0,val y : Double = 0,val animated: Boolean = false) extends js.Object
+trait ScrollPosition extends js.Object {
+  var x: js.UndefOr[Double] = js.undefined
+  var y: js.UndefOr[Double] = js.undefined
+  var animated: js.UndefOr[Boolean] = js.undefined
+}
 
 
 @js.native
 trait ScrollViewM extends js.Object {
 
-  def scrollTo(position : ScrollPosition): Unit = js.native
+  def scrollTo(position: ScrollPosition): Unit = js.native
 }
-     
+
 @js.native
 trait ScrollEvent extends js.Object {
 
@@ -107,6 +124,7 @@ trait ContentInset extends js.Object {
 
   val bottom: Double = js.native
 }
+
 @js.native
 trait ContentOffset extends js.Object {
 

@@ -18,19 +18,19 @@ object AlertExample extends UIExample {
 
   val Component = () => {
     val a1 = () => ReactNative.Alert.alert("Foo title", "alert message")
-    val a2 = () => ReactNative.Alert.alert("Foo title", "alert message", buttons = js.Array(new AlertButton("Button", (() => println("Button Pressed")): js.Function)))
+    val a2 = () => ReactNative.Alert.alert("Foo title", "alert message", buttons = js.Array(new AlertButton { text = "Button"; onPress = (() => println("Button Pressed")): js.Function}))
     val a3 = () => ReactNative.Alert.alert(
       title = "Foo Title",
       message = "My Alert Msg",
-      buttons = js.Array(new AlertButton("Foo", (() => println("Foo Button Pressed")):js.Function),
-        new AlertButton("Bar", (() => println("Bar Button Pressed")): js.Function)))
+      buttons = js.Array(new AlertButton { text = "Foo"; onPress = (() => println("Foo Button Pressed")):js.Function },
+        new AlertButton { text = "Bar" ; onPress = (() => println("Bar Button Pressed")): js.Function }))
     val a4 = () => ReactNative.Alert.alert(
       title = "Foo Title",
-      buttons = js.Array(new AlertButton("Foo", (() => println("Foo Button Pressed")):js.Function),
-        new AlertButton("Bar", (() => println("Bar Button Pressed")):js.Function),
-        new AlertButton("Baz", (() => println("Baz Button Pressed")): js.Function)))
+      buttons = js.Array(new AlertButton { text = "Foo" ; onPress =  (() => println("Foo Button Pressed")):js.Function },
+        new AlertButton{ text = "Bar"; onPress = (() => println("Bar Button Pressed")):js.Function },
+        new AlertButton{ text = "Baz"; onPress = (() => println("Baz Button Pressed")): js.Function }))
     val a5 = () => ReactNative.Alert.alert(title = "Foo title",
-      buttons = (1 to 10).map(i => new AlertButton(s"Button $i", (() => println(s"Button $i pressed")):js.Function)).toJSArray)
+      buttons = (1 to 10).map(i => new AlertButton{ text = s"Button $i" ; onPress = (() => println(s"Button $i pressed")):js.Function }).toJSArray)
 
     UIExplorerPage(
       UIExplorerBlock("Alerts")(

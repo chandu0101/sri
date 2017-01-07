@@ -21,7 +21,7 @@ object MoviesApp {
 
     dynamicRoute(DetailsPage, (movie: js.Dynamic) => MovieDetails(movie))
 
-    override def renderScene(route: NavigatorRoute): ReactElement = {
+    override def renderScene(route: NavigatorRoute,ctrl: UniversalRouterCtrl): ReactElement = {
       View(style = styles.c)(
         if (isIOSPlatform) DefaultNavigationBar()
         else {
@@ -29,7 +29,7 @@ object MoviesApp {
             DefaultAndroidNavigationBar(route)
           else null
         },
-        super.renderScene(route)
+        super.renderScene(route,ctrl)
       )
     }
 

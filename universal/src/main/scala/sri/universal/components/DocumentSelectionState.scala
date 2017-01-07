@@ -1,12 +1,11 @@
 package sri.universal.components
 
 import scala.scalajs.js
+import scala.scalajs.js.annotation.JSImport
 
-/**
- * Created by chandrasekharkode on 4/3/15.
- */
 
 @js.native
+@JSImport("react-native", "DocumentSelectionState")
 class DocumentSelectionState extends js.Object {
 
   def this(anchor: Int, focus: Int) = this()

@@ -24,7 +24,7 @@ object config extends UniversalRouterConfig {
 
     override val notFound: (StaticPage, NavigatorRoute) = initialRoute
 
-    override def renderScene(route: NavigatorRoute): ReactElement = {
+    override def renderScene(route: NavigatorRoute,ctrl: UniversalRouterCtrl): ReactElement = {
       View(style = MobileStyleSheet.wholeContainer)(
         DefaultNavigationBar(route),
         super.renderScene(route)

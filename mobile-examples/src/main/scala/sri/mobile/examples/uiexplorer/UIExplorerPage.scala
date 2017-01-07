@@ -18,7 +18,7 @@ object UIExplorerPage {
 
 
     def render() = {
-      ScrollView(style = UniversalStyleSheet.wholeContainer, keyboardShouldPersistTaps = true,
+      ScrollView(style = UniversalStyleSheet.wholeContainer, keyboardShouldPersistTaps = ScrollViewKeyboardPersistTaps.HANDLED,
         keyboardDismissMode = keyboardDismissMode.INTERACTIVE)(
         children
       )

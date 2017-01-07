@@ -5,9 +5,10 @@ import org.scalajs.dom.raw.Element
 import sri.core._
 
 import scala.scalajs.js
-import scala.scalajs.js.annotation.JSName
+import scala.scalajs.js.annotation.{JSImport, JSName}
 
 @js.native
+@JSImport("react-dom", JSImport.Namespace)
 object ReactDOM extends js.Object {
 
   def render(elm: ReactElement, dom: Element, callback: js.Function = ???): ReactElementM[_, _] = js.native
@@ -24,6 +25,7 @@ object ReactDOM extends js.Object {
 }
 
 @js.native
+@JSImport("react-dom/server", JSImport.Namespace)
 object ReactDOMServer extends js.Object {
 
   def renderToString(element: ReactElement): String = js.native

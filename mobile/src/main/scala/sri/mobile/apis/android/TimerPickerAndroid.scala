@@ -1,4 +1,4 @@
-package sri.mobile.components.android
+package sri.mobile.apis.android
 
 import scala.scalajs.js
 import scala.scalajs.js.Promise
@@ -15,9 +15,13 @@ trait TimerPickerAndroid extends js.Object {
 }
 
 @ScalaJSDefined
-class TimerPickerAndroidOptions(val hour: js.UndefOr[Int] = js.undefined, val minute: js.UndefOr[Int] = js.undefined, val is24Hour: js.UndefOr[Boolean] = js.undefined) extends js.Object
+trait TimerPickerAndroidOptions extends js.Object {
+  var hour: js.UndefOr[Int] = js.undefined
+  var minute: js.UndefOr[Int] = js.undefined
+  var is24Hour: js.UndefOr[Boolean] = js.undefined
+}
 
-@ScalaJSDefined
+@js.native
 trait TimerPickerAndroidResponse extends js.Object {
   val action: String
   val hour: Int

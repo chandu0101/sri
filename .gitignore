@@ -35,7 +35,9 @@ npm-debug.log
 #mobile
 mobile-examples/index.ios.js
 mobile-examples/index.android.js
-mobile-examples/scalajs-output.js
+mobile-examples/assets/scalajs-output.js
+mobile-examples/assets/scalajs-output.js.map
+mobile-examples/ios/build
 mobile-examples/android/.gradle
 mobile-examples/android/build
 mobile-examples/android/app/build

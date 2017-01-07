@@ -5,7 +5,9 @@ import sri.universal.apis._
 import sri.universal.navigation.NavigationExperimental
 
 import scala.scalajs.js
-import scala.scalajs.js.annotation.JSName
+import scala.scalajs.js.annotation.{JSImport, JSName}
+
+
 
 
 @js.native
@@ -39,13 +41,9 @@ trait ReactUniversal extends js.Object {
   val NavigationExperimental: NavigationExperimental = js.native
 
 
-
   // apis
   //
-  //  val AlertIOS: AlertIOS = js.native
-  //  val AppRegistry: AppRegistry = js.native
-  //  val StyleSheet: StyleSheet = js.native
-  //  val AppStateIOS: AppStateIOS = js.native
+  val StyleSheet: StyleSheet = js.native
   val AsyncStorage: AsyncStorageJS = js.native
   val AppRegistry: AppRegistry = js.native
   val Keyboard: Keyboard = js.native
@@ -55,9 +53,10 @@ trait ReactUniversal extends js.Object {
   //  val NetInfo: NetInfo = js.native
   //  val LayoutAnimation: js.Dynamic = js.native
   val PixelRatio: PixelRatio = js.native
-  val DeviceEventEmitter:DeviceEventEmitter  = js.native
+  val DeviceEventEmitter: DeviceEventEmitter = js.native
+  val Animated: Animated = js.native
   //  val PushNotificationIOS: PushNotificationIOS = js.native
-  //  val PanResponder: PanResponder = js.native
+  val PanResponder: PanResponder = js.native
   //  val StatusBarIOS: js.Dynamic = js.native
   //  val VibrationIOS: VibrationIOS = js.native
   //  val Dimensions: js.Dynamic = js.native
@@ -68,6 +67,6 @@ trait ReactUniversal extends js.Object {
 }
 
 @js.native
-@JSName("ReactNative")
+@JSImport("react-native", JSImport.Namespace)
 object ReactUniversal extends ReactUniversal
 

@@ -67,11 +67,12 @@ trait UniversalRouterConfig extends RouteDefinitions{
   val onDidFocus: NavigatorRoute => _ = null
 
   /**
-   * this method is responsible for rendering components ,
-   * @param route current route that is pushed to stack
-   * @return
-   */
-  def renderScene(route: NavigatorRoute): ReactElement = {
+    * this method is responsible for rendering components ,
+    * @param route
+    * @param ctrl
+    * @return
+    */
+  def renderScene(route: NavigatorRoute,ctrl: UniversalRouterCtrl): ReactElement = {
     if (route.props.isDefined) {
       route.component.asInstanceOf[js.Function1[Any, ReactElement]](route.props.get)
     } else {

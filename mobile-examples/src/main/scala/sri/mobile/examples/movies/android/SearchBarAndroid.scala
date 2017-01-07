@@ -5,7 +5,8 @@ import sri.mobile.ReactNative
 import sri.mobile.all._
 import sri.mobile.components.android.{ProgressBarAndroid, ProgressBarAndroidStyle}
 import sri.mobile.components.{TouchableNativeFeedback, TouchableNativeFeedbackS}
-import sri.universal.{TextInputEvent, ReactEvent}
+import sri.mobile.examples.images.AndroidSearchWhiteImage
+import sri.universal.{ReactEvent, TextInputEvent}
 import sri.universal.components._
 import sri.universal.styles.UniversalStyleSheet
 
@@ -29,7 +30,7 @@ object SearchBarAndroid {
       View(style = styles.searchBar)(
         TouchableNativeFeedback(background = background, onPress = focusInput _)(
           View()(
-            Image(sourceDynamic = androidSearchWhite, style = styles.icon)()
+            Image(sourceDynamic = AndroidSearchWhiteImage, style = styles.icon)()
           )
         ),
         TextInput(ref = storeTextInputRef _, autoCapitalize = AutoCapitalize.NONE, autoCorrect = false,
@@ -43,7 +44,7 @@ object SearchBarAndroid {
 
     var textInputRef: TextInputM = null
 
-    val androidSearchWhite = load[js.Dynamic]("./images/android_search_white.png")
+
 
     def storeTextInputRef(tref: TextInputM) = {
       textInputRef = tref

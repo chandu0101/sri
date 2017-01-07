@@ -18,10 +18,10 @@ object UIExplorerApp {
 
     dynamicRoute(UIExplorerDetails, component = (c: () => ReactElement) => c())
 
-    override def renderScene(route: NavigatorRoute): ReactElement = {
+    override def renderScene(route: NavigatorRoute,ctrl: UniversalRouterCtrl): ReactElement = {
       View(style = UniversalStyleSheet.wholeContainer)(
         DefaultNavigationBar(),
-        super.renderScene(route)
+        super.renderScene(route,ctrl)
       )
     }
 

@@ -39,10 +39,10 @@ object RouterExampleApp {
 
     override val notFound = UniversalRouteNotFound(initialRoute._1)
 
-    override def renderScene(route: NavigatorRoute): ReactElement = {
+    override def renderScene(route: NavigatorRoute,ctrl: UniversalRouterCtrl): ReactElement = {
       View(style = UniversalStyleSheet.wholeContainer)(
         DefaultNavigationBar(CustomNavigationBarTheme),
-        super.renderScene(route)
+        super.renderScene(route,ctrl)
       )
     }
   }

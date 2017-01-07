@@ -133,7 +133,7 @@ object UniversalRouter {
         ctrl = new UniversalRouterCtrl(navigator, props.config)
         subscribeFocusEvents(navigator) // we must subscribe before initial render
       }
-      MobileRouterContext(ctrl)(props.config.renderScene(route.asInstanceOf[NavigatorRoute])
+      MobileRouterContext(ctrl)(props.config.renderScene(route.asInstanceOf[NavigatorRoute],ctrl)
       )
     }
   }

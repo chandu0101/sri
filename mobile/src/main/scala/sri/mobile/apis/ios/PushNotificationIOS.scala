@@ -40,9 +40,9 @@ trait PushNotificationIOS extends js.Object {
 
 
 @ScalaJSDefined
-abstract class Permissions extends js.Object {
-  val alert : js.UndefOr[Boolean] = js.undefined
-  val badge : js.UndefOr[Boolean] = js.undefined
-  val sound : js.UndefOr[Boolean] = js.undefined
+trait Permissions extends js.Object {
+  var alert : js.UndefOr[Boolean] = js.undefined
+  var badge : js.UndefOr[Boolean] = js.undefined
+  var sound : js.UndefOr[Boolean] = js.undefined
 }
 

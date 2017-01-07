@@ -1,7 +1,10 @@
 package sri.universal.styles
 
+import sri.universal.apis.AnimatedValue
+
 import scala.scalajs.js
 import scala.scalajs.js.Dynamic.{literal => json}
+import scala.scalajs.js.|
 
 
 trait NativeAttrs extends FlexBoxStyles with TextStyles with ImageStyles with ViewStyles with Transforms
@@ -10,39 +13,49 @@ object NativeAttrs extends NativeAttrs
 
 trait FlexBoxStyles {
 
-  val flex = new NativeStyle[Double]("flex")
-  val flexBasis = new NativeStyle[Double]("flexBasis")
-  val flexShrink = new NativeStyle[Double]("flexShrink")
-  val flexGrow = new NativeStyle[Double]("flexGrow")
+  val flex = new NativeStyle[Double | AnimatedValue]("flex")
+  val flexBasis = new NativeStyle[Double | AnimatedValue]("flexBasis")
+  val flexShrink = new NativeStyle[Double | AnimatedValue]("flexShrink")
+  val flexGrow = new NativeStyle[Double | AnimatedValue]("flexGrow")
   val flexOne = flex := 1
 
-  val borderBottomWidth = new NativeStyle[Double]("borderBottomWidth")
-  val borderLeftWidth = new NativeStyle[Double]("borderLeftWidth")
-  val borderRightWidth = new NativeStyle[Double]("borderRightWidth")
-  val borderTopWidth = new NativeStyle[Double]("borderTopWidth")
-  val borderWidth = new NativeStyle[Double]("borderWidth")
-  val bottom = new NativeStyle[Double]("bottom")
-  val height = new NativeStyle[Double]("height")
-  val left = new NativeStyle[Double]("left")
-  val margin = new NativeStyle[Double]("margin")
-  val marginBottom = new NativeStyle[Double]("marginBottom")
-  val marginHorizontal = new NativeStyle[Double]("marginHorizontal")
-  val marginLeft = new NativeStyle[Double]("marginLeft")
-  val marginRight = new NativeStyle[Double]("marginRight")
-  val marginTop = new NativeStyle[Double]("marginTop")
-  val marginVertical = new NativeStyle[Double]("marginVertical")
-  val padding = new NativeStyle[Double]("padding")
-  val paddingBottom = new NativeStyle[Double]("paddingBottom")
-  val paddingHorizontal = new NativeStyle[Double]("paddingHorizontal")
-  val paddingLeft = new NativeStyle[Double]("paddingLeft")
-  val paddingRight = new NativeStyle[Double]("paddingRight")
-  val paddingTop = new NativeStyle[Double]("paddingTop")
-  val paddingVertical = new NativeStyle[Double]("paddingVertical")
-  val right = new NativeStyle[Double]("right")
-  val top = new NativeStyle[Double]("top")
-  val width = new NativeStyle[Double]("width")
-  val zIndex = new NativeStyle[Double]("zIndex")
-  val letterSpacing = new NativeStyle[Double]("letterSpacing")
+  val borderBottomWidth = new NativeStyle[Double | AnimatedValue]("borderBottomWidth")
+  val borderLeftWidth = new NativeStyle[Double | AnimatedValue]("borderLeftWidth")
+  val borderRightWidth = new NativeStyle[Double | AnimatedValue]("borderRightWidth")
+  val borderTopWidth = new NativeStyle[Double | AnimatedValue]("borderTopWidth")
+  val borderWidth = new NativeStyle[Double | AnimatedValue]("borderWidth")
+  val bottom = new NativeStyle[Double | AnimatedValue]("bottom")
+  val height = new NativeStyle[Double | AnimatedValue]("height")
+  val left = new NativeStyle[Double | AnimatedValue]("left")
+  val margin = new NativeStyle[Double | AnimatedValue]("margin")
+  val marginBottom = new NativeStyle[Double | AnimatedValue]("marginBottom")
+  val marginHorizontal = new NativeStyle[Double | AnimatedValue]("marginHorizontal")
+  val marginLeft = new NativeStyle[Double | AnimatedValue]("marginLeft")
+  val marginRight = new NativeStyle[Double | AnimatedValue]("marginRight")
+  val marginTop = new NativeStyle[Double | AnimatedValue]("marginTop")
+  val marginVertical = new NativeStyle[Double | AnimatedValue]("marginVertical")
+  val maxHeight = new NativeStyle[Double | AnimatedValue]("maxHeight")
+  val maxWidth = new NativeStyle[Double | AnimatedValue]("maxWidth")
+  val minHeight = new NativeStyle[Double | AnimatedValue]("minHeight")
+  val minWidth = new NativeStyle[Double | AnimatedValue]("minWidth")
+  val padding = new NativeStyle[Double | AnimatedValue]("padding")
+  val paddingBottom = new NativeStyle[Double | AnimatedValue]("paddingBottom")
+  val paddingHorizontal = new NativeStyle[Double | AnimatedValue]("paddingHorizontal")
+  val paddingLeft = new NativeStyle[Double | AnimatedValue]("paddingLeft")
+  val paddingRight = new NativeStyle[Double | AnimatedValue]("paddingRight")
+  val paddingTop = new NativeStyle[Double | AnimatedValue]("paddingTop")
+  val paddingVertical = new NativeStyle[Double | AnimatedValue]("paddingVertical")
+  val right = new NativeStyle[Double | AnimatedValue]("right")
+  val top = new NativeStyle[Double | AnimatedValue]("top")
+  val width = new NativeStyle[Double | AnimatedValue]("width")
+  val zIndex = new NativeStyle[Double | AnimatedValue]("zIndex")
+  val letterSpacing = new NativeStyle[Double | AnimatedValue]("letterSpacing")
+
+  object overflow extends NativeStyle[String]("overflow") {
+    val visible = this := "visible"
+    val hidden = this := "hidden"
+    val scroll = this := "scroll"
+  }
 
   object position extends NativeStyle[String]("position") {
     val absolute = this := "absolute"
@@ -91,10 +104,10 @@ trait TextStyles {
   val color = new NativeStyle[String]("color")
   val containerBackgroundColor = new NativeStyle[String]("containerBackgroundColor")
   val fontFamily = new NativeStyle[String]("fontFamily")
-  val fontSize = new NativeStyle[Double]("fontSize")
-  val lineHeight = new NativeStyle[Double]("lineHeight")
+  val fontSize = new NativeStyle[Double | AnimatedValue]("fontSize")
+  val lineHeight = new NativeStyle[Double | AnimatedValue]("lineHeight")
   val textShadowOffset = new NativeStyle[js.Dynamic]("textShadowOffset")
-  val textShadowRadius = new NativeStyle[Double]("textShadowRadius")
+  val textShadowRadius = new NativeStyle[Double | AnimatedValue]("textShadowRadius")
   val textShadowColor = new NativeStyle[String]("textShadowColor")
   val textDecorationLine = new NativeStyle[String]("textDecorationLine")
 
@@ -155,14 +168,15 @@ trait ImageStyles {
   val borderColor = new NativeStyle[String]("borderColor")
   val tintColor = new NativeStyle[String]("tintColor")
   val overlayColor = new NativeStyle[String]("overlayColor")
-  val borderRadius = new NativeStyle[Double]("borderRadius")
-  val opacity = new NativeStyle[Double]("opacity")
+  val borderRadius = new NativeStyle[Double | AnimatedValue]("borderRadius")
+  val opacity = new NativeStyle[Double | AnimatedValue]("opacity")
   val resizeMode = new NativeStyle[String]("resizeMode")
 
 }
 
 trait ViewStyles {
 
+  val aspectRatio = new NativeStyle[Double]("aspectRatio")
   val borderBottomColor = new NativeStyle[String]("borderBottomColor")
   val borderLeftColor = new NativeStyle[String]("borderLeftColor")
   val borderRightColor = new NativeStyle[String]("borderRightColor")
@@ -174,20 +188,14 @@ trait ViewStyles {
     val dashed = this := "dashed"
   }
 
-
-  object overflow extends NativeStyle[String]("overflow") {
-    val visible = this := "visible"
-    val hidden = this := "hidden"
-  }
-
-  val rotation = new NativeStyle[Double]("rotation")
-  val scaleX = new NativeStyle[Double]("scaleX")
-  val scaleY = new NativeStyle[Double]("scaleY")
-  val shadowOpacity = new NativeStyle[Double]("shadowOpacity")
-  val shadowRadius = new NativeStyle[Double]("shadowRadius")
-  val translateX = new NativeStyle[Double]("translateX")
-  val translateY = new NativeStyle[Double]("translateY")
-  val elevation = new NativeStyle[Double]("elevation")
+  val rotation = new NativeStyle[Double | AnimatedValue]("rotation")
+  val scaleX = new NativeStyle[Double | AnimatedValue]("scaleX")
+  val scaleY = new NativeStyle[Double | AnimatedValue]("scaleY")
+  val shadowOpacity = new NativeStyle[Double | AnimatedValue]("shadowOpacity")
+  val shadowRadius = new NativeStyle[Double | AnimatedValue]("shadowRadius")
+  val translateX = new NativeStyle[Double | AnimatedValue]("translateX")
+  val translateY = new NativeStyle[Double | AnimatedValue]("translateY")
+  val elevation = new NativeStyle[Double | AnimatedValue]("elevation")
   val shadowColor = new NativeStyle[String]("shadowColor")
 
   case class ShadowOffset(height: Double, width: Double) {
@@ -196,10 +204,10 @@ trait ViewStyles {
 
   val shadowOffset = new NativeStyle[js.Object]("shadowOffset")
   val transformMatrix = new NativeStyle[js.Array[Double]]("transformMatrix")
-  val borderTopLeftRadius = new NativeStyle[Double]("borderTopLeftRadius")
-  val borderTopRightRadius = new NativeStyle[Double]("borderTopRightRadius")
-  val borderBottomLeftRadius = new NativeStyle[Double]("borderTopRightRadius")
-  val borderBottomRightRadius = new NativeStyle[Double]("borderTopRightRadius")
+  val borderTopLeftRadius = new NativeStyle[Double | AnimatedValue]("borderTopLeftRadius")
+  val borderTopRightRadius = new NativeStyle[Double | AnimatedValue]("borderTopRightRadius")
+  val borderBottomLeftRadius = new NativeStyle[Double | AnimatedValue]("borderTopRightRadius")
+  val borderBottomRightRadius = new NativeStyle[Double | AnimatedValue]("borderTopRightRadius")
 
 }
 

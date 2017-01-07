@@ -23,6 +23,8 @@ object Dependencies {
 
     val chandu0101Macros = "2016.11.0"
 
+    val scalaMeta = "1.4.0"
+
   }
 
 
@@ -38,7 +40,13 @@ object Dependencies {
 
   val chandu0101Macros = libraryDependencies += "com.github.chandu0101" %%% "macros" % Version.chandu0101Macros
 
+  val vdom = libraryDependencies += "com.github.chandu0101" %%% "sri-web-vdom" % "0.7.0-SNAPSHOT"
+
+  val enzyme = libraryDependencies += "com.github.chandu0101" %%% "sri-enzyme" % "2017.1.0-SNAPSHOT"
+
   val scalaReflect = libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided
+
+  val scalaMeta = libraryDependencies += "org.scalameta" %% "scalameta" % Version.scalaMeta
 
   val coreModuleDeps = Seq(
     scalaJSDOM,
@@ -55,14 +63,19 @@ object Dependencies {
 
   val mobileExamplesModuleDeps = Seq(scalaAsync)
 
+  val webExamplesModuleDeps = Seq()
+
+  val testModuleDeps = Seq()
+
+//  val toolsModuleDeps = Seq(scalaMeta)
 
 
   val scalatestJSSettings = Seq(scalatestJS,
     scalaJSStage in Global := FastOptStage,
 //    scalaJSStage in Global := FullOptStage,
-    jsDependencies += RuntimeDOM,
-    jsDependencies += ProvidedJS / "test-bundle.js" % Test,
-    jsEnv in Test := new PhantomJS2Env(scalaJSPhantomJSClassLoader.value, addArgs = Seq("--web-security=no"))
+    jsDependencies += RuntimeDOM
+//    jsDependencies += ProvidedJS / "test-bundle.js" % Test,
+//    jsEnv in Test := new PhantomJS2Env(scalaJSPhantomJSClassLoader.value, addArgs = Seq("--web-security=no"))
 //        jsEnv in Test := new NodeJSEnv()
   )
 

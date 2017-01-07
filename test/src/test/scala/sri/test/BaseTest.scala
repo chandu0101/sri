@@ -4,7 +4,15 @@ import org.scalactic.source.Position
 import org.scalatest.{BeforeAndAfter, FunSuite, Tag}
 import sri.core.{ReactComponent, ReactElement}
 
+import scala.scalajs.js
 import scala.scalajs.js.JavaScriptException
+import scala.scalajs.js.annotation.JSImport
+
+@js.native
+@JSImport("jsdom","jsdom")
+object jsdom extends js.Object {
+
+}
 
 class BaseTest extends FunSuite with BeforeAndAfter{
 
@@ -22,6 +30,7 @@ class BaseTest extends FunSuite with BeforeAndAfter{
   def getMountedInstance[T <: ReactComponent[_,_]](element : ReactElement): T = {
     getShallowRenderer(element).getMountedInstance[T]()
   }
+
 
   override protected def test(testName: String, testTags: org.scalatest.Tag*)(testFun: => Any)(implicit pos: Position) = {
     super.test(testName, testTags: _*)(try testFun catch {

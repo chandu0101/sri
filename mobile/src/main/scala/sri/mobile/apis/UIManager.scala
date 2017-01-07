@@ -11,14 +11,14 @@ trait UIManager extends js.Object {
 }
 
 @ScalaJSDefined
-abstract class SnapShotOptions extends js.Object {
+ trait SnapShotOptions extends js.Object {
 
-  val width: js.UndefOr[Double] = js.undefined
+  var width: js.UndefOr[Double] = js.undefined
 
-  val height: js.UndefOr[Double] = js.undefined
+  var height: js.UndefOr[Double] = js.undefined
 
-  val format: js.UndefOr[String] = js.undefined
+  var format: js.UndefOr[String] = js.undefined
 
-  val quality: js.UndefOr[Double] = js.undefined
+  var quality: js.UndefOr[Double] = js.undefined
 
 }

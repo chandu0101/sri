@@ -20,7 +20,7 @@ object UIExplorerPageLazyLoad {
 
     def render() = {
       if (state.isLoading) View(style = styles.spinner)(ActivityIndicator(size = ActivityIndicatorSize.LARGE, color = "black")())
-      else ScrollView(style = UniversalStyleSheet.wholeContainer, keyboardShouldPersistTaps = true,
+      else ScrollView(style = UniversalStyleSheet.wholeContainer, keyboardShouldPersistTaps = ScrollViewKeyboardPersistTaps.HANDLED,
         keyboardDismissMode = keyboardDismissMode.INTERACTIVE)(
         children
       )

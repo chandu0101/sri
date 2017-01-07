@@ -13,6 +13,7 @@ case class TabBarIOS(barTintColor: js.UndefOr[String] = js.undefined,
                      ref: js.UndefOr[TabBarIOSM => _] = js.undefined,
                      tintColor: js.UndefOr[String] = js.undefined,
                      key: js.UndefOr[String] = js.undefined,
+                     unselectedItemTintColor: js.UndefOr[String] = js.undefined,
                      translucent: js.UndefOr[Boolean] = js.undefined) {
 
   def apply(children: ReactNode*) = {
@@ -32,6 +33,7 @@ case class TabBarIOSItem(systemIcon: js.UndefOr[SystemIcon] = js.undefined,
                          ref: js.UndefOr[TabBarItemIOSM => _] = js.undefined,
                          selected: Boolean,
                          key: js.UndefOr[String] = js.undefined,
+                         badgeColor: js.UndefOr[String] = js.undefined,
                          badge: js.UndefOr[String] = js.undefined,
                          title: js.UndefOr[String] = js.undefined) {
 

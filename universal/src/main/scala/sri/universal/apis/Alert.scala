@@ -10,11 +10,15 @@ trait Alert extends js.Object {
 }
 
 @ScalaJSDefined
-class AlertButton(val text: js.UndefOr[String] = js.undefined, val onPress: js.UndefOr[js.Function] = js.undefined, val style: js.UndefOr[String] = js.undefined) extends js.Object
+trait AlertButton extends js.Object {
+  var text: js.UndefOr[String] = js.undefined
+  var onPress: js.UndefOr[js.Function] = js.undefined
+  var style: js.UndefOr[String] = js.undefined
+}
 
 @ScalaJSDefined
-class AlertOptions extends js.Object {
-  val cancelable: js.UndefOr[Boolean] = js.undefined
+trait AlertOptions extends js.Object {
+  var cancelable: js.UndefOr[Boolean] = js.undefined
 }
 
 object AlertTypes {

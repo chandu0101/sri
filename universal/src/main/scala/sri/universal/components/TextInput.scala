@@ -14,6 +14,7 @@ case class TextInput(onBlur: js.UndefOr[(ReactEvent[TextInputEvent]) => Unit] = 
                      maxLength: js.UndefOr[Int] = js.undefined,
                      style: js.UndefOr[js.Any] = js.undefined,
                      onChange: js.UndefOr[(ReactEvent[TextInputEvent]) => Unit] = js.undefined,
+                     onScroll: js.UndefOr[(ReactEvent[TextInputEvent]) => Unit] = js.undefined,
                      onSelectionChange: js.UndefOr[(ReactEvent[TextInputEvent]) => Unit] = js.undefined,
                      underlineColorAndroid: js.UndefOr[String] = js.undefined,
                      keyboardType: js.UndefOr[KeyboardType] = js.undefined,
@@ -30,7 +31,9 @@ case class TextInput(onBlur: js.UndefOr[(ReactEvent[TextInputEvent]) => Unit] = 
                      onChangeText: js.UndefOr[(String) => Unit] = js.undefined,
                      tintColor: js.UndefOr[String] = js.undefined,
                      autoFocus: js.UndefOr[Boolean] = js.undefined,
+                     spellCheck: js.UndefOr[Boolean] = js.undefined,
                      autoCorrect: js.UndefOr[Boolean] = js.undefined,
+                     disableExtractUI: js.UndefOr[Boolean] = js.undefined,
                      autoCapitalize: js.UndefOr[AutoCapitalize] = js.undefined,
                      key: js.UndefOr[String] = js.undefined,
                      bufferDelay: js.UndefOr[Int] = js.undefined,
@@ -160,14 +163,7 @@ object TextAlignVertical {
 
 @ScalaJSDefined
 trait TextInputSelection extends js.Object {
-  val start: Double
-  val end: Double
+  var start: js.UndefOr[Double] = js.undefined
+  val end: js.UndefOr[Double] = js.undefined
 }
 
-object TextInputSelection {
-
-  def apply(start_v: Double, end_v: Double) = new TextInputSelection {
-    override val end: Double = start_v
-    override val start: Double = end_v
-  }
-}

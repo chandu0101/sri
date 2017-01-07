@@ -3,6 +3,7 @@ package sri.test.router
 import sri.test.components.Text
 import sri.universal.components._
 import sri.web.all._
+import sri.web.vdom.htmltagsNoInline._
 import sri.web.router.{WebRouterComponent, WebRouterCtrl}
 import sri.web.styles.WebStyleSheet
 
@@ -19,7 +20,8 @@ object HomeScreen {
 
   @ScalaJSDefined
   class Component extends WebRouterComponent[Unit, Unit] {
-    def render() = Text()("home")
+    def render() = div()(div(id = "myid")("my id content"),
+      div(id = "myid2",className = "myid2")("my id 2 content"))
 
     override def componentDidMount(): Unit = {
       ctrl = getRouterCtrl()

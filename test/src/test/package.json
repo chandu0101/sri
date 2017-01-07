@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "history": "^4.4.0",
+    "jsdom": "^9.9.1",
     "react": "^15.3.2",
     "react-addons-test-utils": "^15.3.2",
     "react-dom": "^15.3.2"

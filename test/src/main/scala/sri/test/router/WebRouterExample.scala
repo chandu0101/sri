@@ -5,6 +5,8 @@ import sri.universal.components.View
 import sri.web.router._
 import sri.web.styles.WebStyleSheet
 
+import scala.scalajs.js
+
 object WebRouterExample {
 
   object HomePage extends WebStaticPage
@@ -23,7 +25,7 @@ object WebRouterExample {
 
   object Config extends WebRouterConfig {
 
-    override val history: History = HistoryFactory.browserHistory()
+    override val history: History = History.createMemoryHistory(js.undefined)
 
     override val initialRoute: (WebStaticPage, WebRoute) = defineInitialRoute(HomePage, (route: WebRoute) => HomeScreen())
 

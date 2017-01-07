@@ -2,7 +2,7 @@ package sri.web.router
 
 import scala.scalajs.js
 import scala.scalajs.js.`|`
-import scala.scalajs.js.annotation.{JSName, ScalaJSDefined}
+import scala.scalajs.js.annotation.{JSImport, JSName, ScalaJSDefined}
 
 @js.native
 trait History extends js.Object {
@@ -41,6 +41,7 @@ trait History extends js.Object {
 }
 
 @js.native
+@JSImport("history", JSImport.Namespace)
 object History extends js.Object {
 
   type HistoryFunc = js.Function1[js.UndefOr[HistoryOptions], History]

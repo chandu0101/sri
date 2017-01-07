@@ -14,7 +14,7 @@ case class ToolbarAndroid(key: U[String] = undefined,
                           ref: U[ToolbarAndroidM => _] = undefined,
                           actions: U[Seq[ToolbarAndroidAction]] = undefined,
                           logo: U[ImageSource] = undefined,
-                          @rename("logo") logoDynamic: U[js.Dynamic] = undefined,
+                          @rename("logo") logoDynamic: U[js.Any] = undefined,
                           navIcon: U[ImageSource] = undefined,
                           @rename("navIcon")  navIconDynamic: U[js.Any] = undefined,
                           onActionSelected: U[Int => _] = undefined,
@@ -38,7 +38,7 @@ case class ToolbarAndroid(key: U[String] = undefined,
 @js.native
 trait ToolbarAndroidM extends js.Object
 
-case class ToolbarAndroidAction(title: String, icon: U[js.Dynamic] = undefined, show: U[ToolbarAndroidActionShow] = undefined, showWithText: U[Boolean] = undefined) {
+case class ToolbarAndroidAction(title: String, icon: U[js.Any] = undefined, show: U[ToolbarAndroidActionShow] = undefined, showWithText: U[Boolean] = undefined) {
   val toJS = JSMacro[ToolbarAndroidAction](this)
 }
 

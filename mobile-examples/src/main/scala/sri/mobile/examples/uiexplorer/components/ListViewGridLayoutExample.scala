@@ -3,6 +3,7 @@ package sri.mobile.examples.uiexplorer.components
 import sri.core.ReactComponent
 import sri.mobile.ReactNative
 import sri.mobile.all._
+import sri.mobile.examples.images._
 import sri.mobile.examples.uiexplorer.UIExample
 import sri.universal.apis.LayoutConfig
 import sri.universal.components._
@@ -19,18 +20,20 @@ object ListViewGridLayoutExample extends UIExample {
 
 
   val PAGE_SIZE = 4
-  val THUMB_URLS = js.Array(loadDynamic("./images/thumbnails/like.png"),
-    loadDynamic("./images/thumbnails/dislike.png"),
-    loadDynamic("./images/thumbnails/call.png"),
-    loadDynamic("./images/thumbnails/fist.png"),
-    loadDynamic("./images/thumbnails/bandaged.png"),
-    loadDynamic("./images/thumbnails/flowers.png"),
-    loadDynamic("./images/thumbnails/heart.png"),
-    loadDynamic("./images/thumbnails/liking.png"),
-    loadDynamic("./images/thumbnails/party.png"),
-    loadDynamic("./images/thumbnails/poke.png"),
-    loadDynamic("./images/thumbnails/superlike.png"),
-    loadDynamic("./images/thumbnails/victory.png"))
+  val THUMB_URLS = js.Array(
+    LikeImage,
+    DislikeImage,
+    CallImage,
+    FistImage,
+    BandagedImage,
+    FlowersImage,
+    HeartImage,
+    LikingImage,
+    PartyImage,
+    PokeImage,
+    SuperLikeImage,
+    VictoryImage)
+
   val NUM_SECTIONS = 10
   val NUM_ROWS_PER_SECTION = 10
 

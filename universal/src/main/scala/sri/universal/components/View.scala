@@ -1,7 +1,8 @@
 package sri.universal.components
 
-import chandu0101.macros.tojs.JSMacro
+import chandu0101.macros.tojs.{JSMacro, exclude}
 import sri.core.{React, ReactNode}
+import sri.core.all._
 import sri.universal.apis.LayoutEvent
 import sri.universal.ReactUniversal
 
@@ -28,6 +29,7 @@ case class View(onResponderReject: js.UndefOr[js.Function] = js.undefined,
                 accessibilityTraits: js.UndefOr[Seq[AccessibilityTraits]] = js.undefined,
                 onAcccessibilityTap: js.UndefOr[js.Function] = js.undefined,
                 collapsible: js.UndefOr[Boolean] = js.undefined,
+                @exclude animatedView: Boolean = false,
                 needsOffscreenAlphaCompositing: js.UndefOr[Boolean] = js.undefined,
                 key: js.UndefOr[String] = js.undefined,
                 onResponderTerminationRequest: js.UndefOr[js.Function] = js.undefined,
@@ -41,7 +43,8 @@ case class View(onResponderReject: js.UndefOr[js.Function] = js.undefined,
 
   def apply(children: ReactNode*) = {
     val props = JSMacro[View](this)
-    React.createElement(ReactUniversal.View, props, children: _*)
+    val ctor = if (animatedView) ReactUniversal.Animated.View else ReactUniversal.View
+    React.createElement(ctor, props, children: _*)
   }
 }
 

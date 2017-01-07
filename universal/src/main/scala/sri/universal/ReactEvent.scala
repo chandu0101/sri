@@ -14,6 +14,8 @@ trait TextInputEvent extends js.Object {
   val text: String = js.native
 
   val contentSize: TextInputContentSize = js.native
+
+  val contentOffset: TextContentOffset = js.native
 }
 
 @js.native
@@ -22,6 +24,14 @@ trait TextInputContentSize extends js.Object {
   val width: Double = js.native
 
   val height: Double = js.native
+}
+
+@js.native
+trait TextContentOffset extends js.Object {
+
+  val x: Double = js.native
+
+  val y: Double = js.native
 }
 
 @js.native
