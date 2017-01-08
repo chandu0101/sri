@@ -10,7 +10,7 @@ object CommonUtils {
   lazy val commonSettings =
     Seq(
       organization := "com.github.chandu0101",
-      version := "0.7.0-SNAPSHOT",
+      version := "0.7.1",
       homepage := Some(url("https://github.com/chandu0101/sri")),
       licenses += ("Apache-2.0", url("http://opensource.org/licenses/Apache-2.0")),
       scalaVersion := Dependencies.Version.scala211,

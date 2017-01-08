@@ -22,14 +22,14 @@ Sri (Scala React interface) is a scalajs library to build truly native cross pla
 Use this module to build iOS/Android mobile applications:
 
 ```scala
-libraryDependencies += "com.github.chandu0101" %%% "sri-mobile" % "0.6.0"
+libraryDependencies += "com.github.chandu0101" %%% "sri-mobile" % "0.7.1"
 ```
 
 #Web
 Use this module to build browser based applications:
 
 ```scala
-libraryDependencies += "com.github.chandu0101" %%% "sri-web" % "0.6.0"
+libraryDependencies += "com.github.chandu0101" %%% "sri-web" % "0.7.1"
 ```
 
 #Documentation

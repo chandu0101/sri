@@ -4,7 +4,7 @@
 
 ```
 //root(sri) directory
-sbt ~fastOptJS
+sbt ~fastOptWeb
 //open new  terminal
 cd web-examples
 npm install
