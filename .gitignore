@@ -46,6 +46,5 @@ mobile-examples/android/app/build
 web-examples/assets/
 web-examples/node_modules/
 
-
-
-
+yarn.lock
+sbt.sh

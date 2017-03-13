@@ -112,7 +112,7 @@ object ModalExample extends UIExample {
       fontWeight.bold)
 
     val button = style(borderRadius := 5,
-      flexOne,
+      flexGrow := 1,
       height := 44,
       justifyContent.center,
       overflow.hidden)
