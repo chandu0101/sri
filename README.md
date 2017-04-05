@@ -1,6 +1,6 @@
 # sri
 
-### This Project Moved to new organization https://github.com/scalajs-react-interface/sri , please join our new chat room : https://gitter.im/scalajs-react-interface/sri
+### This Project Moved to new organization https://github.com/scalajs-react-interface/sri#sri , please join our new chat room : https://gitter.im/scalajs-react-interface/sri
 
 [![Join the chat at https://gitter.im/chandu0101/sri](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/scalajs-react-interface/sri?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
