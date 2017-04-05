@@ -1,13 +1,11 @@
-package sri.universal.apis
-
-import sri.core.ReactClass
+package sri.core
 
 import scala.scalajs.js
 
 @js.native
 trait AppRegistry extends js.Object {
 
-  def registerConfig(config: js.Array[js.Object]): Unit = js.native
+  def registerConfig(config: js.Array[AppConfig]): Unit = js.native
 
   def registerComponent(appKey: String, getComponentFunc: js.Function0[ReactClass]): Unit = js.native
 
